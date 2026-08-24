@@ -2,6 +2,7 @@
 name = "mpc-keygroup-builder"
 version = "0.1.0"
 description = "Build and validate MPC 3 keygroup programs from pitched WAV libraries"
+license = "MIT"
 requires-python = ">=3.12"
 dependencies = []
 

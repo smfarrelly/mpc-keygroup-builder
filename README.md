@@ -30,6 +30,12 @@ See [the MPC helper-project compatibility survey](docs/mpc-ecosystem-survey.md)
 for related open-source work, licensing constraints, and the features selected
 for independent implementation in `mpc-keygroup-builder`.
 
+## License
+
+The source code is available under the [MIT License](LICENSE). Sample libraries,
+audio files, and generated MPC programs are not included and remain subject to
+their respective owners' licenses.
+
 WAV filenames may begin with a MIDI note number; the patch name may follow the
 number immediately or after `_`, a space, or `-`. When no numeric prefix is
 present, a space- or underscore-delimited trailing pitch name is used with the
