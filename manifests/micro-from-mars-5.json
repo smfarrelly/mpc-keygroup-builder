@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "library": "Micro From Mars",
+  "source_root": "micro_from_mars/Micro From Mars/WAV",
+  "destination": "Programs/Keygroups/Samples From Mars/Micro From Mars",
+  "centralized_root": "Samples/Samples From Mars/Instruments/Micro From Mars",
+  "instruments": [
+    {
+      "name": "MicroMoog 25",
+      "category": "Synths",
+      "source": "MicroMoog 25",
+      "centralized": "MicroMoog 25",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "MicroMoog 26",
+      "category": "Synths",
+      "source": "MicroMoog 26",
+      "centralized": "MicroMoog 26",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "MicroMoog 27",
+      "category": "Synths",
+      "source": "MicroMoog 27",
+      "centralized": "MicroMoog 27",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    }
+  ]
+}

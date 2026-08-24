@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "library": "Arp Omni From Mars",
+  "source_root": "arp_omni_from_mars/Arp Omni From Mars/WAV",
+  "destination": "Programs/Keygroups/Samples From Mars/Arp Omni From Mars",
+  "centralized_root": "Samples/Samples From Mars/Instruments/Arp Omni From Mars",
+  "instruments": [
+    {
+      "name": "Double Octave Saturated",
+      "category": "Strings",
+      "source": "Double Octave Saturated",
+      "velocity_preset": "arp_omni_from_mars/Arp Omni From Mars/Ableton Live/Arp Omni From Mars/Presets/Omni Double Sat.adg",
+      "centralized": "Double Octave Saturated",
+      "install": "replace_corrupt",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Long",
+      "category": "Strings",
+      "source": "Long",
+      "velocity_preset": "arp_omni_from_mars/Arp Omni From Mars/Ableton Live/Arp Omni From Mars/Presets/Omni Long.adg",
+      "centralized": "Long",
+      "install": "replace_corrupt",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Long & Saturated",
+      "category": "Strings",
+      "source": "Long & Saturated",
+      "velocity_preset": "arp_omni_from_mars/Arp Omni From Mars/Ableton Live/Arp Omni From Mars/Presets/Omni Long Sat Poly.adg",
+      "centralized": "Long & Saturated",
+      "install": "replace_corrupt",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Open Double Octave",
+      "category": "Strings",
+      "source": "Open Double Octave",
+      "velocity_preset": "arp_omni_from_mars/Arp Omni From Mars/Ableton Live/Arp Omni From Mars/Presets/Omni Double Open.adg",
+      "centralized": "Open Double Octave",
+      "install": "replace_corrupt",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Open Filter Saturated",
+      "category": "Strings",
+      "source": "Open Filter Saturated",
+      "velocity_preset": "arp_omni_from_mars/Arp Omni From Mars/Ableton Live/Arp Omni From Mars/Presets/Omni Open.adg",
+      "centralized": "Open Filter Saturated",
+      "install": "replace_corrupt",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Short & Funky Saturated",
+      "category": "Strings",
+      "source": "Short & Funky Saturated",
+      "velocity_preset": "arp_omni_from_mars/Arp Omni From Mars/Ableton Live/Arp Omni From Mars/Presets/Omni Funky.adg",
+      "centralized": "Short & Funky Saturated",
+      "install": "replace_corrupt",
+      "vendor_programs_checked": true
+    }
+  ]
+}

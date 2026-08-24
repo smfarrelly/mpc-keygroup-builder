@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "library": "Mini From Mars",
+  "source_root": "mini_from_mars/Mini From Mars/WAV",
+  "destination": "Programs/Keygroups/Samples From Mars/Mini From Mars",
+  "centralized_root": "Samples/Samples From Mars/Instruments/Mini From Mars",
+  "instruments": [
+    {
+      "name": "Octave Jumper",
+      "category": "FX",
+      "source": "Octave Jumper",
+      "centralized": "Octave Jumper",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Sea Sick",
+      "category": "FX",
+      "source": "Sea Sick",
+      "centralized": "Sea Sick",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Hairy Dog",
+      "category": "Keys & Poly",
+      "source": "Hairy Dog",
+      "centralized": "Hairy Dog",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Harmonium",
+      "category": "Keys & Poly",
+      "source": "Harmonium",
+      "centralized": "Harmonium",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Fat N Creamy Split",
+      "category": "Keys & Poly",
+      "source": "Fat N Creamy Split",
+      "centralized": "Fat N Creamy Split",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    }
+  ]
+}

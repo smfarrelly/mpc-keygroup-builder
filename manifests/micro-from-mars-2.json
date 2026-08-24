@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "library": "Micro From Mars",
+  "source_root": "micro_from_mars/Micro From Mars/WAV",
+  "destination": "Programs/Keygroups/Samples From Mars/Micro From Mars",
+  "centralized_root": "Samples/Samples From Mars/Instruments/Micro From Mars",
+  "instruments": [
+    {
+      "name": "MicroMoog 11",
+      "category": "Synths",
+      "source": "MicroMoog 11",
+      "centralized": "MicroMoog 11",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "MicroMoog 13",
+      "category": "Synths",
+      "source": "MicroMoog 13",
+      "centralized": "MicroMoog 13",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "MicroMoog 16",
+      "category": "Synths",
+      "source": "MicroMoog 16",
+      "centralized": "MicroMoog 16",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "MicroMoog 17",
+      "category": "Synths",
+      "source": "MicroMoog 17",
+      "centralized": "MicroMoog 17",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "MicroMoog 19",
+      "category": "Synths",
+      "source": "MicroMoog 19",
+      "centralized": "MicroMoog 19",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "MicroMoog 20",
+      "category": "Synths",
+      "source": "MicroMoog 20",
+      "centralized": "MicroMoog 20",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    }
+  ]
+}

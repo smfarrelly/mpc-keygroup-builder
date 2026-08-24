@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "library": "Acid From Mars",
+  "source_root": "acid_from_mars/Acid From Mars/WAV/Acid Synths",
+  "destination": "Programs/Keygroups/Samples From Mars/Acid From Mars",
+  "centralized_root": "Samples/Samples From Mars/Instruments/Acid From Mars/Acid Synths",
+  "instruments": [
+    {
+      "name": "Echo Square",
+      "category": "Synths",
+      "source": "Echo Square",
+      "centralized": "Echo Square",
+      "install": "replace_corrupt",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Moving Saw Poly",
+      "category": "Synths",
+      "source": "Moving Saw Poly",
+      "centralized": "Moving Saw Poly",
+      "install": "replace_corrupt",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Square",
+      "category": "Synths",
+      "source": "Square",
+      "centralized": "Square",
+      "install": "replace_corrupt",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Sticatto Poly Saw",
+      "category": "Synths",
+      "source": "Sticatto Poly Saw",
+      "centralized": "Sticatto Poly Saw",
+      "install": "replace_corrupt",
+      "vendor_programs_checked": true
+    }
+  ]
+}

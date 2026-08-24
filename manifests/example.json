@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "library": "Example From Mars",
+  "source_root": "example_from_mars/Example From Mars/WAV",
+  "destination": "Programs/Keygroups/Samples From Mars/Example From Mars",
+  "centralized_root": "Samples/Samples From Mars/Example From Mars",
+  "instruments": [
+    {
+      "name": "New Patch",
+      "category": "Keys",
+      "source": "New Patch",
+      "sample_selection": {
+        "include": ["*Clean*.wav"],
+        "exclude": ["*_L.wav", "*_R.wav"]
+      },
+      "install": "copy"
+    },
+    {
+      "name": "Existing Patch",
+      "category": "Bass",
+      "source": "Existing Patch",
+      "centralized": "Existing Patch",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "library": "Mini From Mars",
+  "source_root": "mini_from_mars/Mini From Mars/WAV",
+  "destination": "Programs/Keygroups/Samples From Mars/Mini From Mars",
+  "centralized_root": "Samples/Samples From Mars/Instruments/Mini From Mars",
+  "instruments": [
+    {
+      "name": "Electricity Tear",
+      "category": "Leads",
+      "source": "Electricity Tear",
+      "centralized": "Electricity Tear",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Hyper Future",
+      "category": "Leads",
+      "source": "Hyper Future",
+      "centralized": "Hyper Future",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Perky Noise Saw",
+      "category": "Leads",
+      "source": "Perky Noise Saw",
+      "centralized": "Perky Noise Saw",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Ring Mod Bells",
+      "category": "Leads",
+      "source": "Ring Mod Bells",
+      "centralized": "Ring Mod Bells",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Sharp Lead",
+      "category": "Leads",
+      "source": "Sharp Lead",
+      "centralized": "Sharp Lead",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Sonic Destruction",
+      "category": "Leads",
+      "source": "Sonic Destruction",
+      "centralized": "Sonic Destruction",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    }
+  ]
+}

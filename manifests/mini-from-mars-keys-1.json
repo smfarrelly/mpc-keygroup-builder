@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "library": "Mini From Mars",
+  "source_root": "mini_from_mars/Mini From Mars/WAV",
+  "destination": "Programs/Keygroups/Samples From Mars/Mini From Mars",
+  "centralized_root": "Samples/Samples From Mars/Instruments/Mini From Mars",
+  "instruments": [
+    {
+      "name": "Combo Organ",
+      "category": "Keys & Poly",
+      "source": "Combo Organ",
+      "centralized": "Combo Organ",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Creamy Poly",
+      "category": "Keys & Poly",
+      "source": "Creamy Poly",
+      "centralized": "Creamy Poly",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Dippin Rez Octave",
+      "category": "Keys & Poly",
+      "source": "Dippin Rez Octave",
+      "centralized": "Dippin Rez Octave",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Easy Wave",
+      "category": "Keys & Poly",
+      "source": "Easy Wave",
+      "centralized": "Easy Wave",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Loose Unit",
+      "category": "Keys & Poly",
+      "source": "Loose Unit",
+      "centralized": "Loose Unit",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Magic Spell",
+      "category": "Keys & Poly",
+      "source": "Magic Spell",
+      "centralized": "Magic Spell",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    }
+  ]
+}

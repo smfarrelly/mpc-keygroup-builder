@@ -1,0 +1,29 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv/
+
+# Machine-local configuration and secrets
+.env
+.env.*
+!.env.example
+config.local.*
+*.local.toml
+
+# Licensed source material and generated MPC output
+*.wav
+*.WAV
+*.xpm
+*.XPM
+*_[ProgramData]/
+
+# Local build/install staging
+artifacts/
+output/
+staging/

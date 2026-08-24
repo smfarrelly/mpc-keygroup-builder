@@ -1,0 +1,14 @@
+[project]
+name = "mpc-keygroup-builder"
+version = "0.1.0"
+description = "Build and validate MPC 3 keygroup programs from pitched WAV libraries"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.scripts]
+mpc-keygroup = "mpc_keygroup_builder.cli:main"
+mpc-keygroup-batch = "mpc_keygroup_builder.workflow:main"
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"

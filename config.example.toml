@@ -1,0 +1,5 @@
+# Copy to config.local.toml and adjust for this machine.
+library_root = "/path/to/Samples From Mars"
+mpc_root = "/media/USER/MPC-SD"
+template = "/media/USER/MPC-SD/Testing keygroup.xpm"
+artifacts_root = "artifacts"

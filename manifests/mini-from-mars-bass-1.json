@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "library": "Mini From Mars",
+  "source_root": "mini_from_mars/Mini From Mars/WAV",
+  "destination": "Programs/Keygroups/Samples From Mars/Mini From Mars",
+  "centralized_root": "Samples/Samples From Mars/Instruments/Mini From Mars",
+  "instruments": [
+    {
+      "name": "Authority",
+      "category": "Bass",
+      "source": "Authority",
+      "centralized": "Authority",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Basic Triangle",
+      "category": "Bass",
+      "source": "Basic Triangle",
+      "centralized": "Basic Triangle",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Dystopia Bass",
+      "category": "Bass",
+      "source": "Dystopia Bass",
+      "centralized": "Dystopia Bass",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Grand Square",
+      "category": "Bass",
+      "source": "Grand Square",
+      "centralized": "Grand Square",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Mama Bass",
+      "category": "Bass",
+      "source": "Mama Bass",
+      "centralized": "Mama Bass",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    },
+    {
+      "name": "Straight Saw",
+      "category": "Bass",
+      "source": "Straight Saw",
+      "centralized": "Straight Saw",
+      "install": "relocate",
+      "vendor_programs_checked": true
+    }
+  ]
+}
