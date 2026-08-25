@@ -8,6 +8,7 @@ wheels/
 
 # Virtual environments
 .venv/
+work/
 
 # Machine-local configuration and secrets
 .env
