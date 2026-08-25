@@ -36,6 +36,43 @@ The source code is available under the [MIT License](LICENSE). Sample libraries,
 audio files, and generated MPC programs are not included and remain subject to
 their respective owners' licenses.
 
+## Program types and Drum Program pad colors
+
+`mpc-program-color` detects whether an existing XPM is a Drum Program or a
+keygroup. Use `--program-type drum` or `--program-type keygroup` when a workflow
+must require a specific type; a mismatch is rejected rather than relabeled.
+
+Drum Programs can be copied with semantic pad colors derived from their sample
+names:
+
+```bash
+uv run mpc-program-color "Vinyl Drums From Mars 01.xpm" \
+  --program-type auto \
+  --palette pad-colors.example.toml \
+  --name "Vinyl Drums From Mars 01 COLOR TEST" \
+  --output "Vinyl Drums From Mars 01 Colored.xpm"
+```
+
+Use `--dry-run` to report the detected type and category counts without writing.
+The built-in categories are kick, snare, clap/snap, rim, closed hat, open hat,
+cymbal, tom, percussion, FX, and unknown. Copy `pad-colors.example.toml` and
+change any RGB hex value to create a project-specific palette. The tool stores
+readable RGB values in MPC's 24-bit ProgramPads color representation, disables
+the program's universal-color override, and selects fixed-color display mode so
+the individual category colors remain visible instead of generic velocity colors.
+Both legacy XML Drum Programs and compressed programs resaved by MPC 3 are
+supported.
+For XML Drum Programs, each `Instrument` number is the one-based physical pad
+slot, so its sample classification is written to color slot `number - 1`.
+`PadNoteMap` controls incoming MIDI notes and does not determine physical pad
+colors.
+Use the optional `[overrides]` table to assign an unusual exact sample filename
+or filename stem to a category without modifying the built-in matching rules.
+
+This operation does not convert a keygroup into a Drum Program. Program-type
+selection is validation, and arbitrary Drum Program generation will use a
+known-good MPC-saved Drum template rather than changing a type label.
+
 WAV filenames may begin with a MIDI note number; the patch name may follow the
 number immediately or after `_`, a space, or `-`. When no numeric prefix is
 present, a space- or underscore-delimited trailing pitch name is used with the

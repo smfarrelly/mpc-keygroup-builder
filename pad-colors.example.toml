@@ -1,0 +1,16 @@
+[colors]
+kick = "#ff0000"
+snare = "#0022ff"
+clap = "#ff00ff"
+rim = "#ffffff"
+closed_hat = "#e6ff00"
+open_hat = "#00f7ff"
+cymbal = "#ff8800"
+tom = "#11ff00"
+percussion = "#00a080"
+fx = "#8000ff"
+unknown = "#808080"
+
+[overrides]
+# Exact filenames or stems can override unusual source-library naming.
+# "Clap 808 Skip Bell Vinyl.wav" = "percussion"
