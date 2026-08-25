@@ -526,6 +526,15 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
 - Final transfer footprint is 261 MB and 520 files. The interrupted full-mirror transfer remains separately labeled `INCOMPLETE_DO_NOT_COPY - full mirror attempt` and is not part of the lean image.
 - Next gate: copy the contents of the lean image to a blank SD card, audition all seven candidates on the Key 37, and record hardware results before choosing the four-program Scratchpad core.
 
+### August 25, 2026 — Parallel XPJ inspection tooling
+
+- Started an isolated `mac/xpj-inspector` branch so project-format work can proceed without conflicting with Scratchpad hardware work on Ubuntu.
+- Added read-only MPC 2/MPC 3 content-based format detection and validated parsing of the MPC 3 gzip, five-line ACVS header, and JSON payload.
+- Added compact project summaries covering firmware/header metadata, schema versions, track and program types, sample counts, routing channels, and sequences.
+- Added lossless normalized JSON extraction and recursive JSON-Pointer comparison for controlled before/after Key 37 experiments.
+- Unknown fields and opaque plugin state remain preserved; the tool does not write XPJ files.
+- Next gate: capture a minimal Key 37 project, inspect it, then compare single-setting before/after saves to identify keyboard, pad, and track-routing behavior.
+
 ## 16. Reference material
 
 - [Akai: Understanding and Loading MPC Programs](https://support.akaipro.com/en/support/solutions/articles/69000804211-akai-pro-mpc-series-understanding-and-loading-programs)

@@ -36,6 +36,19 @@ The source code is available under the [MIT License](LICENSE). Sample libraries,
 audio files, and generated MPC programs are not included and remain subject to
 their respective owners' licenses.
 
+## MPC project inspection
+
+Inspect, extract, or compare MPC 3 XPJ project files without modifying them:
+
+```bash
+uv run mpc-xpj inspect "/path/to/Project.xpj"
+uv run mpc-xpj extract "/path/to/Project.xpj" --output work/project.json
+uv run mpc-xpj compare "/path/to/Before.xpj" "/path/to/After.xpj"
+```
+
+See [the XPJ inspector guide](docs/xpj-inspector.md) for the controlled Key 37
+comparison workflow and current MPC 2 limitations.
+
 WAV filenames may begin with a MIDI note number; the patch name may follow the
 number immediately or after `_`, a space, or `-`. When no numeric prefix is
 present, a space- or underscore-delimited trailing pitch name is used with the
