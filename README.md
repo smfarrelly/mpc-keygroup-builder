@@ -40,6 +40,7 @@ is required for the software portion.
 - Build pitched Keygroups from named WAV files, including velocity layers.
 - Build, color, audit, compose, and lay out Drum Programs.
 - Inspect XPM programs without modifying them.
+- Inspect, extract, and compare MPC 3 XPJ projects without modifying them.
 - Generate deterministic Drum, Bass, Chords, Melody, and arrangement MIDI.
 - Compile declarative MPC, Launch Control XL 3, and Volca routing plans.
 - Catalog programs and their hardware-listening status.
@@ -107,6 +108,7 @@ for the exact boundary.
 - [Portable workflow demo](docs/portable-demo.md)
 - [Creative MIDI](docs/creative-midi.md)
 - [Declarative MIDI control](docs/declarative-midi-control.md)
+- [XPJ project inspector](docs/xpj-inspector.md)
 - [Hardware workflow tools](docs/hardware-workflow-tools.md)
 - [MPC Key 37 field review](docs/MPC_KEY37_FIELD_REVIEW.md)
 - [Sample sources and licensing](docs/sample-sources.md)

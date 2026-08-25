@@ -37,6 +37,7 @@ COMMANDS = {
     "mpc-hardware-init": _spec("hardware", "Hardware", "Initialize a hardware listening ledger", "docs/hardware-workflow-tools.md", "init_main"),
     "mpc-drum-audit": _spec("drum_audit", "Inspect", "Audit pads, roles, and mute groups", "docs/testing-framework.md"),
     "mpc-xpm": _spec("xpm", "Inspect", "Inspect or compare XPM documents", "docs/testing-framework.md"),
+    "mpc-xpj": _spec("xpj", "Inspect", "Inspect or compare MPC project captures", "docs/xpj-inspector.md"),
     "mpc-drum-map": _spec("drum_map", "Inspect", "Render a bank-by-bank Drum map", "docs/hardware-workflow-tools.md"),
     "mpc-drum-build": _spec("drum_builder", "Build", "Build a self-contained Drum Program", "docs/program-model-and-layouts.md"),
     "mpc-drum-compose": _spec("drum_compose", "Build", "Compose complete banks from Drum Programs", "docs/program-model-and-layouts.md"),

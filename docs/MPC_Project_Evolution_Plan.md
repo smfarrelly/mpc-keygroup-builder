@@ -1005,6 +1005,18 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
 - The dependency-free suite now passes 242 tests, the wheel/sdist build passes,
   and the licensed-artifact repository guard remains clean.
 
+### September 3, 2026 — XPJ inspection joins the main toolset
+
+- Integrated the previously isolated read-only MPC 2/MPC 3 XPJ inspector after
+  real MPC 3.9.1.2 startup-template captures made project-level MIDI Learn
+  inspection directly useful to the Launch Control workflow.
+- The inspector detects project generation by content, summarizes tracks and
+  sequences, losslessly extracts MPC 3 JSON, and compares captures with JSON
+  Pointer paths. It never writes an XPJ.
+- Unknown fields and opaque plugin state remain preserved. Project captures,
+  ProjectData, licensed audio, and controller SysEx exports remain local
+  evidence rather than repository source.
+
 ## 16. Reference material
 
 - [Akai: Understanding and Loading MPC Programs](https://support.akaipro.com/en/support/solutions/articles/69000804211-akai-pro-mpc-series-understanding-and-loading-programs)
