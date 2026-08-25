@@ -1,7 +1,7 @@
 path,program_type,format,structural_status,sample_references,simulation_scope,semantic_verdict,semantic_issues,hardware_status,favorite,scratchpad_role,notes
 MPC Expansions/Dr Bohm From Mars/Dr Bohm From Mars.xpm,Drum,xml,pass,25,production,pass,,untested,,,
 MPC Expansions/Dr Bohm From Mars/Mini Bohm From Mars.xpm,Drum,xml,pass,30,production,pass,,untested,,,
-Programs/Keygroups/Samples From Mars/101 From Mars/Bass/Fisherman'sFriend.xpm,Keygroup,gzip-json,pass,97,production,pass,,untested,,candidate:bass,Local audition rendered successfully; requires Key 37 listening test.
+Programs/Keygroups/Samples From Mars/101 From Mars/Bass/Fisherman'sFriend.xpm,Keygroup,gzip-json,pass,97,production,pass,,untested,provisional,bass,Local and SD-card validation pass; provisional core choice; Key 37 range and release listening test pending.
 Programs/Keygroups/Samples From Mars/101 From Mars/Bass/HalfSub_tri.xpm,Keygroup,gzip-json,pass,85,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/101 From Mars/Bass/Hover.xpm,Keygroup,gzip-json,pass,91,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/101 From Mars/Bass/I'mGoingToSub1Down.xpm,Keygroup,gzip-json,pass,90,production,pass,,untested,,,
@@ -28,7 +28,7 @@ Programs/Keygroups/Samples From Mars/101 From Mars/Keys and Pads/TinyRave.xpm,Ke
 Programs/Keygroups/Samples From Mars/101 From Mars/Leads/AttackGrail.xpm,Keygroup,gzip-json,pass,84,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/101 From Mars/Leads/BirdMusic.xpm,Keygroup,gzip-json,pass,92,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/101 From Mars/Leads/Dekker.xpm,Keygroup,gzip-json,pass,85,production,pass,,untested,,,
-Programs/Keygroups/Samples From Mars/101 From Mars/Leads/HumanMusic.xpm,Keygroup,gzip-json,pass,73,production,pass,,untested,,candidate:lead/pad,Local audition rendered successfully; requires Key 37 listening test.
+Programs/Keygroups/Samples From Mars/101 From Mars/Leads/HumanMusic.xpm,Keygroup,gzip-json,pass,73,production,pass,,untested,provisional,lead,Local and SD-card validation pass; provisional lead choice; Key 37 velocity and performance listening test pending.
 Programs/Keygroups/Samples From Mars/101 From Mars/Leads/IndigoRise.xpm,Keygroup,gzip-json,pass,73,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/101 From Mars/Leads/Legacy_SynthVoice.xpm,Keygroup,gzip-json,pass,79,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/101 From Mars/Leads/RonDon's.xpm,Keygroup,gzip-json,pass,73,production,pass,,untested,,,
@@ -58,7 +58,7 @@ Programs/Keygroups/Samples From Mars/2600 From Mars/Leads/RankingDons.xpm,Keygro
 Programs/Keygroups/Samples From Mars/2600 From Mars/Leads/Sehnsucht.xpm,Keygroup,gzip-json,pass,97,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/2600 From Mars/Leads/TechNoir.xpm,Keygroup,gzip-json,pass,109,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/2600 From Mars/Pads/BuildAShimmerPad.xpm,Keygroup,gzip-json,pass,97,production,pass,,untested,,,
-Programs/Keygroups/Samples From Mars/2600 From Mars/Pads/OneFiftySeven.xpm,Keygroup,gzip-json,pass,96,production,pass,,untested,,candidate:lead/pad,Local audition rendered successfully; requires Key 37 listening test.
+Programs/Keygroups/Samples From Mars/2600 From Mars/Pads/OneFiftySeven.xpm,Keygroup,gzip-json,pass,96,production,pass,,untested,,candidate:lead/pad,Local and SD-card validation pass; alternate pad candidate; Key 37 velocity and performance listening test pending.
 Programs/Keygroups/Samples From Mars/2600 From Mars/Pads/Osc2Sine.xpm,Keygroup,gzip-json,pass,109,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/2600 From Mars/Pads/TheThreeStorms.xpm,Keygroup,gzip-json,pass,97,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/2600 From Mars/Pads/WheelToHell.xpm,Keygroup,gzip-json,pass,85,production,pass,,untested,,,
@@ -88,7 +88,7 @@ Programs/Keygroups/Samples From Mars/360 From Mars/Keys/Clav Phaser.xpm,Keygroup
 Programs/Keygroups/Samples From Mars/360 From Mars/Keys/Clav.xpm,Keygroup,gzip-json,pass,49,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/360 From Mars/Keys/E Piano Tremolo.xpm,Keygroup,gzip-json,pass,51,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/360 From Mars/Keys/E Piano Vibrato.xpm,Keygroup,gzip-json,pass,53,production,pass,,untested,,,
-Programs/Keygroups/Samples From Mars/360 From Mars/Keys/E Piano.xpm,Keygroup,gzip-json,pass,53,production,pass,,untested,,candidate:keys,Local audition rendered successfully; requires Key 37 listening test.
+Programs/Keygroups/Samples From Mars/360 From Mars/Keys/E Piano.xpm,Keygroup,gzip-json,pass,53,production,pass,,untested,provisional,keys,Local and SD-card validation pass; provisional keys choice; Key 37 velocity and chord-range listening test pending.
 Programs/Keygroups/Samples From Mars/360 From Mars/Perc/Mallet Multi Filter.xpm,Keygroup,gzip-json,pass,159,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/360 From Mars/Perc/Timpani Echo.xpm,Keygroup,gzip-json,pass,13,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/360 From Mars/Perc/Timpani.xpm,Keygroup,gzip-json,pass,17,production,pass,,untested,,,
@@ -726,20 +726,20 @@ Samples/Samples From Mars/TOM From Mars/TOM From Mars 1.xpm,Drum,xml,pass,64,pro
 Samples/Samples From Mars/TOM From Mars/TOM From Mars 2.xpm,Drum,xml,pass,64,production,pass,,untested,,,
 Samples/Samples From Mars/TOM From Mars/TOM From Mars 3.xpm,Drum,xml,pass,64,production,pass,,untested,,,
 Samples/Samples From Mars/TOM From Mars/TOM From Mars 4.xpm,Drum,xml,pass,32,production,pass,,untested,,,
-Samples/Samples From Mars/Vinyl Drum Machines From Mars/Vinyl Drum Machines From Mars 1.xpm,Drum,xml,pass,64,production,pass,,untested,,candidate:main drums,Local audition rendered successfully; requires Key 37 listening test.
+Samples/Samples From Mars/Vinyl Drum Machines From Mars/Vinyl Drum Machines From Mars 1.xpm,Drum,xml,pass,64,production,pass,,pass,,candidate:main drums,Loaded on Key 37 and triggered expected samples across banks; fixed per-pad colors validated on the FG COLORS derivative; musical ranking pending.
 Samples/Samples From Mars/Vinyl Drum Machines From Mars/Vinyl Drum Machines From Mars 2.xpm,Drum,xml,pass,64,production,pass,,untested,,,
 Samples/Samples From Mars/Vinyl Drum Machines From Mars/Vinyl Drum Machines From Mars 3.xpm,Drum,xml,pass,64,production,pass,,untested,,,
 Samples/Samples From Mars/Vinyl Drum Machines From Mars/Vinyl Drum Machines From Mars 4.xpm,Drum,xml,pass,64,production,pass,,untested,,,
 Samples/Samples From Mars/Vinyl Drum Machines From Mars/Vinyl Drum Machines From Mars 5.xpm,Drum,xml,pass,64,production,pass,,untested,,,
 Samples/Samples From Mars/Vinyl Drum Machines From Mars/Vinyl Drum Machines From Mars 6.xpm,Drum,xml,pass,48,production,pass,,untested,,,
 Samples/Samples From Mars/Vinyl Drum Machines From Mars/Vinyl Drum Machines From Mars 7.xpm,Drum,xml,pass,32,production,pass,,untested,,,
-Samples/Samples From Mars/Vinyl Drums From Mars/Vinyl Drums From Mars 01.xpm,Drum,xml,pass,64,production,pass,,untested,,candidate:main drums,Local audition rendered successfully; requires Key 37 listening test.
+Samples/Samples From Mars/Vinyl Drums From Mars/Vinyl Drums From Mars 01.xpm,Drum,xml,pass,64,production,pass,,pass,,candidate:main drums,Loaded on Key 37 and triggered expected samples across banks; fixed per-pad colors validated on the FG COLORS derivative; musical ranking pending.
 Samples/Samples From Mars/Vinyl Drums From Mars/Vinyl Drums From Mars 02.xpm,Drum,xml,pass,64,production,pass,,untested,,,
 Samples/Samples From Mars/Vinyl Drums From Mars/Vinyl Drums From Mars 03.xpm,Drum,xml,pass,64,production,pass,,untested,,,
 Samples/Samples From Mars/Vinyl Drums From Mars/Vinyl Drums From Mars 04.xpm,Drum,xml,pass,64,production,pass,,untested,,,
 Samples/Samples From Mars/Vinyl Drums From Mars/Vinyl Drums From Mars 05.xpm,Drum,xml,pass,48,production,pass,,untested,,,
 Samples/Samples From Mars/Vinyl Drums From Mars/Vinyl Drums From Mars 06.xpm,Drum,xml,pass,32,production,pass,,untested,,,
-Samples/Samples From Mars/Vinyl SP From Mars/Vinyl SP From Mars 01.xpm,Drum,xml,pass,64,production,pass,,untested,,candidate:main drums,Local audition rendered successfully; requires Key 37 listening test.
+Samples/Samples From Mars/Vinyl SP From Mars/Vinyl SP From Mars 01.xpm,Drum,xml,pass,64,production,pass,,pass,provisional,main drums,Loaded on Key 37 and triggered expected samples across banks; broad Bank A layout and fixed colors make this the provisional main kit; musical ranking pending.
 Samples/Samples From Mars/Vinyl SP From Mars/Vinyl SP From Mars 02.xpm,Drum,xml,pass,64,production,pass,,untested,,,
 Samples/Samples From Mars/Vinyl SP From Mars/Vinyl SP From Mars 03.xpm,Drum,xml,pass,64,production,pass,,untested,,,
 Samples/Samples From Mars/Vinyl SP From Mars/Vinyl SP From Mars 04.xpm,Drum,xml,pass,64,production,pass,,untested,,,

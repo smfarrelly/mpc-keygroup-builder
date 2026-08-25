@@ -526,6 +526,17 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
 - Final transfer footprint is 261 MB and 520 files. The interrupted full-mirror transfer remains separately labeled `INCOMPLETE_DO_NOT_COPY - full mirror attempt` and is not part of the lean image.
 - Next gate: copy the contents of the lean image to a blank SD card, audition all seven candidates on the Key 37, and record hardware results before choosing the four-program Scratchpad core.
 
+### August 25, 2026 — Ubuntu Drum Program colors and routing handoff
+
+- Confirmed the three curated Drum Programs load on the Key 37 and trigger their expected samples across pad banks.
+- Derived the authoritative 24-bit `0xRRGGBB` pad-color representation from a controlled MPC 3.9.1.2 resave and added semantic kick, snare, clap, rim, hat, cymbal, tom, percussion, FX, and fallback colors.
+- Added color support for both legacy XML Drum Programs and compressed Drum Programs resaved by MPC 3; all 43 repository tests pass on Ubuntu.
+- Installed and verified clean `FG COLORS` versions of all three kits while retaining the untouched source programs and archiving the seven hardware-test iterations locally.
+- Revalidated all seven Scratchpad candidates directly from the mounted SD card and regenerated ignored local audition WAVs/manifests; every candidate passes structural and semantic checks.
+- Selected a provisional routing-test core: Vinyl SP drums, Fisherman'sFriend bass, E Piano keys, and HumanMusic lead. These remain subject to final Key 37 listening approval.
+- Added a controlled two-project capture procedure in `docs/key37-routing-capture.md`: save an identical two-track baseline, apply only Key Ranges `Drum Split`, then save the changed project for read-only comparison with the isolated Mac XPJ inspector.
+- Next gate: complete the four melodic/favorite listening decisions, capture both XPJs and companion data folders, and compare the single Drum Split change.
+
 ## 16. Reference material
 
 - [Akai: Understanding and Loading MPC Programs](https://support.akaipro.com/en/support/solutions/articles/69000804211-akai-pro-mpc-series-understanding-and-loading-programs)

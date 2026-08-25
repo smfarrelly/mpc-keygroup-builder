@@ -9,10 +9,11 @@ Allowed `hardware_status` values:
 
 - `untested`
 - `pass`
-- `partial`
+- `warn`
 - `fail`
 
-Use `favorite` for a simple yes/no shortlist and `scratchpad_role` for one of
+Use `favorite` for `yes`, `no`, or `provisional`; leave it blank when the
+program has not been evaluated as a favorite. Use `scratchpad_role` for one of
 the standard startup roles such as drums, percussion, bass, keys, lead, loops,
 texture, or capture. Put observable tuning, range, velocity, volume, loop,
 missing-sample, and reload behavior in `notes`.
