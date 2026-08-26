@@ -88,7 +88,7 @@ def check_candidates(
     duplicate_roles = sorted({role for role in selected_roles if selected_roles.count(role) > 1})
     if duplicate_roles:
         issues.append(f"selected core duplicates roles: {', '.join(duplicate_roles)}")
-    deployed_ready = sd_root is None or all(
+    deployed_ready = None if sd_root is None else all(
         item["sd_present"] and item["sd_verdict"] in {"pass", "warn"} for item in results
     )
     hardware_ready = all(item["hardware_status"] != "untested" for item in results)
@@ -128,7 +128,8 @@ def main() -> int:
     else:
         print(report["name"])
         for key, ready in report["readiness"].items():
-            print(f"{key}: {'READY' if ready else 'PENDING'}")
+            state = "NOT CHECKED" if ready is None else ("READY" if ready else "PENDING")
+            print(f"{key}: {state}")
         for item in report["candidates"]:
             print(
                 f"{item['id']}: hardware={item['hardware_status']} "
@@ -136,7 +137,7 @@ def main() -> int:
             )
         for issue in report["issues"]:
             print(f"PENDING: {issue}")
-    return 0 if report["readiness"][args.require] else 2
+    return 0 if report["readiness"][args.require] is True else 2
 
 
 if __name__ == "__main__":

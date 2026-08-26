@@ -119,6 +119,12 @@ See [the reusable hardware workflow](docs/hardware-workflow-tools.md) for
 commands, safety behavior, and the boundary between computer checks and MPC
 listening tests.
 
+Reusable setup definitions live in `rigs/`. `mpc-rig check` validates track,
+device, MIDI-route, and controller assignments; `mpc-rig plan` renders a
+hardware setup sheet. `mpc-library` queries the program ledger, and
+`mpc-session-report` consolidates rig validation, candidate readiness, and
+optional deployment/routing evidence. See [rig profiles](docs/rig-profiles.md).
+
 WAV filenames may begin with a MIDI note number; the patch name may follow the
 number immediately or after `_`, a space, or `-`. When no numeric prefix is
 present, a space- or underscore-delimited trailing pitch name is used with the

@@ -255,6 +255,23 @@ The vinyl-family material will be the first end-to-end translation target becaus
 
 **Exit test:** Power on, begin a drum-and-keys idea within one minute, and save it without visiting a computer.
 
+### Unattended tooling completed August 25, 2026
+
+- [x] Define the seven-program Scratchpad candidate set as validated TOML.
+- [x] Generate a complete editable Key 37 listening-session file from the ledger.
+- [x] Add candidate readiness gates for SD deployment, hardware listening, core selection, and final favorites.
+- [x] Add read-only XPM inspection and semantic legacy/MPC3 comparison.
+- [x] Add physical drum-pad maps with inferred roles, colors, choke, and playback behavior.
+- [x] Add additive, dry-run-first, checksum-verified SD delta deployment with verified backups.
+- [x] Add audition WAV level, silence, clipping, and DC-offset diagnostics.
+- [x] Wrap controlled XPJ capture and the detached Mac inspector without merging its branch.
+- [x] Add CI and licensed-artifact source-control guards.
+- [x] Define reusable Vinyl Scratchpad, Volca Jam, and Launch Control XL 3 rig profiles.
+- [x] Add rig/MIDI validation, program-ledger queries, setup-sheet rendering, and consolidated session reports.
+
+These items reduce setup and transcription work; they do not mark any pending
+MPC listening or routing acceptance test as passed.
+
 ### Phase 2 — Launch Control integration
 
 **Goal:** Restore Volca-like hands-on immediacy.

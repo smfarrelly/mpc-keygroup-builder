@@ -33,7 +33,7 @@ class CandidateTests(unittest.TestCase):
             self.write_manifest(manifest)
             self.write_ledger(ledger)
             report = candidates.check_candidates(manifest, ledger)
-            self.assertTrue(report["readiness"]["deployed"])
+            self.assertIsNone(report["readiness"]["deployed"])
             self.assertFalse(report["readiness"]["hardware"])
             self.assertFalse(report["readiness"]["core"])
             self.assertFalse(report["readiness"]["final"])

@@ -23,6 +23,9 @@ mpc-sd-deploy = "mpc_keygroup_builder.deploy:main"
 mpc-audio-levels = "mpc_keygroup_builder.levels:main"
 mpc-routing-capture = "mpc_keygroup_builder.routing:main"
 mpc-repository-guard = "mpc_keygroup_builder.guardrails:main"
+mpc-rig = "mpc_keygroup_builder.rig:main"
+mpc-library = "mpc_keygroup_builder.library:main"
+mpc-session-report = "mpc_keygroup_builder.session:main"
 
 [build-system]
 requires = ["uv_build>=0.12.5,<0.13.0"]

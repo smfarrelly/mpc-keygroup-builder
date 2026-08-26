@@ -1,0 +1,66 @@
+schema_version = 1
+name = "FG Vinyl Scratchpad"
+description = "Eight-strip internal MPC idea-generation setup with stable musical roles."
+acceptance = [
+  "Power on and make a drum-and-keys idea within one minute.",
+  "Pads play drums while the keyboard plays the selected melodic track.",
+  "Record and save a short sequence without a computer.",
+]
+
+[[devices]]
+id = "key37"
+name = "Akai MPC Key 37"
+kind = "host"
+clock = "internal"
+
+[[tracks]]
+index = 1
+name = "Main Drums"
+role = "main drums"
+type = "drum"
+program = "Vinyl SP From Mars 01 FG COLORS"
+
+[[tracks]]
+index = 2
+name = "Shots"
+role = "percussion/one-shots"
+type = "drum"
+
+[[tracks]]
+index = 3
+name = "Bass"
+role = "bass"
+type = "keygroup"
+program = "Fisherman'sFriend"
+
+[[tracks]]
+index = 4
+name = "Keys"
+role = "chords/keys"
+type = "keygroup"
+program = "E Piano"
+
+[[tracks]]
+index = 5
+name = "Lead Pad"
+role = "lead/pad"
+type = "keygroup"
+program = "HumanMusic"
+
+[[tracks]]
+index = 6
+name = "Loops"
+role = "loops"
+type = "clip"
+
+[[tracks]]
+index = 7
+name = "Texture"
+role = "texture/guest"
+type = "audio"
+
+[[tracks]]
+index = 8
+name = "Capture"
+role = "capture/transition"
+type = "audio"

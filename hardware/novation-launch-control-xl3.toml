@@ -1,0 +1,12 @@
+schema_version = 1
+id = "novation-launch-control-xl3"
+name = "Novation Launch Control XL 3"
+roles = ["controller", "mixer", "performance-macros"]
+custom_mode_strategy = "semantic-first, hardware-learn exact MIDI assignments"
+official_downloads = "https://downloads.novationmusic.com/novation/launch-control-xl-3/launch-control-xl-3"
+official_components_guide = "https://support.novationmusic.com/hc/en-gb/articles/33076613541266-Launch-Control-3-Components-Guide"
+notes = [
+  "Universal Mix uses 8 faders, three rows of 8 encoders, and two rows of 8 buttons.",
+  "Novation Components can edit message type, value, behavior, and LED color and export a SysEx custom mode.",
+  "Do not freeze CC numbers until the controller and MPC mapping are captured and reload-tested.",
+]

@@ -1,0 +1,122 @@
+schema_version = 1
+name = "FG Launch Control XL 3 Universal Mix"
+description = "Semantic controller plan layered over the Vinyl Scratchpad strip model; exact MIDI assignments remain hardware-learned."
+acceptance = [
+  "The controller connects to the MPC in standalone mode.",
+  "All faders, encoders, and buttons send distinct learnable messages.",
+  "Track levels and mapped parameters do not jump disruptively.",
+  "A ten-minute jam requires minimal touchscreen navigation.",
+  "The same custom mode works in a cloned MPC project.",
+]
+
+[[devices]]
+id = "key37"
+name = "Akai MPC Key 37"
+kind = "host"
+clock = "internal"
+
+[[devices]]
+id = "lcxl3"
+name = "Novation Launch Control XL 3"
+kind = "controller"
+clock = "none"
+
+[[tracks]]
+index = 1
+name = "Main Drums"
+role = "main drums"
+type = "drum"
+program = "Vinyl SP From Mars 01 FG COLORS"
+
+[[tracks]]
+index = 2
+name = "Shots"
+role = "percussion/one-shots"
+type = "drum"
+
+[[tracks]]
+index = 3
+name = "Bass"
+role = "bass"
+type = "keygroup"
+program = "Fisherman'sFriend"
+
+[[tracks]]
+index = 4
+name = "Keys"
+role = "chords/keys"
+type = "keygroup"
+program = "E Piano"
+
+[[tracks]]
+index = 5
+name = "Lead Pad"
+role = "lead/pad"
+type = "keygroup"
+program = "HumanMusic"
+
+[[tracks]]
+index = 6
+name = "Loops"
+role = "loops"
+type = "clip"
+
+[[tracks]]
+index = 7
+name = "Texture"
+role = "texture/guest"
+type = "audio"
+
+[[tracks]]
+index = 8
+name = "Capture"
+role = "capture/transition"
+type = "audio"
+
+[[control_groups]]
+controller = "lcxl3"
+controls = "fader-{n}"
+count = 8
+semantic = "track volume"
+target = "track-{n} volume"
+message = "learn"
+
+[[control_groups]]
+controller = "lcxl3"
+controls = "top-encoder-{n}"
+count = 8
+semantic = "tone / brightness"
+target = "track-{n} primary tone macro"
+message = "learn"
+
+[[control_groups]]
+controller = "lcxl3"
+controls = "middle-encoder-{n}"
+count = 8
+semantic = "delay / movement"
+target = "track-{n} movement macro or delay send"
+message = "learn"
+
+[[control_groups]]
+controller = "lcxl3"
+controls = "bottom-encoder-{n}"
+count = 8
+semantic = "reverb / space"
+target = "track-{n} reverb send"
+message = "learn"
+
+[[control_groups]]
+controller = "lcxl3"
+controls = "upper-button-{n}"
+count = 8
+semantic = "mute"
+target = "track-{n} mute"
+message = "learn"
+
+[[control_groups]]
+controller = "lcxl3"
+controls = "lower-button-{n}"
+count = 8
+semantic = "record arm / alternate performance function"
+target = "track-{n} pending after hardware test"
+message = "learn"

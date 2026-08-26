@@ -20,7 +20,8 @@ uv run mpc-hardware-results inventory/program-status.csv \
 The first results command is a dry run. A pass or warning requires concise
 listening notes. The readiness checker keeps deployment, all-candidate hardware
 testing, selected core viability, and final favorite selection as separate
-gates.
+gates. Deployment is reported as `NOT CHECKED` unless `--sd-root` is supplied;
+an omitted card path is never treated as a pass.
 
 ## Maps, program diffs, and audio triage
 

@@ -1,0 +1,94 @@
+schema_version = 1
+name = "FG Volca Jam"
+description = "MPC Key 37 host with stable strip roles and configurable Volca MIDI channels."
+acceptance = [
+  "MPC transport starts and stops every enabled Volca predictably.",
+  "Each external track reaches only its intended Volca.",
+  "Keyboard and pads can be routed without stuck notes or accidental layering.",
+  "A saved project restores ports, channels, programs, and sync behavior.",
+]
+
+[[devices]]
+id = "key37"
+name = "Akai MPC Key 37"
+kind = "host"
+clock = "send"
+
+[[devices]]
+id = "volca-drum"
+name = "Korg Volca Drum"
+kind = "synth"
+midi_channel = 10
+midi_port = "MPC MIDI Out"
+clock = "receive"
+
+[[devices]]
+id = "volca-bass"
+name = "Korg Volca Bass"
+kind = "synth"
+midi_channel = 1
+midi_port = "MPC MIDI Out"
+clock = "receive"
+
+[[devices]]
+id = "volca-keys"
+name = "Korg Volca Keys"
+kind = "synth"
+midi_channel = 2
+midi_port = "MPC MIDI Out"
+clock = "receive"
+
+[[tracks]]
+index = 1
+name = "Volca Drum"
+role = "main drums"
+type = "midi"
+device = "volca-drum"
+midi_channel = 10
+
+[[tracks]]
+index = 2
+name = "MPC Shots"
+role = "percussion/one-shots"
+type = "drum"
+
+[[tracks]]
+index = 3
+name = "Volca Bass"
+role = "bass"
+type = "midi"
+device = "volca-bass"
+midi_channel = 1
+
+[[tracks]]
+index = 4
+name = "Volca Keys"
+role = "chords/keys"
+type = "midi"
+device = "volca-keys"
+midi_channel = 2
+
+[[tracks]]
+index = 5
+name = "Internal Lead"
+role = "lead/pad"
+type = "keygroup"
+program = "HumanMusic"
+
+[[tracks]]
+index = 6
+name = "Loops"
+role = "loops"
+type = "clip"
+
+[[tracks]]
+index = 7
+name = "Guest"
+role = "texture/guest"
+type = "audio"
+
+[[tracks]]
+index = 8
+name = "Capture"
+role = "capture/transition"
+type = "audio"

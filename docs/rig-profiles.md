@@ -1,0 +1,79 @@
+# Reusable MPC rig profiles
+
+Rig profiles describe musical intent independently of one MPC project file.
+They preserve track roles, external device channels, clock policy, controller
+semantics, and hardware acceptance tests in reviewable TOML.
+
+## Included profiles
+
+- `rigs/fg-vinyl-scratchpad.toml`: eight internal tracks for immediate idea
+  generation, with provisional core programs from the seven-candidate test set.
+- `rigs/fg-volca-jam.toml`: the same strip model with Volca Drum on strip 1,
+  Volca Bass on strip 3, and Volca Keys on strip 4.
+- `rigs/fg-launch-control-xl3.toml`: Universal Mix semantics for 8 faders,
+  three encoder rows, and two button rows.
+
+Validate or render a setup sheet:
+
+```bash
+uv run mpc-rig check rigs/fg-volca-jam.toml
+uv run mpc-rig plan rigs/fg-launch-control-xl3.toml \
+  --output work/launch-control-setup.md
+```
+
+Validation catches duplicate tracks, invalid track types or MIDI channels,
+unknown devices, mismatched track/device channels, duplicate external routes,
+and duplicate controller endpoints. Warnings deliberately retain work that
+requires hardware: unselected programs and learn-mode controller messages.
+
+## Launch Control XL 3 strategy
+
+The first custom mode is semantic, not effect-specific:
+
+- Faders: track volume 1–8
+- Top encoders: tone/brightness
+- Middle encoders: delay/movement
+- Bottom encoders: reverb/space
+- Upper buttons: mute
+- Lower buttons: record arm or one consistently chosen performance function
+
+Novation currently provides an official user guide, Programmer's Reference,
+and Components editor. Components supports editable custom modes and message
+behavior, plus local SysEx export. The profile therefore marks exact MIDI
+messages as `learn` until the physical controller is tested with the Key 37.
+See the [official XL 3 downloads](https://downloads.novationmusic.com/novation/launch-control-xl-3/launch-control-xl-3)
+and [official Components guide](https://support.novationmusic.com/hc/en-gb/articles/33076613541266-Launch-Control-3-Components-Guide).
+
+## Volca acceptance order
+
+1. Set and record unique receive channels on Bass, Keys, and Drum.
+2. Confirm one MPC MIDI track reaches only its named device.
+3. Enable MPC clock send and confirm transport/tempo behavior on each unit.
+4. Record a short pattern per device and reload the project.
+5. Measure practical audio-input gain and listen for latency or doubled notes.
+6. Test switching the keyboard/pads between internal and external tracks.
+
+The checked-in channel choices are starting values, not claims about factory
+defaults. Anyone reusing the profile can edit the TOML before generating their
+own setup sheet.
+
+## Session report
+
+Combine rig validation, candidate readiness, and optional deployment/routing
+evidence into one JSON handoff:
+
+```bash
+uv run mpc-session-report inventory/scratchpad-candidates.toml \
+  --ledger inventory/program-status.csv \
+  --rig rigs/fg-vinyl-scratchpad.toml \
+  --routing-report work/key37-routing-captures/session-001/routing-report.json \
+  --deployment-report work/sd-deploy-applied.json \
+  --output work/session-report.json
+```
+
+Search the full program ledger without editing it:
+
+```bash
+uv run mpc-library inventory/program-status.csv --type Keygroup \
+  --hardware pass --favorite yes --role bass
+```

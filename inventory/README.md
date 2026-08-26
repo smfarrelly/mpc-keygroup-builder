@@ -56,3 +56,11 @@ Render a physical pad reference before testing a drum candidate:
 uv run mpc-drum-map "/path/to/program.xpm" --format markdown \
   --output work/drum-pad-map.md
 ```
+
+Query evaluated programs without changing the CSV:
+
+```bash
+uv run mpc-library inventory/program-status.csv --hardware pass
+uv run mpc-library inventory/program-status.csv --type Keygroup \
+  --favorite yes --role bass --format json
+```
