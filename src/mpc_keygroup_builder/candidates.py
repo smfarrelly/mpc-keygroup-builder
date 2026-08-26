@@ -22,6 +22,13 @@ def load_manifest(path: Path) -> dict[str, Any]:
     if value.get("schema_version") != 1 or not isinstance(candidates, list) or not candidates:
         raise ValueError("candidate manifest requires schema_version=1 and [[candidates]] tables")
     required = {"id", "ledger_path", "sd_path", "role", "selected"}
+    required_roles = value.get("required_roles", [])
+    if not isinstance(required_roles, list) or not all(
+        isinstance(role, str) and role for role in required_roles
+    ):
+        raise ValueError("required_roles must be a list of nonempty strings")
+    if len(required_roles) != len(set(required_roles)):
+        raise ValueError("required_roles must not contain duplicates")
     ids = set()
     ledger_paths = set()
     for index, candidate in enumerate(candidates, 1):
@@ -90,11 +97,19 @@ def check_candidates(
     duplicate_roles = sorted({role for role in selected_roles if selected_roles.count(role) > 1})
     if duplicate_roles:
         issues.append(f"selected core duplicates roles: {', '.join(duplicate_roles)}")
+    required_roles = manifest.get("required_roles", [])
+    missing_roles = [role for role in required_roles if role not in selected_roles]
+    if missing_roles:
+        issues.append(f"selected core is missing roles: {', '.join(missing_roles)}")
     deployed_ready = None if sd_root is None else all(
         item["sd_present"] and item["sd_verdict"] in {"pass", "warn"} for item in results
     )
     hardware_ready = all(item["hardware_status"] != "untested" for item in results)
-    core_ready = bool(selected) and all(item["hardware_status"] in {"pass", "warn"} for item in selected)
+    core_ready = (
+        bool(selected)
+        and not missing_roles
+        and all(item["hardware_status"] in {"pass", "warn"} for item in selected)
+    )
     final_ready = core_ready and all(item["favorite"] == "yes" for item in selected)
     return {
         "name": manifest.get("name", manifest_path.stem),

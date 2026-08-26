@@ -56,6 +56,22 @@ class CandidateTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "not a mounted directory"):
                 candidates.check_candidates(manifest, ledger, root / "missing-card")
 
+    def test_required_roles_prevent_incomplete_core_from_being_ready(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            manifest, ledger = root / "candidates.toml", root / "status.csv"
+            self.write_manifest(manifest)
+            manifest.write_text(
+                manifest.read_text().replace(
+                    'name = "Test Rig"',
+                    'name = "Test Rig"\nrequired_roles = ["main drums", "bass", "keys"]',
+                )
+            )
+            self.write_ledger(ledger)
+            report = candidates.check_candidates(manifest, ledger)
+            self.assertFalse(report["readiness"]["core"])
+            self.assertIn("selected core is missing roles: keys", report["issues"])
+
 
 if __name__ == "__main__":
     unittest.main()

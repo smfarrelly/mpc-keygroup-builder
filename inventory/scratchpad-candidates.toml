@@ -1,5 +1,6 @@
 schema_version = 1
 name = "FG Vinyl Scratchpad v0.1"
+required_roles = ["main drums", "bass", "keys", "lead/pad"]
 
 [[candidates]]
 id = "vinyl-sp-01"
