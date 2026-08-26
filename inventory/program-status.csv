@@ -1,7 +1,7 @@
 path,program_type,format,structural_status,sample_references,simulation_scope,semantic_verdict,semantic_issues,hardware_status,favorite,scratchpad_role,notes
 MPC Expansions/Dr Bohm From Mars/Dr Bohm From Mars.xpm,Drum,xml,pass,25,production,pass,,untested,,,
 MPC Expansions/Dr Bohm From Mars/Mini Bohm From Mars.xpm,Drum,xml,pass,30,production,pass,,untested,,,
-Programs/Keygroups/Samples From Mars/101 From Mars/Bass/Fisherman'sFriend.xpm,Keygroup,gzip-json,pass,97,production,pass,,untested,provisional,bass,Local and SD-card validation pass; provisional core choice; Key 37 range and release listening test pending.
+Programs/Keygroups/Samples From Mars/101 From Mars/Bass/Fisherman'sFriend.xpm,Keygroup,gzip-json,pass,97,production,pass,,pass,no,candidate:bass,"Works as expected across the Key 37, but its sound does not merit a place in the favorite Scratchpad lineup."
 Programs/Keygroups/Samples From Mars/101 From Mars/Bass/HalfSub_tri.xpm,Keygroup,gzip-json,pass,85,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/101 From Mars/Bass/Hover.xpm,Keygroup,gzip-json,pass,91,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/101 From Mars/Bass/I'mGoingToSub1Down.xpm,Keygroup,gzip-json,pass,90,production,pass,,untested,,,
