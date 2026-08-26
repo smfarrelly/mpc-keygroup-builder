@@ -37,7 +37,6 @@ index = 4
 name = "Keys"
 role = "chords/keys"
 type = "keygroup"
-program = "E Piano"
 
 [[tracks]]
 index = 5

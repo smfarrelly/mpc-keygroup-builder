@@ -34,7 +34,7 @@ id = "e-piano"
 ledger_path = "Programs/Keygroups/Samples From Mars/360 From Mars/Keys/E Piano.xpm"
 sd_path = "Programs/Keygroups/FG Scratchpad Candidates/Keys/E Piano.xpm"
 role = "keys"
-selected = true
+selected = false
 
 [[candidates]]
 id = "human-music"

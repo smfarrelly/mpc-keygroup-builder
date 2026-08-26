@@ -88,7 +88,7 @@ Programs/Keygroups/Samples From Mars/360 From Mars/Keys/Clav Phaser.xpm,Keygroup
 Programs/Keygroups/Samples From Mars/360 From Mars/Keys/Clav.xpm,Keygroup,gzip-json,pass,49,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/360 From Mars/Keys/E Piano Tremolo.xpm,Keygroup,gzip-json,pass,51,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/360 From Mars/Keys/E Piano Vibrato.xpm,Keygroup,gzip-json,pass,53,production,pass,,untested,,,
-Programs/Keygroups/Samples From Mars/360 From Mars/Keys/E Piano.xpm,Keygroup,gzip-json,pass,53,production,pass,,untested,provisional,keys,Local and SD-card validation pass; provisional keys choice; Key 37 velocity and chord-range listening test pending.
+Programs/Keygroups/Samples From Mars/360 From Mars/Keys/E Piano.xpm,Keygroup,gzip-json,pass,53,production,pass,,pass,no,candidate:keys,"Works as expected across the Key 37, but its sound does not merit a place in the favorite Scratchpad lineup."
 Programs/Keygroups/Samples From Mars/360 From Mars/Perc/Mallet Multi Filter.xpm,Keygroup,gzip-json,pass,159,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/360 From Mars/Perc/Timpani Echo.xpm,Keygroup,gzip-json,pass,13,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/360 From Mars/Perc/Timpani.xpm,Keygroup,gzip-json,pass,17,production,pass,,untested,,,
