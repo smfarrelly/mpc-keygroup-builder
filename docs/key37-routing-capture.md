@@ -38,6 +38,13 @@ The one intended difference is the Key Ranges `Drum Split` action. Track order,
 programs, sequence, Rec Arm state, tempo, levels, and all other settings must be
 identical.
 
+### Hardware observation — August 26, 2026
+
+Drum Split was confirmed to be note-range routing rather than source-specific
+routing: Bank A pads played Vinyl SP, Banks B–H played low Wurli notes, and low
+keyboard notes played drums. Preserve this controlled pair as a `warn`/closest
+known-good result. See `inventory/key37-routing-results.md`.
+
 ## If Drum Split does not produce the intended behavior
 
 Keep both controlled files. Test fallbacks one at a time and record the outcome:
