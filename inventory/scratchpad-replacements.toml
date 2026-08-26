@@ -1,0 +1,59 @@
+schema_version = 1
+name = "FG Scratchpad bass and keys replacement bracket"
+required_roles = ["bass", "keys"]
+
+[[candidates]]
+id = "warm-bass"
+ledger_path = "Programs/Keygroups/Samples From Mars/Dr Sample From Mars/Bass/Warm Bass.xpm"
+sd_path = "Programs/Keygroups/Samples From Mars/Dr Sample From Mars/Bass/Warm Bass.xpm"
+role = "bass"
+selected = false
+
+[[candidates]]
+id = "dusty-pluck"
+ledger_path = "Programs/Keygroups/Samples From Mars/Junos From Mars/Bass/Dusty Pluck.xpm"
+sd_path = "Programs/Keygroups/Samples From Mars/Junos From Mars/Bass/Dusty Pluck.xpm"
+role = "bass"
+selected = false
+
+[[candidates]]
+id = "mama-bass"
+ledger_path = "Programs/Keygroups/Samples From Mars/Mini From Mars/Bass/Mama Bass.xpm"
+sd_path = "Programs/Keygroups/Samples From Mars/Mini From Mars/Bass/Mama Bass.xpm"
+role = "bass"
+selected = false
+
+[[candidates]]
+id = "melodic-bass"
+ledger_path = "Programs/Keygroups/Samples From Mars/Mirage From Mars/Bass/Melodic Bass.xpm"
+sd_path = "Programs/Keygroups/Samples From Mars/Mirage From Mars/Bass/Melodic Bass.xpm"
+role = "bass"
+selected = false
+
+[[candidates]]
+id = "drift-keys"
+ledger_path = "Programs/Keygroups/Samples From Mars/Emulator From Mars/Keys/Drift Keys.xpm"
+sd_path = "Programs/Keygroups/Samples From Mars/Emulator From Mars/Keys/Drift Keys.xpm"
+role = "keys"
+selected = false
+
+[[candidates]]
+id = "dark-piano"
+ledger_path = "Programs/Keygroups/Samples From Mars/Mirage From Mars/Keys/Dark Piano.xpm"
+sd_path = "Programs/Keygroups/Samples From Mars/Mirage From Mars/Keys/Dark Piano.xpm"
+role = "keys"
+selected = false
+
+[[candidates]]
+id = "warble-chords"
+ledger_path = "Programs/Keygroups/Samples From Mars/OB From Mars/Keys/Warble Chords.xpm"
+sd_path = "Programs/Keygroups/Samples From Mars/OB From Mars/Keys/Warble Chords.xpm"
+role = "keys"
+selected = false
+
+[[candidates]]
+id = "warm-keys"
+ledger_path = "Programs/Keygroups/Samples From Mars/OB From Mars/Keys/Warm Keys.xpm"
+sd_path = "Programs/Keygroups/Samples From Mars/OB From Mars/Keys/Warm Keys.xpm"
+role = "keys"
+selected = false

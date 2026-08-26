@@ -64,3 +64,8 @@ uv run mpc-library inventory/program-status.csv --hardware pass
 uv run mpc-library inventory/program-status.csv --type Keygroup \
   --favorite yes --role bass --format json
 ```
+
+After the initial seven-program Scratchpad round, use
+`scratchpad-replacements.toml` for the focused four-bass/four-keys replacement
+bracket. The choices deliberately span warm, plucked, classic, melodic, dark,
+warbled, and drifting characters rather than eight near-duplicates.
