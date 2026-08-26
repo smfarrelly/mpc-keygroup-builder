@@ -11,8 +11,10 @@ Time In Standalone Mode](https://support.akaipro.com/en/support/solutions/articl
 
 1. Record the MPC OS version in `inventory/program-status.csv` or the progress
    log.
-2. Start an empty project and keep its single default sequence empty. Omitting
-   note events makes the routing comparison cleaner.
+2. Start an empty project and keep its single default sequence empty. If Hype
+   Almighty and Trap Kit appear automatically, an Auto Load or Factory project
+   was loaded: start New Project again, hold Shift, and tap `Empty Project` to
+   bypass Auto Load. Omitting note events makes the routing comparison cleaner.
 3. Create exactly two tracks:
    - Track 1: Keygroup, `Wurli` from Mirage From Mars.
    - Track 2: Drum, `Vinyl SP From Mars 01 FG COLORS`.
