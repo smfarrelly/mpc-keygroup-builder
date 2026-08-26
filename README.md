@@ -109,6 +109,19 @@ A manifest may set `extends = "base-manifest.toml"` to append new pad banks
 without repeating an established layout. Inherited pad numbers are locked:
 accidental collisions are rejected rather than silently replacing a tested pad.
 
+## Normalized programs and layout planning
+
+`mpc-program-model` imports legacy XML XPMs, MPC 3 compressed XPMs, and Drum
+manifests into the same validated Program Model v1. `mpc-layout` combines that
+model with a declarative device profile and a semantic layout preset to render
+deterministic Markdown or JSON pad plans. The repository ships a Key 37 profile
+plus Classic MPC-ish, right-handed, left-handed, and full-library presets.
+
+Both commands accept `--roles` with a TOML `[roles]` table for exact filename or
+stem overrides; see `role-overrides.example.toml`. Layout planning is read-only
+and does not yet rewrite XPM files. See
+[Program Model and layout planning](docs/program-model-and-layouts.md).
+
 ## Hardware workflow helpers
 
 `mpc-hardware-results` validates a batch TOML listening report and updates the

@@ -607,6 +607,26 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   retain MIDI channels 1, 2, and 10; simultaneous acceptance begins after it
   arrives.
 
+### August 26, 2026 — six-bank shots and v0.2 software foundation
+
+- Extended the non-destructive Vinyl Shots manifest chain to version 03 with
+  96 one-shots across Banks A–F; Banks G–H remain intentionally open.
+- Deployed version 03 additively to the SD, matched its local/card XPM checksum,
+  and passed post-copy simulation and Drum audit with no missing, dead, stacked,
+  or structurally suspect pads.
+- Assigned `FG Vinyl Shots 03 Six Bank` to Track 2 in the version-controlled
+  Scratchpad rig. The protected MPC project still requires an on-device load
+  and Save As; no XPJ was rewritten on Ubuntu.
+- Added Program Model v1 adapters for Drum manifests, legacy XML XPMs, and MPC 3
+  compressed Drum/Keygroup XPMs.
+- Added hierarchical semantic roles with reusable TOML filename/stem overrides,
+  a declarative Key 37 device profile, and deterministic Classic, right-handed,
+  left-handed, and full-library layout plans.
+- Validated 96 Drum zones from Vinyl Shots, 73 Keygroup zones from Mirage Wurli,
+  and complete 96-zone placement under all four layouts.
+- The next software gate is a non-mutating layout-to-XPM exporter followed by
+  load/reload comparison of two generated variants on the Key 37.
+
 ## 16. Reference material
 
 - [Akai: Understanding and Loading MPC Programs](https://support.akaipro.com/en/support/solutions/articles/69000804211-akai-pro-mpc-series-understanding-and-loading-programs)

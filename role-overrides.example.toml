@@ -1,0 +1,4 @@
+# Exact basename or stem overrides for semantic Drum Program roles.
+[roles]
+"Mystery Hit 07.wav" = "kick.primary"
+"Odd Metallic Stem" = "cymbal.other"

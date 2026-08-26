@@ -1,0 +1,7 @@
+schema_version = 1
+id = "mpc-key-37"
+name = "Akai MPC Key 37"
+keys = 37
+pad_rows = 4
+pad_columns = 4
+banks = ["A", "B", "C", "D", "E", "F", "G", "H"]

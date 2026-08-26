@@ -33,8 +33,8 @@ working and tested:
   comparison.
 - Drum Program classification, fixed pad colors, pad maps, mute-group auditing,
   and a manifest-driven 128-slot one-shot Drum Program builder.
-- A hardware-deployed 32-pad `FG Vinyl Shots 01` candidate generated from a
-  reusable manifest.
+- Hardware-deployed 32-, 64-, and 96-pad `FG Vinyl Shots` candidates generated
+  from inherited reusable manifests. Version 03 fills Banks A–F.
 - Safe SD deployment, checksum verification, licensed-artifact repository
   guards, program inventory, and hardware-result ledgers.
 - Reusable Scratchpad, Volca, and Launch Control rig definitions.
@@ -91,6 +91,23 @@ and semantic pattern generation.
    left-handed performance, GM-ish, original-machine, and full-library layouts.
 6. **Device profile v1.** Describe Key 37 pads, banks, keys, controls, and MIDI
    note behavior without hardcoding them into the layout engine.
+
+### Software foundation completed August 26, 2026
+
+- [x] Program Model v1 imports Drum manifests, legacy XML XPMs, and MPC 3
+  compressed Drum/Keygroup XPMs with validation.
+- [x] Hierarchical semantic roles support exact, case-insensitive filename and
+  stem overrides loaded from TOML.
+- [x] A device-independent layout planner honors locked pads and renders
+  deterministic JSON or Markdown assignments.
+- [x] Classic MPC-ish, right-handed, left-handed, and full-library presets run
+  against the declarative 37-key, 16-pad, eight-bank Key 37 profile.
+- [x] The 96-zone six-bank Vinyl Shots manifest and 73-zone Mirage Wurli XPM
+  pass real-data normalization; all four Vinyl Shots plans assign 96 zones with
+  no overflow.
+
+The planner does not yet write rearranged XPMs. Export and the two-variant Key
+37 comparison remain the v0.2 exit gate.
 
 **Exit gate:** One source kit can reproducibly generate Classic, right-handed,
 left-handed, and full A–H variants. At least two variants load correctly on the
@@ -235,10 +252,9 @@ for release gates:
 
 ## Immediate next three increments
 
-1. **Hardware:** listen to `FG Vinyl Shots 01` and the lead/bass brackets;
-   promote final favorites and save a revised protected Scratchpad.
-2. **Model:** introduce Normalized Program Model v1 behind existing commands,
-   with adapters that prove current output remains byte- or semantically
-   equivalent.
-3. **Layout:** implement semantic layout presets and render Classic,
-   right-handed, left-handed, and full-library maps before beginning the web UI.
+1. **Hardware:** load `FG Vinyl Shots 03 Six Bank` on Scratchpad Track 2,
+   compare navigation with versions 01/02, and save a revised protected master.
+2. **Export:** convert a validated layout plan into a new XPM without mutating
+   the source or losing playback, color, choke, or layer settings.
+3. **Acceptance:** load two generated layout variants on the Key 37, reload
+   them, compare playability, and close the v0.2 exit gate.

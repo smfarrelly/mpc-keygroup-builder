@@ -25,6 +25,8 @@ index = 2
 name = "Shots"
 role = "percussion/one-shots"
 type = "drum"
+program = "FG Vinyl Shots 03 Six Bank"
+program_path = "Programs/Drum Programs/FG Scratchpad Candidates/FG Vinyl Shots 03 Six Bank/FG Vinyl Shots 03 Six Bank.xpm"
 
 [[tracks]]
 index = 3

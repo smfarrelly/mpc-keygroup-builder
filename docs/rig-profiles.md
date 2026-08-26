@@ -7,7 +7,8 @@ semantics, and hardware acceptance tests in reviewable TOML.
 ## Included profiles
 
 - `rigs/fg-vinyl-scratchpad.toml`: eight internal tracks for immediate idea
-  generation, with provisional core programs from the seven-candidate test set.
+  generation, with the six-bank FG Vinyl Shots Drum Program assigned to Track
+  2 and provisional melodic core programs retained until listening closes.
 - `rigs/fg-volca-jam.toml`: the same strip model with Volca Drum on strip 1,
   Volca Bass on strip 3, and Volca Keys on strip 4.
 - `rigs/fg-launch-control-xl3.toml`: Universal Mix semantics for 8 faders,

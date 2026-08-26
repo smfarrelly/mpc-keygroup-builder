@@ -1,0 +1,104 @@
+name = "FG Vinyl Shots 03 Six Bank"
+extends = "fg-vinyl-shots-expanded.toml"
+
+# Banks A-D are inherited unchanged from FG Vinyl Shots 02 Expanded.
+
+# Bank E: claps, snaps, rims, and textured/snappy snares.
+[[pads]]
+pad = 65
+sample = "Clap 707 Hard Vinyl SP.WAV"
+[[pads]]
+pad = 66
+sample = "Clap Acoustic Vinyl SP 01.WAV"
+[[pads]]
+pad = 67
+sample = "Clap Club Slap Vinyl SP.WAV"
+[[pads]]
+pad = 68
+sample = "Clap House Vinyl SP 01.WAV"
+[[pads]]
+pad = 69
+sample = "Clap Tape Crunch Vinyl SP.WAV"
+[[pads]]
+pad = 70
+sample = "Snap Club Vinyl SP.WAV"
+[[pads]]
+pad = 71
+sample = "Snap Vintage Vinyl SP.WAV"
+[[pads]]
+pad = 72
+sample = "Rim 707 Vinyl SP.WAV"
+[[pads]]
+pad = 73
+sample = "Rim Acoustic Crunch Vinyl SP 02.WAV"
+[[pads]]
+pad = 74
+sample = "Rim CR78 Vinyl SP 01.WAV"
+[[pads]]
+pad = 75
+sample = "Rim House Vinyl SP 01.WAV"
+[[pads]]
+pad = 76
+sample = "Rim Vintage Dirt Vinyl SP 01.WAV"
+[[pads]]
+pad = 77
+sample = "SD Tape Crack Vinyl SP.WAV"
+[[pads]]
+pad = 78
+sample = "SD Skitter Vari Vinyl SP.WAV"
+[[pads]]
+pad = 79
+sample = "SD Club Laser Vinyl SP.WAV"
+[[pads]]
+pad = 80
+sample = "SD Acoustic Flutter Vinyl SP.WAV"
+
+# Bank F: toms, metallic cymbals, and resonant electronic percussion.
+[[pads]]
+pad = 81
+sample = "Tom 707 Vinyl SP 02.WAV"
+[[pads]]
+pad = 82
+sample = "Tom 909 Dark Vinyl SP.WAV"
+[[pads]]
+pad = 83
+sample = "Tom Acoustic Bump Vinyl SP 02.WAV"
+[[pads]]
+pad = 84
+sample = "Tom Casio Delay Vinyl SP 02.WAV"
+[[pads]]
+pad = 85
+sample = "Tom Hollow Vinyl SP 04.WAV"
+[[pads]]
+pad = 86
+sample = "Tom LM1 Vinyl SP 01.WAV"
+[[pads]]
+pad = 87
+sample = "Tom MR10 Vinyl SP 01.WAV"
+[[pads]]
+pad = 88
+sample = "Tom Perkons Vinyl SP.WAV"
+[[pads]]
+pad = 89
+sample = "Cymbal 808 Lite Vari Vinyl SP.WAV"
+[[pads]]
+pad = 90
+sample = "Cymbal DR110 Boost Vinyl SP.WAV"
+[[pads]]
+pad = 91
+sample = "Cymbal Machinedrum Lite Vinyl SP.WAV"
+[[pads]]
+pad = 92
+sample = "Cymbal Machinedrum Ring Vinyl SP 01.WAV"
+[[pads]]
+pad = 93
+sample = "Cymbal Mellow Vinyl SP.WAV"
+[[pads]]
+pad = 94
+sample = "Ride Acoustic Full Vinyl SP.WAV"
+[[pads]]
+pad = 95
+sample = "Perc Machinedrum Ring Vinyl SP Bb.WAV"
+[[pads]]
+pad = 96
+sample = "Perc Mellow Impact Vinyl SP.WAV"

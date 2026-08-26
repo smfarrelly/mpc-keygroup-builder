@@ -1,0 +1,11 @@
+schema_version = 1
+id = "left-handed-performance"
+name = "Left-handed Performance Candidate"
+strategy = "role-first"
+fill_remaining = true
+role_order = [
+  "hihat.open", "hihat.closed", "snare", "kick",
+  "percussion", "percussion", "rim", "clap",
+  "cymbal", "tom.high", "tom.mid", "tom.low",
+  "fx", "fx", "fx", "fx",
+]
