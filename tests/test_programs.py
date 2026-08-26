@@ -64,6 +64,7 @@ class ProgramTests(unittest.TestCase):
         self.assertEqual(programs.classify_sample("Crash Clean.wav"), "cymbal")
         self.assertEqual(programs.classify_sample("Rim 808.wav"), "rim")
         self.assertEqual(programs.classify_sample("Clap 909.wav"), "clap")
+        self.assertEqual(programs.classify_sample("Perc Tape Glitch.wav"), "percussion")
 
     def test_leading_instrument_token_wins_over_descriptive_tokens(self):
         self.assertEqual(programs.classify_sample("CH 808 Snap Vinyl SP.wav"), "closed_hat")

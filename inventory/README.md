@@ -69,3 +69,12 @@ After the initial seven-program Scratchpad round, use
 `scratchpad-replacements.toml` for the focused four-bass/four-keys replacement
 bracket. The choices deliberately span warm, plucked, classic, melodic, dark,
 warbled, and drifting characters rather than eight near-duplicates.
+
+Use `scratchpad-lead-replacements.toml` for the final lead/pad bracket. It
+compares the incumbent OneFiftySeven against a shimmer pad, a glassy digital
+pad, and a focused lead. The four programs are already present on the full SD
+library, so no duplicate deployment is required.
+
+`fg-vinyl-shots.toml` is the reproducible 32-pad Track 2 one-shot manifest.
+See `scratchpad-shots.md` for its bank layout, build command, SD location, and
+hardware checklist.

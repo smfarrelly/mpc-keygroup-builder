@@ -1,0 +1,101 @@
+name = "FG Vinyl Shots 01"
+
+# Bank A: acoustic/electronic percussion and cymbal accents.
+[[pads]]
+pad = 1
+sample = "Bongo CR78 Hi Vinyl SP Clean.WAV"
+[[pads]]
+pad = 2
+sample = "Bongo CR78 Sat Vinyl SP 01.WAV"
+[[pads]]
+pad = 3
+sample = "Conga Vintage Muted Vinyl SP.WAV"
+[[pads]]
+pad = 4
+sample = "Conga Vintage Open Vinyl SP.WAV"
+[[pads]]
+pad = 5
+sample = "Cowbell CR78 Vinyl SP.WAV"
+[[pads]]
+pad = 6
+sample = "Cabasa LM1 Vinyl SP 01.WAV"
+[[pads]]
+pad = 7
+sample = "Maraca 808 Vinyl SP 01.WAV"
+[[pads]]
+pad = 8
+sample = "Clave Acoustic Drive Vinyl SP.WAV"
+[[pads]]
+pad = 9
+sample = "Rim Vintage Perc Vinyl SP.WAV"
+[[pads]]
+pad = 10
+sample = "Perc Acoustic Crunch Vinyl SP.WAV"
+[[pads]]
+pad = 11
+sample = "Perc Flux Combo Vinyl SP.WAV"
+[[pads]]
+pad = 12
+sample = "Perc Machinedrum Bell Vinyl SP 02.WAV"
+[[pads]]
+pad = 13
+sample = "Perc Tape Glitch Vinyl SP 01.WAV"
+[[pads]]
+pad = 14
+sample = "Ride Acoustic Dark Vinyl SP 01.WAV"
+[[pads]]
+pad = 15
+sample = "Ride 909 Bend Vinyl SP 02.WAV"
+[[pads]]
+pad = 16
+sample = "Crash 909 Vari Vinyl SP.WAV"
+
+# Bank B: chords, stabs, vocal fragments, and transition FX.
+[[pads]]
+pad = 17
+sample = "FX Boom Bap Vinyl SP.WAV"
+[[pads]]
+pad = 18
+sample = "FX Club Chord Vinyl SP 02.WAV"
+[[pads]]
+pad = 19
+sample = "FX Dark Horn Vinyl SP Ab.WAV"
+[[pads]]
+pad = 20
+sample = "FX Flux Vox Vinyl SP.WAV"
+[[pads]]
+pad = 21
+sample = "FX Grain Vinyl SP Clean C.WAV"
+[[pads]]
+pad = 22
+sample = "FX Howl Vinyl SP C.WAV"
+[[pads]]
+pad = 23
+sample = "FX Key Stab Vinyl SP G.WAV"
+[[pads]]
+pad = 24
+sample = "FX Machinedrum Chime Vinyl SP.WAV"
+[[pads]]
+pad = 25
+sample = "FX Mellow Chord Vinyl SP Eb.WAV"
+[[pads]]
+pad = 26
+sample = "FX Perc Chop Vinyl SP.WAV"
+[[pads]]
+pad = 27
+sample = "FX Squelch Vinyl SP.WAV"
+[[pads]]
+pad = 28
+sample = "FX Vox Blip Vinyl SP.WAV"
+[[pads]]
+pad = 29
+sample = "FX Vox Breath Vinyl SP.WAV"
+[[pads]]
+pad = 30
+sample = "FX Vox Glitch Vinyl SP.WAV"
+[[pads]]
+pad = 31
+sample = "FX Vox Yeh Vinyl SP.WAV"
+[[pads]]
+pad = 32
+sample = "FX Yeah Yeah Vinyl SP.WAV"

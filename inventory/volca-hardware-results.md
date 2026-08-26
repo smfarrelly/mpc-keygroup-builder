@@ -39,8 +39,8 @@ The Volca Drum MIDI track uses Pad Perform → Custom with this Bank A map:
 - A05: G3 → Part 5
 - A06: A3 → Part 6
 
-All six physical MPC pads triggered their intended Volca Drum parts. A short
-MPC MIDI sequence also played the Volca successfully.
+All six physical MPC pads triggered their intended Volca Drum parts. The custom
+pad map persisted in both captured Volca projects.
 
 ## Clock and sequencing
 
@@ -48,12 +48,13 @@ MPC MIDI output `Track` and `Sync` were enabled, Sync Send was set to `MIDI
 Clock`, and transport was enabled. The Volca Drum followed MPC start, stop, and
 tempo: `pass`.
 
-When the Volca also contained a local pattern, MPC Play started both the local
-Volca sequencer and the MPC-recorded MIDI sequence. This is expected but can
-double or overlap notes. The preferred reusable posture is MPC-master
-sequencing: use an empty Volca pattern, keep clock/transport enabled, and store
-the note sequence in the MPC project. Alternatively, use a Volca-local pattern
-and do not duplicate its notes on the MPC track.
+When the Volca contained a local pattern, MPC Play started its sequencer. XPJ
+inspection found no note events on any of the three MPC MIDI tracks, so the
+heard pattern was the Volca following MPC clock/transport rather than doubled
+MPC and Volca note sequences. The preferred reusable posture remains
+MPC-master sequencing: use an empty Volca pattern, keep clock/transport enabled,
+and explicitly record notes onto the MPC MIDI track. Alternatively, use a
+Volca-local pattern and leave the MPC track empty.
 
 ## Pending
 
@@ -61,6 +62,7 @@ and do not duplicate its notes on the MPC track.
 - Connect all three through the ordered CME MIDI Thru5 WC and test channel isolation,
   simultaneous start/stop, and drift.
 - Record practical audio routing and gain settings.
-- Save, power-cycle, and confirm the custom Drum pad map, ports, channels,
-  clock, and track names return.
+- Record an actual MPC-authored note sequence, save/reload, and confirm its
+  events return; track names, ports, channels, and the custom Drum pad map are
+  already confirmed in the captured XPJs.
 - Perform the ten-minute jam and count touchscreen interruptions.

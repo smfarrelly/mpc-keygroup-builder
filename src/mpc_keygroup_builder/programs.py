@@ -37,7 +37,7 @@ PRIMARY_PATTERNS = (
     ("tom", r"^tom(?:[ _-]|$)"),
     (
         "percussion",
-        r"^(?:conga|bongo|cowbell|clave|shaker|tamb|maraca|woodblock|cabasa|triangle)(?:[ _-]|$)",
+        r"^(?:perc|percussion|conga|bongo|cowbell|clave|shaker|tamb|maraca|woodblock|cabasa|triangle)(?:[ _-]|$)",
     ),
     ("fx", r"^(?:fx|vocal|texture|noise|static|crackle)(?:[ _-]|$)"),
 )
@@ -53,7 +53,7 @@ CATEGORY_PATTERNS = (
     ("tom", r"(?:^|[ _-])tom(?:[ _-]|$)"),
     (
         "percussion",
-        r"(?:^|[ _-])(?:conga|bongo|cowbell|clave|shaker|tamb|maraca|woodblock|cabasa|triangle)(?:[ _-]|$)",
+        r"(?:^|[ _-])(?:perc|percussion|conga|bongo|cowbell|clave|shaker|tamb|maraca|woodblock|cabasa|triangle)(?:[ _-]|$)",
     ),
     ("fx", r"(?:^|[ _-])(?:fx|vocal|texture|noise|static|crackle)(?:[ _-]|$)"),
 )

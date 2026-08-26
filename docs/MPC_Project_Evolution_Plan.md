@@ -242,7 +242,8 @@ The vinyl-family material will be the first end-to-end translation target becaus
 **Goal:** Produce the first playable boot environment using programs that already work.
 
 - [ ] Select one favorite working drum kit.
-- [ ] Select one percussion/one-shot program.
+- [x] Build one focused percussion/one-shot candidate: FG Vinyl Shots 01; local
+  and SD-card semantic checks pass, hardware listening remains open.
 - [ ] Select one bass keygroup.
 - [ ] Select one keys/chord keygroup.
 - [ ] Select one lead or pad keygroup.
@@ -461,7 +462,8 @@ These are not initial priorities:
 ### Part B — Assemble the Scratchpad
 
 - [x] Choose one working vinyl drum kit: Vinyl SP.
-- [x] Choose one favorite vinyl bass: Mirage Pluck Bass (provisional).
+- [x] Choose one working vinyl bass: Mirage Pluck Bass (provisional, proven in
+  the captured four-bar sequence; final A/B decision remains open).
 - [x] Choose one favorite vinyl keys/chord sound: Mirage Wurli.
 - [x] Choose one favorite lead, pad, or texture: OneFiftySeven (provisional).
 - [ ] Create the eight-track project skeleton.
@@ -469,7 +471,8 @@ These are not initial priorities:
 - [ ] Set starting levels and one useful shared reverb/delay environment.
 - [ ] Save as `FG_Vinyl_Scratchpad_v0_1`.
 - [x] Make a short sequence and perform a few changes to prove the concept: a
-  quick four-bar drums, bass, and lead idea passed on the Key 37.
+  captured four-bar drums, Pluck Bass, and Wurli idea passed on the Key 37.
+  OneFiftySeven still needs a recorded-part comparison.
 
 ### Session completion rule
 
@@ -575,12 +578,19 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   four-bar part with drums, bass, and lead.
 - Passed individual external MIDI routing for Volca Bass on channel 1, Volca
   Keys on channel 2, and Volca Drum in single-channel mode on channel 10.
-- Mapped Volca Drum parts 1–6 to adjacent MPC pads A01–A06 and confirmed an MPC
-  MIDI sequence triggers the hardware. Volca Drum also follows MPC clock,
-  start, stop, and tempo.
-- Next gates: save/power-cycle the Scratchpad and Volca projects, test Bass and
-  Keys clock sequentially, then complete simultaneous Volca acceptance after a
-  MIDI thru/splitter is available.
+- Mapped Volca Drum parts 1–6 to adjacent MPC pads A01–A06. Volca Drum follows
+  MPC clock, start, stop, and tempo. Later XPJ inspection showed the saved MIDI
+  tracks contain no note events; the heard pattern was local to the Volca.
+- Captured and inspected protected Scratchpad and Volca master/jam pairs. The
+  Scratchpad jam contains drums, Pluck Bass, and Wurli events; OneFiftySeven is
+  empty. The Volca projects preserve track routing, names, and the six-pad map.
+- Added a distinct four-way lead/pad bracket and a manifest-driven legacy Drum
+  Program builder. Generated and SD-deployed `FG Vinyl Shots 01`, with 32
+  self-contained percussion/FX pads and passing local/post-copy simulation.
+- Next gates: listen to the lead/pad bracket and FG Vinyl Shots, explicitly
+  record an MPC-authored Volca note sequence, test Bass and Keys clock
+  sequentially, then complete simultaneous Volca acceptance after the MIDI
+  thru/splitter arrives.
 - The Launch Control XL 3 has arrived, but its firmware, Components custom mode,
   and MPC MIDI Learn setup are intentionally deferred until the current
   Scratchpad and Volca baselines pass save/reload testing.

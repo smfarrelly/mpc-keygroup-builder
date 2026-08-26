@@ -1,0 +1,31 @@
+schema_version = 1
+name = "FG Scratchpad lead and pad replacement bracket"
+required_roles = ["lead/pad"]
+
+[[candidates]]
+id = "one-fifty-seven"
+ledger_path = "Programs/Keygroups/Samples From Mars/2600 From Mars/Pads/OneFiftySeven.xpm"
+sd_path = "Programs/Keygroups/Samples From Mars/2600 From Mars/Pads/OneFiftySeven.xpm"
+role = "lead/pad"
+selected = true
+
+[[candidates]]
+id = "shimmer-pad"
+ledger_path = "Programs/Keygroups/Samples From Mars/2600 From Mars/Pads/BuildAShimmerPad.xpm"
+sd_path = "Programs/Keygroups/Samples From Mars/2600 From Mars/Pads/BuildAShimmerPad.xpm"
+role = "lead/pad"
+selected = false
+
+[[candidates]]
+id = "resonant-glass"
+ledger_path = "Programs/Keygroups/Samples From Mars/Emulator From Mars/Pads/Resonant Glass.xpm"
+sd_path = "Programs/Keygroups/Samples From Mars/Emulator From Mars/Pads/Resonant Glass.xpm"
+role = "lead/pad"
+selected = false
+
+[[candidates]]
+id = "sharp-lead"
+ledger_path = "Programs/Keygroups/Samples From Mars/Mini From Mars/Leads/Sharp Lead.xpm"
+sd_path = "Programs/Keygroups/Samples From Mars/Mini From Mars/Leads/Sharp Lead.xpm"
+role = "lead/pad"
+selected = false

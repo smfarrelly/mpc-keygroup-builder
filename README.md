@@ -83,8 +83,22 @@ compressed Drum Programs and warns about ungrouped or mismatched open/closed
 hats.
 
 This operation does not convert a keygroup into a Drum Program. Program-type
-selection is validation, and arbitrary Drum Program generation will use a
-known-good MPC-saved Drum template rather than changing a type label.
+selection is validation rather than a type-label rewrite.
+
+Build a self-contained one-shot Drum Program from a TOML pad manifest and a
+known-good 128-pad legacy Drum template:
+
+```bash
+uv run mpc-drum-build inventory/fg-vinyl-shots.toml \
+  --template "/path/to/template.xpm" \
+  --source-root "/path/to/source-wavs" \
+  --output "work/generated-drum-programs/FG Vinyl Shots 01"
+```
+
+The builder validates every WAV, copies only referenced audio, clears unused
+pads and velocity layers, sets one-shot playback, writes inclusive endpoints,
+and applies the semantic pad-color palette. It refuses a non-empty output
+directory so an existing program cannot be silently overwritten.
 
 ## Hardware workflow helpers
 
@@ -103,6 +117,8 @@ The hardware workflow also includes reusable, dry-run-first utilities:
   `mpc-hardware-results` validates and atomically applies it to the ledger.
 - `mpc-drum-map` renders a bank-by-bank pad map with sample, inferred role,
   color, choke group, and playback behavior.
+- `mpc-drum-build` assembles a self-contained, color-coded one-shot Drum
+  Program from a reusable pad manifest and a known-good XML template.
 - `mpc-xpm inspect|compare` performs format-aware XPM inspection, including a
   semantic comparison between legacy XML and MPC 3 compressed saves.
 - `mpc-sd-deploy` plans additive card updates. It never deletes, requires

@@ -94,13 +94,13 @@ keyboard range before attempting the larger Scratchpad project.
 
 ## Minimal Scratchpad acceptance — August 26, 2026
 
-Core hardware playability passed. Using the dedicated-input routing approach,
-a four-bar idea was recorded quickly with drums, bass, and lead. This proves
-that the setup can move beyond isolated program auditioning into immediate
-multi-part idea capture.
+**Core hardware playability passed.** Using the dedicated-input routing
+approach, a four-bar idea was recorded quickly. XPJ inspection later confirmed
+saved events on drums, Pluck Bass, and Wurli. OneFiftySeven had no saved events,
+so the capture proves immediate multi-part idea generation but not yet a
+recorded lead part.
 
-Status: `pass` for core playability. Still pending before the project becomes a
-protected baseline: save under its final Scratchpad name, power-cycle/reload,
-confirm programs and pad colors return, confirm the device-level MPC Pads
-`Global` preference, and time the complete cold-start workflow against the
-one-minute target.
+Status: `pass` for core playability and save/reload persistence. The protected
+master and disposable jam copy were captured with companion data folders and
+inspected without modifying the originals. The remaining cold-start timing is
+a workflow/familiarity benchmark rather than a routing failure.
