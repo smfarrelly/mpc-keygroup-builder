@@ -726,20 +726,20 @@ Samples/Samples From Mars/TOM From Mars/TOM From Mars 1.xpm,Drum,xml,pass,64,pro
 Samples/Samples From Mars/TOM From Mars/TOM From Mars 2.xpm,Drum,xml,pass,64,production,pass,,untested,,,
 Samples/Samples From Mars/TOM From Mars/TOM From Mars 3.xpm,Drum,xml,pass,64,production,pass,,untested,,,
 Samples/Samples From Mars/TOM From Mars/TOM From Mars 4.xpm,Drum,xml,pass,32,production,pass,,untested,,,
-Samples/Samples From Mars/Vinyl Drum Machines From Mars/Vinyl Drum Machines From Mars 1.xpm,Drum,xml,pass,64,production,pass,,pass,,candidate:main drums,Loaded on Key 37 and triggered expected samples across banks; fixed per-pad colors validated on the FG COLORS derivative; musical ranking pending.
+Samples/Samples From Mars/Vinyl Drum Machines From Mars/Vinyl Drum Machines From Mars 1.xpm,Drum,xml,pass,64,production,pass,,pass,provisional,candidate:main drums,Ranked second on Key 37 and retained as the provisional main-drums alternate; not distinct enough to serve as dedicated shots.
 Samples/Samples From Mars/Vinyl Drum Machines From Mars/Vinyl Drum Machines From Mars 2.xpm,Drum,xml,pass,64,production,pass,,untested,,,
 Samples/Samples From Mars/Vinyl Drum Machines From Mars/Vinyl Drum Machines From Mars 3.xpm,Drum,xml,pass,64,production,pass,,untested,,,
 Samples/Samples From Mars/Vinyl Drum Machines From Mars/Vinyl Drum Machines From Mars 4.xpm,Drum,xml,pass,64,production,pass,,untested,,,
 Samples/Samples From Mars/Vinyl Drum Machines From Mars/Vinyl Drum Machines From Mars 5.xpm,Drum,xml,pass,64,production,pass,,untested,,,
 Samples/Samples From Mars/Vinyl Drum Machines From Mars/Vinyl Drum Machines From Mars 6.xpm,Drum,xml,pass,48,production,pass,,untested,,,
 Samples/Samples From Mars/Vinyl Drum Machines From Mars/Vinyl Drum Machines From Mars 7.xpm,Drum,xml,pass,32,production,pass,,untested,,,
-Samples/Samples From Mars/Vinyl Drums From Mars/Vinyl Drums From Mars 01.xpm,Drum,xml,pass,64,production,pass,,pass,,candidate:main drums,Loaded on Key 37 and triggered expected samples across banks; fixed per-pad colors validated on the FG COLORS derivative; musical ranking pending.
+Samples/Samples From Mars/Vinyl Drums From Mars/Vinyl Drums From Mars 01.xpm,Drum,xml,pass,64,production,pass,,pass,no,candidate:main drums,Ranked third on Key 37 but remains a strong working base kit; not distinct enough from the other finalists to serve as dedicated shots.
 Samples/Samples From Mars/Vinyl Drums From Mars/Vinyl Drums From Mars 02.xpm,Drum,xml,pass,64,production,pass,,untested,,,
 Samples/Samples From Mars/Vinyl Drums From Mars/Vinyl Drums From Mars 03.xpm,Drum,xml,pass,64,production,pass,,untested,,,
 Samples/Samples From Mars/Vinyl Drums From Mars/Vinyl Drums From Mars 04.xpm,Drum,xml,pass,64,production,pass,,untested,,,
 Samples/Samples From Mars/Vinyl Drums From Mars/Vinyl Drums From Mars 05.xpm,Drum,xml,pass,48,production,pass,,untested,,,
 Samples/Samples From Mars/Vinyl Drums From Mars/Vinyl Drums From Mars 06.xpm,Drum,xml,pass,32,production,pass,,untested,,,
-Samples/Samples From Mars/Vinyl SP From Mars/Vinyl SP From Mars 01.xpm,Drum,xml,pass,64,production,pass,,pass,provisional,main drums,Loaded on Key 37 and triggered expected samples across banks; broad Bank A layout and fixed colors make this the provisional main kit; musical ranking pending.
+Samples/Samples From Mars/Vinyl SP From Mars/Vinyl SP From Mars 01.xpm,Drum,xml,pass,64,production,pass,,pass,yes,main drums,"Ranked first on Key 37; all pads and colors work, and its broad kit is the preferred Scratchpad main-drums base."
 Samples/Samples From Mars/Vinyl SP From Mars/Vinyl SP From Mars 02.xpm,Drum,xml,pass,64,production,pass,,untested,,,
 Samples/Samples From Mars/Vinyl SP From Mars/Vinyl SP From Mars 03.xpm,Drum,xml,pass,64,production,pass,,untested,,,
 Samples/Samples From Mars/Vinyl SP From Mars/Vinyl SP From Mars 04.xpm,Drum,xml,pass,64,production,pass,,untested,,,
