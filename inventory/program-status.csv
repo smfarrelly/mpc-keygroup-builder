@@ -28,7 +28,7 @@ Programs/Keygroups/Samples From Mars/101 From Mars/Keys and Pads/TinyRave.xpm,Ke
 Programs/Keygroups/Samples From Mars/101 From Mars/Leads/AttackGrail.xpm,Keygroup,gzip-json,pass,84,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/101 From Mars/Leads/BirdMusic.xpm,Keygroup,gzip-json,pass,92,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/101 From Mars/Leads/Dekker.xpm,Keygroup,gzip-json,pass,85,production,pass,,untested,,,
-Programs/Keygroups/Samples From Mars/101 From Mars/Leads/HumanMusic.xpm,Keygroup,gzip-json,pass,73,production,pass,,untested,provisional,lead,Local and SD-card validation pass; provisional lead choice; Key 37 velocity and performance listening test pending.
+Programs/Keygroups/Samples From Mars/101 From Mars/Leads/HumanMusic.xpm,Keygroup,gzip-json,pass,73,production,pass,,pass,no,candidate:lead/pad,"Works as expected across the Key 37, but its sound does not merit a place in the favorite Scratchpad lineup."
 Programs/Keygroups/Samples From Mars/101 From Mars/Leads/IndigoRise.xpm,Keygroup,gzip-json,pass,73,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/101 From Mars/Leads/Legacy_SynthVoice.xpm,Keygroup,gzip-json,pass,79,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/101 From Mars/Leads/RonDon's.xpm,Keygroup,gzip-json,pass,73,production,pass,,untested,,,
@@ -58,7 +58,7 @@ Programs/Keygroups/Samples From Mars/2600 From Mars/Leads/RankingDons.xpm,Keygro
 Programs/Keygroups/Samples From Mars/2600 From Mars/Leads/Sehnsucht.xpm,Keygroup,gzip-json,pass,97,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/2600 From Mars/Leads/TechNoir.xpm,Keygroup,gzip-json,pass,109,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/2600 From Mars/Pads/BuildAShimmerPad.xpm,Keygroup,gzip-json,pass,97,production,pass,,untested,,,
-Programs/Keygroups/Samples From Mars/2600 From Mars/Pads/OneFiftySeven.xpm,Keygroup,gzip-json,pass,96,production,pass,,untested,,candidate:lead/pad,Local and SD-card validation pass; alternate pad candidate; Key 37 velocity and performance listening test pending.
+Programs/Keygroups/Samples From Mars/2600 From Mars/Pads/OneFiftySeven.xpm,Keygroup,gzip-json,pass,96,production,pass,,pass,provisional,lead/pad,Passes on the Key 37 and is retained as the provisional Scratchpad lead/pad choice.
 Programs/Keygroups/Samples From Mars/2600 From Mars/Pads/Osc2Sine.xpm,Keygroup,gzip-json,pass,109,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/2600 From Mars/Pads/TheThreeStorms.xpm,Keygroup,gzip-json,pass,97,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/2600 From Mars/Pads/WheelToHell.xpm,Keygroup,gzip-json,pass,85,production,pass,,untested,,,

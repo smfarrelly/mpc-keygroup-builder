@@ -41,11 +41,11 @@ id = "human-music"
 ledger_path = "Programs/Keygroups/Samples From Mars/101 From Mars/Leads/HumanMusic.xpm"
 sd_path = "Programs/Keygroups/FG Scratchpad Candidates/Lead-Pad/HumanMusic.xpm"
 role = "lead/pad"
-selected = true
+selected = false
 
 [[candidates]]
 id = "one-fifty-seven"
 ledger_path = "Programs/Keygroups/Samples From Mars/2600 From Mars/Pads/OneFiftySeven.xpm"
 sd_path = "Programs/Keygroups/FG Scratchpad Candidates/Lead-Pad/OneFiftySeven.xpm"
 role = "lead/pad"
-selected = false
+selected = true
