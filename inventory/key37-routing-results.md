@@ -91,3 +91,16 @@ Next isolated experiment: reload `Key37-routing-Noglobal.xpj`, verify the two
 track inputs persisted, then independently verify the MPC Pads `Global` device
 preference. Keep the Drum track selected and test all pad banks plus the full
 keyboard range before attempting the larger Scratchpad project.
+
+## Minimal Scratchpad acceptance — August 26, 2026
+
+Core hardware playability passed. Using the dedicated-input routing approach,
+a four-bar idea was recorded quickly with drums, bass, and lead. This proves
+that the setup can move beyond isolated program auditioning into immediate
+multi-part idea capture.
+
+Status: `pass` for core playability. Still pending before the project becomes a
+protected baseline: save under its final Scratchpad name, power-cycle/reload,
+confirm programs and pad colors return, confirm the device-level MPC Pads
+`Global` preference, and time the complete cold-start workflow against the
+one-minute target.

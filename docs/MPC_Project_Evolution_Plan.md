@@ -460,15 +460,16 @@ These are not initial priorities:
 
 ### Part B — Assemble the Scratchpad
 
-- [ ] Choose one working vinyl drum kit.
-- [ ] Choose one favorite vinyl bass.
-- [ ] Choose one favorite vinyl keys/chord sound.
-- [ ] Choose one favorite lead, pad, or texture.
+- [x] Choose one working vinyl drum kit: Vinyl SP.
+- [x] Choose one favorite vinyl bass: Mirage Pluck Bass (provisional).
+- [x] Choose one favorite vinyl keys/chord sound: Mirage Wurli.
+- [x] Choose one favorite lead, pad, or texture: OneFiftySeven (provisional).
 - [ ] Create the eight-track project skeleton.
-- [ ] Load those four initial sounds into their standard track positions.
+- [x] Load the four core sounds into a working Scratchpad project.
 - [ ] Set starting levels and one useful shared reverb/delay environment.
 - [ ] Save as `FG_Vinyl_Scratchpad_v0_1`.
-- [ ] Make a short sequence and perform a few changes to prove the concept.
+- [x] Make a short sequence and perform a few changes to prove the concept: a
+  quick four-bar drums, bass, and lead idea passed on the Key 37.
 
 ### Session completion rule
 
@@ -555,6 +556,25 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
 - Added a read-only Drum performance audit and confirmed all three curated kits pair their open/closed hats in explicit mute groups; no automatic choke-group rewriting is currently necessary.
 - Corrected ambiguous filename classification to prioritize the leading instrument token (`CH 808 Snap` is a closed hat; `Tom 606 BD` is a tom) before descriptive tokens used later in a filename.
 - Next gate: complete the four melodic/favorite listening decisions, capture both XPJs and companion data folders, and compare the single Drum Split change.
+
+### August 26, 2026 — Key 37 routing capture and minimal Scratchpad
+
+- Captured and hash-verified the baseline, Drum Split, and dedicated-input MPC
+  projects plus their companion ProjectData folders without committing licensed
+  samples or project captures.
+- Confirmed from the XPJs that Drum Split changes note filters and replaces the
+  custom Drum Program pad-note map with an identity map; it is not independent
+  physical keyboard/pad routing.
+- Confirmed that the dedicated-input project persists `MPC Keyboard` for the
+  Wurli track and `MPC Pads` for the Vinyl SP track. The MPC Pads `Global`
+  preference is device state and is not stored in the project.
+- Established the closest-known-good posture: leave the Drum track selected to
+  retain Drum Program pad colors while the armed melodic track receives the
+  keyboard.
+- Passed the core Minimal Scratchpad acceptance test by quickly recording a
+  four-bar part with drums, bass, and lead.
+- Next gate: save a protected Scratchpad master and disposable jam copy, then
+  power-cycle/reload and run the measured under-one-minute cold-start test.
 
 ## 16. Reference material
 
