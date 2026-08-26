@@ -16,6 +16,7 @@ from typing import Any, Iterable
 
 AUDIO_SUFFIXES = {".wav", ".aif", ".aiff"}
 TEST_VELOCITIES = (0, 1, 16, 32, 64, 96, 126, 127)
+MAX_KEYGROUP_EXTRAPOLATION = 12
 
 
 @dataclass(frozen=True)
@@ -155,6 +156,19 @@ def _simulate_keygroup(result: ProgramTest, instruments: list[dict[str, Any]]) -
     playable: set[int] = set()
     dead = 0
     stacked = 0
+    for index, instrument in enumerate(instruments, 1):
+        low = _integer(instrument.get("lowNote"), -1)
+        high = _integer(instrument.get("highNote"), -1)
+        roots = {
+            _integer(layer.get("rootNote"), -1)
+            for layer in _active_json_layers(instrument)
+        }
+        if roots and min(max(abs(low - root), abs(high - root)) for root in roots) > MAX_KEYGROUP_EXTRAPOLATION:
+            result.warn(
+                "extreme_key_extrapolation",
+                f"keygroup {index} spans notes {low}-{high} from roots {sorted(roots)}; "
+                "normal keyboard octaves may be inaudible or unnatural",
+            )
     for note in range(128):
         note_has_trigger = False
         for velocity in TEST_VELOCITIES:

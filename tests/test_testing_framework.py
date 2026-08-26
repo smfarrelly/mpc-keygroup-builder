@@ -50,13 +50,14 @@ def write_keygroup(root: Path, *, velocity_end: int = 127, sample_end: int = 31)
 
 
 class TestingFrameworkTests(unittest.TestCase):
-    def test_valid_keygroup_simulates_complete_note_velocity_matrix(self):
+    def test_complete_matrix_warns_about_extreme_sample_extrapolation(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             result = testing.test_program(write_keygroup(root), root)
-            self.assertEqual(result.verdict, "pass")
+            self.assertEqual(result.verdict, "warn")
             self.assertEqual(result.playable_notes, 128)
             self.assertEqual(result.dead_trigger_cells, 0)
+            self.assertIn("extreme_key_extrapolation", {issue.code for issue in result.issues})
 
     def test_velocity_gap_fails_simulation(self):
         with tempfile.TemporaryDirectory() as temporary:

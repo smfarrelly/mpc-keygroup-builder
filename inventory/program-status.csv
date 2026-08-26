@@ -172,7 +172,7 @@ Programs/Keygroups/Samples From Mars/Dr Sample From Mars/Bass/Overdrive Bass.xpm
 Programs/Keygroups/Samples From Mars/Dr Sample From Mars/Bass/Rhodes Bass.xpm,Keygroup,gzip-json,pass,13,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Dr Sample From Mars/Bass/Sub Bass.xpm,Keygroup,gzip-json,pass,12,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Dr Sample From Mars/Bass/Synth Bass.xpm,Keygroup,gzip-json,pass,13,production,pass,,untested,,,
-Programs/Keygroups/Samples From Mars/Dr Sample From Mars/Bass/Warm Bass.xpm,Keygroup,gzip-json,pass,12,production,pass,,untested,,,
+Programs/Keygroups/Samples From Mars/Dr Sample From Mars/Bass/Warm Bass.xpm,Keygroup,gzip-json,pass,12,production,pass,,warn,,candidate:bass,"Loads and plays, but useful notes are heard only after transposing the Key 37 down several octaves; the 12 source roots span MIDI 28-39 and the top sample is stretched through MIDI 127."
 Programs/Keygroups/Samples From Mars/Dr Sample From Mars/Guitar/Acoustic Tremolo.xpm,Keygroup,gzip-json,pass,22,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Dr Sample From Mars/Guitar/Muted Strat.xpm,Keygroup,gzip-json,pass,25,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Dr Sample From Mars/Keys/Organ.xpm,Keygroup,gzip-json,pass,25,production,pass,,untested,,,
