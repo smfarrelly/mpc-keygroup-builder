@@ -573,8 +573,14 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   keyboard.
 - Passed the core Minimal Scratchpad acceptance test by quickly recording a
   four-bar part with drums, bass, and lead.
-- Next gate: save a protected Scratchpad master and disposable jam copy, then
-  power-cycle/reload and run the measured under-one-minute cold-start test.
+- Passed individual external MIDI routing for Volca Bass on channel 1, Volca
+  Keys on channel 2, and Volca Drum in single-channel mode on channel 10.
+- Mapped Volca Drum parts 1–6 to adjacent MPC pads A01–A06 and confirmed an MPC
+  MIDI sequence triggers the hardware. Volca Drum also follows MPC clock,
+  start, stop, and tempo.
+- Next gates: save/power-cycle the Scratchpad and Volca projects, test Bass and
+  Keys clock sequentially, then complete simultaneous Volca acceptance after a
+  MIDI thru/splitter is available.
 
 ## 16. Reference material
 

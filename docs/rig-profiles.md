@@ -53,6 +53,17 @@ and [official Components guide](https://support.novationmusic.com/hc/en-gb/artic
 5. Measure practical audio-input gain and listen for latency or doubled notes.
 6. Test switching the keyboard/pads between internal and external tracks.
 
+### Key 37 hardware checkpoint — August 26, 2026
+
+Individual DIN MIDI tests pass with Volca Bass on channel 1, Volca Keys on
+channel 2, and Volca Drum in single-channel mode on channel 10. The Drum also
+passes MPC clock/start/stop and uses a verified six-pad Custom Pad Perform map:
+A01–A06 send C3, D3, E3, F3, G3, and A3 respectively.
+
+The current setup has no MIDI thru/splitter, so these tests were performed one
+device at a time. Simultaneous isolation, clock, drift, and ten-minute jam
+acceptance remain pending. See `inventory/volca-hardware-results.md`.
+
 The checked-in channel choices are starting values, not claims about factory
 defaults. Anyone reusing the profile can edit the TOML before generating their
 own setup sheet.
