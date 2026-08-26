@@ -47,6 +47,15 @@ class CandidateTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "duplicates"):
                 candidates.load_manifest(path)
 
+    def test_rejects_missing_sd_root_instead_of_reporting_every_program_missing(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            manifest, ledger = root / "candidates.toml", root / "status.csv"
+            self.write_manifest(manifest)
+            self.write_ledger(ledger)
+            with self.assertRaisesRegex(ValueError, "not a mounted directory"):
+                candidates.check_candidates(manifest, ledger, root / "missing-card")
+
 
 if __name__ == "__main__":
     unittest.main()

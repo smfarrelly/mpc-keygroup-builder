@@ -44,6 +44,8 @@ def _ledger_rows(path: Path) -> dict[str, dict[str, str]]:
 def check_candidates(
     manifest_path: Path, ledger_path: Path, sd_root: Path | None = None
 ) -> dict[str, Any]:
+    if sd_root is not None and not sd_root.is_dir():
+        raise ValueError(f"SD root is not a mounted directory: {sd_root}")
     manifest = load_manifest(manifest_path)
     ledger = _ledger_rows(ledger_path)
     results = []
