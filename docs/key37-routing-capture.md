@@ -43,7 +43,11 @@ identical.
 Drum Split was confirmed to be note-range routing rather than source-specific
 routing: Bank A pads played Vinyl SP, Banks B–H played low Wurli notes, and low
 keyboard notes played drums. Preserve this controlled pair as a `warn`/closest
-known-good result. See `inventory/key37-routing-results.md`.
+known-good result. The pair was captured and hash-verified under
+`work/key37-routing-captures/2026-08-26-drumsplit/`. XPJ inspection confirms
+that Drum Split changed the track note filters and rewrote the Drum Program's
+custom pad-note map to an identity map. See
+`inventory/key37-routing-results.md`.
 
 ## If Drum Split does not produce the intended behavior
 
@@ -59,6 +63,24 @@ Keep both controlled files. Test fallbacks one at a time and record the outcome:
    whether pads play drums, and whether either controller triggers both tracks.
 5. Save the closest known-good project under a distinct filename without
    overwriting the baseline or changed captures.
+
+### Dedicated-input observation — August 26, 2026
+
+The fallback was tested with Wurli input set to `MPC Keyboard`, Vinyl SP input
+set to `MPC Pads`, Drum Split off, Multi record-arm active, both tracks armed,
+and the MPC Pads `Global` device preference off. It works as a closest
+known-good setup only while the Drum track remains selected: pads play Vinyl SP
+with its colors and keys play Wurli. Selecting Wurli makes the physical pads
+follow the Wurli context; Bank A can sound notes, the other banks are not useful
+as drums, and Drum colors disappear.
+
+The project was captured as `Key37-routing-Noglobal.xpj` under
+`work/key37-routing-captures/2026-08-26-noglobal/`. Its XPJ stores the two track
+input-port assignments, but not the MPC Pads `Global` preference. That toggle
+is device state and must be verified separately after reload. Raw save-to-save
+changes in Q-Link assignments, sample ordering/metadata precision, and current
+screen state are serialization/context noise rather than additional routing
+settings.
 
 ## Ubuntu capture destination
 
