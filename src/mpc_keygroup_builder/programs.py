@@ -26,13 +26,29 @@ DEFAULT_COLORS = {
     "unknown": "#808080",
 }
 
+PRIMARY_PATTERNS = (
+    ("kick", r"^(?:bd|kick|bass[ _-]?drum)(?:[ _-]|$)"),
+    ("snare", r"^(?:sd|snare)(?:[ _-]|$)"),
+    ("closed_hat", r"^(?:ch|closed[ _-]?(?:hat|hh)|hh[ _-]?closed)(?:[ _-]|$)"),
+    ("open_hat", r"^(?:oh|open[ _-]?(?:hat|hh)|hh[ _-]?open)(?:[ _-]|$)"),
+    ("clap", r"^(?:clap|snap)(?:[ _-]|$)"),
+    ("rim", r"^(?:rim|sidestick)(?:[ _-]|$)"),
+    ("cymbal", r"^(?:cymbal|crash|ride)(?:[ _-]|$)"),
+    ("tom", r"^tom(?:[ _-]|$)"),
+    (
+        "percussion",
+        r"^(?:conga|bongo|cowbell|clave|shaker|tamb|maraca|woodblock|cabasa|triangle)(?:[ _-]|$)",
+    ),
+    ("fx", r"^(?:fx|vocal|texture|noise|static|crackle)(?:[ _-]|$)"),
+)
+
 CATEGORY_PATTERNS = (
     ("kick", r"(?:^|[ _-])(?:bd|kick|bass[ _-]?drum)(?:[ _-]|$)"),
     ("snare", r"(?:^|[ _-])(?:sd|snare)(?:[ _-]|$)"),
-    ("clap", r"(?:^|[ _-])(?:clap|snap)(?:[ _-]|$)"),
-    ("rim", r"(?:^|[ _-])(?:rim|sidestick)(?:[ _-]|$)"),
     ("closed_hat", r"(?:^|[ _-])(?:ch|closed[ _-]?(?:hat|hh)|hh[ _-]?closed)(?:[ _-]|$)"),
     ("open_hat", r"(?:^|[ _-])(?:oh|open[ _-]?(?:hat|hh)|hh[ _-]?open)(?:[ _-]|$)"),
+    ("clap", r"(?:^|[ _-])(?:clap|snap)(?:[ _-]|$)"),
+    ("rim", r"(?:^|[ _-])(?:rim|sidestick)(?:[ _-]|$)"),
     ("cymbal", r"(?:^|[ _-])(?:cymbal|crash|ride)(?:[ _-]|$)"),
     ("tom", r"(?:^|[ _-])tom(?:[ _-]|$)"),
     (
@@ -50,6 +66,9 @@ def classify_sample(name: str, overrides: dict[str, str] | None = None) -> str:
         if exact or stem:
             return exact or stem  # type: ignore[return-value]
     value = Path(name).stem.casefold()
+    for category, pattern in PRIMARY_PATTERNS:
+        if re.search(pattern, value, re.IGNORECASE):
+            return category
     for category, pattern in CATEGORY_PATTERNS:
         if re.search(pattern, value, re.IGNORECASE):
             return category

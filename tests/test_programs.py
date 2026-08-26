@@ -65,6 +65,10 @@ class ProgramTests(unittest.TestCase):
         self.assertEqual(programs.classify_sample("Rim 808.wav"), "rim")
         self.assertEqual(programs.classify_sample("Clap 909.wav"), "clap")
 
+    def test_leading_instrument_token_wins_over_descriptive_tokens(self):
+        self.assertEqual(programs.classify_sample("CH 808 Snap Vinyl SP.wav"), "closed_hat")
+        self.assertEqual(programs.classify_sample("Tom 606 BD Vinyl.wav"), "tom")
+
     def test_exact_filename_override(self):
         self.assertEqual(
             programs.classify_sample(

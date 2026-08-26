@@ -535,6 +535,8 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
 - Revalidated all seven Scratchpad candidates directly from the mounted SD card and regenerated ignored local audition WAVs/manifests; every candidate passes structural and semantic checks.
 - Selected a provisional routing-test core: Vinyl SP drums, Fisherman'sFriend bass, E Piano keys, and HumanMusic lead. These remain subject to final Key 37 listening approval.
 - Added a controlled two-project capture procedure in `docs/key37-routing-capture.md`: save an identical two-track baseline, apply only Key Ranges `Drum Split`, then save the changed project for read-only comparison with the isolated Mac XPJ inspector.
+- Added a read-only Drum performance audit and confirmed all three curated kits pair their open/closed hats in explicit mute groups; no automatic choke-group rewriting is currently necessary.
+- Corrected ambiguous filename classification to prioritize the leading instrument token (`CH 808 Snap` is a closed hat; `Tom 606 BD` is a tom) before descriptive tokens used later in a filename.
 - Next gate: complete the four melodic/favorite listening decisions, capture both XPJs and companion data folders, and compare the single Drum Split change.
 
 ## 16. Reference material

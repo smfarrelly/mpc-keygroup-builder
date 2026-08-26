@@ -62,3 +62,18 @@ clips are capped and faded for quick comparison.
 Auditions are intentionally dry and approximate. They help detect silence,
 wrong source selection, extreme pitch mapping, corrupt PCM data, and obvious
 level differences; they do not emulate the MPC audio engine.
+
+## Drum performance audit
+
+Inspect pad classification, playback fields, and hat mute groups with:
+
+```bash
+uv run mpc-drum-audit "/path/to/Drum Program.xpm"
+```
+
+The command is read-only and supports legacy XML plus MPC 3 compressed Drum
+Programs. Its compact report shows category counts and mute-group membership;
+`--json` includes every populated pad's sample, category, mute group, polyphony,
+monophonic flag, and playback mode. It warns when open/closed hats lack a group,
+when a hat group lacks its open or closed counterpart, or when a hat group also
+contains a non-hat category.

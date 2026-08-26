@@ -68,6 +68,19 @@ slot, so its sample classification is written to color slot `number - 1`.
 colors.
 Use the optional `[overrides]` table to assign an unusual exact sample filename
 or filename stem to a category without modifying the built-in matching rules.
+Leading instrument tokens take precedence over later descriptive tokens, so
+names such as `CH 808 Snap` remain closed hats and `Tom 606 BD` remains a tom.
+
+Inspect a Drum Program's populated pads and hat choke behavior without writing:
+
+```bash
+uv run mpc-drum-audit "/path/to/Drum Program.xpm"
+```
+
+Add `--json` for per-pad sample category, mute group, polyphony, monophonic
+state, and playback-mode data. The audit supports legacy XML and MPC 3
+compressed Drum Programs and warns about ungrouped or mismatched open/closed
+hats.
 
 This operation does not convert a keygroup into a Drum Program. Program-type
 selection is validation, and arbitrary Drum Program generation will use a

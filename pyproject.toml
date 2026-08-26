@@ -14,6 +14,7 @@ mpc-program-audition = "mpc_keygroup_builder.audition:main"
 mpc-program-color = "mpc_keygroup_builder.programs:main"
 mpc-project-capture = "mpc_keygroup_builder.capture:main"
 mpc-hardware-results = "mpc_keygroup_builder.hardware:main"
+mpc-drum-audit = "mpc_keygroup_builder.drum_audit:main"
 
 [build-system]
 requires = ["uv_build>=0.12.5,<0.13.0"]
