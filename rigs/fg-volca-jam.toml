@@ -1,7 +1,8 @@
 schema_version = 1
 name = "FG Volca Jam"
-description = "MPC Key 37 host with stable strip roles and configurable Volca MIDI channels."
+description = "MPC Key 37 host distributed through a CME MIDI Thru5 WC, with stable strip roles and configurable Volca MIDI channels."
 acceptance = [
+  "CME Thru5 distributes MPC notes, clock, and transport to all three Volcas.",
   "MPC transport starts and stops every enabled Volca predictably.",
   "Each external track reaches only its intended Volca.",
   "Keyboard and pads can be routed without stuck notes or accidental layering.",
@@ -15,12 +16,22 @@ kind = "host"
 clock = "send"
 
 [[devices]]
+id = "thru5"
+name = "CME MIDI Thru5 WC"
+kind = "midi-thru"
+input = "MPC MIDI Out"
+outputs = 5
+power = "USB-C 5V"
+status = "ordered"
+
+[[devices]]
 id = "volca-drum"
 name = "Korg Volca Drum"
 kind = "synth"
 midi_channel = 10
 midi_port = "MPC MIDI Out"
 clock = "receive"
+via = "thru5"
 
 [[devices]]
 id = "volca-bass"
@@ -29,6 +40,7 @@ kind = "synth"
 midi_channel = 1
 midi_port = "MPC MIDI Out"
 clock = "receive"
+via = "thru5"
 
 [[devices]]
 id = "volca-keys"
@@ -37,6 +49,7 @@ kind = "synth"
 midi_channel = 2
 midi_port = "MPC MIDI Out"
 clock = "receive"
+via = "thru5"
 
 [[tracks]]
 index = 1

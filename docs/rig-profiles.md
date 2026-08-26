@@ -60,9 +60,15 @@ channel 2, and Volca Drum in single-channel mode on channel 10. The Drum also
 passes MPC clock/start/stop and uses a verified six-pad Custom Pad Perform map:
 A01–A06 send C3, D3, E3, F3, G3, and A3 respectively.
 
-The current setup has no MIDI thru/splitter, so these tests were performed one
-device at a time. Simultaneous isolation, clock, drift, and ten-minute jam
-acceptance remain pending. See `inventory/volca-hardware-results.md`.
+A CME MIDI Thru5 WC is ordered as the permanent distributor. The planned
+topology is MPC physical MIDI Out to Thru5 MIDI In, then Thru outputs 1–3 to
+Volca Bass, Keys, and Drum respectively. The Thru5 copies all MIDI data to each
+output; channel assignments 1, 2, and 10 provide device isolation while system
+clock and transport reach all three.
+
+Until it arrives, tests are performed one device at a time. Simultaneous
+isolation, clock, drift, and ten-minute jam acceptance remain pending. See
+`inventory/volca-hardware-results.md`.
 
 The checked-in channel choices are starting values, not claims about factory
 defaults. Anyone reusing the profile can edit the TOML before generating their

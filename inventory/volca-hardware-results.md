@@ -13,6 +13,21 @@ The positive route to each device was confirmed individually. Cross-device
 leakage with all three connected remains pending until the thru/splitter is
 available.
 
+## Confirmed distribution hardware
+
+A CME MIDI Thru5 WC has been ordered. Planned wiring:
+
+- MPC Key 37 physical MIDI Out → Thru5 MIDI In.
+- Thru5 Out 1 → Volca Bass MIDI In, channel 1.
+- Thru5 Out 2 → Volca Keys MIDI In, channel 2.
+- Thru5 Out 3 → Volca Drum MIDI In, single-channel mode channel 10.
+- Thru5 USB-C → stable 5V power.
+
+Outputs 4 and 5 remain intentionally unused for future expansion. The Thru5 is
+a one-input distributor, not a merger or independently addressable MIDI
+interface; the MPC continues to use its one physical MIDI output and the
+Volcas perform channel filtering.
+
 ## Volca Drum pad map
 
 The Volca Drum MIDI track uses Pad Perform → Custom with this Bank A map:
@@ -43,7 +58,7 @@ and do not duplicate its notes on the MPC track.
 ## Pending
 
 - Repeat clock/transport testing on Volca Keys and Volca Bass.
-- Connect all three through a MIDI thru/splitter and test channel isolation,
+- Connect all three through the ordered CME MIDI Thru5 WC and test channel isolation,
   simultaneous start/stop, and drift.
 - Record practical audio routing and gain settings.
 - Save, power-cycle, and confirm the custom Drum pad map, ports, channels,

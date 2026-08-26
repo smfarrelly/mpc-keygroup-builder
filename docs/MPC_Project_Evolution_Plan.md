@@ -584,6 +584,10 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
 - The Launch Control XL 3 has arrived, but its firmware, Components custom mode,
   and MPC MIDI Learn setup are intentionally deferred until the current
   Scratchpad and Volca baselines pass save/reload testing.
+- A CME MIDI Thru5 WC has been ordered and confirmed as the permanent
+  one-input/five-output distributor for the Volca rig. Bass, Keys, and Drum
+  retain MIDI channels 1, 2, and 10; simultaneous acceptance begins after it
+  arrives.
 
 ## 16. Reference material
 
