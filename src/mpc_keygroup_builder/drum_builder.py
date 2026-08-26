@@ -26,17 +26,30 @@ class DrumManifest:
     pads: tuple[PadSpec, ...]
 
 
-def load_manifest(path: Path) -> DrumManifest:
+def _load_manifest(path: Path, loading: set[Path]) -> DrumManifest:
+    path = path.resolve()
+    if path in loading:
+        raise ValueError(f"manifest inheritance cycle: {path}")
+    loading.add(path)
     with path.open("rb") as stream:
         data = tomllib.load(stream)
-    name = data.get("name")
+    base: DrumManifest | None = None
+    inherited = data.get("extends")
+    if inherited is not None:
+        if not isinstance(inherited, str) or not inherited.strip():
+            raise ValueError("manifest extends must be a non-empty path string")
+        inherited_path = Path(inherited)
+        if not inherited_path.is_absolute():
+            inherited_path = path.parent / inherited_path
+        base = _load_manifest(inherited_path, loading)
+    name = data.get("name", base.name if base else None)
     if not isinstance(name, str) or not name.strip():
         raise ValueError("manifest name must be a non-empty string")
-    raw_pads = data.get("pads")
-    if not isinstance(raw_pads, list) or not raw_pads:
-        raise ValueError("manifest must contain at least one [[pads]] table")
-    pads: list[PadSpec] = []
-    seen: set[int] = set()
+    raw_pads = data.get("pads", [])
+    if not isinstance(raw_pads, list):
+        raise ValueError("manifest pads must be [[pads]] tables")
+    pads: list[PadSpec] = list(base.pads if base else ())
+    seen = {spec.pad for spec in pads}
     for index, raw in enumerate(raw_pads, 1):
         if not isinstance(raw, dict):
             raise ValueError(f"pads entry {index} must be a table")
@@ -52,7 +65,14 @@ def load_manifest(path: Path) -> DrumManifest:
             raise ValueError(f"sample must be a basename, not a path: {sample!r}")
         seen.add(pad)
         pads.append(PadSpec(pad=pad, sample=sample))
+    if not pads:
+        raise ValueError("manifest must contain at least one [[pads]] table")
+    loading.remove(path)
     return DrumManifest(name=name.strip(), pads=tuple(sorted(pads, key=lambda item: item.pad)))
+
+
+def load_manifest(path: Path) -> DrumManifest:
+    return _load_manifest(path, set())
 
 
 def _frames(path: Path) -> int:

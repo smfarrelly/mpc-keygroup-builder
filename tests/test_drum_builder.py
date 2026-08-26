@@ -91,6 +91,45 @@ class DrumBuilderTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "duplicate pad 1"):
                 drum_builder.load_manifest(path)
 
+    def test_extends_a_base_manifest_with_additional_banks(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "base.toml").write_text(
+                'name="Base"\n[[pads]]\npad=1\nsample="Bongo.wav"\n',
+                encoding="utf-8",
+            )
+            child = root / "expanded.toml"
+            child.write_text(
+                'name="Expanded"\nextends="base.toml"\n'
+                '[[pads]]\npad=17\nsample="FX.wav"\n',
+                encoding="utf-8",
+            )
+            manifest = drum_builder.load_manifest(child)
+            self.assertEqual(manifest.name, "Expanded")
+            self.assertEqual(
+                manifest.pads,
+                (
+                    drum_builder.PadSpec(pad=1, sample="Bongo.wav"),
+                    drum_builder.PadSpec(pad=17, sample="FX.wav"),
+                ),
+            )
+
+    def test_rejects_an_inherited_pad_collision(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "base.toml").write_text(
+                'name="Base"\n[[pads]]\npad=1\nsample="Bongo.wav"\n',
+                encoding="utf-8",
+            )
+            child = root / "expanded.toml"
+            child.write_text(
+                'name="Expanded"\nextends="base.toml"\n'
+                '[[pads]]\npad=1\nsample="FX.wav"\n',
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "duplicate pad 1"):
+                drum_builder.load_manifest(child)
+
     def test_refuses_nonempty_output(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

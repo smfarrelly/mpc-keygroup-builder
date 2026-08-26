@@ -105,6 +105,10 @@ pads and velocity layers, sets one-shot playback, writes inclusive endpoints,
 and applies the semantic pad-color palette. It refuses a non-empty output
 directory so an existing program cannot be silently overwritten.
 
+A manifest may set `extends = "base-manifest.toml"` to append new pad banks
+without repeating an established layout. Inherited pad numbers are locked:
+accidental collisions are rejected rather than silently replacing a tested pad.
+
 ## Hardware workflow helpers
 
 `mpc-hardware-results` validates a batch TOML listening report and updates the

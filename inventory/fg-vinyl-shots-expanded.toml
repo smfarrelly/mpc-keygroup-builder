@@ -1,0 +1,104 @@
+name = "FG Vinyl Shots 02 Expanded"
+extends = "fg-vinyl-shots.toml"
+
+# Banks A and B are inherited unchanged from FG Vinyl Shots 01.
+
+# Bank C: additional hand percussion, shakers, cowbells, and odd percussion.
+[[pads]]
+pad = 33
+sample = "Bongo CR78 Pop Vinyl SP Clean.WAV"
+[[pads]]
+pad = 34
+sample = "Bongo CR78 Standard Vinyl SP.WAV"
+[[pads]]
+pad = 35
+sample = "Cabasa 727 Vinyl SP Clean 02.WAV"
+[[pads]]
+pad = 36
+sample = "Cowbell LM1 Vinyl SP 01.WAV"
+[[pads]]
+pad = 37
+sample = "Cowbell Tape Vinyl SP.WAV"
+[[pads]]
+pad = 38
+sample = "Shaker Acoustic Classic Vinyl SP.WAV"
+[[pads]]
+pad = 39
+sample = "Shaker Acoustic Lite Vinyl SP.WAV"
+[[pads]]
+pad = 40
+sample = "Shaker Flux Vinyl SP.WAV"
+[[pads]]
+pad = 41
+sample = "Clave 808 Bend Vinyl SP.WAV"
+[[pads]]
+pad = 42
+sample = "Conga LM1 Lo Vinyl SP Clean.WAV"
+[[pads]]
+pad = 43
+sample = "Conga LM1 Vinyl SP 02.WAV"
+[[pads]]
+pad = 44
+sample = "Perc Casio Vinyl SP.WAV"
+[[pads]]
+pad = 45
+sample = "Perc Club Hollow Vinyl SP.WAV"
+[[pads]]
+pad = 46
+sample = "Perc Machinedrum Blip Vinyl SP 01.WAV"
+[[pads]]
+pad = 47
+sample = "Perc Machinedrum Boom Vinyl SP Clean 01.WAV"
+[[pads]]
+pad = 48
+sample = "Perc Perkons Delay Vinyl SP.WAV"
+
+# Bank D: bass/guitar fragments, transitions, and character drum-machine hits.
+[[pads]]
+pad = 49
+sample = "FX Bass Fuzz Vinyl SP F.WAV"
+[[pads]]
+pad = 50
+sample = "FX Cheeky Guit Vinyl SP A.WAV"
+[[pads]]
+pad = 51
+sample = "FX Counter Vinyl SP.WAV"
+[[pads]]
+pad = 52
+sample = "FX Fat Bass Glitch Vinyl SP B.WAV"
+[[pads]]
+pad = 53
+sample = "FX Fat Bass Vinyl SP Ab.WAV"
+[[pads]]
+pad = 54
+sample = "FX Fat Bass Vinyl SP B.WAV"
+[[pads]]
+pad = 55
+sample = "Tom Casio Delay Vinyl SP 01.WAV"
+[[pads]]
+pad = 56
+sample = "BD Club Stab Vinyl SP.WAV"
+[[pads]]
+pad = 57
+sample = "SD Vox Chop Vinyl SP.WAV"
+[[pads]]
+pad = 58
+sample = "SD Reverse Vinyl SP.WAV"
+[[pads]]
+pad = 59
+sample = "SD Bridge Verb Vinyl SP.WAV"
+[[pads]]
+pad = 60
+sample = "Tom Casio Laser Vinyl SP.WAV"
+[[pads]]
+pad = 61
+sample = "Tom Flux Vinyl SP C.WAV"
+[[pads]]
+pad = 62
+sample = "Cymbal Machinedrum Bell Vinyl SP.WAV"
+[[pads]]
+pad = 63
+sample = "Clap Machinedrum Noise Vinyl SP 01.WAV"
+[[pads]]
+pad = 64
+sample = "Rim Tape Skin Vinyl SP.WAV"

@@ -31,6 +31,21 @@ The generated folder contains 32 referenced WAVs. Local simulation and the
 post-copy SD-card simulation both pass with zero missing samples, dead trigger
 cells, or stacked trigger cells. Hardware listening remains required.
 
+## Expanded four-bank variant
+
+`inventory/fg-vinyl-shots-expanded.toml` inherits Banks A and B without
+duplicating their definitions, then adds:
+
+- Bank C: 16 additional bongos, cabasa, cowbells, shakers, clave, congas, and
+  electronic percussion.
+- Bank D: 16 bass/guitar fragments, transitions, vocal/reverse hits, laser/tom
+  accents, a metallic cymbal, noise clap, and tape rim.
+
+The expanded program deliberately leaves Banks E–H open for future layout
+experiments or user customization. It should be deployed alongside—not over—the
+32-pad version until hardware comparison establishes which size is faster to
+navigate.
+
 ## Hardware acceptance
 
 - [ ] Load the program, then leave the Browser so assigned pad colors appear.
