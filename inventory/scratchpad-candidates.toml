@@ -27,7 +27,7 @@ id = "fishermans-friend"
 ledger_path = "Programs/Keygroups/Samples From Mars/101 From Mars/Bass/Fisherman'sFriend.xpm"
 sd_path = "Programs/Keygroups/FG Scratchpad Candidates/Bass/Fisherman'sFriend.xpm"
 role = "bass"
-selected = true
+selected = false
 
 [[candidates]]
 id = "e-piano"

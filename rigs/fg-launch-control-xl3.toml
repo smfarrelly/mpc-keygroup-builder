@@ -39,7 +39,6 @@ index = 3
 name = "Bass"
 role = "bass"
 type = "keygroup"
-program = "Fisherman'sFriend"
 
 [[tracks]]
 index = 4
