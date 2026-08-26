@@ -2,11 +2,19 @@
 
 **Owner:** Steve Farrelly  
 **Started:** August 25, 2026  
-**Status:** Active — Phase 0 preservation and inventory  
-**Canonical working copy:** `docs/MPC_Project_Evolution_Plan.md`  
-**Primary instrument:** Akai MPC Key 37  
+**Status:** Active — Scratchpad validation and v0.2 Drum/Layout foundation
+
+**Operational working copy:** `docs/MPC_Project_Evolution_Plan.md`
+
+**Product roadmap:** `docs/PRODUCT_ROADMAP.md`
+
+**Primary instrument:** Akai MPC Key 37
 
 ## 1. Project north star
+
+The product milestone sequence, dependency graph, and release gates now live in
+`docs/PRODUCT_ROADMAP.md`. This document remains the detailed hardware design,
+operational checklist, and chronological progress log.
 
 Build a hardware-first, live-enabled composition system that preserves the immediate fun of the Volca Drum, Volca Keys, and Volca Bass:
 

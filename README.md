@@ -30,6 +30,11 @@ See [the MPC helper-project compatibility survey](docs/mpc-ecosystem-survey.md)
 for related open-source work, licensing constraints, and the features selected
 for independent implementation in `mpc-keygroup-builder`.
 
+See [the product roadmap](docs/PRODUCT_ROADMAP.md) for the dependency-led path
+from the current Drum Program/Layout milestone through the visual Program
+Designer, expressive instruments, creative MIDI, project generation,
+arrangement, catalog, and live-companion work.
+
 ## License
 
 The source code is available under the [MIT License](LICENSE). Sample libraries,

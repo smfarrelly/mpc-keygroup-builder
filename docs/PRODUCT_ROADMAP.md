@@ -1,0 +1,244 @@
+# MPC Instrument Factory Product Roadmap
+
+**Status:** Active
+
+**Current milestone:** v0.2 — Drum Programs + Layout Engine
+
+**Primary hardware:** Akai MPC Key 37
+
+**Roadmap source:** [MPC kit ideas shared conversation](https://chatgpt.com/share/6a8f6397-6abc-83ea-898a-98c9bf1f5c6b)
+
+**Operational plan:** `docs/MPC_Project_Evolution_Plan.md`
+
+## North star
+
+Build a reusable, hardware-first instrument factory that turns owned sample
+libraries and source-preset metadata into playable MPC programs, predictable
+pad layouts, useful projects, and reproducible musical ideas. The computer
+prepares, validates, previews, and safely deploys assets; the MPC remains the
+place where music is played and captured.
+
+Every milestone must leave the hardware setup more useful than it was before.
+Architecture work does not count as complete until it produces a playable,
+inspectable, or safer result.
+
+## Proven baseline
+
+The project is not starting from zero. The following capabilities are already
+working and tested:
+
+- Keygroup generation with note inference, velocity layers, structural checks,
+  semantic simulation, and local audition rendering.
+- XML and MPC 3 compressed XPM inspection, program-type detection, and semantic
+  comparison.
+- Drum Program classification, fixed pad colors, pad maps, mute-group auditing,
+  and a manifest-driven 128-slot one-shot Drum Program builder.
+- A hardware-deployed 32-pad `FG Vinyl Shots 01` candidate generated from a
+  reusable manifest.
+- Safe SD deployment, checksum verification, licensed-artifact repository
+  guards, program inventory, and hardware-result ledgers.
+- Reusable Scratchpad, Volca, and Launch Control rig definitions.
+- Captured MPC 3.9.1.2 projects proving internal Scratchpad routing, Volca MIDI
+  channels, and a custom six-pad Volca Drum map.
+
+## Dependency spine
+
+The roadmap follows this dependency order:
+
+```text
+Normalized Program Model
+  ├── semantic sound roles ── layout engine ── device profiles
+  │                                  └──────── Program Designer
+  ├── source importers ───────── expressive program exporters
+  └── catalog/index ───────────── creative MIDI engine
+                                      └── project generator
+                                             └── mutation/arrangement
+
+Network discovery is an early research spike. OTA deployment and live control
+remain late-stage features until a supported, safe transport is proven.
+```
+
+## v0.2 — Drum Programs + Layout Engine
+
+**Why now:** This delivers immediate pad-muscle-memory improvements while
+creating the abstractions required by the visual editor, cross-library kits,
+and semantic pattern generation.
+
+### Already delivered
+
+- [x] Generate a self-contained Drum Program from a TOML pad manifest.
+- [x] Support 128 slots/Banks A–H in the builder and validation model.
+- [x] Infer broad kick, snare, hat, clap, rim, tom, cymbal, percussion, and FX
+  roles from filenames.
+- [x] Apply customizable semantic colors.
+- [x] Validate sample presence, endpoints, layers, dead pads, and stacked
+  velocity cells.
+- [x] Deploy and validate the first focused percussion/FX program on the SD.
+
+### Current slices
+
+1. **Hardware closeout.** Finish `FG Vinyl Shots 01`, final bass, and final
+   lead/pad listening; preserve the resulting Scratchpad master and jam copy.
+2. **Normalized Program Model v1.** Represent samples, zones, velocity layers,
+   playback mode, semantic roles, pads, colors, mute groups, and source
+   provenance independently from XPM serialization.
+3. **Role taxonomy v1.** Expand broad categories into stable identities such as
+   `kick.primary`, `snare.primary`, `hihat.closed`, `tom.low`, `perc.shaker`,
+   `fx.stab`, and `vocal.one_shot`, with explicit filename overrides.
+4. **Layout model v1.** Separate sound identity from physical placement and
+   support mirroring, bank allocation, locked pads, alternates, and empty slots.
+5. **Stock layout library.** Ship Classic MPC-ish, right-handed performance,
+   left-handed performance, GM-ish, original-machine, and full-library layouts.
+6. **Device profile v1.** Describe Key 37 pads, banks, keys, controls, and MIDI
+   note behavior without hardcoding them into the layout engine.
+
+**Exit gate:** One source kit can reproducibly generate Classic, right-handed,
+left-handed, and full A–H variants. At least two variants load correctly on the
+Key 37, retain colors after reload, and pass a short playing comparison.
+
+## v0.3 — MPC Program Designer
+
+Start with a local, read-only viewer and add editing in small usable releases:
+
+1. Import an XPM or build manifest and show all populated pads.
+2. Switch Banks A–H and preview the Key 37's 16-pad surface and 37-key range.
+3. Show semantic role, sample, color, MIDI note, layers, mute group, and
+   playback behavior for the selected pad.
+4. Switch device profiles without changing the underlying program.
+5. Add drag/drop rearrangement, locked pads, palette editing, handedness
+   conversion, and layout comparison.
+6. Export a manifest first; export a validated XPM only through the same tested
+   engine used by the CLI.
+7. Add optional MIDI-groove heat maps and ergonomic layout suggestions after
+   deterministic layouts are trusted.
+
+**Exit gate:** A user can inspect a kit, create a handed layout, preview every
+bank, export it, and load the result on hardware without manually editing XML.
+
+## v0.4 — Expressive Instrument Factory
+
+- Preserve the current reliable Keygroup mapping path.
+- Improve root-note and useful-range inference.
+- Preserve and validate velocity layers, loops, envelopes, filters, polyphony,
+  and Q-Link-facing parameters.
+- Generate purposeful variants such as Clean, Warm, Pad, Pluck, Bass, and
+  Lo-Fi from a single normalized source instrument.
+- Add Clip/slice output only after loop tempo, launch, mute, and transition
+  behavior has a hardware-tested design.
+
+**Exit gate:** One source instrument produces at least three musically distinct,
+validated variants, and one loop collection produces a useful MPC-native
+performance program.
+
+## v0.5 — Source Intelligence
+
+- Import Ableton racks and Drum Racks into the normalized model.
+- Extract sample references, roots, zones, layers, playback, loops, envelopes,
+  macros, choke groups, and effects where readable.
+- Label each translation as Direct, Close, Template, or Reference-only.
+- Add Kontakt or Maschine import only when a representative pack demonstrates
+  value beyond WAV/Ableton metadata.
+
+**Exit gate:** The utility can explain a representative Ableton preset and
+generate an MPC result that preserves more intent than filename inference alone.
+
+## v0.6 — Creative MIDI Engine
+
+Implement deterministic, seed-reproducible generators in this order:
+
+1. Chords and harmonic rhythm.
+2. Drum patterns addressed by semantic roles, not fixed pad numbers.
+3. Bass lines constrained by the chord model and useful instrument range.
+4. Melodies and motifs with controllable repetition and variation.
+
+Later controls include density, swing, syncopation, octave range, harmonic
+adventurousness, repetition, and variation. Generated events must resolve
+through the active layout so the same pattern works across handed or device
+layouts.
+
+**Exit gate:** A saved seed recreates the same four-part musical idea, and the
+drum pattern survives translation between two pad layouts.
+
+## v0.7 — Creative Workstation Generator
+
+- Combine selected programs, layouts, device profiles, templates, and MIDI
+  generators into ready-to-play MPC projects.
+- Ship recipe families such as dusty jazz, electro, ambient, 80s funk, house,
+  and weird.
+- Generate a restrained starting sequence with deliberate room for live play.
+- Preserve the eight-strip Scratchpad/Volca mental model.
+- Add a `Surprise Me` path only after recipes remain reproducible by seed.
+
+**Exit gate:** One command or Program Designer action creates a validated,
+recoverable project that reaches first playable sound in under one minute.
+
+## v0.8 — Mutation + Arrangement
+
+- Mutate one musical dimension by a controlled percentage while preserving the
+  project's identity.
+- Generate named Main, Main B, Breakdown, Build, and Outro sequences.
+- Preserve locked tracks, notes, pads, and user performances.
+- Make every mutation reversible and reproducible by seed.
+
+**Exit gate:** A useful four-bar idea becomes a coherent multi-sequence song
+outline without editing a computer timeline.
+
+## v0.9 — Catalog + Cross-library Kits
+
+- Index the owned library by pack, program type, semantic role, range, duration,
+  loudness, and later spectral/transient features.
+- Search for musical descriptions such as `warm electric piano`, `dirty short
+  kick`, or `glassy pad`.
+- Build deterministic cross-pack kits from style recipes before adding learned
+  or open-ended recommendations.
+- Record provenance for every selected sample and generated asset.
+
+**Exit gate:** A query returns useful candidates and a cross-library recipe
+builds a licensed-local, reproducible kit without copying audio into source
+control.
+
+## v1.0 — Live Companion + Reusable Release
+
+### Early research, late productization
+
+- Safely discover what the Key 37 exposes over supported Wi-Fi/network MIDI.
+- Determine whether a documented, non-destructive file-transfer route exists.
+- Do not modify the MPC operating system or depend on unsupported services.
+- If reliable, support live MIDI generation and mutation while the MPC remains
+  the active instrument.
+- Keep SD/USB deployment as the supported fallback.
+
+### Release readiness
+
+- Use synthetic or freely licensed fixtures and demonstrations.
+- Document bring-your-own-samples licensing boundaries.
+- Publish schemas, device profiles, layouts, recipes, validators, and tests.
+- Prove the workflow through at least three completed compositions.
+- Confirm another MPC owner can generate, validate, preview, install, and play
+  a program by following the documentation.
+
+**Exit gate:** The project is useful to another musician without access to this
+specific SD card, sample library, or development history.
+
+## Parallel hardware track
+
+Hardware work continues alongside software milestones and provides the truth
+for release gates:
+
+- Finalize the Scratchpad bass, lead/pad, and Track 2 shots choices.
+- Record and reload an actual MPC-authored Volca MIDI sequence.
+- Complete three-device Volca isolation and sync after the CME MIDI Thru5 WC
+  arrives.
+- Establish practical audio gain and capture routing.
+- Defer Launch Control XL 3 mapping until Scratchpad and Volca restore behavior
+  is stable, then preserve one universal eight-track control vocabulary.
+
+## Immediate next three increments
+
+1. **Hardware:** listen to `FG Vinyl Shots 01` and the lead/bass brackets;
+   promote final favorites and save a revised protected Scratchpad.
+2. **Model:** introduce Normalized Program Model v1 behind existing commands,
+   with adapters that prove current output remains byte- or semantically
+   equivalent.
+3. **Layout:** implement semantic layout presets and render Classic,
+   right-handed, left-handed, and full-library maps before beginning the web UI.
