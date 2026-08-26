@@ -42,9 +42,14 @@ duplicating their definitions, then adds:
   accents, a metallic cymbal, noise clap, and tape rim.
 
 The expanded program deliberately leaves Banks E–H open for future layout
-experiments or user customization. It should be deployed alongside—not over—the
-32-pad version until hardware comparison establishes which size is faster to
-navigate.
+experiments or user customization. It is deployed alongside—not over—the
+32-pad version at:
+
+`Programs/Drum Programs/FG Scratchpad Candidates/FG Vinyl Shots 02 Expanded/FG Vinyl Shots 02 Expanded.xpm`
+
+The post-copy SD simulation passes with 64 playable pads, zero missing samples,
+dead trigger cells, stacked layers, or Drum Program audit warnings. Hardware
+comparison must still establish which program size is faster to navigate.
 
 ## Hardware acceptance
 
