@@ -14,7 +14,7 @@ Time In Standalone Mode](https://support.akaipro.com/en/support/solutions/articl
 2. Start an empty project and keep its single default sequence empty. Omitting
    note events makes the routing comparison cleaner.
 3. Create exactly two tracks:
-   - Track 1: Keygroup, `E Piano`.
+   - Track 1: Keygroup, `Wurli` from Mirage From Mars.
    - Track 2: Drum, `Vinyl SP From Mars 01 FG COLORS`.
 4. In Preferences → Sequencer, set Rec Arm Behaviour to `Multi`.
 5. In Track View, hold Shift while enabling Rec Arm on both tracks so both arm
@@ -29,7 +29,7 @@ Time In Standalone Mode](https://support.akaipro.com/en/support/solutions/articl
 3. Hold Shift to reveal `Drum Split`, then tap `Drum Split` exactly once.
 4. Change nothing else.
 5. Save As `Key37_Routing_Changed.xpj` in the same SD-card folder.
-6. Confirm the changed state: the physical keys play E Piano while the physical
+6. Confirm the changed state: the physical keys play Wurli while the physical
    pads play the Drum track without manually selecting tracks between gestures.
 
 The one intended difference is the Key Ranges `Drum Split` action. Track order,
@@ -46,7 +46,7 @@ Keep both controlled files. Test fallbacks one at a time and record the outcome:
    attempt.
 3. If track MIDI-input selectors are available, test `MPC Keyboard` for the
    Keygroup track and `MPC Pads` for the Drum track.
-4. For every attempt, record the exact setting, whether keys play E Piano,
+4. For every attempt, record the exact setting, whether keys play Wurli,
    whether pads play drums, and whether either controller triggers both tracks.
 5. Save the closest known-good project under a distinct filename without
    overwriting the baseline or changed captures.
