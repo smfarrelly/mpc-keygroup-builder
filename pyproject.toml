@@ -12,7 +12,13 @@ mpc-keygroup-batch = "mpc_keygroup_builder.workflow:main"
 mpc-program-test = "mpc_keygroup_builder.testing:main"
 mpc-program-audition = "mpc_keygroup_builder.audition:main"
 mpc-program-color = "mpc_keygroup_builder.programs:main"
+mpc-project-capture = "mpc_keygroup_builder.capture:main"
+mpc-hardware-results = "mpc_keygroup_builder.hardware:main"
 
 [build-system]
 requires = ["uv_build>=0.12.5,<0.13.0"]
 build-backend = "uv_build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "."]

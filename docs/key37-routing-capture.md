@@ -61,3 +61,17 @@ modification into:
 The entire `work/` tree is ignored by Git. After copying, calculate SHA-256
 hashes and inspect/compare the XPJs using commit `d23ee5c` from the isolated
 `mac/xpj-inspector` branch. Do not merge that branch merely to capture files.
+
+The safe capture command performs the copy, byte verification, and hash
+manifest atomically:
+
+```bash
+uv run mpc-project-capture \
+  "/media/steve-farrelly/3561-6538/Projects/FG Scratchpad Routing Tests" \
+  --output work/key37-routing-captures
+```
+
+It requires both exact XPJ filenames and exactly one sibling ProjectData folder
+whose normalized name begins with the corresponding project stem. It refuses a
+missing or ambiguous pair, symbolic links, a nonempty destination, and any
+source/destination hash mismatch.

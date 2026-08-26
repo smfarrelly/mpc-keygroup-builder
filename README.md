@@ -73,6 +73,15 @@ This operation does not convert a keygroup into a Drum Program. Program-type
 selection is validation, and arbitrary Drum Program generation will use a
 known-good MPC-saved Drum template rather than changing a type label.
 
+## Hardware workflow helpers
+
+`mpc-hardware-results` validates a batch TOML listening report and updates the
+750-row hardware ledger atomically; it is dry-run-only unless `--apply` is
+passed. `mpc-project-capture` ingests the controlled Key 37 baseline/changed XPJ
+pair and companion ProjectData folders into an ignored local directory, verifies
+every copied file with SHA-256, and records a provenance manifest. Neither tool
+parses or modifies licensed samples or XPJ contents.
+
 WAV filenames may begin with a MIDI note number; the patch name may follow the
 number immediately or after `_`, a space, or `-`. When no numeric prefix is
 present, a space- or underscore-delimited trailing pitch name is used with the

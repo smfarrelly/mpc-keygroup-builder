@@ -25,3 +25,19 @@ hardware pass.
 `semantic_verdict` records the local note/velocity and audio-boundary simulator
 result. `simulation_scope=testing` identifies isolated fixtures whose failures
 do not block the production deployment gate. See `docs/testing-framework.md`.
+
+## Applying a hardware session
+
+Copy `inventory/hardware-results.example.toml` into ignored `work/`, add one
+`[[results]]` table per tested program, and include all five fields shown in the
+example. Validate the batch without writing:
+
+```bash
+uv run mpc-hardware-results inventory/program-status.csv \
+  work/key37-hardware-results.toml
+```
+
+Review the proposed rows, then add `--apply`. The command rejects unknown
+program paths, duplicate entries, invalid statuses/favorite values, incomplete
+results, and non-untested results without listening notes. Ledger replacement
+is atomic and retains its existing line-ending convention.

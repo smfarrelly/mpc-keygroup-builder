@@ -1,0 +1,9 @@
+# Example only: copy this file into ignored work/ and replace every value with
+# an observed Key 37 result before applying it to inventory/program-status.csv.
+
+[[results]]
+path = "Programs/Keygroups/Samples From Mars/101 From Mars/Bass/Fisherman'sFriend.xpm"
+hardware_status = "pass"
+favorite = "yes"
+scratchpad_role = "bass"
+notes = "Loads and reloads reliably; even velocity and useful release across the Key 37."
