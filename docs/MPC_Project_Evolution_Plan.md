@@ -581,6 +581,9 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
 - Next gates: save/power-cycle the Scratchpad and Volca projects, test Bass and
   Keys clock sequentially, then complete simultaneous Volca acceptance after a
   MIDI thru/splitter is available.
+- The Launch Control XL 3 has arrived, but its firmware, Components custom mode,
+  and MPC MIDI Learn setup are intentionally deferred until the current
+  Scratchpad and Volca baselines pass save/reload testing.
 
 ## 16. Reference material
 
