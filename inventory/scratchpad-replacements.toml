@@ -3,6 +3,20 @@ name = "FG Scratchpad bass and keys replacement bracket"
 required_roles = ["bass", "keys"]
 
 [[candidates]]
+id = "pluck-bass"
+ledger_path = "Programs/Keygroups/Samples From Mars/Mirage From Mars/Bass/Pluck Bass.xpm"
+sd_path = "Programs/Keygroups/Samples From Mars/Mirage From Mars/Bass/Pluck Bass.xpm"
+role = "bass"
+selected = true
+
+[[candidates]]
+id = "wurli"
+ledger_path = "Programs/Keygroups/Samples From Mars/Mirage From Mars/Keys/Wurli.xpm"
+sd_path = "Programs/Keygroups/Samples From Mars/Mirage From Mars/Keys/Wurli.xpm"
+role = "keys"
+selected = true
+
+[[candidates]]
 id = "warm-bass"
 ledger_path = "Programs/Keygroups/Samples From Mars/Dr Sample From Mars/Bass/Warm Bass.xpm"
 sd_path = "Programs/Keygroups/Samples From Mars/Dr Sample From Mars/Bass/Warm Bass.xpm"

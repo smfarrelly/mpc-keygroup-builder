@@ -311,7 +311,7 @@ Programs/Keygroups/Samples From Mars/Mini From Mars/Leads/Sharp Lead.xpm,Keygrou
 Programs/Keygroups/Samples From Mars/Mini From Mars/Leads/Sonic Destruction.xpm,Keygroup,gzip-json,pass,97,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Mirage From Mars/Bass/Fuzz Bass.xpm,Keygroup,gzip-json,pass,71,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Mirage From Mars/Bass/Melodic Bass.xpm,Keygroup,gzip-json,pass,73,production,pass,,untested,,,
-Programs/Keygroups/Samples From Mars/Mirage From Mars/Bass/Pluck Bass.xpm,Keygroup,gzip-json,pass,73,production,pass,,untested,,,
+Programs/Keygroups/Samples From Mars/Mirage From Mars/Bass/Pluck Bass.xpm,Keygroup,gzip-json,pass,73,production,pass,,pass,provisional,bass,Plays correctly on the Key 37 and is liked as the provisional Scratchpad bass choice.
 Programs/Keygroups/Samples From Mars/Mirage From Mars/Bass/Upright Bass.xpm,Keygroup,gzip-json,pass,73,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Mirage From Mars/Guitar/Acoustic Guitar Chorus.xpm,Keygroup,gzip-json,pass,73,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Mirage From Mars/Guitar/Acoustic Guitar.xpm,Keygroup,gzip-json,pass,73,production,pass,,untested,,,
@@ -322,9 +322,9 @@ Programs/Keygroups/Samples From Mars/Mirage From Mars/Guitar/Warp Guitar.xpm,Key
 Programs/Keygroups/Samples From Mars/Mirage From Mars/Keys/Artifact Piano.xpm,Keygroup,gzip-json,pass,73,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Mirage From Mars/Keys/Attack Piano.xpm,Keygroup,gzip-json,pass,73,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Mirage From Mars/Keys/Celeste.xpm,Keygroup,gzip-json,pass,73,production,pass,,untested,,,
-Programs/Keygroups/Samples From Mars/Mirage From Mars/Keys/Dark Piano.xpm,Keygroup,gzip-json,pass,72,production,pass,,untested,,,
+Programs/Keygroups/Samples From Mars/Mirage From Mars/Keys/Dark Piano.xpm,Keygroup,gzip-json,pass,72,production,pass,,pass,provisional,candidate:keys,Plays correctly on the Key 37 and sounds great; retained as a provisional keys alternative behind Mirage Wurli.
 Programs/Keygroups/Samples From Mars/Mirage From Mars/Keys/E Piano.xpm,Keygroup,gzip-json,pass,73,production,pass,,untested,,,
-Programs/Keygroups/Samples From Mars/Mirage From Mars/Keys/Wurli.xpm,Keygroup,gzip-json,pass,73,production,pass,,untested,,,
+Programs/Keygroups/Samples From Mars/Mirage From Mars/Keys/Wurli.xpm,Keygroup,gzip-json,pass,73,production,pass,,pass,yes,keys,Plays correctly on the Key 37 and ranked number one for the Scratchpad keys role.
 Programs/Keygroups/Samples From Mars/Mirage From Mars/Orchestral/Clarinet.xpm,Keygroup,gzip-json,pass,73,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Mirage From Mars/Orchestral/Flute.xpm,Keygroup,gzip-json,pass,73,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Mirage From Mars/Orchestral/Persian Trumpet.xpm,Keygroup,gzip-json,pass,73,production,pass,,untested,,,
@@ -370,7 +370,7 @@ Programs/Keygroups/Samples From Mars/OB From Mars/Keys/Harp INC.xpm,Keygroup,gzi
 Programs/Keygroups/Samples From Mars/OB From Mars/Keys/Mellow Mallet.xpm,Keygroup,gzip-json,pass,255,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/OB From Mars/Keys/Movement Keys.xpm,Keygroup,gzip-json,pass,85,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/OB From Mars/Keys/Warble Chords.xpm,Keygroup,gzip-json,pass,85,production,pass,,untested,,,
-Programs/Keygroups/Samples From Mars/OB From Mars/Keys/Warm Keys.xpm,Keygroup,gzip-json,pass,85,production,pass,,untested,,,
+Programs/Keygroups/Samples From Mars/OB From Mars/Keys/Warm Keys.xpm,Keygroup,gzip-json,pass,85,production,pass,,pass,provisional,candidate:keys,Plays correctly on the Key 37 and sounds great; retained as a provisional warm-keys alternative behind Mirage Wurli.
 Programs/Keygroups/Samples From Mars/OB From Mars/Leads/Black Star Saw.xpm,Keygroup,gzip-json,pass,85,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/OB From Mars/Leads/Black Star Tri.xpm,Keygroup,gzip-json,pass,85,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/OB From Mars/Leads/Metallic Dreams.xpm,Keygroup,gzip-json,pass,85,production,pass,,untested,,,
