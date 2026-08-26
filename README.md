@@ -95,6 +95,30 @@ pair and companion ProjectData folders into an ignored local directory, verifies
 every copied file with SHA-256, and records a provenance manifest. Neither tool
 parses or modifies licensed samples or XPJ contents.
 
+The hardware workflow also includes reusable, dry-run-first utilities:
+
+- `mpc-scratchpad-check` evaluates deployment, listening, core-selection, and
+  final-favorite readiness independently from `inventory/scratchpad-candidates.toml`.
+- `mpc-hardware-init` creates a complete editable hardware-listening session;
+  `mpc-hardware-results` validates and atomically applies it to the ledger.
+- `mpc-drum-map` renders a bank-by-bank pad map with sample, inferred role,
+  color, choke group, and playback behavior.
+- `mpc-xpm inspect|compare` performs format-aware XPM inspection, including a
+  semantic comparison between legacy XML and MPC 3 compressed saves.
+- `mpc-sd-deploy` plans additive card updates. It never deletes, requires
+  `--include-audio` for companion audio, and requires a checksum-verified
+  backup before replacing any existing file.
+- `mpc-audio-levels` measures WAV peak, RMS, crest factor, DC offset, clipping,
+  and silence, and flags relative level outliers.
+- `mpc-routing-capture` copies and hashes the controlled baseline/changed XPJ
+  pair, then runs the detached Mac XPJ inspector without merging its branch.
+- `mpc-repository-guard` prevents WAV/XPM/XPJ, companion data folders, and
+  unexpectedly large files from entering source control.
+
+See [the reusable hardware workflow](docs/hardware-workflow-tools.md) for
+commands, safety behavior, and the boundary between computer checks and MPC
+listening tests.
+
 WAV filenames may begin with a MIDI note number; the patch name may follow the
 number immediately or after `_`, a space, or `-`. When no numeric prefix is
 present, a space- or underscore-delimited trailing pitch name is used with the

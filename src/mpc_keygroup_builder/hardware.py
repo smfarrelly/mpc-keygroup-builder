@@ -4,11 +4,14 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import os
 import stat
 import tempfile
 import tomllib
 from pathlib import Path
+
+from .candidates import load_manifest
 
 
 REQUIRED_FIELDS = {
@@ -100,6 +103,36 @@ def update_ledger(
     return changes
 
 
+def initialize_results(ledger: Path, manifest: Path, output: Path) -> int:
+    if output.exists():
+        raise FileExistsError(f"refusing to overwrite hardware-session file: {output}")
+    candidates = load_manifest(manifest)["candidates"]
+    with ledger.open(newline="", encoding="utf-8") as stream:
+        rows = {row["path"]: row for row in csv.DictReader(stream)}
+    blocks = [
+        "# Edit every result after listening on hardware. Validate with",
+        "# mpc-hardware-results before applying with --apply.",
+        "",
+    ]
+    for candidate in candidates:
+        row = rows.get(candidate["ledger_path"])
+        if row is None:
+            raise ValueError(f"candidate is missing from ledger: {candidate['ledger_path']}")
+        values = {
+            "path": row["path"],
+            "hardware_status": row["hardware_status"],
+            "favorite": row["favorite"],
+            "scratchpad_role": row["scratchpad_role"],
+            "notes": row["notes"],
+        }
+        blocks.append("[[results]]")
+        blocks.extend(f"{key} = {json.dumps(value)}" for key, value in values.items())
+        blocks.append("")
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text("\n".join(blocks), encoding="utf-8")
+    return len(candidates)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("ledger", type=Path)
@@ -115,6 +148,17 @@ def main() -> int:
             f"favorite={after['favorite'] or '-'} role={after['scratchpad_role'] or '-'}"
         )
     print("Applied changes." if args.apply else "Dry run only; pass --apply to update the ledger.")
+    return 0
+
+
+def init_main() -> int:
+    parser = argparse.ArgumentParser(description="Initialize an editable MPC hardware-session TOML file")
+    parser.add_argument("ledger", type=Path)
+    parser.add_argument("manifest", type=Path)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    count = initialize_results(args.ledger, args.manifest, args.output)
+    print(f"Wrote {count} hardware-session entries: {args.output}")
     return 0
 
 

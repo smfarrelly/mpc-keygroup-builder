@@ -1,0 +1,85 @@
+"""Measure WAV audition levels and flag likely outliers before hardware testing."""
+
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+import math
+import statistics
+from pathlib import Path
+
+from .audition import read_pcm_mono
+
+
+def _db(value: float) -> float | None:
+    return 20.0 * math.log10(value) if value > 0 else None
+
+
+def analyze_file(path: Path) -> dict[str, object]:
+    samples, rate = read_pcm_mono(path)
+    count = len(samples)
+    peak = max((abs(value) for value in samples), default=0.0)
+    rms = math.sqrt(sum(value * value for value in samples) / count) if count else 0.0
+    return {
+        "path": str(path.resolve()),
+        "sample_rate": rate,
+        "duration_seconds": count / rate,
+        "peak_dbfs": _db(peak),
+        "rms_dbfs": _db(rms),
+        "crest_db": _db(peak / rms) if rms else None,
+        "dc_offset": sum(samples) / count if count else 0.0,
+        "clipped_fraction": sum(abs(value) >= 0.999 for value in samples) / count if count else 0.0,
+        "silent_fraction": sum(abs(value) < 0.0001 for value in samples) / count if count else 1.0,
+        "flags": [],
+    }
+
+
+def analyze(paths: list[Path], tolerance_db: float = 6.0) -> list[dict[str, object]]:
+    rows = [analyze_file(path) for path in paths]
+    levels = [float(row["rms_dbfs"]) for row in rows if row["rms_dbfs"] is not None]
+    median = statistics.median(levels) if levels else None
+    for row in rows:
+        flags = row["flags"]
+        level = row["rms_dbfs"]
+        if level is None or row["silent_fraction"] > 0.98:
+            flags.append("silent")
+        elif median is not None and abs(float(level) - median) > tolerance_db:
+            flags.append("level-outlier")
+        if row["clipped_fraction"] > 0:
+            flags.append("clipping")
+        if abs(float(row["dc_offset"])) > 0.01:
+            flags.append("dc-offset")
+    return rows
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("paths", nargs="+", type=Path)
+    parser.add_argument("--tolerance-db", type=float, default=6.0)
+    parser.add_argument("--format", choices=("json", "csv"), default="json")
+    parser.add_argument("--output", type=Path)
+    args = parser.parse_args()
+    paths = []
+    for path in args.paths:
+        paths.extend(sorted(path.rglob("*.wav")) if path.is_dir() else [path])
+    rows = analyze(paths, args.tolerance_db)
+    if args.format == "json":
+        rendered = json.dumps(rows, indent=2) + "\n"
+    else:
+        from io import StringIO
+        output = StringIO()
+        fields = [key for key in rows[0] if key != "flags"] + ["flags"] if rows else []
+        writer = csv.DictWriter(output, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows({**row, "flags": ";".join(row["flags"])} for row in rows)
+        rendered = output.getvalue()
+    if args.output:
+        args.output.write_text(rendered, encoding="utf-8")
+    else:
+        print(rendered, end="")
+    return 1 if any(row["flags"] for row in rows) else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

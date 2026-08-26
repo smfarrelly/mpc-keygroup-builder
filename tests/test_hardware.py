@@ -1,6 +1,7 @@
 import csv
 import tempfile
 import unittest
+import tomllib
 from pathlib import Path
 
 from mpc_keygroup_builder import hardware
@@ -86,6 +87,24 @@ class HardwareResultTests(unittest.TestCase):
                     ledger,
                     [{"path": "Programs/Unknown.xpm", "hardware_status": "pass"}],
                 )
+
+    def test_initializes_results_from_candidate_manifest(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            ledger, manifest, output = root / "status.csv", root / "candidates.toml", root / "work/results.toml"
+            self.write_ledger(ledger)
+            manifest.write_text(
+                'schema_version = 1\nname = "Test"\n[[candidates]]\nid = "bass"\n'
+                'ledger_path = "Programs/Bass.xpm"\nsd_path = "Programs/Bass.xpm"\n'
+                'role = "bass"\nselected = true\n'
+            )
+            self.assertEqual(hardware.initialize_results(ledger, manifest, output), 1)
+            with output.open("rb") as stream:
+                result = tomllib.load(stream)["results"][0]
+            self.assertEqual(result["path"], "Programs/Bass.xpm")
+            self.assertEqual(result["hardware_status"], "untested")
+            with self.assertRaises(FileExistsError):
+                hardware.initialize_results(ledger, manifest, output)
 
 
 if __name__ == "__main__":

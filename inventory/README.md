@@ -41,3 +41,18 @@ Review the proposed rows, then add `--apply`. The command rejects unknown
 program paths, duplicate entries, invalid statuses/favorite values, incomplete
 results, and non-untested results without listening notes. Ledger replacement
 is atomic and retains its existing line-ending convention.
+
+Initialize the seven-program Scratchpad session directly from the maintained
+candidate manifest:
+
+```bash
+uv run mpc-hardware-init inventory/program-status.csv \
+  inventory/scratchpad-candidates.toml --output work/key37-hardware-results.toml
+```
+
+Render a physical pad reference before testing a drum candidate:
+
+```bash
+uv run mpc-drum-map "/path/to/program.xpm" --format markdown \
+  --output work/drum-pad-map.md
+```

@@ -1,0 +1,51 @@
+schema_version = 1
+name = "FG Vinyl Scratchpad v0.1"
+
+[[candidates]]
+id = "vinyl-sp-01"
+ledger_path = "Samples/Samples From Mars/Vinyl SP From Mars/Vinyl SP From Mars 01.xpm"
+sd_path = "Programs/Drum Programs/FG Vinyl Candidates/Vinyl SP From Mars 01/Vinyl SP From Mars 01 FG COLORS.xpm"
+role = "main drums"
+selected = true
+
+[[candidates]]
+id = "vinyl-drums-01"
+ledger_path = "Samples/Samples From Mars/Vinyl Drums From Mars/Vinyl Drums From Mars 01.xpm"
+sd_path = "Programs/Drum Programs/FG Vinyl Candidates/Vinyl Drums From Mars 01/Vinyl Drums From Mars 01 FG COLORS.xpm"
+role = "main drums"
+selected = false
+
+[[candidates]]
+id = "vinyl-drum-machines-1"
+ledger_path = "Samples/Samples From Mars/Vinyl Drum Machines From Mars/Vinyl Drum Machines From Mars 1.xpm"
+sd_path = "Programs/Drum Programs/FG Vinyl Candidates/Vinyl Drum Machines From Mars 1/Vinyl Drum Machines From Mars 1 FG COLORS.xpm"
+role = "main drums"
+selected = false
+
+[[candidates]]
+id = "fishermans-friend"
+ledger_path = "Programs/Keygroups/Samples From Mars/101 From Mars/Bass/Fisherman'sFriend.xpm"
+sd_path = "Programs/Keygroups/FG Scratchpad Candidates/Bass/Fisherman'sFriend.xpm"
+role = "bass"
+selected = true
+
+[[candidates]]
+id = "e-piano"
+ledger_path = "Programs/Keygroups/Samples From Mars/360 From Mars/Keys/E Piano.xpm"
+sd_path = "Programs/Keygroups/FG Scratchpad Candidates/Keys/E Piano.xpm"
+role = "keys"
+selected = true
+
+[[candidates]]
+id = "human-music"
+ledger_path = "Programs/Keygroups/Samples From Mars/101 From Mars/Leads/HumanMusic.xpm"
+sd_path = "Programs/Keygroups/FG Scratchpad Candidates/Lead-Pad/HumanMusic.xpm"
+role = "lead/pad"
+selected = true
+
+[[candidates]]
+id = "one-fifty-seven"
+ledger_path = "Programs/Keygroups/Samples From Mars/2600 From Mars/Pads/OneFiftySeven.xpm"
+sd_path = "Programs/Keygroups/FG Scratchpad Candidates/Lead-Pad/OneFiftySeven.xpm"
+role = "lead/pad"
+selected = false

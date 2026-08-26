@@ -15,6 +15,14 @@ mpc-program-color = "mpc_keygroup_builder.programs:main"
 mpc-project-capture = "mpc_keygroup_builder.capture:main"
 mpc-hardware-results = "mpc_keygroup_builder.hardware:main"
 mpc-drum-audit = "mpc_keygroup_builder.drum_audit:main"
+mpc-xpm = "mpc_keygroup_builder.xpm:main"
+mpc-drum-map = "mpc_keygroup_builder.drum_map:main"
+mpc-scratchpad-check = "mpc_keygroup_builder.candidates:main"
+mpc-hardware-init = "mpc_keygroup_builder.hardware:init_main"
+mpc-sd-deploy = "mpc_keygroup_builder.deploy:main"
+mpc-audio-levels = "mpc_keygroup_builder.levels:main"
+mpc-routing-capture = "mpc_keygroup_builder.routing:main"
+mpc-repository-guard = "mpc_keygroup_builder.guardrails:main"
 
 [build-system]
 requires = ["uv_build>=0.12.5,<0.13.0"]
