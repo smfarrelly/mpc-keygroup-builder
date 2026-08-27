@@ -45,14 +45,19 @@ Load:
 
 ### FG Vinyl Kit Banks 01
 
+**Hardware result — August 27, 2026:** `pass`, retained as a provisional Drum
+alternate. Core loading, all-bank playback, named-family character, and choke
+behavior work as expected. The controlled pattern comparison and project
+save/reload remain open.
+
 Load:
 
 `SD Card / 01 FG Favorites / 04 Drum Alternates / 03 FG Vinyl Kit Banks 01 / FG Vinyl Kit Banks 01.xpm`
 
-- [ ] Test all 16 pads in every Bank A–H.
-- [ ] Confirm A=808, B=909, C=Machinedrum, D=CR78, E=LM1, F=Acoustic Vinyl,
+- [x] Test all 16 pads in every Bank A–H.
+- [x] Confirm A=808, B=909, C=Machinedrum, D=CR78, E=LM1, F=Acoustic Vinyl,
   G=Old Tape, and H=Acoustic Hybrid.
-- [ ] Confirm closed/open hats choke within each bank without choking unrelated
+- [x] Confirm closed/open hats choke within each bank without choking unrelated
   banks.
 - [ ] Record the same two-bar pattern with Banks A, B, C, and G.
 - [ ] Save/reload and confirm colors, samples, and mute groups persist.
@@ -432,7 +437,8 @@ optional section can use file-based baselines.
 ## 10. Completion gates
 
 - [x] Shots 04 accepted as the selected/favorite Track 2 program.
-- [ ] Kit Banks accepted or revised.
+- [x] Kit Banks passes and is retained as a provisional Drum alternate; its
+  controlled pattern/reload comparison remains open.
 - [ ] Layered Kit accepted or revised.
 - [ ] All 32 Ableton Wave 01 programs have listening results.
 - [ ] Revised Scratchpad Master saves/reloads with a recorded lead phrase.

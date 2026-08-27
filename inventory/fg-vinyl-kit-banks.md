@@ -63,10 +63,10 @@ The generated package is:
 ## Key 37 acceptance
 
 - [x] Repair and confirm reliable SD write behavior before deployment.
-- [ ] Load the program and leave the Browser so assigned colors appear.
-- [ ] Confirm all 16 pads in every Bank A–H trigger once.
-- [ ] Confirm each bank sounds like its named kit family.
-- [ ] Confirm closed/open hats choke within each bank and not across unrelated
+- [x] Load the program and leave the Browser so assigned colors appear.
+- [x] Confirm all 16 pads in every Bank A–H trigger once.
+- [x] Confirm each bank sounds like its named kit family.
+- [x] Confirm closed/open hats choke within each bank and not across unrelated
   kit banks during normal performance.
 - [ ] Record the same two-bar pattern separately with Banks A, B, C, and G.
 - [ ] Save, reload, and confirm colors, samples, and mute behavior persist.
@@ -81,5 +81,11 @@ repair plus a 64 MiB sustained write/read/hash/delete/sync test. The incomplete
 folder was moved to the SD Trash and a clean package was deployed to
 `01 FG Favorites/04 Drum Alternates/03 FG Vinyl Kit Banks 01`. All 129 files
 match the laptop SHA-256 manifest, semantic simulation passes with zero dead or
-stacked trigger cells, and the SD XPM passes Drum audit. Hardware listening is
-the remaining gate.
+stacked trigger cells, and the SD XPM passes Drum audit.
+
+### Hardware result — August 27, 2026
+
+The program loads and works as expected across all eight named kit banks, with
+expected pad playback, family character, colors, and bank-local choke behavior:
+`pass`, retained as a provisional Drum alternate. The controlled four-bank
+pattern comparison and project save/reload checks remain open.
