@@ -204,7 +204,7 @@ Programs/Keygroups/Samples From Mars/Emulator From Mars/Leads/Dark FM.xpm,Keygro
 Programs/Keygroups/Samples From Mars/Emulator From Mars/Leads/Drippy.xpm,Keygroup,gzip-json,pass,34,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Emulator From Mars/Leads/Loony Bin.xpm,Keygroup,gzip-json,pass,60,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Emulator From Mars/Leads/Machinas.xpm,Keygroup,gzip-json,pass,61,production,pass,,untested,,,
-Programs/Keygroups/Samples From Mars/Emulator From Mars/Leads/Muted Guitar.xpm,Keygroup,gzip-json,pass,53,production,pass,,untested,,,
+Programs/Keygroups/Samples From Mars/Emulator From Mars/Leads/Muted Guitar.xpm,Keygroup,gzip-json,pass,53,production,pass,,pass,provisional,candidate:lead/pad,"Plays successfully on the Key 37 and is liked as a pad-track or supporting texture rather than a primary lead."
 Programs/Keygroups/Samples From Mars/Emulator From Mars/Orchestral/Arcane Strings.xpm,Keygroup,gzip-json,pass,15,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Emulator From Mars/Orchestral/Brass Section.xpm,Keygroup,gzip-json,pass,62,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Emulator From Mars/Orchestral/Smooth Strings.xpm,Keygroup,gzip-json,pass,61,production,pass,,untested,,,
