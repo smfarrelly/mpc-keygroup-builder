@@ -124,6 +124,10 @@ and semantic pattern generation.
   legacy XPMs, and deactivate unused template layers. `FG Vinyl Layered Kit 01`
   exercises 64 timbre layers across 16 pads and passes real-data simulation
   with zero dead or stacked velocity cells.
+- [x] A format-independent loop inventory extracts BPM, variant, WAV shape,
+  duration, estimated beats, and timing deviations. The complete 200-loop
+  Vinyl Breaks library indexes cleanly from 73–200 BPM; Clip serialization is
+  correctly gated on a minimal MPC-authored reference capture.
 
 Software export is complete. The two-variant Key 37 comparison remains the v0.2
 exit gate.

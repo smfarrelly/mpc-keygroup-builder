@@ -134,6 +134,19 @@ colliding audio names, and rebases each bank's single mute group to an isolated
 target-bank group. This makes bank-as-kit collections reproducible without
 checking licensed XPM or WAV files into source control.
 
+Inventory tempo-named loops before designing a Clip Program:
+
+```bash
+uv run mpc-loop-inventory "/path/to/loop-wavs" \
+  --json work/loop-inventory.json \
+  --csv work/loop-inventory.csv
+```
+
+The report extracts leading filename BPM, musical variant, WAV shape and
+duration, estimated beats, and timing deviations. It is format-independent:
+Clip XPM serialization remains gated on a minimal MPC-authored reference
+capture rather than a guessed file structure.
+
 ## Normalized programs and layout planning
 
 `mpc-program-model` imports legacy XML XPMs, MPC 3 compressed XPMs, and Drum

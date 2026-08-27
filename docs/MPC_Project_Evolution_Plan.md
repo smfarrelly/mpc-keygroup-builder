@@ -717,6 +717,19 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   and two valid closed/open-hat mute groups. Hardware feel and transition
   acceptance wait for SD repair.
 
+### August 27, 2026 — Vinyl Breaks Clip groundwork
+
+- Audited Vinyl Breaks From Mars: 200 stereo 44.1 kHz WAV loops and one Ableton
+  project, but no MPC XPM/XPJ/XPN Clip reference.
+- Added `mpc-loop-inventory` for leading BPM, musical variant, audio shape,
+  duration, estimated beats, and timing-deviation reports.
+- Indexed all 200 real loops without parse, audio, or timing errors. The library
+  spans 73–200 BPM and contains full, no-percussion, no-snare, percussion,
+  pitched, clean, colored, and degraded material.
+- Defined the minimal Key 37 Clip capture needed before serialization. A true
+  Clip exporter remains gated on evidence for launch, quantization, warp,
+  tempo, mute, and project-link fields rather than guessed XPM values.
+
 ## 16. Reference material
 
 - [Akai: Understanding and Loading MPC Programs](https://support.akaipro.com/en/support/solutions/articles/69000804211-akai-pro-mpc-series-understanding-and-loading-programs)
