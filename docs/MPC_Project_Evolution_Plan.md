@@ -686,6 +686,22 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   shallow SD folder `00 FG Scratchpad/02 Vinyl Shots`; Key 37 load/reload
   acceptance remains open.
 
+### August 26, 2026 — reusable kit-bank composition
+
+- Added a portable Drum bank recipe and `mpc-drum-compose`, which selects
+  complete 16-pad banks from existing XPMs, resolves extensionless MPC sample
+  references, and refuses incomplete banks, ambiguous audio, duplicate targets,
+  or flattened filename collisions.
+- Rebased each selected bank's single mute group to isolated groups 1–8 so hat
+  choking remains local to the kit bank.
+- Generated `FG Vinyl Kit Banks 01` from 808 Standard, 909 Standard,
+  Machinedrum, CR78, LM1, Acoustic Vinyl, Old Tape, and Acoustic Hybrid source
+  banks. The ignored package contains one XPM and 128 WAVs.
+- Real-data simulation and the independent Drum audit pass with all 128 pads,
+  semantic colors, zero missing/dead/stacked triggers, and eight valid mute
+  groups. SD deployment waits for the card filesystem to be repaired and
+  confirmed reliably writable.
+
 ## 16. Reference material
 
 - [Akai: Understanding and Loading MPC Programs](https://support.akaipro.com/en/support/solutions/articles/69000804211-akai-pro-mpc-series-understanding-and-loading-programs)

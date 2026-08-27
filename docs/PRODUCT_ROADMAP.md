@@ -114,6 +114,11 @@ and semantic pattern generation.
 - [x] A metadata-only catalog indexes all 750 ledger entries; 746 programs from
   the immutable backup normalize successfully and four transient testing files
   are explicitly missing.
+- [x] A reusable bank composer selects complete 16-pad banks from existing Drum
+  Programs, resolves their WAV references, isolates bank mute groups, and can
+  build a self-contained package. `FG Vinyl Kit Banks 01` combines eight
+  source-native kits across Banks A–H and passes real-data simulation and Drum
+  audit with all 128 pads populated.
 
 Software export is complete. The two-variant Key 37 comparison remains the v0.2
 exit gate.
@@ -276,9 +281,9 @@ for release gates:
 
 ## Immediate next three increments
 
-1. **Hardware:** deploy and load `FG Vinyl Shots 04 Eight Bank` on Scratchpad
-   Track 2, compare navigation with versions 01–03, and save a revised protected
-   master.
+1. **Hardware:** after repairing the SD filesystem, deploy and compare `FG
+   Vinyl Shots 04 Eight Bank` with `FG Vinyl Kit Banks 01`, then save a revised
+   protected Scratchpad master.
 2. **Acceptance:** load the generated Classic and handed variants on the Key
    37, reload them, compare playability, and close the v0.2 exit gate.
 3. **Creative MIDI:** import the generated source/Classic MIDI pair on the Key

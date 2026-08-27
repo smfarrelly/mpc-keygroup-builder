@@ -111,6 +111,22 @@ accidental collisions are rejected rather than silently replacing a tested pad.
 Each `[[pads]]` entry may also set `mute_group = 1` through `32`; this is used
 for explicit closed/open-hat choking and defaults to no mute group.
 
+Compose complete 16-pad banks from existing Drum Programs before building:
+
+```bash
+uv run mpc-drum-compose inventory/fg-vinyl-kit-banks.toml \
+  --source-root "/path/to/source-programs-and-wavs" \
+  --manifest-output work/fg-vinyl-kit-banks-resolved.toml \
+  --template "/path/to/known-good-128-pad-template.xpm" \
+  --package-output "work/generated-drum-programs/FG Vinyl Kit Banks 01"
+```
+
+The composer requires 16 populated pads in every selected source bank,
+resolves extensionless MPC sample names to WAV files, refuses ambiguous or
+colliding audio names, and rebases each bank's single mute group to an isolated
+target-bank group. This makes bank-as-kit collections reproducible without
+checking licensed XPM or WAV files into source control.
+
 ## Normalized programs and layout planning
 
 `mpc-program-model` imports legacy XML XPMs, MPC 3 compressed XPMs, and Drum

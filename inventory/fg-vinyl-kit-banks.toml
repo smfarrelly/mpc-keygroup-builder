@@ -1,0 +1,49 @@
+name = "FG Vinyl Kit Banks 01"
+
+[[banks]]
+target = "A"
+source = "Vinyl SP From Mars 01.xpm"
+bank = "A"
+label = "808 Standard"
+
+[[banks]]
+target = "B"
+source = "Vinyl SP From Mars 01.xpm"
+bank = "C"
+label = "909 Standard"
+
+[[banks]]
+target = "C"
+source = "Vinyl SP From Mars 03.xpm"
+bank = "B"
+label = "Machinedrum"
+
+[[banks]]
+target = "D"
+source = "Vinyl SP From Mars 03.xpm"
+bank = "D"
+label = "CR78"
+
+[[banks]]
+target = "E"
+source = "Vinyl SP From Mars 03.xpm"
+bank = "C"
+label = "LM1"
+
+[[banks]]
+target = "F"
+source = "Vinyl SP From Mars 02.xpm"
+bank = "B"
+label = "Acoustic Vinyl"
+
+[[banks]]
+target = "G"
+source = "Vinyl SP From Mars 04.xpm"
+bank = "C"
+label = "Old Tape"
+
+[[banks]]
+target = "H"
+source = "Vinyl SP From Mars 02.xpm"
+bank = "A"
+label = "Acoustic Hybrid"
