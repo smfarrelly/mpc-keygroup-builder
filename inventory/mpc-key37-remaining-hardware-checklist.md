@@ -118,6 +118,11 @@ Load:
 coherent drum families, four complete velocity regions on all 16 pads, and two
 hat pairs whose open layers retain audible tails at every velocity.
 
+**Musical result — August 27, 2026:** liked and accepted as an expressive Drum
+alternate. Vinyl SP remains the Scratchpad main-drums favorite. The role choice
+is final; the remaining checks below are technical acceptance, not another
+main-kit contest.
+
 Load:
 
 `SD Card / 01 FG Favorites / 04 Drum Alternates / 05 FG Vinyl Layered Main 02 / FG Vinyl Layered Main 02.xpm`
@@ -129,9 +134,9 @@ Load:
   not choke.
 - [ ] Strike A12 then A11 at each velocity; A12 must choke. A12 then A09 must
   not choke.
-- [ ] Record the same groove on this kit and Vinyl SP at a fixed master level,
-  both naturally and with Full Level.
-- [ ] Save/reload and choose main favorite versus expressive alternate.
+- [x] Musical comparison closed: keep Vinyl SP as main and Layered Main 02 as
+  the expressive alternate.
+- [ ] Save/reload and confirm the expressive alternate persists correctly.
 
 ## 2. Do now: Ableton Wave 01 — 32 programs
 
@@ -541,9 +546,9 @@ optional section can use file-based baselines.
 - [x] Shots 04 accepted as the selected/favorite Track 2 program.
 - [x] Kit Banks passes and is retained as a provisional Drum alternate; its
   four-bank pattern comparison and save/reload persistence also pass.
-- [ ] Layered Kit concept accepted and promoted to a provisional main-drum
-  candidate; its refined `FG Vinyl Layered Main 02` follow-up is built and
-  deployed, with pad/boundary/reload and clearer choke tests pending.
+- [x] Layered concept accepted; `FG Vinyl Layered Main 02` is retained as the
+  expressive alternate while Vinyl SP remains main. Pad/boundary/reload and
+  clearer choke tests remain technical follow-up only.
 - [x] All 32 Ableton Wave 01 programs have results: five Keygroup range warnings,
   25 Drum passes, and two accepted source-choke Drum warnings.
 - [ ] Revised Scratchpad Master saves/reloads with a recorded lead phrase.

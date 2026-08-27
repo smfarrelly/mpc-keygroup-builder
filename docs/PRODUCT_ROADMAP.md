@@ -128,7 +128,8 @@ and semantic pattern generation.
 - [x] `FG Vinyl Layered Main 02` refines that idea into coherent acoustic,
   808, 909, and character families with long-tail open hats at all velocity
   regions. Its 65-file SD package passes simulation, model validation, Drum
-  audit, and checksum comparison; hardware comparison with Vinyl SP is next.
+  audit, and checksum comparison. Hardware listening selects it as an
+  expressive alternate; Vinyl SP remains the Scratchpad main-drums favorite.
 - [x] A format-independent loop inventory extracts BPM, variant, WAV shape,
   duration, estimated beats, and timing deviations. The complete 200-loop
   Vinyl Breaks library indexes cleanly from 73–200 BPM; Clip serialization is
@@ -350,9 +351,9 @@ for release gates:
    persistence. Its source-native layouts are accepted without a stricter
    normalized variant. `FG Vinyl Layered Kit 01` proves that velocity-layered
    pads are an excellent musical direction and is promoted to a provisional
-   main-drum candidate. `FG Vinyl Layered Main 02` is now built and deployed
-   with coherent soft-to-hard voices and long open hats for a clear choke test;
-   compare it with Vinyl SP, finish reload acceptance, then save a revised protected
+   main-drum candidate. `FG Vinyl Layered Main 02` is now built, deployed, and
+   selected as the expressive alternate; Vinyl SP remains main. Finish the
+   alternate's choke/reload acceptance, then save a revised protected
    Scratchpad master containing the accepted `FG Vinyl Shots 04 Eight Bank`.
 2. **Acceptance:** load the now-deployed Classic and handed variants on the Key
    37, reload them, compare playability, and close the v0.2 exit gate.

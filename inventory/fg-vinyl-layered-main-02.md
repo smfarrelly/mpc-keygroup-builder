@@ -1,8 +1,14 @@
 # FG Vinyl Layered Main 02
 
-`FG Vinyl Layered Main 02` is the refined 16-pad candidate for the Scratchpad
-main-drum role. It keeps four complete velocity regions per pad while replacing
-the first experiment's broad timbre jumps with related soft-to-hard families.
+`FG Vinyl Layered Main 02` is the accepted expressive Drum alternate. It keeps
+four complete velocity regions per pad while replacing the first experiment's
+broad timbre jumps with related soft-to-hard families.
+
+**Musical decision — August 27, 2026:** the layered program is liked and worth
+retaining specifically for expressive playing, but it does not replace
+`Vinyl SP From Mars 01` as the Scratchpad main-drums favorite. Boundary, choke,
+and save/reload checks below remain useful technical acceptance work; the
+main-versus-alternate role decision is closed.
 
 ## SD location
 
@@ -61,7 +67,8 @@ same directional and cross-group test with A12/A11 and A12/A09.
 - [ ] Complete both directional choke tests and both cross-group negative tests.
 - [ ] Record the same two-bar groove on this kit and Vinyl SP at a fixed master
   level, first naturally and then with Full Level.
-- [ ] Decide which program is faster and more inspiring as the default main kit.
-- [ ] Save/reload and repeat A01, A03, A09/A10, A11/A12, A15, and A16.
-- [ ] Promote only if it wins the musical comparison; otherwise retain it as an
+- [x] Keep Vinyl SP as the default main kit and retain Layered Main 02 as the
   expressive alternate.
+- [ ] Save/reload and repeat A01, A03, A09/A10, A11/A12, A15, and A16.
+- [x] Retain as an expressive alternate; do not promote into the Scratchpad
+  main-drums slot.

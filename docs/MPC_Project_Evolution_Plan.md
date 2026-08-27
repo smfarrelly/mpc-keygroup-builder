@@ -812,6 +812,9 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   at every velocity region.
 - The refined Drum Program passes Program Model validation, semantic simulation,
   and independent Drum audit, then matched all 65 local files after SD deployment.
+- Hardware listening retains `FG Vinyl Layered Main 02` as an expressive Drum
+  alternate rather than the Scratchpad main kit; `Vinyl SP From Mars 01`
+  remains the main-drums favorite.
 - Deployed the complete v2 layout bracket—Classic, right-handed, left-handed,
   and full-library—plus the source/classic `dusty-pocket` MIDI pair. All four
   XPMs pass directly from SD, both MIDI files remain valid format-0 data, and
