@@ -114,32 +114,50 @@ explicitly shifted into the Key 37's normal register before promotion.
 
 ## Drum bracket B — classic machines
 
-- [ ] 505 / Clean Kit — status: untested; favorite: ; notes:
-- [ ] 505 / SP-1200 Glitch Kit — status: untested; favorite: ; notes:
-- [ ] 606 / Clean Kit — status: untested; favorite: ; notes:
-- [ ] 606 / Blender Kit — status: untested; favorite: ; notes:
-- [ ] 626 / Clean Kit 1 — status: untested; favorite: ; notes:
-- [ ] 626 / Color Kit 1 — status: untested; favorite: ; notes:
-- [ ] 707 / Mod Combo Kit — status: untested; favorite: ; notes:
-- [ ] 707 / SP-1200 Dark Kit — status: untested; favorite: ; notes:
-- [ ] 808 / Clean Kit 01 — status: untested; favorite: ; notes:
-- [ ] 808 / Distorted Kit — status: untested; favorite: ; notes:
-- [ ] 909 / Clean Kit — status: untested; favorite: ; notes:
-- [ ] 909 / Dirt Kit — status: untested; favorite: ; notes:
-- [ ] CR-78 / Kit 1 — status: untested; favorite: ; notes:
-- [ ] CR-78 / Kit 2 — status: untested; favorite: ; notes:
-- [ ] DMX / Clean Kit 01 — status: untested; favorite: ; notes:
-- [ ] DMX / S612 Boogie Kit — status: untested; favorite: ; notes:
-- [ ] Drumtrax / Kit 1 — status: untested; favorite: ; notes:
-- [ ] Drumulator / Clean Kit — status: untested; favorite: ; notes:
-- [ ] LM-1 / Computer Love Kit — status: untested; favorite: ; notes:
+Most remaining Drum Programs were auditioned with no blocking behavior, and the
+complete Drum wave was accepted as done. These ordinary kits are recorded as
+`pass (batch accepted)` with favorite selection deferred:
+
+- [x] 505 / Clean Kit
+- [x] 505 / SP-1200 Glitch Kit
+- [x] 606 / Clean Kit
+- [x] 606 / Blender Kit
+- [x] 626 / Clean Kit 1
+- [x] 626 / Color Kit 1
+- [x] 707 / Mod Combo Kit
+- [x] 707 / SP-1200 Dark Kit
+- [x] 808 / Clean Kit 01
+- [x] 808 / Distorted Kit
+- [x] 909 / Clean Kit
+- [x] 909 / Dirt Kit
+- [x] CR-78 / Kit 1
+- [x] CR-78 / Kit 2
+- [x] DMX / Clean Kit 01
+- [x] DMX / S612 Boogie Kit
+- [x] Drumtrax / Kit 1
+- [x] Drumulator / Clean Kit
+- [x] LM-1 / Computer Love Kit
 
 ## Drum bracket C — character and texture
 
-- [ ] S950 Snacks / Club 8 Kit — status: untested; favorite: ; notes:
-- [ ] S950 Snacks / Hard Glitch Kit — source-choke warning; status: untested; favorite: ; notes:
-- [ ] Modern Oddities / Hardware Glitch Kit — source-choke warning; status: untested; favorite: ; notes:
-- [ ] Found Sounds / Body Kit — 32 pads across Banks A–B; status: untested; favorite: ; notes:
+- [x] S950 Snacks / Club 8 Kit — status: pass (batch accepted); favorite:
+  pending; notes: no blocking behavior in the accepted Drum batch.
+- [x] S950 Snacks / Hard Glitch Kit — status: warn (batch accepted); favorite:
+  pending; notes: retains the source rack's open hat outside its main choke
+  group.
+- [x] Modern Oddities / Hardware Glitch Kit — status: warn (batch accepted);
+  favorite: pending; notes: retains the source rack's lone closed-hat-labelled
+  pad without an open partner or choke assignment.
+- [x] Found Sounds / Body Kit — status: pass (batch accepted); favorite:
+  pending; notes: accepted as a 32-pad Banks A–B program.
+
+## Hardware wave verdict — August 27, 2026
+
+All 32 programs have a hardware disposition. The five Keygroups are `warn`
+pending normal-register remapping. Twenty-five Drum Programs pass, including
+the four individually confirmed Vinyl/SP-1200 kits. Hardware Glitch and S950
+Hard Glitch remain accepted `warn` for their source-defined choke anomalies.
+Favorite curation remains editorial and is not required to close this batch.
 
 ## Acceptance decision
 

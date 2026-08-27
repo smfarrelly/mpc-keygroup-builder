@@ -165,57 +165,66 @@ these versions as finished instruments.
 
 ### Roland-style Drum Programs
 
-- [ ] 505 — Clean Kit
+**Batch verdict — August 27, 2026:** most of the remaining Drum Programs were
+auditioned without blocking problems, and the complete Drum wave was accepted
+as done. Ordinary programs below are recorded `pass (batch accepted)`. The two
+pre-existing source-choke anomalies remain accepted `warn`.
+
+- [x] 505 — Clean Kit — `pass (batch accepted)`
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / 505 / Clean Kit / Clean Kit.xpm`
-- [ ] 505 — SP-1200 Glitch Kit
+- [x] 505 — SP-1200 Glitch Kit — `pass (batch accepted)`
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / 505 / SP-1200 Glitch Kit / SP-1200 Glitch Kit.xpm`
-- [ ] 606 — Blender Kit
+- [x] 606 — Blender Kit — `pass (batch accepted)`
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / 606 / Blender Kit / Blender Kit.xpm`
-- [ ] 606 — Clean Kit
+- [x] 606 — Clean Kit — `pass (batch accepted)`
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / 606 / Clean Kit / Clean Kit.xpm`
-- [ ] 626 — Clean Kit 1
+- [x] 626 — Clean Kit 1 — `pass (batch accepted)`
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / 626 / Clean Kit 1 / Clean Kit 1.xpm`
-- [ ] 626 — Color Kit 1
+- [x] 626 — Color Kit 1 — `pass (batch accepted)`
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / 626 / Color Kit 1 / Color Kit 1.xpm`
-- [ ] 707 — Mod Combo Kit
+- [x] 707 — Mod Combo Kit — `pass (batch accepted)`
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / 707 / Mod Combo Kit / Mod Combo Kit.xpm`
-- [ ] 707 — SP-1200 Dark Kit
+- [x] 707 — SP-1200 Dark Kit — `pass (batch accepted)`
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / 707 / SP-1200 Dark Kit / SP-1200 Dark Kit.xpm`
-- [ ] 808 — Clean Kit 01
+- [x] 808 — Clean Kit 01 — `pass (batch accepted)`
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / 808 / Clean Kit 01 / Clean Kit 01.xpm`
-- [ ] 808 — Distorted Kit
+- [x] 808 — Distorted Kit — `pass (batch accepted)`
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / 808 / Distorted Kit / Distorted Kit.xpm`
-- [ ] 909 — Clean Kit
+- [x] 909 — Clean Kit — `pass (batch accepted)`
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / 909 / Clean Kit / Clean Kit.xpm`
-- [ ] 909 — Dirt Kit
+- [x] 909 — Dirt Kit — `pass (batch accepted)`
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / 909 / Dirt Kit / Dirt Kit.xpm`
-- [ ] CR-78 — Kit 1
+- [x] CR-78 — Kit 1 — `pass (batch accepted)`
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / CR-78 / Kit 1 / Kit 1.xpm`
-- [ ] CR-78 — Kit 2
+- [x] CR-78 — Kit 2 — `pass (batch accepted)`
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / CR-78 / Kit 2 / Kit 2.xpm`
 
 ### Other classic Drum Programs
 
-- [ ] DMX — Clean Kit 01
+- [x] DMX — Clean Kit 01 — `pass (batch accepted)`
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / DMX / Clean Kit 01 / Clean Kit 01.xpm`
-- [ ] DMX — S612 Boogie Kit
+- [x] DMX — S612 Boogie Kit — `pass (batch accepted)`
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / DMX / S612 Boogie Kit / S612 Boogie Kit.xpm`
-- [ ] Drumtrax — Kit 1
+- [x] Drumtrax — Kit 1 — `pass (batch accepted)`
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / Drumtrax / Kit 1 / Kit 1.xpm`
-- [ ] Drumulator — Clean Kit
+- [x] Drumulator — Clean Kit — `pass (batch accepted)`
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / Drumulator / Clean Kit / Clean Kit.xpm`
-- [ ] LM-1 — Computer Love Kit
+- [x] LM-1 — Computer Love Kit — `pass (batch accepted)`
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / LM-1 / Computer Love Kit / Computer Love Kit.xpm`
 
 ### Character Drum Programs
 
-- [ ] Found Sounds — Body Kit; test all 32 pads across Banks A–B
+- [x] Found Sounds — Body Kit — `pass (batch accepted)`; accepted as a 32-pad
+  Banks A–B program.
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / Found Sounds / Body Kit / Body Kit.xpm`
-- [ ] Modern Oddities — Hardware Glitch Kit
+- [x] Modern Oddities — Hardware Glitch Kit — accepted `warn`; retain its source
+  behavior where the lone closed-hat-labelled pad has no open partner or choke
+  assignment.
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / Modern Oddities / Hardware Glitch Kit / Hardware Glitch Kit.xpm`
-- [ ] S950 Snacks — Club 8 Kit
+- [x] S950 Snacks — Club 8 Kit — `pass (batch accepted)`
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / S950 Snacks / Club 8 Kit / Club 8 Kit.xpm`
-- [ ] S950 Snacks — Hard Glitch Kit
+- [x] S950 Snacks — Hard Glitch Kit — accepted `warn`; retain its source
+  behavior where the open-hat-labelled pad sits outside the main choke group.
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / S950 Snacks / Hard Glitch Kit / Hard Glitch Kit.xpm`
 
 Known source behavior to verify rather than automatically fail:
@@ -471,7 +480,8 @@ optional section can use file-based baselines.
   four-bank pattern comparison and save/reload persistence also pass.
 - [ ] Layered Kit concept accepted; complete pad/boundary/reload tests and
   resolve the hardware choke warning.
-- [ ] All 32 Ableton Wave 01 programs have listening results.
+- [x] All 32 Ableton Wave 01 programs have results: five Keygroup range warnings,
+  25 Drum passes, and two accepted source-choke Drum warnings.
 - [ ] Revised Scratchpad Master saves/reloads with a recorded lead phrase.
 - [ ] Cold-start idea captured in under one minute.
 - [ ] Minimal Clip reference pair returned to Ubuntu for inspection.
