@@ -230,6 +230,10 @@ performance program.
   CLI and batch manifests. The five SP-1200 comparison programs were rebuilt
   two octaves higher, placing their source roots at MIDI 49–74, and deployed
   for default-register hardware verification.
+- [x] NR1 hardware listening found the direction correct but one octave too far
+  left. A separate NR2 batch shifts the same 80 WAVs three octaves above the
+  originals, placing roots at MIDI 61–86; computer acceptance passes and SD
+  deployment is the next gate.
 
 Normalized-model import and exporter behavior remain gated on manual source
 comparison and representative MPC target captures. The Clip subset remains

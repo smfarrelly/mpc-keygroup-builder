@@ -192,6 +192,26 @@ All five source instruments were rebuilt with their roots shifted up exactly
 Load each without octave transpose. Confirm the 16 source voices occur in the
 normal keyboard register, test neighboring keys, and save/reload the best one.
 
+**NR1 result — August 27, 2026:** close, but every program should move one more
+octave to the right. Do not repeat this set unless directly comparing a boundary
+with NR2.
+
+### Normal-register 02 — built, awaiting SD transfer
+
+These shift the original roots up 36 semitones, one octave farther right than
+NR1. Do not search for them on the MPC until Ubuntu deploys the package after
+the next SD insertion.
+
+Planned common root:
+
+`SD Card / 00 FG Hardware Tests / SFM Keygroup Register Fix 02 / Chromatic Percussion`
+
+- [ ] Chromatic Analog Tom NR2 — `Chromatic Analog Tom NR2.xpm`; roots 63–78.
+- [ ] Chromatic Chimes NR2 — `Chromatic Chimes NR2.xpm`; roots 71–86.
+- [ ] Chromatic Cowbell NR2 — `Chromatic Cowbell NR2.xpm`; roots 65–80.
+- [ ] Chromatic Tom NR2 — `Chromatic Tom NR2.xpm`; roots 61–76.
+- [ ] Chromatic Tone NR2 — `Chromatic Tone NR2.xpm`; roots 69–84.
+
 ### Vinyl and SP-1200 Drum Programs
 
 - [x] Vinyl Drums — Big Break Kit — `pass`; all 16 source pads work as

@@ -125,6 +125,29 @@ play in the Key 37's default register. For each program, load it without using
 octave transpose, test every source root and neighboring keys, then save/reload
 the best one.
 
+**NR1 hardware result:** all five are close and substantially improve the
+original mapping, but the complete family should move one more octave to the
+right. Retain NR1 as comparison evidence rather than the promotion target.
+
+### Normal-register 02 built; SD deployment pending
+
+`NR2` shifts the same unmodified audio up 36 semitones from the original source,
+one octave higher than NR1. All five programs validate with 16 Keygroups, 16
+samples, no model errors/warnings, and zero dead or stacked cells:
+
+- Chromatic Analog Tom NR2 — roots 63–78.
+- Chromatic Chimes NR2 — roots 71–86.
+- Chromatic Cowbell NR2 — roots 65–80.
+- Chromatic Tom NR2 — roots 61–76.
+- Chromatic Tone NR2 — roots 69–84.
+
+Planned SD root after the next card insertion:
+
+`SD Card / 00 FG Hardware Tests / SFM Keygroup Register Fix 02 / Chromatic Percussion`
+
+Test without octave transpose and compare only against NR1 if a boundary feels
+too far right. NR2 is the intended promotion target.
+
 ## Drum bracket A — vinyl and SP-1200
 
 - [x] Vinyl Drums / Big Break Kit — 16 pads; status: pass; favorite: pending;

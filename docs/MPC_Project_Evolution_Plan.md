@@ -815,6 +815,9 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
 - Hardware listening retains `FG Vinyl Layered Main 02` as an expressive Drum
   alternate rather than the Scratchpad main kit; `Vinyl SP From Mars 01`
   remains the main-drums favorite.
+- The first +24-semitone SP-1200 register fix is close on hardware but should
+  move one more octave right. Built NR2 at +36 semitones with roots MIDI 61–86;
+  all five programs preserve the same 80 WAVs and pass structural/model checks.
 - Deployed the complete v2 layout bracket—Classic, right-handed, left-handed,
   and full-library—plus the source/classic `dusty-pocket` MIDI pair. All four
   XPMs pass directly from SD, both MIDI files remain valid format-0 data, and
