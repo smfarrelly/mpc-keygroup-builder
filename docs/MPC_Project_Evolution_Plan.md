@@ -839,6 +839,13 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   imported and played successfully; hardware listening judged its semantic
   source/Classic correspondence close enough, with an explicit caveat that the
   varied one-shots make exact audible comparison difficult.
+- Confirmed Fabric and Jura are installed on MPC internal storage; Mini D and
+  Studio Strings remain unpurchased and deferred. The user accepted ordinary
+  plugin project persistence without a dedicated power-cycle audit, to be
+  reopened only if a real project reports missing state.
+- Deferred the modern Clip reference because MPC Pro Pack is not owned on the
+  Key 37. Clip Matrix is therefore an optional purchase-gated capability, and
+  a Keygroup named `Clip` will not be treated as a substitute.
 
 ## 16. Reference material
 

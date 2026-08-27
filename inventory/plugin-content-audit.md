@@ -33,6 +33,10 @@ Strings, or Fabric/Fabric Collection. Files whose names contain `Jura` under
 `Features/.../FactoryOscillators` are generic wavetable/single-cycle assets and
 must not be treated as proof that the Jura plugin is installed.
 
+Subsequent on-device status clarifies the filesystem result: Fabric and Jura
+are installed on MPC internal storage, so they are not expected in this SD-only
+audit. Mini D and Studio Strings are not purchased and remain deferred.
+
 ## Interpretation boundary
 
 Content on the SD supports the conclusion that presets/assets have been

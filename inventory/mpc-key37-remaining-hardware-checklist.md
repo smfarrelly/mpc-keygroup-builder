@@ -332,8 +332,9 @@ Current track structure:
 - [x] Tracks 1–2 are Drum tracks: Main Drums and Shots.
 - [x] Tracks 3–7 are Keygroups: Pluck Bass, Wurli, Dark FM, Glass Howl, and Sub
   Smooth.
-- [ ] Replace Track 8, currently a Keygroup merely named `Clip`, with an actual
-  MPC Clip track/program after the reference capture in Section 4.
+- [ ] Remove or repurpose Track 8, currently a Keygroup merely named `Clip`, in
+  the Jam copy. Modern Clip Workflow is unavailable without Pro Pack and must
+  not be represented by a renamed Keygroup.
 - [x] Track 9 is an Audio track; rename `Audio 001` to `Capture` or `Audio
   Capture` in the Jam copy.
 
@@ -354,7 +355,13 @@ Current track structure:
 - [ ] Time a cold start from power-on to the first recorded drum-and-keys idea;
   target under one minute.
 
-## 4. Do now: create the minimal Clip reference
+## 4. Deferred: create the minimal Clip reference
+
+**Purchase-gated — August 27, 2026:** The MPC Key 37 does not own MPC Pro
+Pack, so MPC 3 Clip Workflow and Clip Matrix are unavailable. This is an
+optional paid-feature boundary, not a hardware or OS failure. Do not substitute
+a Keygroup merely named `Clip`; retain the deployed WAV and resume this section
+only if Pro Pack is purchased later.
 
 This is an on-device format capture, not a musical loop-library test. The
 reference audio is deployed and verified byte-for-byte at:
@@ -420,16 +427,21 @@ sustain, pitch bend, modulation, useful range, relative level, and reload.
 
 These are selected from an MPC Plugin track, not loaded as SD files.
 
+**Accepted without a dedicated persistence project — August 27, 2026:** The
+user considers normal plugin save/reload behavior sufficiently established.
+Reopen this gate only if a real project reports a missing plugin, preset, or
+edited parameter after reload.
+
 - [ ] Confirm **Iona** appears, creates a playable Plugin track, and survives
   save/power-cycle/reload.
 - [ ] Confirm **OPx-4** appears, creates a playable Plugin track, and survives
   save/power-cycle/reload.
 - [ ] Confirm **AIR Flavor Pro** appears and can be inserted, heard, saved, and
   restored.
-- [ ] Confirm installation state for **Jura**.
-- [ ] Confirm installation state for **Mini D**.
-- [ ] Confirm installation state for **Studio Strings**.
-- [ ] Confirm installation state for **Fabric / Fabric Collection**.
+- [x] **Jura** is installed on MPC internal storage.
+- [ ] **Mini D** is not purchased; deferred rather than failed.
+- [ ] **Studio Strings** is not purchased; deferred rather than failed.
+- [x] **Fabric / Fabric Collection** is installed on MPC internal storage.
 - [ ] For every newly purchased/downloaded plugin, record: installed location,
   version if shown, preset load, basic playability, save/reload, and whether it
   deserves a Scratchpad role.
@@ -442,6 +454,12 @@ Strings, or Fabric/Fabric Collection. Jura-named factory oscillator assets are
 not evidence of a Jura installation. Any plugin may still have its executable
 or activation state in MPC internal storage, so hardware selection and
 save/reload remain authoritative.
+
+Fabric and Jura were subsequently confirmed on hardware in internal storage.
+Their absence from the SD audit is therefore expected. Plugin persistence is
+accepted by user judgment without constructing the disposable audit project;
+Iona, OPx-4, and AIR Flavor Pro retain strong SD content evidence but no new
+individual power-cycle result was claimed.
 
 ## 7. Deployed and ready: layout and semantic MIDI comparison
 
@@ -595,12 +613,14 @@ optional section can use file-based baselines.
   25 Drum passes, and two accepted source-choke Drum warnings.
 - [ ] Revised Scratchpad Master saves/reloads with a recorded lead phrase.
 - [ ] Cold-start idea captured in under one minute.
-- [ ] Minimal Clip reference pair returned to Ubuntu for inspection.
+- [ ] Minimal Clip reference pair deferred; MPC Pro Pack is not owned.
 - [x] Layout package deployed and tested; Right is selected and save/reload
   color persistence passes.
 - [x] Semantic MIDI source/Classic pair tested on hardware; qualified pass
   because the varied one-shots make exact audible comparison difficult.
-- [ ] Plugin installation/persistence audit complete.
+- [x] Plugin persistence accepted without a dedicated audit project; Fabric
+  and Jura are confirmed internal, while Mini D and Studio Strings are deferred
+  purchases.
 - [ ] Actual MPC-authored Volca sequences survive reload.
 - [ ] Three-Volca isolation/sync passes after the CME distributor arrives.
 - [ ] Launch Control Universal Mix mapping survives power-cycle and project clone.
