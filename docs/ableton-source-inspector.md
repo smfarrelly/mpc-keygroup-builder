@@ -45,6 +45,24 @@ individual-hit racks remain catalog sources; existing Drum/Keygroup coverage
 reduces duplicate work. Scores are transparent triage signals, not musical
 quality judgments, and every entry retains its reasons and source fidelity.
 
+## Translate prepared Drum Racks
+
+`mpc-ableton-drum` reads each `DrumBranchPreset` in document order, resolves its
+sample zones below a declared pack root, and carries receiving-note provenance,
+velocity layers, and choke groups into a Drum Program manifest. Batch recipes
+use paths relative to the owned library root and preflight the entire set before
+creating any output package.
+
+```bash
+uv run mpc-ableton-drum plan inventory/ableton-drum-wave-01.toml \
+  --library-root "/path/to/Samples From Mars" \
+  --report work/ableton-drum-plan.json
+```
+
+The plan explicitly reports sampler or device behavior that is not yet
+serialized. A generated program therefore preserves the raw sample instrument
+topology but does not claim to reproduce Ableton Rack effects or macros.
+
 ## Fidelity suggestions
 
 The labels are conservative routing suggestions, not automated conversion

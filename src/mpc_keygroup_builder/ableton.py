@@ -198,6 +198,31 @@ def _branches(root: ET.Element) -> list[dict[str, object]]:
     return branches
 
 
+def _drum_pads(root: ET.Element) -> list[dict[str, object]]:
+    pads = []
+    for branch in root.iter():
+        if local_tag(branch) != "DrumBranchPreset":
+            continue
+        settings = child(branch, "ZoneSettings")
+        if settings is None:
+            continue
+        zones = [
+            _zone(item)
+            for item in branch.iter()
+            if local_tag(item) == "MultiSamplePart"
+        ]
+        pads.append(
+            {
+                "name": value(child(branch, "Name")),
+                "receiving_note": value(child(settings, "ReceivingNote")),
+                "sending_note": value(child(settings, "SendingNote")),
+                "choke_group": value(child(settings, "ChokeGroup"), 0),
+                "zones": zones,
+            }
+        )
+    return pads
+
+
 def _fidelity(
     zones: list[dict[str, object]],
     devices: list[dict[str, object]],
@@ -249,6 +274,7 @@ def inspect(path: Path) -> dict[str, object]:
     zones = [_zone(item) for item in root.iter() if local_tag(item) == "MultiSamplePart"]
     devices = _devices(root)
     branches = _branches(root)
+    drum_pads = _drum_pads(root)
     macros = _macros(root)
     sample_names = sorted(
         {
@@ -280,12 +306,14 @@ def inspect(path: Path) -> dict[str, object]:
         "devices": devices,
         "device_types": dict(sorted(Counter(str(item["type"]) for item in devices).items())),
         "branches": branches,
+        "drum_pads": drum_pads,
         "macros": macros,
         "zones": zones,
         "sample_references": sample_names,
         "summary": {
             "devices": len(devices),
             "branches": len(branches),
+            "drum_pads": len(drum_pads),
             "macros": len(macros),
             "zones": len(zones),
             "unique_samples": len(sample_names),

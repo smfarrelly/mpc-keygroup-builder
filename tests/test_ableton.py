@@ -103,6 +103,32 @@ class AbletonInspectorTests(unittest.TestCase):
             report = ableton.inspect(path)
             self.assertEqual(report["device_types"], {"Compressor2": 1, "DrumGroupDevice": 1})
 
+    def test_extracts_drum_branch_pad_notes_choke_and_zones(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "Kit.adg"
+            xml = b'''<Ableton><GroupDevicePreset><Device><DrumGroupDevice>
+              <Branches><DrumBranchPreset><Name Value="Kick Pad" />
+                <DevicePresets><InstrumentBranchPreset><Device><OriginalSimpler>
+                  <MultiSamplePart><Name Value="Kick" /><IsActive Value="true" />
+                    <VelocityRange><Min Value="1" /><Max Value="127" /></VelocityRange>
+                    <SampleRef><FileRef><RelativePath><RelativePathElement Dir="WAV" />
+                    </RelativePath><Name Value="Kick.wav" /></FileRef></SampleRef>
+                  </MultiSamplePart>
+                </OriginalSimpler></Device></InstrumentBranchPreset></DevicePresets>
+                <ZoneSettings><ReceivingNote Value="60" /><SendingNote Value="36" />
+                  <ChokeGroup Value="2" /></ZoneSettings>
+              </DrumBranchPreset></Branches>
+            </DrumGroupDevice></Device></GroupDevicePreset></Ableton>'''
+            self.write(path, xml)
+            report = ableton.inspect(path)
+            self.assertEqual(report["summary"]["drum_pads"], 1)
+            pad = report["drum_pads"][0]
+            self.assertEqual(pad["name"], "Kick Pad")
+            self.assertEqual(pad["receiving_note"], 60)
+            self.assertEqual(pad["sending_note"], 36)
+            self.assertEqual(pad["choke_group"], 2)
+            self.assertEqual(pad["zones"][0]["sample"]["relative_path"], "WAV/Kick.wav")
+
 
 if __name__ == "__main__":
     unittest.main()

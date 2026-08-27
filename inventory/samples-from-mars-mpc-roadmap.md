@@ -44,11 +44,18 @@ Build five Keygroups from the prepared chromatic sources:
 These are the five highest-ranked uncovered melodic programs and complement
 the pad kits instead of duplicating them.
 
+Software status: all five are built and locally validated in Ableton Wave 01;
+Key 37 listening remains pending.
+
 ### Vinyl Drums breakbeat programs
 
 Translate Big Break Kit and Hand Break Kit as Drum Programs. Source inspection
 confirms that both are 16-pad, unwarped Drum Racks; “Break” describes their
 musical style rather than a tempo-warped Clip source.
+
+Software status: both are built with source pad order and choke groups in
+Ableton Wave 01. The same wave adds 25 diverse machine/character Drum Programs
+to make the next hardware session more informative.
 
 ### Curated Vinyl Synths favorites
 

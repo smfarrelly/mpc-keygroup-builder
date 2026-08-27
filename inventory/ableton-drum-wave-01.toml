@@ -1,0 +1,190 @@
+name = "Samples From Mars Ableton Drum Wave 01"
+
+[[programs]]
+id = "vinyl-big-break"
+name = "Big Break Kit"
+collection = "Vinyl Drums"
+preset = "vinyl_drums_from_mars/Vinyl Drums From Mars/Presets/Ableton/Vinyl Drums From Mars Project/Presets/02. Kits/02. Breakbeat/08. Big Break Kit - Vinyl Drums From Mars.adg"
+pack_root = "vinyl_drums_from_mars/Vinyl Drums From Mars"
+
+[[programs]]
+id = "vinyl-hand-break"
+name = "Hand Break Kit"
+collection = "Vinyl Drums"
+preset = "vinyl_drums_from_mars/Vinyl Drums From Mars/Presets/Ableton/Vinyl Drums From Mars Project/Presets/02. Kits/02. Breakbeat/09. Hand Break Kit - Vinyl Drums From Mars.adg"
+pack_root = "vinyl_drums_from_mars/Vinyl Drums From Mars"
+
+[[programs]]
+id = "sp1200-factory-1"
+name = "Factory Kit 1"
+collection = "SP-1200"
+preset = "sp1200_from_mars/SP1200 From Mars/Ableton Live/SP 1200 From Mars/Presets/Drums/Kits/Factory Kit 1.adg"
+pack_root = "sp1200_from_mars/SP1200 From Mars"
+
+[[programs]]
+id = "sp1200-factory-2"
+name = "Factory Kit 2"
+collection = "SP-1200"
+preset = "sp1200_from_mars/SP1200 From Mars/Ableton Live/SP 1200 From Mars/Presets/Drums/Kits/Factory Kit 2.adg"
+pack_root = "sp1200_from_mars/SP1200 From Mars"
+
+[[programs]]
+id = "505-clean"
+name = "Clean Kit"
+collection = "505"
+preset = "505_from_mars/505 From Mars/Ableton Live/505 From Mars/Presets/02. Kits/505/505 From Mars - Clean Kit.adg"
+pack_root = "505_from_mars/505 From Mars"
+
+[[programs]]
+id = "505-sp1200-glitch"
+name = "SP-1200 Glitch Kit"
+collection = "505"
+preset = "505_from_mars/505 From Mars/Ableton Live/505 From Mars/Presets/02. Kits/505 SP1200/505 SP1200 From Mars - Glitch Kit.adg"
+pack_root = "505_from_mars/505 From Mars"
+
+[[programs]]
+id = "606-clean"
+name = "Clean Kit"
+collection = "606"
+preset = "606_from_mars/606 From Mars/Ableton Live/606 From Mars/Presets/02. Kits/606/Clean Kit - 606 From Mars.adg"
+pack_root = "606_from_mars/606 From Mars"
+
+[[programs]]
+id = "606-blender"
+name = "Blender Kit"
+collection = "606"
+preset = "606_from_mars/606 From Mars/Ableton Live/606 From Mars/Presets/02. Kits/MPC60 SP1200/Blender Kit - 606 From Mars.adg"
+pack_root = "606_from_mars/606 From Mars"
+
+[[programs]]
+id = "626-clean-1"
+name = "Clean Kit 1"
+collection = "626"
+preset = "626_from_mars/626 From Mars/Ableton Live/626 From Mars/Presets/Kits/Clean Kit 1.adg"
+pack_root = "626_from_mars/626 From Mars"
+
+[[programs]]
+id = "626-color-1"
+name = "Color Kit 1"
+collection = "626"
+preset = "626_from_mars/626 From Mars/Ableton Live/626 From Mars/Presets/Kits/Color Kit 1.adg"
+pack_root = "626_from_mars/626 From Mars"
+
+[[programs]]
+id = "707-mod-combo"
+name = "Mod Combo Kit"
+collection = "707"
+preset = "707_from_mars/707 From Mars/Ableton Live/707 From Mars/Presets/Kits/707 From Mars/Mod Combo Kit - 707 From Mars.adg"
+pack_root = "707_from_mars/707 From Mars"
+
+[[programs]]
+id = "707-sp1200-dark"
+name = "SP-1200 Dark Kit"
+collection = "707"
+preset = "707_from_mars/707 From Mars/Ableton Live/707 From Mars/Presets/Kits/707 SP1200 From Mars/Dark Kit - 707 SP1200 From Mars.adg"
+pack_root = "707_from_mars/707 From Mars"
+
+[[programs]]
+id = "808-clean-1"
+name = "Clean Kit 01"
+collection = "808"
+preset = "808-from-mars/808 From Mars/Ableton Live/808 From Mars/Presets/02. Kits/Clean Kit 01 - 808.adg"
+pack_root = "808-from-mars/808 From Mars"
+
+[[programs]]
+id = "808-distorted"
+name = "Distorted Kit"
+collection = "808"
+preset = "808-from-mars/808 From Mars/Ableton Live/808 From Mars/Presets/02. Kits/Distorted Kit - 808.adg"
+pack_root = "808-from-mars/808 From Mars"
+
+[[programs]]
+id = "909-clean"
+name = "Clean Kit"
+collection = "909"
+preset = "909_from_mars/909 From Mars/Ableton Live/909 From Mars/Presets/Kits/Clean Kit.adg"
+pack_root = "909_from_mars/909 From Mars"
+
+[[programs]]
+id = "909-dirt"
+name = "Dirt Kit"
+collection = "909"
+preset = "909_from_mars/909 From Mars/Ableton Live/909 From Mars/Presets/Kits/Dirt Kit.adg"
+pack_root = "909_from_mars/909 From Mars"
+
+[[programs]]
+id = "cr78-kit-1"
+name = "Kit 1"
+collection = "CR-78"
+preset = "cr78_from_mars/CR78 From Mars/Ableton Live/CR78 From Mars/Presets/Kit 1.adg"
+pack_root = "cr78_from_mars/CR78 From Mars"
+
+[[programs]]
+id = "cr78-kit-2"
+name = "Kit 2"
+collection = "CR-78"
+preset = "cr78_from_mars/CR78 From Mars/Ableton Live/CR78 From Mars/Presets/Kit 2.adg"
+pack_root = "cr78_from_mars/CR78 From Mars"
+
+[[programs]]
+id = "dmx-clean-1"
+name = "Clean Kit 01"
+collection = "DMX"
+preset = "dmx_from_mars/DMX From Mars/Ableton Live/DMX From Mars/Presets/02. Kits/DMX/DMX From Mars - Clean Kit 01.adg"
+pack_root = "dmx_from_mars/DMX From Mars"
+
+[[programs]]
+id = "dmx-612-boogie"
+name = "S612 Boogie Kit"
+collection = "DMX"
+preset = "dmx_from_mars/DMX From Mars/Ableton Live/DMX From Mars/Presets/02. Kits/DMX 612/DMX 612 From Mars - Boogie Kit.adg"
+pack_root = "dmx_from_mars/DMX From Mars"
+
+[[programs]]
+id = "drumtrax-kit-1"
+name = "Kit 1"
+collection = "Drumtrax"
+preset = "drumtrax_from_mars/Drumtrax From Mars/Ableton Live/Drumtrax From Mars/Presets/Kit 1.adg"
+pack_root = "drumtrax_from_mars/Drumtrax From Mars"
+
+[[programs]]
+id = "drumulator-clean"
+name = "Clean Kit"
+collection = "Drumulator"
+preset = "drumulator_from_mars/Drumulator From Mars/Ableton Live/Drumulator From Mars/Presets/Kits/Drumulator Clean Kit.adg"
+pack_root = "drumulator_from_mars/Drumulator From Mars"
+
+[[programs]]
+id = "lm1-computer-love"
+name = "Computer Love Kit"
+collection = "LM-1"
+preset = "lm1_from_mars/LM1 From Mars/Ableton Live/LM1 From Mars/Presets/02. Kits/Computer Love Kit - LM1 From Mars.adg"
+pack_root = "lm1_from_mars/LM1 From Mars"
+
+[[programs]]
+id = "s950-club-8"
+name = "Club 8 Kit"
+collection = "S950 Snacks"
+preset = "s950_snacks_from_mars/S950 Snacks From Mars/Presets/Ableton/S950 Snacks From Mars/Presets/Drums/02. Kits/01. Club 8 Kit - S950 Snacks From Mars.adg"
+pack_root = "s950_snacks_from_mars/S950 Snacks From Mars"
+
+[[programs]]
+id = "s950-hard-glitch"
+name = "Hard Glitch Kit"
+collection = "S950 Snacks"
+preset = "s950_snacks_from_mars/S950 Snacks From Mars/Presets/Ableton/S950 Snacks From Mars/Presets/Drums/02. Kits/03. Hard Glitch Kit - S950 Snacks From Mars.adg"
+pack_root = "s950_snacks_from_mars/S950 Snacks From Mars"
+
+[[programs]]
+id = "modern-oddities-hardware-glitch"
+name = "Hardware Glitch Kit"
+collection = "Modern Oddities"
+preset = "modern_oddities_from_mars/Modern Oddities From Mars/Ableton Live/Modern Oddities From Mars/Presets/Kits/Hardware Glitch Kit.adg"
+pack_root = "modern_oddities_from_mars/Modern Oddities From Mars"
+
+[[programs]]
+id = "found-sounds-body"
+name = "Body Kit"
+collection = "Found Sounds"
+preset = "found_sounds_from_mars/Found Sounds From Mars/Ableton Live/Found Sounds From Mars Project/Presets/Tube & Clean Kits/Body Kit.adg"
+pack_root = "found_sounds_from_mars/Found Sounds From Mars"

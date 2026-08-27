@@ -200,6 +200,9 @@ performance program.
   SP-1200 chromatic Keygroups. Big Break and Hand Break are confirmed as
   unwarped 16-pad Drum Racks and lead the immediate Drum Program wave. The
   editorial roadmap groups the remaining work into curated product waves.
+- [x] Ableton Wave 01 builds those five Keygroups plus 27 source-ordered Drum
+  Programs spanning vinyl, classic machines, and character kits. All source
+  preflights and semantic simulations pass; Key 37 listening is the next gate.
 
 Normalized-model import and exporter behavior remain gated on manual source
 comparison and representative MPC target captures. The Clip subset remains

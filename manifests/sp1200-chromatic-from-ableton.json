@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "library": "SP-1200 From Mars",
+  "source_root": "sp1200_from_mars/SP1200 From Mars/WAV/Drums/Individual Hits/Custom Drums",
+  "destination": "00 FG Hardware Tests/SFM Ableton Wave 01/01 Keygroups/SP-1200",
+  "instruments": [
+    {
+      "name": "Chromatic Analog Tom",
+      "category": "Chromatic Percussion",
+      "source": "7. Tom",
+      "velocity_preset": "sp1200_from_mars/SP1200 From Mars/Ableton Live/SP 1200 From Mars/Presets/Drums/Chromatic/Chromatic Analog Tom.adg",
+      "sample_selection": {
+        "include": ["Tom_606_Lo_SP1200_*.wav"]
+      }
+    },
+    {
+      "name": "Chromatic Chimes",
+      "category": "Chromatic Percussion",
+      "source": "15. Perc",
+      "velocity_preset": "sp1200_from_mars/SP1200 From Mars/Ableton Live/SP 1200 From Mars/Presets/Drums/Chromatic/Chromatic Chimes.adg",
+      "sample_selection": {
+        "include": ["Chimes_SP1200_*.wav"]
+      }
+    },
+    {
+      "name": "Chromatic Cowbell",
+      "category": "Chromatic Percussion",
+      "source": "11. Cowbell",
+      "velocity_preset": "sp1200_from_mars/SP1200 From Mars/Ableton Live/SP 1200 From Mars/Presets/Drums/Chromatic/Chromatic Cowbell.adg",
+      "sample_selection": {
+        "include": ["Cowb_808_Long_SP1200_*.wav"]
+      }
+    },
+    {
+      "name": "Chromatic Tom",
+      "category": "Chromatic Percussion",
+      "source": "7. Tom",
+      "velocity_preset": "sp1200_from_mars/SP1200 From Mars/Ableton Live/SP 1200 From Mars/Presets/Drums/Chromatic/Chromatic Tom.adg",
+      "sample_selection": {
+        "include": ["Tom_707_Lo_SP1200_*.wav"]
+      }
+    },
+    {
+      "name": "Chromatic Tone",
+      "category": "Chromatic Percussion",
+      "source": "15. Perc",
+      "velocity_preset": "sp1200_from_mars/SP1200 From Mars/Ableton Live/SP 1200 From Mars/Presets/Drums/Chromatic/Chromatic Tone.adg",
+      "sample_selection": {
+        "include": ["Tone_SP1200_*.wav"]
+      }
+    }
+  ]
+}

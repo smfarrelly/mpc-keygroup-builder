@@ -176,6 +176,27 @@ The complete JSON retains every source preset. The Markdown view groups work by
 pack and lowers priority when the existing MPC catalog already provides the
 same program type.
 
+Translate a maintained batch of prepared Ableton Drum Racks into self-contained
+MPC Drum Program packages:
+
+```bash
+uv run mpc-ableton-drum plan inventory/ableton-drum-wave-01.toml \
+  --library-root "/path/to/Samples From Mars" \
+  --report work/ableton-drum-plan.json
+
+uv run mpc-ableton-drum build inventory/ableton-drum-wave-01.toml \
+  --library-root "/path/to/Samples From Mars" \
+  --template "/path/to/known-good-128-pad-drum-template.xpm" \
+  --output-root work/ableton-drum-programs \
+  --manifest-root work/ableton-drum-manifests
+```
+
+The converter preserves Drum Rack document order, sample membership, velocity
+layers, receiving-note provenance, and choke groups. It validates every source
+before writing the batch and reports Rack macros, effects, gain, loops, tuning,
+or warp behavior that are not serialized. Generated manifests, XPMs, and audio
+stay in ignored local storage.
+
 ## Normalized programs and layout planning
 
 `mpc-program-model` imports legacy XML XPMs, MPC 3 compressed XPMs, and Drum

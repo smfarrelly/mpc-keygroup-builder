@@ -767,6 +767,24 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   and Hand Break racks lead the next Drum Program wave. Vinyl Breaks remains
   intentionally gated on the MPC-authored Clip reference.
 
+### August 27, 2026 — first unattended Ableton-to-MPC build wave
+
+- Added a conservative Ableton Drum Rack translator and reproducible batch
+  recipe. It preserves branch order, samples, velocity layers, receiving-note
+  provenance, and choke groups while reporting unimplemented Rack behavior.
+- Built five SP-1200 chromatic Keygroups from 80 unique WAVs and explicit
+  Ableton roots: Analog Tom, Chimes, Cowbell, Tom, and Tone.
+- Built 27 self-contained Drum Programs from 440 WAV copies across Vinyl Drums,
+  SP-1200, 505, 606, 626, 707, 808, 909, CR-78, DMX, Drumtrax, Drumulator,
+  LM-1, S950, Modern Oddities, and Found Sounds.
+- All 32 programs have zero dead or stacked trigger cells. Every Drum Program
+  passes semantic simulation; 25 pass the independent choke audit and two
+  retain explicit source-choke warnings. The five Keygroups retain deliberate
+  outer-range extrapolation warnings for hardware judgment.
+- The ignored 67 MB hardware package contains 552 checksum-verified files,
+  complete pad maps, audio-level reports, and a committed listening plan. No
+  licensed WAV or generated XPM is tracked.
+
 ## 16. Reference material
 
 - [Akai: Understanding and Loading MPC Programs](https://support.akaipro.com/en/support/solutions/articles/69000804211-akai-pro-mpc-series-understanding-and-loading-programs)
