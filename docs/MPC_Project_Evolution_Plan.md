@@ -8,6 +8,8 @@
 
 **Product roadmap:** `docs/PRODUCT_ROADMAP.md`
 
+**Living hardware review:** `docs/MPC_KEY37_FIELD_REVIEW.md`
+
 **Primary instrument:** Akai MPC Key 37
 
 ## 1. Project north star
@@ -877,6 +879,10 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   WAVs are staged internally only for the final package build. All three A-H
   programs rebuilt directly from the accepted nested package tree with
   byte-identical XPM and package output.
+- Consolidated the completed hands-on evidence into a living descriptive Key 37
+  field review. New hardware acceptance is deferred while software development
+  continues; the existing checklist remains a ready-to-resume protocol rather
+  than the immediate work queue.
 
 ## 16. Reference material
 

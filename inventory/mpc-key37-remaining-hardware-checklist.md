@@ -5,6 +5,11 @@
 closed. This is the active project queue, not a requirement to audition every
 untested entry in the 750-program catalog.
 
+**Current posture:** Hardware acceptance sessions are deferred while software
+and documentation continue. Unchecked items are preserved test designs, not an
+immediate queue. Descriptive conclusions from completed tests live in
+`docs/MPC_KEY37_FIELD_REVIEW.md`.
+
 For file-loading instructions, every path begins at **Browser > Places > SD
 Card**. After loading a Drum Program, leave the Browser before judging pad
 colors.
@@ -17,10 +22,11 @@ For pad-specific problems include bank and pad, for example:
 
 `808 Distorted Kit — warn — provisional — reload pass — A07 much louder; hats choke correctly`
 
-## New unattended batch: expanded Drum banks 01
+## Deferred acceptance batch: expanded Drum banks 01
 
-**Built, validated, and deployed — August 27, 2026.** These are the only new
-programs added by the cleanup/expansion pass. A shallow on-card guide is at:
+**Built, validated, and deployed — August 27, 2026; hardware acceptance
+deferred.** These are the only new programs added by the cleanup/expansion
+pass. A shallow on-card guide is at:
 
 `SD Card / 01 FG Favorites / 04 Drum Alternates / 00 DRUM ALTERNATES INDEX.txt`
 

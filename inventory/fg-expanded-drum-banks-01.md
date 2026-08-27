@@ -139,6 +139,9 @@ An independently checksum-verified external mirror is at:
 
 ## Key 37 acceptance
 
+**Deferred after deployment.** The following protocol is preserved for a later
+hardware session; unchecked items are not current failures.
+
 - [ ] Load each program and leave Browser; confirm semantic colors appear.
 - [ ] For Classic, Character, and Breaks Texture, play all pads in Banks A-H
   and confirm each bank matches its label.

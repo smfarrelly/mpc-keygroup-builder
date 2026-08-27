@@ -362,13 +362,12 @@ for release gates:
 
 ## Immediate next three increments
 
-1. **Hardware:** audition expanded Drum Alternates 06-09 from the new on-card
-   index. Prioritize bank identity and fixed-pattern comparisons on the three
-   A-H collections, then velocity boundaries and seven choke pairs on `FG Vinyl
-   Layered Banks 03`. Keep Vinyl SP as main unless listening proves a clearly
-   better role; these packages are deliberately alternatives, not forced
-   replacements. Cold-start timing remains deferred.
-2. **Program Designer:** begin the v0.3 read-only viewer with program import,
+1. **Program Designer:** begin the v0.3 read-only viewer with program import,
    Bank A–H switching, pad roles, samples, colors, layers, and mute groups.
-3. **Creative MIDI:** import the now-deployed source/Classic MIDI pair on the
-   Key 37, then add chord and bass generators after Drum MIDI acceptance.
+2. **Creative MIDI:** build chord and bass generators on the accepted format-1
+   MIDI path and keep their output inspectable without requiring an immediate
+   Key 37 acceptance session.
+3. **Hardware, deferred:** preserve Drum Alternates 06-09, NR2 Keygroups, Volca
+   integration, and Launch Control mapping as ready-to-resume test batches.
+   Record completed observations in the living Key 37 field review; cold-start
+   timing remains deferred.

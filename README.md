@@ -35,6 +35,11 @@ from the current Drum Program/Layout milestone through the visual Program
 Designer, expressive instruments, creative MIDI, project generation,
 arrangement, catalog, and live-companion work.
 
+See [the living MPC Key 37 field review](docs/MPC_KEY37_FIELD_REVIEW.md) for the
+descriptive hardware findings: practical strengths, routing behavior, program
+compatibility, storage lessons, external MIDI results, and explicitly deferred
+acceptance work.
+
 ## License
 
 The source code is available under the [MIT License](LICENSE). Sample libraries,
