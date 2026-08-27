@@ -307,11 +307,11 @@ MPC listening or routing acceptance test as passed.
 **Goal:** Understand the richer source designs before expanding the generators.
 
 - [x] Inventory Ableton `.adg`, `.als`, and related preset files for the first vinyl pack.
-- [ ] Manually inspect five representative presets.
+- [x] Manually inspect five representative presets.
 - [x] Build an analyzer that emits a structured report of samples, zones, chains, macros, playback, and effects.
-- [ ] Compare analyzer results against what is visible in Ableton or against readable source metadata.
+- [x] Compare analyzer results against what is visible in Ableton or against readable source metadata.
 - [x] Assign translation-fidelity labels.
-- [ ] Produce a translation specification for the pilot pack.
+- [x] Produce a translation specification for the pilot pack.
 
 **Exit test:** We can explain how the pilot pack's Ableton instruments work and identify the best MPC target for each one.
 
@@ -744,6 +744,11 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   Close translations; the individual-hits and 20 prepared Rack presets are
   Template translations because their Drum/instrument/effect branch structure
   exceeds a literal one-program mapping.
+- Reviewed Individual Hits, 808 Standard, Acoustic Hybrid, Old Tape, and Flux
+  against raw XML counts and wrote the Vinyl SP pilot translation
+  specification. Prepared kits share a 16-zone unwarped one-shot topology and
+  a stable Tune/Decay/Drive/Cutoff/Comp/Reverb vocabulary; their curated sample
+  membership is the primary musical difference.
 
 ## 16. Reference material
 
