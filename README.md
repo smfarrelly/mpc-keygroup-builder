@@ -118,9 +118,31 @@ deterministic Markdown or JSON pad plans. The repository ships a Key 37 profile
 plus Classic MPC-ish, right-handed, left-handed, and full-library presets.
 
 Both commands accept `--roles` with a TOML `[roles]` table for exact filename or
-stem overrides; see `role-overrides.example.toml`. Layout planning is read-only
-and does not yet rewrite XPM files. See
-[Program Model and layout planning](docs/program-model-and-layouts.md).
+stem overrides; see `role-overrides.example.toml`. `mpc-layout-export` creates a
+new XML or compressed Drum XPM by permuting complete instrument records and pad
+colors; it refuses in-place changes. `mpc-layout-verify` independently confirms
+that sample layers and unknown/global settings survived. `mpc-layout-package`
+builds self-contained hardware-test variants with audio checksums, pad maps, and
+local simulation results. See
+[Program Model and layout export](docs/program-model-and-layouts.md).
+
+## Metadata catalog
+
+`mpc-catalog build` combines the existing hardware ledger with normalized XPM
+metadata without reading or copying audio. The resulting JSON records program
+type, source format, zones, layers, sample-reference counts, key/pad ranges,
+populated banks, semantic roles, favorite status, Scratchpad role, and hardware
+notes. `mpc-catalog query` filters that portable index by type, semantic role,
+hardware status, favorite status, or text. See [Program catalog](docs/catalog.md).
+
+## Role-addressed drum ideas
+
+`mpc-drum-idea` turns a TOML recipe into reproducible JSON and Standard MIDI.
+Recipes name semantic roles such as `kick`, `snare`, or `hihat.closed`; the
+generator resolves them through the source or selected layout and reads MIDI
+notes from the XPM's own `PadNoteMap`. Seeds, probability, density, swing,
+velocity humanization, multi-sound cycling, and random alternates are explicit.
+See [Role-addressed drum ideas](docs/drum-ideas.md).
 
 ## Hardware workflow helpers
 

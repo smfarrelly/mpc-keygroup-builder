@@ -22,6 +22,7 @@ class LayoutPreset:
     strategy: str
     role_order: tuple[str, ...] = ()
     fill_remaining: bool = True
+    program_suffix: str = ""
 
 
 @dataclass(frozen=True)
@@ -56,6 +57,14 @@ def load_preset(path: Path) -> LayoutPreset:
         raise ValueError(f"layout preset is missing: {', '.join(missing)}")
     if data["schema_version"] != 1:
         raise ValueError("layout preset requires schema_version=1")
+    if (
+        not isinstance(data["id"], str)
+        or not data["id"]
+        or Path(data["id"]).name != data["id"]
+    ):
+        raise ValueError("layout preset id must be a path-safe name")
+    if not isinstance(data["name"], str) or not data["name"].strip():
+        raise ValueError("layout preset name must be a non-empty string")
     if data["strategy"] not in {"role-first", "sequential"}:
         raise ValueError(f"unsupported layout strategy: {data['strategy']!r}")
     role_order = data.get("role_order", [])
@@ -68,6 +77,7 @@ def load_preset(path: Path) -> LayoutPreset:
         data["strategy"],
         tuple(role_order),
         data.get("fill_remaining", True) is True,
+        str(data.get("program_suffix", "")).strip(),
     )
 
 

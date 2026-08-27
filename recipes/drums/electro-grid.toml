@@ -1,0 +1,38 @@
+schema_version = 1
+id = "electro-grid"
+name = "Electro Grid"
+bars = 2
+steps_per_bar = 16
+swing = 0.5
+gate = 0.4
+channel = 10
+
+[[events]]
+role = "kick"
+steps = [0, 6, 16, 22]
+velocity = 118
+
+[[events]]
+role = "snare"
+steps = [4, 12, 20, 28]
+velocity = 112
+selection = "cycle"
+
+[[events]]
+role = "clap"
+steps = [12, 28]
+velocity = 92
+probability = 0.75
+
+[[events]]
+role = "hihat.closed"
+steps = [2, 6, 10, 14, 18, 22, 26, 30]
+velocity = 84
+humanize_velocity = 5
+
+[[events]]
+role = "tom"
+steps = [15, 30, 31]
+velocity = 96
+probability = 0.6
+selection = "cycle"

@@ -105,9 +105,17 @@ and semantic pattern generation.
 - [x] The 96-zone six-bank Vinyl Shots manifest and 73-zone Mirage Wurli XPM
   pass real-data normalization; all four Vinyl Shots plans assign 96 zones with
   no overflow.
+- [x] A non-destructive XML/compressed XPM exporter permutes complete 128-record
+  Drum layouts, moves colors with records, refuses in-place writes, and verifies
+  global/unknown-field preservation independently.
+- [x] A hardware-package builder produces self-contained variants with licensed
+  audio kept in ignored storage, pad maps, checksums, and passing simulations.
+- [x] A metadata-only catalog indexes all 750 ledger entries; 746 programs from
+  the immutable backup normalize successfully and four transient testing files
+  are explicitly missing.
 
-The planner does not yet write rearranged XPMs. Export and the two-variant Key
-37 comparison remain the v0.2 exit gate.
+Software export is complete. The two-variant Key 37 comparison remains the v0.2
+exit gate.
 
 **Exit gate:** One source kit can reproducibly generate Classic, right-handed,
 left-handed, and full A–H variants. At least two variants load correctly on the
@@ -167,6 +175,20 @@ Implement deterministic, seed-reproducible generators in this order:
 2. Drum patterns addressed by semantic roles, not fixed pad numbers.
 3. Bass lines constrained by the chord model and useful instrument range.
 4. Melodies and motifs with controllable repetition and variation.
+
+### Foundation delivered early
+
+- [x] TOML Drum recipes address hierarchical semantic roles instead of fixed
+  pads.
+- [x] Generation is reproducible by seed and supports probability, density,
+  swing, gate, velocity humanization, sound cycling, and random alternates.
+- [x] Source and planned layouts resolve through the XPM's own `PadNoteMap`.
+- [x] Each run writes inspectable JSON plus format-0 Standard MIDI at 480 PPQ.
+- [x] A real source/Classic comparison preserves events and velocities while
+  changing the moved snare's MIDI note.
+
+Hardware import and musical acceptance remain open; chords, bass, and melody
+generators are not yet implemented.
 
 Later controls include density, swing, syncopation, octave range, harmonic
 adventurousness, repetition, and variation. Generated events must resolve
@@ -254,7 +276,7 @@ for release gates:
 
 1. **Hardware:** load `FG Vinyl Shots 03 Six Bank` on Scratchpad Track 2,
    compare navigation with versions 01/02, and save a revised protected master.
-2. **Export:** convert a validated layout plan into a new XPM without mutating
-   the source or losing playback, color, choke, or layer settings.
-3. **Acceptance:** load two generated layout variants on the Key 37, reload
-   them, compare playability, and close the v0.2 exit gate.
+2. **Acceptance:** load the generated Classic and handed variants on the Key
+   37, reload them, compare playability, and close the v0.2 exit gate.
+3. **Creative MIDI:** import the generated source/Classic MIDI pair on the Key
+   37, then add chord and bass generators after Drum MIDI acceptance.

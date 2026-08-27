@@ -25,6 +25,7 @@ class ProgramModelTests(unittest.TestCase):
             path.write_text(
                 '<?xml version="1.0"?><MPCVObject><Program type="Drum">'
                 '<ProgramName>Kit</ProgramName><ProgramPads>' + json.dumps(settings) + '</ProgramPads>'
+                '<PadNoteMap><PadNote number="1"><Note>36</Note></PadNote></PadNoteMap>'
                 '<Instruments><Instrument number="1"><Mono>True</Mono><Polyphony>1</Polyphony>'
                 '<MuteGroup>0</MuteGroup><OneShot>True</OneShot><Layers><Layer>'
                 '<VelStart>0</VelStart><VelEnd>127</VelEnd><RootNote>36</RootNote>'
@@ -35,6 +36,7 @@ class ProgramModelTests(unittest.TestCase):
             program = model.from_xpm(path)
             self.assertEqual(program.kind, "drum")
             self.assertEqual(program.zones[0].pad, 1)
+            self.assertEqual(program.zones[0].midi_note, 36)
             self.assertEqual(program.zones[0].role, "kick.primary")
             self.assertEqual(program.zones[0].color, 0xFF0000)
             self.assertEqual(program.zones[0].layers[0].sample_end, 99)

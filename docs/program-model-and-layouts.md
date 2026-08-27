@@ -65,11 +65,51 @@ uv run mpc-layout inventory/fg-vinyl-shots-six-bank.toml \
   --output work/right-handed-map.md
 ```
 
-JSON output is available with `--format json` for a future visual editor or XPM
-exporter. The current layout command is intentionally read-only: it produces a
-validated placement plan and does not rewrite an XPM. A generated XPM exporter
-must preserve all non-layout settings and pass MPC hardware tests before these
-presets can be called performance-ready.
+JSON output is available with `--format json` for a future visual editor.
+
+## Non-destructive XPM export
+
+Export writes a new Drum Program and refuses to modify the source in place:
+
+```bash
+uv run mpc-layout-export "/path/to/source.xpm" \
+  --preset layouts/right-handed-performance.toml \
+  --device devices/mpc-key-37.toml \
+  --name "My Kit Right" \
+  --output "/path/to/My Kit Right.xpm"
+```
+
+The exporter does not reconstruct sounds from a reduced schema. It permutes all
+128 complete instrument records and moves each record's pad color with it.
+Layers, mute groups, playback settings, unknown instrument fields, MIDI note
+maps, sample registries, effects, and other global settings remain intact. XML
+stays XML and MPC 3 compressed data stays compressed. Existing output is refused
+unless `--force` is explicit.
+
+Run the same invariant checks later without writing:
+
+```bash
+uv run mpc-layout-verify "/path/to/source.xpm" "/path/to/My Kit Right.xpm" \
+  --preset layouts/right-handed-performance.toml \
+  --device devices/mpc-key-37.toml \
+  --name "My Kit Right"
+```
+
+An exported XPM still needs access to its licensed audio. Build a complete local
+hardware-test handoff with one or more repeated `--preset` arguments:
+
+```bash
+uv run mpc-layout-package "/path/to/source.xpm" \
+  --preset layouts/classic-mpc.toml \
+  --preset layouts/right-handed-performance.toml \
+  --device devices/mpc-key-37.toml \
+  --name-prefix "TESTKIT" \
+  --output work/testkit-layout-trial
+```
+
+Every variant is self-contained and receives an XPM, licensed audio copies, a
+pad map, checksums, and semantic simulation results. Package output belongs in
+ignored local storage and must never be committed.
 
 ## Current real-data proof
 
@@ -79,6 +119,11 @@ On August 26, 2026, the adapters and renderer were exercised against:
 - the MPC 3 Mirage Wurli XPM: 73 Keygroup zones, no model errors or warnings;
 - all four stock layouts on the Key 37 profile: 96 assignments and zero
   unassigned zones per layout.
+- four self-contained `FG Vinyl Shots 03` exports: 96 audio files per variant,
+  all local simulations passing; 62, 61, 63, and 0 populated-pad moves for
+  Classic, right-handed, left-handed, and full-library respectively.
 
-This proves normalized import and deterministic planning. It does not replace
-the pending two-layout Key 37 load, color-reload, and playing comparison.
+The real Classic export independently preserves all 128 records, 96 sample
+layers, pad colors, and global settings. This proves deterministic export but
+does not replace the pending two-layout Key 37 load, color-reload, and playing
+comparison.

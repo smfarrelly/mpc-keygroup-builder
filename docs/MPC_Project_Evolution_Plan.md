@@ -627,6 +627,41 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
 - The next software gate is a non-mutating layout-to-XPM exporter followed by
   load/reload comparison of two generated variants on the Key 37.
 
+### August 26, 2026 — layout export and catalog foundation
+
+- Added non-destructive layout export for both legacy XML and MPC 3 compressed
+  Drum Programs. Complete 128-record permutations preserve layers, choke and
+  playback settings, unknown fields, note maps, registries, effects, and global
+  settings while moving semantic pad colors with each sound.
+- Added an independent verifier plus overwrite and in-place mutation refusal.
+- Generated a four-variant, self-contained `FG Vinyl Shots 03` hardware package
+  in ignored local storage. Classic, right-handed, left-handed, and full-library
+  variants each contain 96 checksum-recorded WAVs and pass local simulation.
+- Added a metadata-only program catalog with offline querying by type, role,
+  hardware status, favorite, and text. The immutable-backup proof indexed all
+  750 ledger rows: 746 pass and four old testing artifacts are explicitly
+  missing.
+- No licensed audio, generated XPM, or hardware package is eligible for source
+  control. The next hardware gate is a Classic/handed load-reload comparison;
+  the next software slice is role-addressed deterministic drum MIDI.
+
+### August 26, 2026 — deterministic role-addressed Drum MIDI
+
+- Extended Program Model v1 with each Drum Program's actual 128-entry
+  `PadNoteMap` for legacy XML and MPC 3 compressed XPMs.
+- Added reproducible TOML pattern recipes with role families, probability,
+  density, swing, gate, velocity humanization, and deterministic sound
+  selection.
+- Added source/layout resolution that keeps semantic events fixed while changing
+  the MIDI note when a sound moves to a new pad.
+- Added format-0 Standard MIDI export at 480 PPQ plus a JSON event/provenance
+  sidecar. Existing outputs require explicit replacement.
+- Generated a real `dusty-pocket` source/Classic pair from Vinyl SP. Both have
+  28 events under seed 37 at 91 BPM; MIDI inspection passes and the moved snare
+  follows its Classic pad-note assignment.
+- Hardware import and groove acceptance remain open. No generated MIDI or
+  licensed program material is committed.
+
 ## 16. Reference material
 
 - [Akai: Understanding and Loading MPC Programs](https://support.akaipro.com/en/support/solutions/articles/69000804211-akai-pro-mpc-series-understanding-and-loading-programs)

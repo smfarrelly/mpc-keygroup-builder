@@ -1,0 +1,35 @@
+schema_version = 1
+id = "sparse-weird"
+name = "Sparse Weird"
+bars = 4
+steps_per_bar = 16
+swing = 0.6
+gate = 0.5
+channel = 10
+
+[[events]]
+role = "kick"
+steps = [0, 11, 29, 48]
+velocity = 110
+probability = 0.9
+
+[[events]]
+role = "snare"
+steps = [12, 44]
+velocity = 101
+selection = "random"
+
+[[events]]
+role = "percussion"
+steps = [7, 18, 23, 34, 39, 55, 62]
+velocity = 82
+probability = 0.72
+humanize_velocity = 14
+selection = "random"
+
+[[events]]
+role = "fx"
+steps = [31, 63]
+velocity = 88
+probability = 0.65
+selection = "random"

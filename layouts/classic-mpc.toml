@@ -3,6 +3,7 @@ id = "classic-mpc"
 name = "Classic MPC-ish"
 strategy = "role-first"
 fill_remaining = true
+program_suffix = "Classic"
 role_order = [
   "kick", "kick", "snare", "snare",
   "hihat.closed", "hihat.open", "clap", "rim",

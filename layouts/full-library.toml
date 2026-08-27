@@ -3,3 +3,4 @@ id = "full-library"
 name = "Full Library / Source Order"
 strategy = "sequential"
 fill_remaining = true
+program_suffix = "Full"

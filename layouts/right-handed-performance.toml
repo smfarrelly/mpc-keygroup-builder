@@ -3,6 +3,7 @@ id = "right-handed-performance"
 name = "Right-handed Performance Candidate"
 strategy = "role-first"
 fill_remaining = true
+program_suffix = "Right"
 role_order = [
   "kick", "snare", "hihat.closed", "hihat.open",
   "clap", "rim", "percussion", "percussion",

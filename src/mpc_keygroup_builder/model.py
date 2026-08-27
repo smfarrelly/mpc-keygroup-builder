@@ -38,6 +38,7 @@ class Zone:
     role: str
     layers: tuple[SampleLayer, ...]
     pad: int | None = None
+    midi_note: int | None = None
     low_note: int | None = None
     high_note: int | None = None
     color: int | None = None
@@ -57,6 +58,7 @@ class ProgramModel:
     source_format: str
     source_path: str = ""
     provenance: dict[str, str] = field(default_factory=dict)
+    pad_note_map: dict[int, int] = field(default_factory=dict)
 
     def validate(self) -> dict[str, list[str]]:
         errors: list[str] = []
@@ -69,6 +71,7 @@ class ProgramModel:
         if len(indexes) != len(set(indexes)):
             errors.append("zone indexes must be unique")
         pads = [zone.pad for zone in self.zones if zone.pad is not None]
+        midi_notes = [zone.midi_note for zone in self.zones if zone.midi_note is not None]
         if self.kind == "drum":
             if len(pads) != len(self.zones):
                 errors.append("every Drum Program zone requires a pad")
@@ -76,6 +79,16 @@ class ProgramModel:
                 errors.append("drum pads must be 1..128")
             if len(pads) != len(set(pads)):
                 errors.append("drum pads must be unique")
+            if any(not 0 <= int(note) <= 127 for note in midi_notes):
+                errors.append("drum MIDI notes must be 0..127")
+            if len(midi_notes) != len(set(midi_notes)):
+                errors.append("drum MIDI notes must be unique")
+            if any(not 1 <= pad <= 128 for pad in self.pad_note_map):
+                errors.append("PadNoteMap pads must be 1..128")
+            if any(not 0 <= note <= 127 for note in self.pad_note_map.values()):
+                errors.append("PadNoteMap MIDI notes must be 0..127")
+            if len(self.pad_note_map.values()) != len(set(self.pad_note_map.values())):
+                errors.append("PadNoteMap MIDI notes must be unique")
         for zone in self.zones:
             if not zone.layers:
                 warnings.append(f"zone {zone.index} has no sample layers")
@@ -167,6 +180,7 @@ def _xml_model(path: Path, role_overrides: dict[str, str] | None = None) -> Prog
     if kind not in {"drum", "keygroup"}:
         raise ValueError(f"unsupported XML program type: {kind!r}")
     colors: dict[str, int] = {}
+    note_map: dict[int, int] = {}
     pads_node = program.find("ProgramPads")
     if pads_node is not None and pads_node.text:
         try:
@@ -174,6 +188,11 @@ def _xml_model(path: Path, role_overrides: dict[str, str] | None = None) -> Prog
             colors = settings.get("pads", {}) if isinstance(settings.get("pads"), dict) else {}
         except json.JSONDecodeError:
             pass
+    for item in program.findall("./PadNoteMap/PadNote"):
+        number = _integer(item.get("number"), None)
+        note = _integer(item.findtext("Note"), None)
+        if number is not None and note is not None:
+            note_map[number] = note
     zones = []
     for sequence, instrument in enumerate(program.findall("./Instruments/Instrument"), 1):
         layers = tuple(
@@ -186,6 +205,7 @@ def _xml_model(path: Path, role_overrides: dict[str, str] | None = None) -> Prog
             Zone(
                 index=number,
                 pad=number if kind == "drum" else None,
+                midi_note=note_map.get(number) if kind == "drum" else None,
                 low_note=_integer(instrument.findtext("LowNote"), None),
                 high_note=_integer(instrument.findtext("HighNote"), None),
                 role=(
@@ -201,7 +221,15 @@ def _xml_model(path: Path, role_overrides: dict[str, str] | None = None) -> Prog
                 monophonic=_boolean(instrument.findtext("Mono")),
             )
         )
-    return ProgramModel(1, program.findtext("ProgramName", ""), kind, tuple(zones), "xml", str(path.resolve()))
+    return ProgramModel(
+        1,
+        program.findtext("ProgramName", ""),
+        kind,
+        tuple(zones),
+        "xml",
+        str(path.resolve()),
+        pad_note_map=note_map if kind == "drum" else {},
+    )
 
 
 def _json_layer(layer: dict[str, Any]) -> SampleLayer | None:
@@ -238,6 +266,20 @@ def _json_model(path: Path, role_overrides: dict[str, str] | None = None) -> Pro
         instruments = instruments[1:]
     pad_settings = data.get("programPads", {})
     colors = pad_settings.get("pads", {}) if isinstance(pad_settings, dict) else {}
+    pad_note_map = data.get("padNoteMap", {})
+    note_for_pad = (
+        pad_note_map.get("noteForPad", {}) if isinstance(pad_note_map, dict) else {}
+    )
+    note_map = (
+        {
+            index: int(value)
+            for index in range(1, 129)
+            if (value := _integer(note_for_pad.get(f"value{index - 1}"), None))
+            is not None
+        }
+        if isinstance(note_for_pad, dict)
+        else {}
+    )
     zones = []
     for index, instrument in enumerate(instruments, 1):
         if not isinstance(instrument, dict):
@@ -254,6 +296,11 @@ def _json_model(path: Path, role_overrides: dict[str, str] | None = None) -> Pro
             Zone(
                 index=index,
                 pad=index if kind == "drum" else None,
+                midi_note=(
+                    _integer(note_for_pad.get(f"value{index - 1}"), None)
+                    if kind == "drum" and isinstance(note_for_pad, dict)
+                    else None
+                ),
                 low_note=_integer(instrument.get("lowNote"), None),
                 high_note=_integer(instrument.get("highNote"), None),
                 role=(
@@ -269,7 +316,15 @@ def _json_model(path: Path, role_overrides: dict[str, str] | None = None) -> Pro
                 monophonic=_boolean(instrument.get("monophonic")),
             )
         )
-    return ProgramModel(1, str(data.get("name", "")), kind, tuple(zones), "gzip-json", str(path.resolve()))
+    return ProgramModel(
+        1,
+        str(data.get("name", "")),
+        kind,
+        tuple(zones),
+        "gzip-json",
+        str(path.resolve()),
+        pad_note_map=note_map if kind == "drum" else {},
+    )
 
 
 def from_xpm(path: Path, role_overrides: dict[str, str] | None = None) -> ProgramModel:
