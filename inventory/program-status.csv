@@ -225,7 +225,7 @@ Programs/Keygroups/Samples From Mars/Junos From Mars/Bass/Funky Bass.xpm,Keygrou
 Programs/Keygroups/Samples From Mars/Junos From Mars/Bass/Grit Bass.xpm,Keygroup,gzip-json,pass,109,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Junos From Mars/Bass/Sub Only.xpm,Keygroup,gzip-json,pass,109,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Junos From Mars/Bass/Sub Smash.xpm,Keygroup,gzip-json,pass,109,production,pass,,untested,,,
-Programs/Keygroups/Samples From Mars/Junos From Mars/Bass/Sub Smooth.xpm,Keygroup,gzip-json,pass,109,production,pass,,pass,provisional,candidate:bass,"Auditioned successfully on the Key 37 and strongly liked as an additional smooth-sub bass option."
+Programs/Keygroups/Samples From Mars/Junos From Mars/Bass/Sub Smooth.xpm,Keygroup,gzip-json,pass,109,production,pass,,pass,yes,bass pad,"Auditioned successfully on the Key 37 and selected for the dedicated Scratchpad Bass Pad track."
 Programs/Keygroups/Samples From Mars/Junos From Mars/Bass/Thumper.xpm,Keygroup,gzip-json,pass,88,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Junos From Mars/Leads/Clarinet.xpm,Keygroup,gzip-json,pass,88,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Junos From Mars/Leads/PWM Chorus.xpm,Keygroup,gzip-json,pass,88,production,pass,,untested,,,
@@ -311,8 +311,8 @@ Programs/Keygroups/Samples From Mars/Mini From Mars/Leads/Sharp Lead.xpm,Keygrou
 Programs/Keygroups/Samples From Mars/Mini From Mars/Leads/Sonic Destruction.xpm,Keygroup,gzip-json,pass,97,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Mirage From Mars/Bass/Fuzz Bass.xpm,Keygroup,gzip-json,pass,71,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Mirage From Mars/Bass/Melodic Bass.xpm,Keygroup,gzip-json,pass,73,production,pass,,untested,,,
-Programs/Keygroups/Samples From Mars/Mirage From Mars/Bass/Pluck Bass.xpm,Keygroup,gzip-json,pass,73,production,pass,,pass,provisional,bass,Plays correctly on the Key 37 and is liked as the provisional Scratchpad bass choice.
-Programs/Keygroups/Samples From Mars/Mirage From Mars/Bass/Upright Bass.xpm,Keygroup,gzip-json,pass,73,production,pass,,untested,,,
+Programs/Keygroups/Samples From Mars/Mirage From Mars/Bass/Pluck Bass.xpm,Keygroup,gzip-json,pass,73,production,pass,,pass,yes,bass,Plays correctly on the Key 37 and is selected as the primary Scratchpad bass.
+Programs/Keygroups/Samples From Mars/Mirage From Mars/Bass/Upright Bass.xpm,Keygroup,gzip-json,pass,73,production,pass,,pass,provisional,candidate:bass,"Plays successfully on the Key 37 and is strongly liked for its breathy noise and vinyl-like character, but Pluck Bass remains the primary bass."
 Programs/Keygroups/Samples From Mars/Mirage From Mars/Guitar/Acoustic Guitar Chorus.xpm,Keygroup,gzip-json,pass,73,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Mirage From Mars/Guitar/Acoustic Guitar.xpm,Keygroup,gzip-json,pass,73,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Mirage From Mars/Guitar/Distorted Guitar.xpm,Keygroup,gzip-json,pass,73,production,pass,,untested,,,

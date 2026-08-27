@@ -57,9 +57,10 @@ type = "clip"
 
 [[tracks]]
 index = 7
-name = "Texture"
-role = "texture/guest"
-type = "audio"
+name = "Bass Pad"
+role = "bass pad"
+type = "keygroup"
+program = "Sub Smooth"
 
 [[tracks]]
 index = 8

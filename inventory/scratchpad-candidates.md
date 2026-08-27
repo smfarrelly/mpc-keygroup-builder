@@ -31,8 +31,10 @@ final musical-favorite verdict.
 
 Replacement-round hardware results:
 
-- `Mirage Pluck Bass` — current provisional primary bass.
-- `Junos Sub Smooth` — pass and provisional additional smooth-sub option.
+- `Mirage Pluck Bass` — selected primary bass.
+- `Junos Sub Smooth` — selected for the dedicated Bass Pad track.
+- `Mirage Upright Bass` — pass and provisional character alternative; liked
+  for its breathy noise and vinyl-like character.
 - `Echo Square` — Acid From Mars; pass and provisional additional bass.
 - `Fisherman'sFriend` — pass, but not a favorite.
 

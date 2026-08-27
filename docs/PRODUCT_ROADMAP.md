@@ -77,8 +77,9 @@ and semantic pattern generation.
 
 ### Current slices
 
-1. **Hardware closeout.** Finish `FG Vinyl Shots 01`, final bass, and final
-   lead/pad listening; preserve the resulting Scratchpad master and jam copy.
+1. **Hardware closeout.** Finish `FG Vinyl Shots 01` and final lead/pad
+   listening; preserve the resulting Scratchpad master and jam copy. Pluck
+   Bass is selected for primary bass and Sub Smooth for the Bass Pad track.
 2. **Normalized Program Model v1.** Represent samples, zones, velocity layers,
    playback mode, semantic roles, pads, colors, mute groups, and source
    provenance independently from XPM serialization.
@@ -264,7 +265,8 @@ specific SD card, sample library, or development history.
 Hardware work continues alongside software milestones and provides the truth
 for release gates:
 
-- Finalize the Scratchpad bass, lead/pad, and Track 2 shots choices.
+- Finalize the Scratchpad lead/pad and Track 2 shots choices; primary bass and
+  Bass Pad are selected.
 - Record and reload an actual MPC-authored Volca MIDI sequence.
 - Complete three-device Volca isolation and sync after the CME MIDI Thru5 WC
   arrives.

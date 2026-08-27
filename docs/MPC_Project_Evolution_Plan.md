@@ -107,7 +107,7 @@ All templates should preserve the same eight-strip mental model wherever practic
 | 4 | Chords/keys | Vinyl piano, EP, or chords | Volca Keys |
 | 5 | Lead/pad | Warbly lead or pad | Internal lead/pad |
 | 6 | Loops | Breaks and melodic loops | Loops or additional sequence material |
-| 7 | Texture/guest | Crackle, static, ambience | Texture or guest hardware |
+| 7 | Bass pad/texture | Juno Sub Smooth | Texture or guest hardware |
 | 8 | Capture/transition | Resampling and transitions | Resampling and transitions |
 
 ## 6. MPC program-type strategy
@@ -470,8 +470,9 @@ These are not initial priorities:
 ### Part B — Assemble the Scratchpad
 
 - [x] Choose one working vinyl drum kit: Vinyl SP.
-- [x] Choose one working vinyl bass: Mirage Pluck Bass (provisional, proven in
-  the captured four-bar sequence; final A/B decision remains open).
+- [x] Choose one working vinyl bass: Mirage Pluck Bass (selected and proven in
+  the captured four-bar sequence).
+- [x] Add Juno Sub Smooth as a dedicated Bass Pad Keygroup on Track 7.
 - [x] Choose one favorite vinyl keys/chord sound: Mirage Wurli.
 - [x] Choose one favorite lead, pad, or texture: OneFiftySeven (provisional).
 - [ ] Create the eight-track project skeleton.
