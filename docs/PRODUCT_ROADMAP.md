@@ -142,13 +142,14 @@ and semantic pattern generation.
   counts, files, and bytes while preserving the distinction between SD assets
   and actual on-device activation/playability.
 
-Software export is complete. The two-variant Key 37 comparison remains the v0.2
-exit gate.
+Software export is complete. Key 37 listening selects the right-handed layout;
+save/reload persistence remains the v0.2 exit gate.
 
 The four-variant v2 package and its source/classic semantic MIDI pair are now
-deployed and checksum-verified on the SD. Hardware load/reload, color
-persistence, and same-pattern playability are the only remaining parts of this
-exit gate.
+deployed and checksum-verified on the SD. Right wins the hardware layout choice,
+with a modest advantage because the source contains many diverse one-shots.
+Hardware save/reload and color persistence are the remaining parts of this exit
+gate.
 
 **Exit gate:** One source kit can reproducibly generate Classic, right-handed,
 left-handed, and full A–H variants. At least two variants load correctly on the
@@ -359,7 +360,7 @@ for release gates:
    selected as the expressive alternate; Vinyl SP remains main. Finish the
    alternate's choke/reload acceptance, then save a revised protected
    Scratchpad master containing the accepted `FG Vinyl Shots 04 Eight Bank`.
-2. **Acceptance:** load the now-deployed Classic and handed variants on the Key
-   37, reload them, compare playability, and close the v0.2 exit gate.
+2. **Acceptance:** Right is selected over Classic. Save/reload both, confirm
+   color/sample persistence, and close the v0.2 exit gate.
 3. **Creative MIDI:** import the now-deployed source/Classic MIDI pair on the
    Key 37, then add chord and bass generators after Drum MIDI acceptance.

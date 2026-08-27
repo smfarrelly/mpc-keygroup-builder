@@ -452,11 +452,18 @@ local sources by relative path and SHA-256.
 
 ### Layout comparison package
 
+**Layout decision — August 27, 2026:** select the right-handed performance
+layout. The difference from Classic is modest because this 96-pad source is
+dominated by varied one-shots rather than a small repeated
+kick/snare/cymbal-style performance kit, but Right is still the preferred
+default. Retain Classic, Left, and Full as reference variants; only persistence
+checks remain before closing the exit gate.
+
 MPC paths:
 
-- [ ] Classic:
+- [x] Classic auditioned:
   `SD Card / 00 FG Hardware Tests / Layout Trial v2 / 01-classic-mpc / FGVS03 Classic.xpm`
-- [ ] Right-handed:
+- [x] Right-handed auditioned and selected:
   `SD Card / 00 FG Hardware Tests / Layout Trial v2 / 02-right-handed-performance / FGVS03 Right.xpm`
 - [ ] Left-handed:
   `SD Card / 00 FG Hardware Tests / Layout Trial v2 / 03-left-handed-performance / FGVS03 Left.xpm`
@@ -465,14 +472,15 @@ MPC paths:
 
 After deployment:
 
-- [ ] Load Classic and Right first and leave Browser so colors appear.
+- [x] Load Classic and Right first and leave Browser so colors appear.
 - [ ] Trigger all 96 populated pads in Banks A–F.
 - [ ] Record the same pattern without looking at the screen; count wrong-pad
   strikes and judge one-handed comfort.
 - [ ] Compare Left only if it offers a plausible advantage.
 - [ ] Save/reload at least Classic and the best handed candidate.
 - [ ] Confirm samples, colors, choke, and playback behavior persist.
-- [ ] Choose Classic, a handed layout, or full-library source order.
+- [x] Choose Right as the preferred layout; the improvement is useful but
+  modest for this diverse one-shot collection.
 
 ### Semantic MIDI comparison
 

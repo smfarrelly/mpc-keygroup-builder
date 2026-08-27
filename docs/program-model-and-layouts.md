@@ -124,6 +124,8 @@ On August 26, 2026, the adapters and renderer were exercised against:
   Classic, right-handed, left-handed, and full-library respectively.
 
 The real Classic export independently preserves all 128 records, 96 sample
-layers, pad colors, and global settings. This proves deterministic export but
-does not replace the pending two-layout Key 37 load, color-reload, and playing
-comparison.
+layers, pad colors, and global settings. Key 37 listening selects the
+right-handed performance layout over Classic, although the advantage is modest
+for this diverse one-shot collection rather than a compact conventional kit.
+Save/reload and color persistence remain pending before the hardware exit gate
+is fully closed.

@@ -818,6 +818,10 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
 - The first +24-semitone SP-1200 register fix is close on hardware but should
   move one more octave right. Built NR2 at +36 semitones with roots MIDI 61–86;
   all five programs preserve the same 80 WAVs and pass structural/model checks.
+- Hardware layout comparison selects the right-handed performance variant over
+  Classic. The improvement is modest because the source has many varied
+  one-shots instead of a compact kick/snare/cymbal kit; reload and color
+  persistence remain the final v0.2 checks.
 - Deployed the complete v2 layout bracket—Classic, right-handed, left-handed,
   and full-library—plus the source/classic `dusty-pocket` MIDI pair. All four
   XPMs pass directly from SD, both MIDI files remain valid format-0 data, and
