@@ -29,6 +29,12 @@ final musical-favorite verdict.
 
 - `Fisherman'sFriend` — 101 From Mars
 
+Replacement-round hardware results:
+
+- `Mirage Pluck Bass` — current provisional primary bass.
+- `Junos Sub Smooth` — pass and provisional additional smooth-sub option.
+- `Fisherman'sFriend` — pass, but not a favorite.
+
 ## Keys
 
 - `E Piano` — 360 From Mars

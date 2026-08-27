@@ -225,7 +225,7 @@ Programs/Keygroups/Samples From Mars/Junos From Mars/Bass/Funky Bass.xpm,Keygrou
 Programs/Keygroups/Samples From Mars/Junos From Mars/Bass/Grit Bass.xpm,Keygroup,gzip-json,pass,109,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Junos From Mars/Bass/Sub Only.xpm,Keygroup,gzip-json,pass,109,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Junos From Mars/Bass/Sub Smash.xpm,Keygroup,gzip-json,pass,109,production,pass,,untested,,,
-Programs/Keygroups/Samples From Mars/Junos From Mars/Bass/Sub Smooth.xpm,Keygroup,gzip-json,pass,109,production,pass,,untested,,,
+Programs/Keygroups/Samples From Mars/Junos From Mars/Bass/Sub Smooth.xpm,Keygroup,gzip-json,pass,109,production,pass,,pass,provisional,candidate:bass,"Auditioned successfully on the Key 37 and strongly liked as an additional smooth-sub bass option."
 Programs/Keygroups/Samples From Mars/Junos From Mars/Bass/Thumper.xpm,Keygroup,gzip-json,pass,88,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Junos From Mars/Leads/Clarinet.xpm,Keygroup,gzip-json,pass,88,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Junos From Mars/Leads/PWM Chorus.xpm,Keygroup,gzip-json,pass,88,production,pass,,untested,,,
