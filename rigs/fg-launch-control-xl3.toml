@@ -34,7 +34,7 @@ name = "Shots"
 role = "percussion/one-shots"
 type = "drum"
 program = "FG Vinyl Shots 04 Eight Bank"
-program_path = "Programs/Drum Programs/FG Scratchpad Candidates/FG Vinyl Shots 04 Eight Bank/FG Vinyl Shots 04 Eight Bank.xpm"
+program_path = "00 FG Scratchpad/02 Vinyl Shots/FG Vinyl Shots 04 Eight Bank.xpm"
 
 [[tracks]]
 index = 3
@@ -73,6 +73,12 @@ program = "Sub Smooth"
 
 [[tracks]]
 index = 8
+name = "Loops"
+role = "loops"
+type = "clip"
+
+[[tracks]]
+index = 9
 name = "Capture"
 role = "capture/transition"
 type = "audio"

@@ -97,7 +97,9 @@ The finished system will have three library levels and four template types.
 3. **FG Mars Lab** — auditioning, resampling, and manipulating Samples From Mars material.
 4. **FG Song Builder** — live arrangement through named musical sequences.
 
-All templates should preserve the same eight-strip mental model wherever practical.
+All templates should preserve the same first-eight-strip controller vocabulary
+wherever practical. The project may add tracks beyond those eight; they are not
+an MPC limit.
 
 | Strip | Standard role | Vinyl Scratchpad | Volca Jam |
 |---|---|---|---|
@@ -106,9 +108,10 @@ All templates should preserve the same eight-strip mental model wherever practic
 | 3 | Bass | Vinyl bass keygroup | Volca Bass |
 | 4 | Chords/keys | Vinyl piano, EP, or chords | Volca Keys |
 | 5 | Lead | Dark FM | Internal lead/pad |
-| 6 | Pad/loops | Glass Howl | Loops or additional sequence material |
+| 6 | Pad | Glass Howl | Additional sequence material |
 | 7 | Bass pad/texture | Juno Sub Smooth | Texture or guest hardware |
-| 8 | Capture/transition | Resampling and transitions | Resampling and transitions |
+| 8 | Loops | Loops | Loops |
+| 9 | Capture/transition | Resampling and transitions | Resampling and transitions |
 
 ## 6. MPC program-type strategy
 
@@ -670,16 +673,18 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
 - Selected Mirage Pluck Bass for Track 3, Emulator Dark FM for Track 5 Lead,
   Kawaii Dreams Glass Howl for Track 6 Pad, and Juno Sub Smooth for Track 7
   Bass Pad; Mirage Wurli remains the Track 4 keys favorite.
-- Replaced the unused Scratchpad Loops strip with the dedicated Glass Howl Pad
-  while retaining Track 8 for audio capture and resampling.
+- Added the dedicated Glass Howl Pad on Track 6 and Juno Sub Smooth Bass Pad on
+  Track 7. Restored Loops on Track 8 and moved audio capture/resampling to Track
+  9; eight tracks were only a controller vocabulary, not an MPC limit.
 - Extended Vinyl Shots to version 04 with all 128 pads populated. Bank G holds
   eight kicks and eight snares; Bank H holds eight matched closed/open hat
   pairs.
 - Added declarative per-pad mute groups to the Drum manifest builder. All eight
   Bank H hat pairs pass the independent choke-group audit.
 - Generated the self-contained 128-WAV hardware package in ignored local
-  storage. Semantic simulation and Drum audit pass; SD deployment and Key 37
-  load/reload acceptance remain open.
+  storage. Semantic simulation and Drum audit pass. It is now deployed in the
+  shallow SD folder `00 FG Scratchpad/02 Vinyl Shots`; Key 37 load/reload
+  acceptance remains open.
 
 ## 16. Reference material
 

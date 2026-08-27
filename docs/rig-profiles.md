@@ -6,10 +6,12 @@ semantics, and hardware acceptance tests in reviewable TOML.
 
 ## Included profiles
 
-- `rigs/fg-vinyl-scratchpad.toml`: eight internal tracks for immediate idea
+- `rigs/fg-vinyl-scratchpad.toml`: nine internal tracks for immediate idea
   generation, with the selected eight-bank FG Vinyl Shots Drum Program on
-  Track 2, Dark FM lead on Track 5, Glass Howl pad on Track 6, and Sub Smooth
-  bass pad on Track 7.
+  Track 2, Dark FM lead on Track 5, Glass Howl pad on Track 6, Sub Smooth bass
+  pad on Track 7, loops on Track 8, and capture on Track 9. The first eight
+  tracks retain the reusable controller-strip vocabulary; nine is a project
+  layout choice, not an MPC track limit.
 - `rigs/fg-volca-jam.toml`: the same strip model with Volca Drum on strip 1,
   Volca Bass on strip 3, and Volca Keys on strip 4.
 - `rigs/fg-launch-control-xl3.toml`: Universal Mix semantics for 8 faders,

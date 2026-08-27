@@ -85,22 +85,20 @@ fills the final two banks:
 - Bank H: eight closed hats followed by eight open hats, using matched 707,
   808, 909, acoustic, CR78, LM1, Machinedrum, and tape families.
 
-Version 04 is the selected Track 2 program. It remains additive: versions
-01–03 are preserved for navigation and hardware comparisons. Its intended SD
-path is:
+Version 04 is the selected Track 2 program. Versions 01–03 remain recoverable
+in the external SD cleanup archive. Its deployed shallow SD path is:
 
-`Programs/Drum Programs/FG Scratchpad Candidates/FG Vinyl Shots 04 Eight Bank/FG Vinyl Shots 04 Eight Bank.xpm`
+`00 FG Scratchpad/02 Vinyl Shots/FG Vinyl Shots 04 Eight Bank.xpm`
 
 The repository stores only the manifest. The generated XPM and its 128 licensed
 WAVs remain ignored at:
 
 `work/generated-drum-programs/FG Vinyl Shots 04 Eight Bank/`
 
-Local semantic simulation passes with zero missing samples, dead trigger cells,
-or stacked trigger cells. The Drum audit passes with eight matched closed/open
-hat choke groups. The XPM SHA-256 is
+Local and deployed semantic simulation pass with zero missing samples, dead
+trigger cells, or stacked trigger cells. The Drum audit passes with eight
+matched closed/open hat choke groups. The XPM SHA-256 is
 `0e3587cb52bf4f6acdfae509b066c0a6521b6ef0c4bdbef5038939f66d53bcd7`.
-SD deployment remains additive and waits until the card is mounted and idle.
 
 ## Hardware acceptance
 
