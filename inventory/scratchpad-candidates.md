@@ -47,7 +47,7 @@ Replacement-round hardware results:
 Replacement-round hardware result:
 
 - `Dark FM` — Emulator From Mars; pass and provisional additional lead.
-- `Muted Guitar` — Emulator From Mars; pass and provisional pad/texture track.
+- `Muted Guitar` — Emulator From Mars; pass and provisional additional lead.
 
 ## Key 37 listening order
 
