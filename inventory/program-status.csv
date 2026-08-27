@@ -214,7 +214,7 @@ Programs/Keygroups/Samples From Mars/Emulator From Mars/Pads/Angel Pad.xpm,Keygr
 Programs/Keygroups/Samples From Mars/Emulator From Mars/Pads/Dirty Circuit.xpm,Keygroup,gzip-json,pass,61,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Emulator From Mars/Pads/Pillow Pad.xpm,Keygroup,gzip-json,pass,62,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Emulator From Mars/Pads/Resonant Glass.xpm,Keygroup,gzip-json,pass,61,production,pass,,untested,,,
-Programs/Keygroups/Samples From Mars/Emulator From Mars/Pads/Ultimate.xpm,Keygroup,gzip-json,pass,61,production,pass,,untested,,,
+Programs/Keygroups/Samples From Mars/Emulator From Mars/Pads/Ultimate.xpm,Keygroup,gzip-json,pass,61,production,pass,,warn,,candidate:lead/pad,"Eventually loads and works on the Key 37, but loading is slow enough to appear hung; allow extra time before retrying or power-cycling."
 Programs/Keygroups/Samples From Mars/Emulator From Mars/Vocal/Breathy.xpm,Keygroup,gzip-json,pass,48,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Emulator From Mars/Vocal/Choir.xpm,Keygroup,gzip-json,pass,61,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Emulator From Mars/Vocal/Duet.xpm,Keygroup,gzip-json,pass,61,production,pass,,untested,,,
