@@ -1,3 +1,4 @@
+import struct
 import tempfile
 import unittest
 from pathlib import Path
@@ -74,8 +75,19 @@ class DrumIdeaTests(unittest.TestCase):
             self.assertNotEqual(first.events, other.events)
             midi = render_midi(first)
             self.assertEqual(midi[:4], b"MThd")
-            self.assertIn(b"MTrk", midi)
+            self.assertEqual(struct.unpack(">HHH", midi[8:14]), (1, 2, first.ppq))
+            self.assertEqual(midi.count(b"MTrk"), 2)
+            legacy = render_midi(first, midi_format=0)
+            self.assertEqual(struct.unpack(">HHH", legacy[8:14]), (0, 1, first.ppq))
+            self.assertEqual(legacy.count(b"MTrk"), 1)
             self.assertTrue(all(event.tick >= event.step * 120 for event in first.events))
+
+    def test_midi_format_rejects_unknown_value(self):
+        with tempfile.TemporaryDirectory() as directory:
+            recipe = load_recipe(self._recipe(Path(directory)))
+            idea = generate_idea(recipe, self._program(), seed=27, tempo=92)
+            with self.assertRaisesRegex(ValueError, "format must be 0 or 1"):
+                render_midi(idea, midi_format=2)
 
     def test_same_role_pattern_resolves_through_changed_layout(self):
         with tempfile.TemporaryDirectory() as directory:

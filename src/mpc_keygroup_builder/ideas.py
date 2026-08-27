@@ -278,27 +278,7 @@ def _variable_length(value: int) -> bytes:
     return bytes(result)
 
 
-def render_midi(idea: DrumIdea) -> bytes:
-    timeline: list[tuple[int, int, bytes]] = []
-    channel = idea.channel - 1
-    tempo_microseconds = round(60_000_000 / idea.tempo)
-    timeline.append((0, 0, b"\xff\x51\x03" + tempo_microseconds.to_bytes(3, "big")))
-    timeline.append((0, 0, b"\xff\x58\x04\x04\x02\x18\x08"))
-    name = f"{idea.recipe} seed {idea.seed}".encode("utf-8")[:127]
-    timeline.append((0, 0, b"\xff\x03" + _variable_length(len(name)) + name))
-    for event in idea.events:
-        timeline.append(
-            (event.tick, 2, bytes([0x90 | channel, event.midi_note, event.velocity]))
-        )
-        timeline.append(
-            (
-                event.tick + event.duration_ticks,
-                1,
-                bytes([0x80 | channel, event.midi_note, 0]),
-            )
-        )
-    end_tick = idea.bars * 4 * idea.ppq
-    timeline.append((end_tick, 3, b"\xff\x2f\x00"))
+def _render_midi_track(timeline: list[tuple[int, int, bytes]]) -> bytes:
     timeline.sort(key=lambda item: (item[0], item[1]))
     track = bytearray()
     previous = 0
@@ -306,8 +286,44 @@ def render_midi(idea: DrumIdea) -> bytes:
         track.extend(_variable_length(tick - previous))
         track.extend(message)
         previous = tick
-    header = b"MThd" + struct.pack(">IHHH", 6, 0, 1, idea.ppq)
-    return header + b"MTrk" + struct.pack(">I", len(track)) + bytes(track)
+    return b"MTrk" + struct.pack(">I", len(track)) + bytes(track)
+
+
+def render_midi(idea: DrumIdea, *, midi_format: int = 1) -> bytes:
+    if midi_format not in (0, 1):
+        raise ValueError("MIDI format must be 0 or 1")
+
+    channel = idea.channel - 1
+    tempo_microseconds = round(60_000_000 / idea.tempo)
+    name = f"{idea.recipe} seed {idea.seed}".encode("utf-8")[:127]
+    end_tick = idea.bars * 4 * idea.ppq
+    conductor = [
+        (0, 0, b"\xff\x03\x09Conductor"),
+        (0, 1, b"\xff\x51\x03" + tempo_microseconds.to_bytes(3, "big")),
+        (0, 2, b"\xff\x58\x04\x04\x02\x18\x08"),
+        (end_tick, 3, b"\xff\x2f\x00"),
+    ]
+    notes = [(0, 0, b"\xff\x03" + _variable_length(len(name)) + name)]
+    for event in idea.events:
+        notes.append(
+            (event.tick, 2, bytes([0x90 | channel, event.midi_note, event.velocity]))
+        )
+        notes.append(
+            (
+                event.tick + event.duration_ticks,
+                1,
+                bytes([0x80 | channel, event.midi_note, 0]),
+            )
+        )
+    notes.append((end_tick, 3, b"\xff\x2f\x00"))
+
+    if midi_format == 0:
+        timeline = conductor[1:-1] + notes
+        header = b"MThd" + struct.pack(">IHHH", 6, 0, 1, idea.ppq)
+        return header + _render_midi_track(timeline)
+
+    header = b"MThd" + struct.pack(">IHHH", 6, 1, 2, idea.ppq)
+    return header + _render_midi_track(conductor) + _render_midi_track(notes)
 
 
 def main() -> int:
@@ -320,6 +336,13 @@ def main() -> int:
     parser.add_argument("--seed", type=int, default=1)
     parser.add_argument("--tempo", type=float, default=90.0)
     parser.add_argument("--density", type=float, default=1.0)
+    parser.add_argument(
+        "--midi-format",
+        type=int,
+        choices=(0, 1),
+        default=1,
+        help="Standard MIDI file format (default: 1 for MPC standalone compatibility)",
+    )
     parser.add_argument("--output-prefix", type=Path, required=True)
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
@@ -349,7 +372,7 @@ def main() -> int:
         parser.error("output exists; pass --force to replace both files")
     json_path.parent.mkdir(parents=True, exist_ok=True)
     json_path.write_text(json.dumps(idea.to_dict(), indent=2) + "\n", encoding="utf-8")
-    midi_path.write_bytes(render_midi(idea))
+    midi_path.write_bytes(render_midi(idea, midi_format=args.midi_format))
     print(f"Wrote: {json_path}")
     print(f"Wrote: {midi_path}")
     print(f"Events: {len(idea.events)}; seed={idea.seed}; layout={idea.layout or 'source'}")

@@ -6,7 +6,7 @@ recipe to one kit's pad numbers. A recipe asks for sound identities such as
 Program and optional layout resolve those identities to pads, and the XPM's own
 `PadNoteMap` supplies the MIDI notes.
 
-Generate JSON provenance plus an importable format-0 Standard MIDI file:
+Generate JSON provenance plus an MPC-targeted format-1 Standard MIDI file:
 
 ```bash
 uv run mpc-drum-idea recipes/drums/dusty-pocket.toml \
@@ -31,7 +31,10 @@ uv run mpc-drum-idea recipes/drums/dusty-pocket.toml \
 Both runs preserve pattern intent. MIDI notes change only when the selected
 semantic sound occupies a different destination pad. `--density` scales event
 probabilities from 0 to 2 without changing the saved recipe. `--force` is
-required to replace either output.
+required to replace either output. Format 1 is the default because MPC 3.9.1.2
+standalone did not create a sequence from the original format-0 hardware-test
+files. Use `--midi-format 0` only when a destination specifically requires the
+single-track legacy form.
 
 ## Recipe format
 
@@ -71,11 +74,12 @@ The starter recipes are:
 ## Current real-data proof
 
 Against `Vinyl SP From Mars 01`, `dusty-pocket` seed 37 at 91 BPM produces 28
-events in both the source and Classic layouts. Linux identifies both outputs as
-format-0 Standard MIDI with one track at 480 PPQ. Steps and randomized
-velocities remain identical; the snare note changes to follow its Classic
-destination pad.
+events in both the source and Classic layouts. The MPC-targeted outputs are
+format-1 Standard MIDI with a conductor track, a note track, and 480 PPQ.
+Steps and randomized velocities remain identical; the snare note changes to
+follow its Classic destination pad.
 
-MIDI syntax and deterministic layout resolution are locally proven. Import,
-track assignment, sound correspondence, and groove feel remain MPC hardware
-tests.
+MIDI syntax and deterministic layout resolution are locally proven. The first
+format-0 files were visible in the MPC Browser but only flickered when loaded;
+they created no new sequence on MPC 3.9.1.2. Format-1 import, track assignment,
+sound correspondence, and groove feel remain MPC hardware tests.

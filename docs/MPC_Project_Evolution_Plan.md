@@ -831,6 +831,11 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   presets across its Synths tree, including Iona (104), OPx-4 (672), and AIR
   Flavor Pro (101), while explicitly withholding activation claims until the
   MPC selector and project-reload tests pass.
+- Hardware rejected both format-0 `dusty-pocket` files on MPC 3.9.1.2: Load
+  flickered, but no sequence was created. Changed the generator's MPC-targeted
+  default to format 1 with separate conductor and note tracks, retained an
+  explicit format-0 option, generated a local replacement pair, and left
+  format-1 import as the next hardware gate.
 
 ## 16. Reference material
 

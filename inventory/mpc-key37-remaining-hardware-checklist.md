@@ -487,11 +487,16 @@ After deployment:
 
 ### Semantic MIDI comparison
 
+**Format-0 hardware result — fail, August 27, 2026:** Both files were visible
+in the MPC Browser, but Load only flickered and neither file created a new
+sequence on MPC 3.9.1.2. Do not retry those deployed copies. Format-1
+replacements are required before continuing this test.
+
 MPC paths:
 
-- [ ] Source-layout MIDI:
+- [ ] Format-1 source-layout MIDI (redeploy before testing):
   `SD Card / 00 FG Hardware Tests / MIDI / dusty-pocket-source.mid`
-- [ ] Classic-layout MIDI:
+- [ ] Format-1 Classic-layout MIDI (redeploy before testing):
   `SD Card / 00 FG Hardware Tests / MIDI / dusty-pocket-classic.mid`
 
 After deployment, import the source MIDI onto the original Vinyl SP program
