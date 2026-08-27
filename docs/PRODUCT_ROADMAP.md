@@ -259,12 +259,13 @@ Implement deterministic, seed-reproducible generators in this order:
 - [x] Generation is reproducible by seed and supports probability, density,
   swing, gate, velocity humanization, sound cycling, and random alternates.
 - [x] Source and planned layouts resolve through the XPM's own `PadNoteMap`.
-- [x] Each run writes inspectable JSON plus format-0 Standard MIDI at 480 PPQ.
+- [x] Each run writes inspectable JSON plus MPC-targeted format-1 Standard MIDI
+  at 480 PPQ; format 0 remains an explicit compatibility option.
 - [x] A real source/Classic comparison preserves events and velocities while
   changing the moved snare's MIDI note.
 
-Hardware import and musical acceptance remain open; chords, bass, and melody
-generators are not yet implemented.
+Format-1 hardware import and qualified musical acceptance pass on MPC 3.9.1.2;
+chords, bass, and melody generators are not yet implemented.
 
 Later controls include density, swing, syncopation, octave range, harmonic
 adventurousness, repetition, and variation. Generated events must resolve

@@ -81,5 +81,7 @@ follow its Classic destination pad.
 
 MIDI syntax and deterministic layout resolution are locally proven. The first
 format-0 files were visible in the MPC Browser but only flickered when loaded;
-they created no new sequence on MPC 3.9.1.2. Format-1 import, track assignment,
-sound correspondence, and groove feel remain MPC hardware tests.
+they created no new sequence on MPC 3.9.1.2. The format-1 replacements import
+and play on hardware, and the source/Classic pair is musically close enough to
+accept. Because the source contains varied one-shots, that listening result is
+not an isolated measurement of every velocity or swing offset.

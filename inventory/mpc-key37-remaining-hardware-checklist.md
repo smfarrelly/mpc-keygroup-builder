@@ -491,19 +491,24 @@ After deployment:
 in the MPC Browser, but Load only flickered and neither file created a new
 sequence on MPC 3.9.1.2. Do not retry those deployed copies. Format-1
 replacements were deployed and checksum-verified on August 27, 2026; their
-hardware import remains untested.
+hardware import was then tested successfully.
+
+**Format-1 hardware result — pass with listening caveat, August 27, 2026:**
+The source/Classic comparison is musically close enough to accept. Precise
+event-for-event differences are difficult to hear in this varied one-shot
+material, so this result proves import and general semantic intent rather than
+an isolated audible measurement of every velocity, swing offset, or note.
 
 MPC paths:
 
-- [ ] Format-1 source-layout MIDI (deployed and checksum-verified):
+- [x] Format-1 source-layout MIDI (deployed and hardware-tested):
   `SD Card / 00 FG Hardware Tests / MIDI / dusty-pocket-source.mid`
-- [ ] Format-1 Classic-layout MIDI (deployed and checksum-verified):
+- [x] Format-1 Classic-layout MIDI (deployed and hardware-tested):
   `SD Card / 00 FG Hardware Tests / MIDI / dusty-pocket-classic.mid`
 
-After deployment, import the source MIDI onto the original Vinyl SP program
-and Classic MIDI onto `FGVS03 Classic`. Confirm both express the same
-kick/snare/hat intent, and that tempo 91 BPM, swing, velocities, and loop length
-survive import and project reload.
+Both imports express sufficiently similar kick/snare/hat intent to close the
+semantic-layout hardware gate. Exact tempo, swing, velocity, and project-reload
+persistence remain available for a stricter future diagnostic if needed.
 
 ### Clip reference audio
 
@@ -593,7 +598,8 @@ optional section can use file-based baselines.
 - [ ] Minimal Clip reference pair returned to Ubuntu for inspection.
 - [x] Layout package deployed and tested; Right is selected and save/reload
   color persistence passes.
-- [ ] Semantic MIDI source/Classic pair tested on hardware.
+- [x] Semantic MIDI source/Classic pair tested on hardware; qualified pass
+  because the varied one-shots make exact audible comparison difficult.
 - [ ] Plugin installation/persistence audit complete.
 - [ ] Actual MPC-authored Volca sequences survive reload.
 - [ ] Three-Volca isolation/sync passes after the CME distributor arrives.

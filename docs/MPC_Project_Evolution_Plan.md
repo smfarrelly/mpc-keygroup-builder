@@ -835,7 +835,10 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   flickered, but no sequence was created. Changed the generator's MPC-targeted
   default to format 1 with separate conductor and note tracks, retained an
   explicit format-0 option, generated a local replacement pair, and left
-  format-1 import as the next hardware gate.
+  format-1 import as the next hardware gate. The replacement pair subsequently
+  imported and played successfully; hardware listening judged its semantic
+  source/Classic correspondence close enough, with an explicit caveat that the
+  varied one-shots make exact audible comparison difficult.
 
 ## 16. Reference material
 
