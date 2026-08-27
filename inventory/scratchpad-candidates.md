@@ -49,6 +49,7 @@ Replacement-round hardware result:
 
 - `Dark FM` — Emulator From Mars; pass and provisional additional lead.
 - `Muted Guitar` — Emulator From Mars; pass and provisional additional lead.
+- `Glass Howl` — Kawaii Dreams From Mars; pass and provisional atmospheric pad.
 
 ## Key 37 listening order
 

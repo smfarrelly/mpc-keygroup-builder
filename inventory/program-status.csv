@@ -239,7 +239,7 @@ Programs/Keygroups/Samples From Mars/Kawaii Dreams From Mars/Keys/Randroid.xpm,K
 Programs/Keygroups/Samples From Mars/Kawaii Dreams From Mars/Organs/Indie Organ.xpm,Keygroup,gzip-json,pass,80,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Kawaii Dreams From Mars/Organs/Leslie.xpm,Keygroup,gzip-json,pass,81,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Kawaii Dreams From Mars/Pads/Analog Strings.xpm,Keygroup,gzip-json,pass,21,production,pass,,untested,,,
-Programs/Keygroups/Samples From Mars/Kawaii Dreams From Mars/Pads/Glass Howl.xpm,Keygroup,gzip-json,pass,79,production,pass,,untested,,,
+Programs/Keygroups/Samples From Mars/Kawaii Dreams From Mars/Pads/Glass Howl.xpm,Keygroup,gzip-json,pass,79,production,pass,,pass,provisional,candidate:lead/pad,"Plays successfully on the Key 37 and is strongly liked as an atmospheric pad option."
 Programs/Keygroups/Samples From Mars/Kawaii Dreams From Mars/Pads/Warm Strings.xpm,Keygroup,gzip-json,pass,21,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Kawaii Dreams From Mars/Voices/Bell Air.xpm,Keygroup,gzip-json,pass,64,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Kawaii Dreams From Mars/Voices/Hello.xpm,Keygroup,gzip-json,pass,69,production,pass,,untested,,,
