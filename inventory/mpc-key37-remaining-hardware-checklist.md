@@ -47,8 +47,9 @@ Load:
 
 **Hardware result — August 27, 2026:** `pass`, retained as a provisional Drum
 alternate. Core loading, all-bank playback, named-family character, and choke
-behavior work as expected. The controlled pattern comparison and project
-save/reload remain open.
+behavior work as expected. The same pattern recorded successfully on Banks A,
+B, C, and G, and the multi-kit performance concept was reported as very
+impressive. Project save/reload remains open.
 
 Load:
 
@@ -59,10 +60,11 @@ Load:
   G=Old Tape, and H=Acoustic Hybrid.
 - [x] Confirm closed/open hats choke within each bank without choking unrelated
   banks.
-- [ ] Record the same two-bar pattern with Banks A, B, C, and G.
+- [x] Record the same pattern with Banks A, B, C, and G; all four worked and
+  made a strong musical impression.
 - [ ] Save/reload and confirm colors, samples, and mute groups persist.
-- [ ] Compare against Shots 04: Kit Banks should be better for complete grooves;
-  Shots should be better for accents and unusual sounds.
+- [x] Compare against Shots 04: Kit Banks succeeds as a complete-groove bank
+  family while Shots remains the selected accent/unusual-hit program.
 - [ ] Decide whether a normalized same-role-on-every-bank variant is needed.
 
 ### FG Vinyl Layered Kit 01
@@ -438,7 +440,7 @@ optional section can use file-based baselines.
 
 - [x] Shots 04 accepted as the selected/favorite Track 2 program.
 - [x] Kit Banks passes and is retained as a provisional Drum alternate; its
-  controlled pattern/reload comparison remains open.
+  four-bank pattern comparison also passes, while save/reload remains open.
 - [ ] Layered Kit accepted or revised.
 - [ ] All 32 Ableton Wave 01 programs have listening results.
 - [ ] Revised Scratchpad Master saves/reloads with a recorded lead phrase.

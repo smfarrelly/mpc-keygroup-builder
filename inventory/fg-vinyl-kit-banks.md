@@ -68,7 +68,8 @@ The generated package is:
 - [x] Confirm each bank sounds like its named kit family.
 - [x] Confirm closed/open hats choke within each bank and not across unrelated
   kit banks during normal performance.
-- [ ] Record the same two-bar pattern separately with Banks A, B, C, and G.
+- [x] Record the same pattern separately with Banks A, B, C, and G; every bank
+  worked and the musical result was reported as very impressive.
 - [ ] Save, reload, and confirm colors, samples, and mute behavior persist.
 - [ ] Decide whether source-native placement is sufficiently consistent or a
   second strictly normalized role-layout variant is warranted.
@@ -87,5 +88,6 @@ stacked trigger cells, and the SD XPM passes Drum audit.
 
 The program loads and works as expected across all eight named kit banks, with
 expected pad playback, family character, colors, and bank-local choke behavior:
-`pass`, retained as a provisional Drum alternate. The controlled four-bank
-pattern comparison and project save/reload checks remain open.
+`pass`, retained as a provisional Drum alternate. The same recorded pattern
+worked on Banks A, B, C, and G and made a strong musical impression. Project
+save/reload and the final normalized-layout decision remain open.
