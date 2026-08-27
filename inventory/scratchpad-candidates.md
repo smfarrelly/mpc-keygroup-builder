@@ -33,6 +33,7 @@ Replacement-round hardware results:
 
 - `Mirage Pluck Bass` — current provisional primary bass.
 - `Junos Sub Smooth` — pass and provisional additional smooth-sub option.
+- `Echo Square` — Acid From Mars; pass and provisional additional bass.
 - `Fisherman'sFriend` — pass, but not a favorite.
 
 ## Keys

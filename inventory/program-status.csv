@@ -114,7 +114,7 @@ Programs/Keygroups/Samples From Mars/808 From Mars - Legacy/Conga Tape.xpm,Keygr
 Programs/Keygroups/Samples From Mars/808 From Mars - Legacy/Toms Clean.xpm,Keygroup,gzip-json,pass,13,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/808 From Mars - Legacy/Toms Saturated.xpm,Keygroup,gzip-json,pass,13,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/808 From Mars - Legacy/Toms Tape.xpm,Keygroup,gzip-json,pass,13,production,pass,,untested,,,
-Programs/Keygroups/Samples From Mars/Acid From Mars/Synths/Echo Square.xpm,Keygroup,gzip-json,pass,37,production,pass,,untested,,,
+Programs/Keygroups/Samples From Mars/Acid From Mars/Synths/Echo Square.xpm,Keygroup,gzip-json,pass,37,production,pass,,pass,provisional,candidate:bass,"Plays successfully on the Key 37 and is strongly liked as an additional bass option."
 Programs/Keygroups/Samples From Mars/Acid From Mars/Synths/Moving Saw Poly.xpm,Keygroup,gzip-json,pass,37,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Acid From Mars/Synths/Square.xpm,Keygroup,gzip-json,pass,37,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Acid From Mars/Synths/Sticatto Poly Saw.xpm,Keygroup,gzip-json,pass,37,production,pass,,untested,,,
