@@ -137,6 +137,9 @@ and semantic pattern generation.
   verified resumable staging, per-file and aggregate SHA-256 identities,
   atomic promotion, and strict conflict/symlink refusal. Reader disconnects
   can no longer expose a partially copied package under its final browser name.
+- [x] A read-only plugin-content auditor reports version markers, preset/content
+  counts, files, and bytes while preserving the distinction between SD assets
+  and actual on-device activation/playability.
 
 Software export is complete. The two-variant Key 37 comparison remains the v0.2
 exit gate.

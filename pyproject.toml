@@ -40,6 +40,7 @@ mpc-library = "mpc_keygroup_builder.library:main"
 mpc-catalog = "mpc_keygroup_builder.catalog:main"
 mpc-drum-idea = "mpc_keygroup_builder.ideas:main"
 mpc-session-report = "mpc_keygroup_builder.session:main"
+mpc-plugin-audit = "mpc_keygroup_builder.plugin_audit:main"
 
 [build-system]
 requires = ["uv_build>=0.12.5,<0.13.0"]

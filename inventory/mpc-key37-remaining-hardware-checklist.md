@@ -410,8 +410,13 @@ These are selected from an MPC Plugin track, not loaded as SD files.
   deserves a Scratchpad role.
 
 The earlier filesystem audit found Iona, OPx-4, and AIR Flavor Pro content under
-the SD `Synths` folder. It did not find the other four there, but they may be
-installed in MPC internal storage.
+the SD `Synths` folder. The August 27 reusable audit now records 104 Iona
+presets, 672 OPx-4 presets plus 68 content assets, and 101 AIR Flavor Pro
+presets. It did not find plugin-content directories for Jura, Mini D, Studio
+Strings, or Fabric/Fabric Collection. Jura-named factory oscillator assets are
+not evidence of a Jura installation. Any plugin may still have its executable
+or activation state in MPC internal storage, so hardware selection and
+save/reload remain authoritative.
 
 ## 7. Deployed and ready: layout and semantic MIDI comparison
 

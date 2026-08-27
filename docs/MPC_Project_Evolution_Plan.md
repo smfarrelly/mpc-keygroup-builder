@@ -816,6 +816,10 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   and full-library—plus the source/classic `dusty-pocket` MIDI pair. All four
   XPMs pass directly from SD, both MIDI files remain valid format-0 data, and
   all 396 transferred files match their local sources by SHA-256.
+- Added a reusable read-only plugin-content audit. The current SD exposes 962
+  presets across its Synths tree, including Iona (104), OPx-4 (672), and AIR
+  Flavor Pro (101), while explicitly withholding activation claims until the
+  MPC selector and project-reload tests pass.
 
 ## 16. Reference material
 

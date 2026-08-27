@@ -266,6 +266,10 @@ The hardware workflow also includes reusable, dry-run-first utilities:
   pair, then runs the detached Mac XPJ inspector without merging its branch.
 - `mpc-repository-guard` prevents WAV/XPM/XPJ, companion data folders, and
   unexpectedly large files from entering source control.
+- `mpc-plugin-audit` inventories an MPC `Synths` folder by version marker,
+  preset count, content assets, files, and bytes. It deliberately reports only
+  filesystem evidence; activation and project persistence remain hardware
+  tests.
 
 See [the reusable hardware workflow](docs/hardware-workflow-tools.md) for
 commands, safety behavior, and the boundary between computer checks and MPC
