@@ -9,6 +9,7 @@ from io import StringIO
 from pathlib import Path
 
 from mpc_keygroup_builder import workflow
+from mpc_keygroup_builder.cli import read_xpm
 
 
 class WorkflowTests(unittest.TestCase):
@@ -176,6 +177,30 @@ class WorkflowTests(unittest.TestCase):
         }))
         with self.assertRaisesRegex(ValueError, "requires install=copy"):
             workflow.load_batch(manifest, self.settings)
+
+    def test_manifest_root_shift_moves_built_keygroups(self):
+        self.write_wav(self.source / "36 Patch C1.wav")
+        manifest = self.root / "shifted.json"
+        manifest.write_text(json.dumps({
+            "version": 1,
+            "library": "Test",
+            "source_root": "Test From Mars/WAV",
+            "destination": "Programs/Test",
+            "instruments": [{
+                "name": "Patch",
+                "category": "Keys",
+                "source": "Patch",
+                "root_shift": 24,
+            }],
+        }))
+        batch = workflow.load_batch(manifest, self.settings)
+        self.assertEqual(batch.instruments[0].root_shift, 24)
+        with redirect_stdout(StringIO()):
+            workflow.build_batch(self.settings, batch, force=False)
+        program, _ = workflow.artifact_paths(self.settings, batch, batch.instruments[0])
+        _, payload = read_xpm(program)
+        instrument = payload["data"]["drum"]["instruments"][1]
+        self.assertEqual(instrument["layersv"][0]["rootNote"], 60)
 
 
 if __name__ == "__main__":

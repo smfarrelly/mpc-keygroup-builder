@@ -289,6 +289,23 @@ library convention (`C0` = MIDI 24):
 Sub Bass Dr Sample C1.wav
 ```
 
+For chromatic percussion or another source whose useful roots fall outside the
+controller's normal register, shift the mapping without resampling audio:
+
+```bash
+uv run mpc-keygroup "/path/to/pitched-wavs" \
+  --template "/path/to/known-good-keygroup.xpm" \
+  --velocity-preset "/path/to/source.adg" \
+  --root-shift 24 \
+  --name "Chromatic Percussion NR" \
+  --output "work/Chromatic Percussion NR.xpm"
+```
+
+`--root-shift` moves every root and playable range by a fixed semitone offset,
+preserving intervals, velocity layers, sample endpoints, and source audio. Batch
+manifests accept the same integer as `root_shift`. A shift that would move any
+root outside MIDI 0–127 is rejected.
+
 Velocity variants use a four-digit suffix. The unsuffixed file is the first
 layer, `_0001` is the second, and so on:
 

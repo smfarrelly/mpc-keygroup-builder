@@ -101,6 +101,30 @@ generated model's full 0–127 coverage and confirms a systematic hardware range
 serialization/remapping issue. Build a comparison set with the 16 source roots
 explicitly shifted into the Key 37's normal register before promotion.
 
+### Normal-register comparison deployed — August 27, 2026
+
+The reusable Keygroup builder and batch manifest now accept a validated fixed
+`root_shift`. Five `NR` comparison programs shift the same 80 source WAVs up
+24 semitones without resampling or modifying the audio. Their recorded roots
+now occupy MIDI 49–74 instead of 25–50.
+
+Common SD root:
+
+`SD Card / 00 FG Hardware Tests / SFM Keygroup Register Fix 01 / Chromatic Percussion`
+
+- [ ] `Chromatic Analog Tom NR.xpm` — roots 51–66.
+- [ ] `Chromatic Chimes NR.xpm` — roots 59–74.
+- [ ] `Chromatic Cowbell NR.xpm` — roots 53–68.
+- [ ] `Chromatic Tom NR.xpm` — roots 49–64.
+- [ ] `Chromatic Tone NR.xpm` — roots 57–72.
+
+All five packages pass Program Model validation and have zero dead or stacked
+trigger cells. The simulator retains the known outer-extrapolation advisory;
+hardware acceptance is specifically whether the untransposed sample voices now
+play in the Key 37's default register. For each program, load it without using
+octave transpose, test every source root and neighboring keys, then save/reload
+the best one.
+
 ## Drum bracket A — vinyl and SP-1200
 
 - [x] Vinyl Drums / Big Break Kit — 16 pads; status: pass; favorite: pending;

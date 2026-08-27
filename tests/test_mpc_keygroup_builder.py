@@ -18,6 +18,31 @@ class MappingTests(unittest.TestCase):
         ]
         self.assertEqual(builder.note_ranges(samples), [(0, 42), (43, 90), (91, 127)])
 
+    def test_root_shift_preserves_layers_and_moves_mapping(self):
+        path = Path("sample.wav")
+        groups = [
+            builder.SampleGroup(
+                36,
+                (
+                    builder.Sample(36, path, 10, 0, 63),
+                    builder.Sample(36, path, 12, 64, 127),
+                ),
+            )
+        ]
+        shifted = builder.shift_sample_groups(groups, 24)
+        self.assertEqual(shifted[0].note, 60)
+        self.assertEqual([sample.note for sample in shifted[0].layers], [60, 60])
+        self.assertEqual(
+            [(sample.velocity_start, sample.velocity_end) for sample in shifted[0].layers],
+            [(0, 63), (64, 127)],
+        )
+        self.assertEqual([sample.frames for sample in shifted[0].layers], [10, 12])
+
+    def test_root_shift_rejects_notes_outside_midi(self):
+        groups = [builder.SampleGroup(120, (builder.Sample(120, Path("x.wav"), 1),))]
+        with self.assertRaisesRegex(ValueError, "outside 0..127"):
+            builder.shift_sample_groups(groups, 12)
+
     def test_discovery_reads_frames_and_sorts_notes(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

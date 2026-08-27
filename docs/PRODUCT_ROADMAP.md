@@ -125,6 +125,10 @@ and semantic pattern generation.
   legacy XPMs, and deactivate unused template layers. `FG Vinyl Layered Kit 01`
   exercises 64 timbre layers across 16 pads and passes real-data simulation
   with zero dead or stacked velocity cells.
+- [x] `FG Vinyl Layered Main 02` refines that idea into coherent acoustic,
+  808, 909, and character families with long-tail open hats at all velocity
+  regions. Its 65-file SD package passes simulation, model validation, Drum
+  audit, and checksum comparison; hardware comparison with Vinyl SP is next.
 - [x] A format-independent loop inventory extracts BPM, variant, WAV shape,
   duration, estimated beats, and timing deviations. The complete 200-loop
   Vinyl Breaks library indexes cleanly from 73–200 BPM; Clip serialization is
@@ -135,6 +139,11 @@ and semantic pattern generation.
   can no longer expose a partially copied package under its final browser name.
 
 Software export is complete. The two-variant Key 37 comparison remains the v0.2
+exit gate.
+
+The four-variant v2 package and its source/classic semantic MIDI pair are now
+deployed and checksum-verified on the SD. Hardware load/reload, color
+persistence, and same-pattern playability are the only remaining parts of this
 exit gate.
 
 **Exit gate:** One source kit can reproducibly generate Classic, right-handed,
@@ -213,6 +222,10 @@ performance program.
   Programs were auditioned without blocking behavior and the full 27-program
   Drum wave is accepted: 25 pass, while Hardware Glitch and S950 Hard Glitch
   retain their documented source-choke warnings.
+- [x] Keygroup construction now supports a validated fixed `root_shift` in the
+  CLI and batch manifests. The five SP-1200 comparison programs were rebuilt
+  two octaves higher, placing their source roots at MIDI 49–74, and deployed
+  for default-register hardware verification.
 
 Normalized-model import and exporter behavior remain gated on manual source
 comparison and representative MPC target captures. The Clip subset remains
@@ -334,11 +347,11 @@ for release gates:
    persistence. Its source-native layouts are accepted without a stricter
    normalized variant. `FG Vinyl Layered Kit 01` proves that velocity-layered
    pads are an excellent musical direction and is promoted to a provisional
-   main-drum candidate. Build `FG Vinyl Layered Main 02` with coherent
-   soft-to-hard voices, matched transitions, and a clear choke test; compare it
-   with Vinyl SP, finish reload acceptance, then save a revised protected
+   main-drum candidate. `FG Vinyl Layered Main 02` is now built and deployed
+   with coherent soft-to-hard voices and long open hats for a clear choke test;
+   compare it with Vinyl SP, finish reload acceptance, then save a revised protected
    Scratchpad master containing the accepted `FG Vinyl Shots 04 Eight Bank`.
-2. **Acceptance:** load the generated Classic and handed variants on the Key
+2. **Acceptance:** load the now-deployed Classic and handed variants on the Key
    37, reload them, compare playability, and close the v0.2 exit gate.
-3. **Creative MIDI:** import the generated source/Classic MIDI pair on the Key
-   37, then add chord and bass generators after Drum MIDI acceptance.
+3. **Creative MIDI:** import the now-deployed source/Classic MIDI pair on the
+   Key 37, then add chord and bass generators after Drum MIDI acceptance.

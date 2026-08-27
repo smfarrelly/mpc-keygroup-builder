@@ -21,6 +21,7 @@ from .cli import (
     build_program,
     copy_file_durable,
     discover_samples,
+    shift_sample_groups,
     validate_written_program,
     write_program,
 )
@@ -45,6 +46,7 @@ class Instrument:
     vendor_programs_checked: bool
     include: tuple[str, ...] = ("*.wav",)
     exclude: tuple[str, ...] = ()
+    root_shift: int = 0
 
 
 @dataclass(frozen=True)
@@ -158,6 +160,9 @@ def load_batch(manifest_path: Path, settings: Settings) -> Batch:
             )
         if mode != "copy" and centralized is None:
             raise ValueError(f"{name} install mode {mode} requires centralized")
+        root_shift = entry.get("root_shift", 0)
+        if isinstance(root_shift, bool) or not isinstance(root_shift, int):
+            raise ValueError(f"{name} root_shift must be an integer")
         instruments.append(
             Instrument(
                 name=name,
@@ -169,6 +174,7 @@ def load_batch(manifest_path: Path, settings: Settings) -> Batch:
                 vendor_programs_checked=entry.get("vendor_programs_checked") is True,
                 include=include,
                 exclude=exclude,
+                root_shift=root_shift,
             )
         )
     return Batch(manifest_path.resolve(), library, destination, tuple(instruments))
@@ -248,8 +254,11 @@ def inspect_batch(settings: Settings, batch: Batch) -> int:
     for instrument in batch.instruments:
         try:
             selected = selected_wav_map(instrument)
-            groups = discover_samples(
-                instrument.source, instrument.velocity_preset, set(selected)
+            groups = shift_sample_groups(
+                discover_samples(
+                    instrument.source, instrument.velocity_preset, set(selected)
+                ),
+                instrument.root_shift,
             )
             samples = all_samples(groups)
             discovered = {sample.path.name for sample in samples}
@@ -273,6 +282,7 @@ def inspect_batch(settings: Settings, batch: Batch) -> int:
                 f"PASS\t{instrument.category}/{instrument.name}\t"
                 f"keygroups={len(groups)}\tsamples={len(samples)}\tcentral={central}"
                 f"\texcluded={len(wav_map(instrument.source)) - len(selected)}"
+                f"\troot_shift={instrument.root_shift:+d}"
             )
         except (FileNotFoundError, KeyError, ValueError, wave.Error) as error:
             failures += 1
@@ -290,8 +300,11 @@ def inspect_batch(settings: Settings, batch: Batch) -> int:
 def build_batch(settings: Settings, batch: Batch, *, force: bool) -> None:
     for index, instrument in enumerate(batch.instruments, 1):
         selected = selected_wav_map(instrument)
-        groups = discover_samples(
-            instrument.source, instrument.velocity_preset, set(selected)
+        groups = shift_sample_groups(
+            discover_samples(
+                instrument.source, instrument.velocity_preset, set(selected)
+            ),
+            instrument.root_shift,
         )
         program_path, data_path = artifact_paths(settings, batch, instrument)
         if force:

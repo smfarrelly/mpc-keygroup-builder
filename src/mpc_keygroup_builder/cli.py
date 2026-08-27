@@ -234,6 +234,33 @@ def discover_samples(
     return groups
 
 
+def shift_sample_groups(samples: list[SampleGroup], semitones: int) -> list[SampleGroup]:
+    """Move sampled roots into another playable register without changing audio."""
+    if isinstance(semitones, bool) or not isinstance(semitones, int):
+        raise TypeError("root shift must be an integer number of semitones")
+    if semitones == 0:
+        return samples
+    shifted: list[SampleGroup] = []
+    for group in samples:
+        note = group.note + semitones
+        if not 0 <= note <= 127:
+            raise ValueError(
+                f"root shift {semitones:+d} moves MIDI {group.note} outside 0..127"
+            )
+        layers = tuple(
+            Sample(
+                note,
+                sample.path,
+                sample.frames,
+                sample.velocity_start,
+                sample.velocity_end,
+            )
+            for sample in group.layers
+        )
+        shifted.append(SampleGroup(note, layers))
+    return shifted
+
+
 def read_xpm(path: Path) -> tuple[str, dict]:
     with gzip.open(path, "rt", encoding="utf-8") as stream:
         text = stream.read()
@@ -491,6 +518,13 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--velocity-preset", type=Path, help="Ableton ADG containing velocity zones")
     parser.add_argument("--output", type=Path, help="destination .xpm path")
     parser.add_argument("--name", help="MPC program name (defaults to source directory name)")
+    parser.add_argument(
+        "--root-shift",
+        type=int,
+        default=0,
+        metavar="SEMITONES",
+        help="shift all sample roots/playable ranges by a fixed semitone offset",
+    )
     parser.add_argument("--force", action="store_true", help="replace an existing output program")
     parser.add_argument("--dry-run", action="store_true", help="inspect mapping without writing")
     return parser.parse_args(argv)
@@ -499,7 +533,9 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv or sys.argv[1:])
     source = args.source.resolve()
-    samples = discover_samples(source, args.velocity_preset)
+    samples = shift_sample_groups(
+        discover_samples(source, args.velocity_preset), args.root_shift
+    )
     ranges = note_ranges(samples)
     flattened = all_samples(samples)
     print(f"Program: {args.name or source.name}")

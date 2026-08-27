@@ -799,6 +799,24 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
 - The next hardware gate is a minimal MPC-authored Clip baseline/changed pair,
   followed by replacing the Scratchpad's placeholder Track 8 in a Jam copy.
 
+### August 27, 2026 — normal-register Keygroups and layered main drums
+
+- Added a reusable fixed root-shift operation to single and batch Keygroup
+  builds, including MIDI-bound validation and preservation tests for layers,
+  endpoints, intervals, and source audio.
+- Rebuilt the five SP-1200 chromatic instruments two octaves higher. Their 80
+  unmodified WAVs now map roots to MIDI 49–74; all five packages have zero dead
+  or stacked cells and were checksum-verified after SD deployment.
+- Built `FG Vinyl Layered Main 02` from 64 curated Vinyl SP layers. Its 16 pads
+  use coherent families and the two choke pairs use open hats with audible tails
+  at every velocity region.
+- The refined Drum Program passes Program Model validation, semantic simulation,
+  and independent Drum audit, then matched all 65 local files after SD deployment.
+- Deployed the complete v2 layout bracket—Classic, right-handed, left-handed,
+  and full-library—plus the source/classic `dusty-pocket` MIDI pair. All four
+  XPMs pass directly from SD, both MIDI files remain valid format-0 data, and
+  all 396 transferred files match their local sources by SHA-256.
+
 ## 16. Reference material
 
 - [Akai: Understanding and Loading MPC Programs](https://support.akaipro.com/en/support/solutions/articles/69000804211-akai-pro-mpc-series-understanding-and-loading-programs)

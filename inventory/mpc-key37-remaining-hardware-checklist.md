@@ -112,6 +112,27 @@ Load:
 - [ ] Check perceived pad levels at a fixed master volume.
 - [ ] Save, switch programs, reload, and confirm colors and sound persist.
 
+### FG Vinyl Layered Main 02 — refined main-kit comparison
+
+**Built, validated, and deployed — August 27, 2026.** The second candidate uses
+coherent drum families, four complete velocity regions on all 16 pads, and two
+hat pairs whose open layers retain audible tails at every velocity.
+
+Load:
+
+`SD Card / 01 FG Favorites / 04 Drum Alternates / 05 FG Vinyl Layered Main 02 / FG Vinyl Layered Main 02.xpm`
+
+- [ ] Confirm only Bank A is populated and all 16 pads show semantic colors.
+- [ ] Test every pad across velocities 0–31, 32–63, 64–95, and 96–127.
+- [ ] Check the 31/32, 63/64, and 95/96 boundaries.
+- [ ] Strike A10 then A09 at each velocity; A10 must choke. A10 then A11 must
+  not choke.
+- [ ] Strike A12 then A11 at each velocity; A12 must choke. A12 then A09 must
+  not choke.
+- [ ] Record the same groove on this kit and Vinyl SP at a fixed master level,
+  both naturally and with Full Level.
+- [ ] Save/reload and choose main favorite versus expressive alternate.
+
 ## 2. Do now: Ableton Wave 01 — 32 programs
 
 Common root:
@@ -149,6 +170,22 @@ several octaves before triggering. The software model's claimed outer-note
 coverage is not honored by the MPC. Rebuild a comparison batch with the 16
 source roots explicitly shifted into the normal Key 37 register; do not promote
 these versions as finished instruments.
+
+### Normal-register comparison set
+
+All five source instruments were rebuilt with their roots shifted up exactly
+24 semitones. No audio was resampled or normalized. Common root:
+
+`SD Card / 00 FG Hardware Tests / SFM Keygroup Register Fix 01 / Chromatic Percussion`
+
+- [ ] Chromatic Analog Tom NR — `Chromatic Analog Tom NR.xpm`; roots 51–66.
+- [ ] Chromatic Chimes NR — `Chromatic Chimes NR.xpm`; roots 59–74.
+- [ ] Chromatic Cowbell NR — `Chromatic Cowbell NR.xpm`; roots 53–68.
+- [ ] Chromatic Tom NR — `Chromatic Tom NR.xpm`; roots 49–64.
+- [ ] Chromatic Tone NR — `Chromatic Tone NR.xpm`; roots 57–72.
+
+Load each without octave transpose. Confirm the 16 source voices occur in the
+normal keyboard register, test neighboring keys, and save/reload the best one.
 
 ### Vinyl and SP-1200 Drum Programs
 
@@ -376,15 +413,16 @@ The earlier filesystem audit found Iona, OPx-4, and AIR Flavor Pro content under
 the SD `Synths` folder. It did not find the other four there, but they may be
 installed in MPC internal storage.
 
-## 7. Needs one more SD transfer before testing
+## 7. Deployed and ready: layout and semantic MIDI comparison
 
-These local packages are generated and validated but were not part of the most
-recent SD deployment. Do not search for them on the MPC until Ubuntu deploys
-them.
+**Deployment verified — August 27, 2026:** all four layout packages and both
+MIDI files are now on the SD. The four programs pass simulation directly from
+the card with zero dead or stacked cells, and all 396 deployed files match the
+local sources by relative path and SHA-256.
 
 ### Layout comparison package
 
-Planned MPC paths after deployment:
+MPC paths:
 
 - [ ] Classic:
   `SD Card / 00 FG Hardware Tests / Layout Trial v2 / 01-classic-mpc / FGVS03 Classic.xpm`
@@ -408,7 +446,7 @@ After deployment:
 
 ### Semantic MIDI comparison
 
-Planned MPC paths after deployment:
+MPC paths:
 
 - [ ] Source-layout MIDI:
   `SD Card / 00 FG Hardware Tests / MIDI / dusty-pocket-source.mid`
@@ -499,8 +537,8 @@ optional section can use file-based baselines.
 - [x] Kit Banks passes and is retained as a provisional Drum alternate; its
   four-bank pattern comparison and save/reload persistence also pass.
 - [ ] Layered Kit concept accepted and promoted to a provisional main-drum
-  candidate; build its refined follow-up and complete pad/boundary/reload tests
-  while resolving the hardware choke warning.
+  candidate; its refined `FG Vinyl Layered Main 02` follow-up is built and
+  deployed, with pad/boundary/reload and clearer choke tests pending.
 - [x] All 32 Ableton Wave 01 programs have results: five Keygroup range warnings,
   25 Drum passes, and two accepted source-choke Drum warnings.
 - [ ] Revised Scratchpad Master saves/reloads with a recorded lead phrase.
