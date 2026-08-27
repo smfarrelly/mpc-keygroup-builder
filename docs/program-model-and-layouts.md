@@ -127,5 +127,5 @@ The real Classic export independently preserves all 128 records, 96 sample
 layers, pad colors, and global settings. Key 37 listening selects the
 right-handed performance layout over Classic, although the advantage is modest
 for this diverse one-shot collection rather than a compact conventional kit.
-Save/reload and color persistence remain pending before the hardware exit gate
-is fully closed.
+Both comparison programs save/reload correctly with samples, playback, and
+semantic colors intact. The v0.2 layout hardware exit gate is closed.

@@ -2,7 +2,7 @@
 
 **Status:** Active
 
-**Current milestone:** v0.2 — Drum Programs + Layout Engine
+**Current milestone:** v0.3 — MPC Program Designer
 
 **Primary hardware:** Akai MPC Key 37
 
@@ -142,16 +142,16 @@ and semantic pattern generation.
   counts, files, and bytes while preserving the distinction between SD assets
   and actual on-device activation/playability.
 
-Software export is complete. Key 37 listening selects the right-handed layout;
-save/reload persistence remains the v0.2 exit gate.
+Software export is complete. Key 37 listening selects the right-handed layout,
+and save/reload restores its samples, playback, and semantic colors.
 
 The four-variant v2 package and its source/classic semantic MIDI pair are now
 deployed and checksum-verified on the SD. Right wins the hardware layout choice,
 with a modest advantage because the source contains many diverse one-shots.
-Hardware save/reload and color persistence are the remaining parts of this exit
-gate.
+**Passed August 27, 2026:** both comparison programs reload correctly with
+samples, playback, and colors intact, and Right remains the accepted default.
 
-**Exit gate:** One source kit can reproducibly generate Classic, right-handed,
+**Exit gate — passed:** One source kit can reproducibly generate Classic, right-handed,
 left-handed, and full A–H variants. At least two variants load correctly on the
 Key 37, retain colors after reload, and pass a short playing comparison.
 
@@ -360,7 +360,7 @@ for release gates:
    selected as the expressive alternate; Vinyl SP remains main. Finish the
    alternate's choke/reload acceptance, then save a revised protected
    Scratchpad master containing the accepted `FG Vinyl Shots 04 Eight Bank`.
-2. **Acceptance:** Right is selected over Classic. Save/reload both, confirm
-   color/sample persistence, and close the v0.2 exit gate.
+2. **Program Designer:** begin the v0.3 read-only viewer with program import,
+   Bank A–H switching, pad roles, samples, colors, layers, and mute groups.
 3. **Creative MIDI:** import the now-deployed source/Classic MIDI pair on the
    Key 37, then add chord and bass generators after Drum MIDI acceptance.

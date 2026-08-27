@@ -2,7 +2,7 @@
 
 **Owner:** Steve Farrelly  
 **Started:** August 25, 2026  
-**Status:** Active — Scratchpad validation and v0.2 Drum/Layout foundation
+**Status:** Active — Scratchpad validation and v0.3 Program Designer
 
 **Operational working copy:** `docs/MPC_Project_Evolution_Plan.md`
 
@@ -820,8 +820,9 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   all five programs preserve the same 80 WAVs and pass structural/model checks.
 - Hardware layout comparison selects the right-handed performance variant over
   Classic. The improvement is modest because the source has many varied
-  one-shots instead of a compact kick/snare/cymbal kit; reload and color
-  persistence remain the final v0.2 checks.
+  one-shots instead of a compact kick/snare/cymbal kit. Both variants reload
+  with samples, playback, and semantic colors intact, closing the v0.2 layout
+  hardware gate.
 - Deployed the complete v2 layout bracket—Classic, right-handed, left-handed,
   and full-library—plus the source/classic `dusty-pocket` MIDI pair. All four
   XPMs pass directly from SD, both MIDI files remain valid format-0 data, and

@@ -456,8 +456,11 @@ local sources by relative path and SHA-256.
 layout. The difference from Classic is modest because this 96-pad source is
 dominated by varied one-shots rather than a small repeated
 kick/snare/cymbal-style performance kit, but Right is still the preferred
-default. Retain Classic, Left, and Full as reference variants; only persistence
-checks remain before closing the exit gate.
+default. Retain Classic, Left, and Full as reference variants.
+
+**Persistence result — August 27, 2026:** save/reload, samples, playback, and
+semantic pad colors all return correctly. The right-handed layout is accepted
+and the layout-engine hardware gate is closed.
 
 MPC paths:
 
@@ -477,8 +480,8 @@ After deployment:
 - [ ] Record the same pattern without looking at the screen; count wrong-pad
   strikes and judge one-handed comfort.
 - [ ] Compare Left only if it offers a plausible advantage.
-- [ ] Save/reload at least Classic and the best handed candidate.
-- [ ] Confirm samples, colors, choke, and playback behavior persist.
+- [x] Save/reload Classic and the selected Right candidate.
+- [x] Confirm samples, colors, and playback behavior persist.
 - [x] Choose Right as the preferred layout; the improvement is useful but
   modest for this diverse one-shot collection.
 
@@ -582,7 +585,9 @@ optional section can use file-based baselines.
 - [ ] Revised Scratchpad Master saves/reloads with a recorded lead phrase.
 - [ ] Cold-start idea captured in under one minute.
 - [ ] Minimal Clip reference pair returned to Ubuntu for inspection.
-- [ ] Layout and semantic MIDI packages deployed and tested.
+- [x] Layout package deployed and tested; Right is selected and save/reload
+  color persistence passes.
+- [ ] Semantic MIDI source/Classic pair tested on hardware.
 - [ ] Plugin installation/persistence audit complete.
 - [ ] Actual MPC-authored Volca sequences survive reload.
 - [ ] Three-Volca isolation/sync passes after the CME distributor arrives.
