@@ -96,10 +96,33 @@ feel testing remain open.
 
 ### Initial hardware result — August 27, 2026
 
-The velocity-layered-pad concept is a strong provisional success and was
-described as excellent. Hat choking was difficult to hear and may not be
-working, despite the XPM carrying Mute Group 1 on A09/A10 and Mute Group 2 on
-A11/A12 using the same serialized field as the accepted Shots program. The
-hardest open-hat layers are short, so the corrected acceptance test uses A12's
-1.60-second velocity-32–63 LM1 layer. Retain `warn` until that controlled test
-passes; full pad, boundary, groove, and reload testing also remain open.
+The velocity-layered-pad concept is excellent and is promoted to a provisional
+main-drum candidate. Hat choking was difficult to hear and may not be working,
+despite the XPM carrying Mute Group 1 on A09/A10 and Mute Group 2 on A11/A12
+using the same serialized field as the accepted Shots program. The hardest
+open-hat layers are short, so the corrected acceptance test uses A12's
+1.60-second velocity-32–63 LM1 layer. Retain a technical `warn` until that
+controlled test passes; full pad, boundary, groove, and reload testing also
+remain open.
+
+## Follow-up main-drum candidate
+
+Build `FG Vinyl Layered Main 02` as a focused follow-up rather than replacing
+the current Vinyl SP main-drums favorite prematurely:
+
+- Keep a single immediate 16-pad Bank A performance layout.
+- Retain four complete velocity regions on every pad: 0–31, 32–63, 64–95, and
+  96–127.
+- Curate each pad's four timbres as a coherent soft-to-hard voice progression,
+  with better perceived-level matching at every boundary.
+- Prefer related drum families where that makes the velocity change feel like
+  articulation rather than an unrelated sample swap; preserve hybrid choices
+  where the morph itself is musically compelling.
+- Choose longer open-hat layers for an unmistakable choke test and compare
+  Mute Group behavior with explicit directional Mute Targets if necessary.
+- Produce pad/layer maps, boundary-level analysis, semantic simulation, Drum
+  audit, checksums, and a self-contained ignored hardware package.
+- Compare the refined kit directly with `Vinyl SP From Mars 01 FG COLORS` using
+  the same groove, fixed master level, natural velocity, Full Level, and
+  save/reload. Promote it to the Scratchpad main-drum slot only if it wins that
+  musical comparison.

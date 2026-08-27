@@ -333,9 +333,11 @@ for release gates:
    same-pattern comparison on Banks A, B, C, and G, and save/reload
    persistence. Its source-native layouts are accepted without a stricter
    normalized variant. `FG Vinyl Layered Kit 01` proves that velocity-layered
-   pads are an excellent musical direction; finish its per-pad, boundary,
-   reload, and corrected choke checks, then save a revised protected Scratchpad
-   master containing the accepted `FG Vinyl Shots 04 Eight Bank`.
+   pads are an excellent musical direction and is promoted to a provisional
+   main-drum candidate. Build `FG Vinyl Layered Main 02` with coherent
+   soft-to-hard voices, matched transitions, and a clear choke test; compare it
+   with Vinyl SP, finish reload acceptance, then save a revised protected
+   Scratchpad master containing the accepted `FG Vinyl Shots 04 Eight Bank`.
 2. **Acceptance:** load the generated Classic and handed variants on the Key
    37, reload them, compare playability, and close the v0.2 exit gate.
 3. **Creative MIDI:** import the generated source/Classic MIDI pair on the Key

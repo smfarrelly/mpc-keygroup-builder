@@ -72,11 +72,12 @@ Load:
 
 ### FG Vinyl Layered Kit 01
 
-**Initial hardware result — August 27, 2026:** strong provisional success. The
-velocity-layered-pad concept was reported as excellent and worth developing
-further. Hat choking was difficult to hear and may not be working, so retain a
-`warn` until the velocity-specific test below passes. Full pad, boundary, groove,
-and reload acceptance remain open.
+**Hardware direction — August 27, 2026:** excellent and promoted to a
+provisional main-drum candidate. Expand the velocity-layered-pad idea and test a
+refined follow-up directly against the current Vinyl SP main-drums favorite.
+Hat choking was difficult to hear and may not be working, so retain a technical
+`warn` until the velocity-specific test below passes. Full pad, boundary,
+groove, and reload acceptance remain open.
 
 Load:
 
@@ -97,7 +98,8 @@ Load:
   reaches all four timbres naturally.
 - [ ] Repeat with Full Level and confirm the hardest layer is predictable.
 - [ ] Save/reload and repeat A01, A03, A09, A10, A13, and A15.
-- [x] Velocity morphing is an excellent concept and merits further development.
+- [x] Velocity morphing is excellent; promote the concept to a provisional
+  main-drum candidate and build a refined follow-up.
 
 ### Close the selected main-kit behavior checks
 
@@ -478,8 +480,9 @@ optional section can use file-based baselines.
 - [x] Shots 04 accepted as the selected/favorite Track 2 program.
 - [x] Kit Banks passes and is retained as a provisional Drum alternate; its
   four-bank pattern comparison and save/reload persistence also pass.
-- [ ] Layered Kit concept accepted; complete pad/boundary/reload tests and
-  resolve the hardware choke warning.
+- [ ] Layered Kit concept accepted and promoted to a provisional main-drum
+  candidate; build its refined follow-up and complete pad/boundary/reload tests
+  while resolving the hardware choke warning.
 - [x] All 32 Ableton Wave 01 programs have results: five Keygroup range warnings,
   25 Drum passes, and two accepted source-choke Drum warnings.
 - [ ] Revised Scratchpad Master saves/reloads with a recorded lead phrase.

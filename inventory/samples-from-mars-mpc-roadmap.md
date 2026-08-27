@@ -27,7 +27,10 @@ B, C, and G, save/reload restores expected state, and its source-native layouts
 need no stricter normalized variant. `FG Vinyl Layered Kit 01` has a strong
 initial hardware verdict—the velocity-layered-pad concept is excellent—but
 retains a choke warning and still needs complete pad, boundary, groove, and
-reload acceptance.
+reload acceptance. It is now a provisional main-drum direction: build `FG
+Vinyl Layered Main 02` with more coherent soft-to-hard voices, matched boundary
+levels, and an unmistakable hat-choke test, then compare it directly with the
+current Vinyl SP main-drums favorite.
 
 1. Hardware-test `FG Vinyl Kit Banks 01` and `FG Vinyl Layered Kit 01`.
 2. Compare their feel and usefulness with `FG Vinyl Shots 04 Eight Bank`.
