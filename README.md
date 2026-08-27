@@ -221,6 +221,19 @@ builds self-contained hardware-test variants with audio checksums, pad maps, and
 local simulation results. See
 [Program Model and layout export](docs/program-model-and-layouts.md).
 
+Render that same model as a self-contained, read-only visual inspector:
+
+```bash
+uv run mpc-program-designer "/path/to/program.xpm" \
+  --device devices/mpc-key-37.toml \
+  --output work/program-designer/program.html
+```
+
+The Program Designer switches Drum Banks A–H, renders the physical 4-by-4 pad
+surface, displays layers, colors, roles, MIDI notes, playback and mute groups,
+and reports sample or velocity problems. Keygroups receive a movable 37-note
+range viewer. See [MPC Program Designer](docs/program-designer.md).
+
 ## Metadata catalog
 
 `mpc-catalog build` combines the existing hardware ledger with normalized XPM

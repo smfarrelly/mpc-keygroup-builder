@@ -883,6 +883,12 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   field review. New hardware acceptance is deferred while software development
   continues; the existing checklist remains a ready-to-resume protocol rather
   than the immediate work queue.
+- Delivered the first v0.3 Program Designer slice as a self-contained, read-only
+  HTML/JSON generator. It imports manifests plus XML/compressed XPMs, renders
+  physical Drum banks or a movable 37-note Keygroup view, exposes layers and
+  playback metadata, and reports sample, velocity, device, loop, and mute-group
+  findings. Real layered-drum and Wurli viewers passed interactive browser
+  checks without source writes or console errors.
 
 ## 16. Reference material
 

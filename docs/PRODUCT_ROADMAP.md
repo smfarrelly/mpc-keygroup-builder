@@ -169,17 +169,26 @@ Key 37, retain colors after reload, and pass a short playing comparison.
 
 Start with a local, read-only viewer and add editing in small usable releases:
 
-1. Import an XPM or build manifest and show all populated pads.
-2. Switch Banks A–H and preview the Key 37's 16-pad surface and 37-key range.
-3. Show semantic role, sample, color, MIDI note, layers, mute group, and
-   playback behavior for the selected pad.
-4. Switch device profiles without changing the underlying program.
-5. Add drag/drop rearrangement, locked pads, palette editing, handedness
+1. [x] Import an XPM or build manifest and show all populated pads.
+2. [x] Switch Banks A–H and preview the Key 37's 16-pad surface and a movable
+   37-note Keygroup range.
+3. [x] Show semantic role, sample status, color, MIDI note, layers, velocity
+   coverage, mute group, and playback behavior for the selection.
+4. [x] Emit self-contained HTML and machine-readable JSON without changing the
+   source; accept declarative device profiles at generation time.
+5. [ ] Add in-view source/device switching and side-by-side comparison.
+6. [ ] Add drag/drop rearrangement, locked pads, palette editing, handedness
    conversion, and layout comparison.
-6. Export a manifest first; export a validated XPM only through the same tested
+7. [ ] Export a manifest first; export a validated XPM only through the tested
    engine used by the CLI.
-7. Add optional MIDI-groove heat maps and ergonomic layout suggestions after
+8. [ ] Add optional MIDI-groove heat maps and ergonomic layout suggestions after
    deterministic layouts are trusted.
+
+**Read-only slice delivered August 27, 2026:** real `FG Vinyl Layered Banks 03`
+and compressed Wurli data render successfully. Bank/note switching, selection
+details, sample checks, velocity findings, physical orientation, responsive
+layout, and browser console behavior are tested. Generated viewers contain
+metadata only and remain in ignored local storage.
 
 **Exit gate:** A user can inspect a kit, create a handed layout, preview every
 bank, export it, and load the result on hardware without manually editing XML.
