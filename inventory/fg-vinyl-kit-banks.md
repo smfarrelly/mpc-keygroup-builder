@@ -71,8 +71,8 @@ The generated package is:
 - [x] Record the same pattern separately with Banks A, B, C, and G; every bank
   worked and the musical result was reported as very impressive.
 - [x] Save, reload, and confirm colors, samples, and mute behavior persist.
-- [ ] Decide whether source-native placement is sufficiently consistent or a
-  second strictly normalized role-layout variant is warranted.
+- [x] Retain source-native placement; the successful cross-bank pattern test
+  shows that a stricter normalized role-layout variant is unnecessary.
 
 ### Deployment status — August 27, 2026
 
@@ -91,5 +91,5 @@ expected pad playback, family character, colors, and bank-local choke behavior:
 `pass`, retained as a provisional Drum alternate. The same recorded pattern
 worked on Banks A, B, C, and G and made a strong musical impression. Project
 save/reload restores colors, samples, and mute behavior as expected. Required
-hardware acceptance is complete; only the optional normalized-layout decision
-remains open.
+hardware acceptance is complete, and a stricter normalized layout was judged
+unnecessary.

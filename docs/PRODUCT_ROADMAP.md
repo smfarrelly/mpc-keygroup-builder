@@ -322,8 +322,10 @@ for release gates:
 
 1. **Hardware:** `FG Vinyl Kit Banks 01` now passes eight-bank listening, the
    same-pattern comparison on Banks A, B, C, and G, and save/reload
-   persistence. Test `FG Vinyl Layered Kit 01`, then save a revised protected
-   Scratchpad master containing the accepted `FG Vinyl Shots 04 Eight Bank`.
+   persistence. Its source-native layouts are accepted without a stricter
+   normalized variant. Test `FG Vinyl Layered Kit 01`, then save a revised
+   protected Scratchpad master containing the accepted `FG Vinyl Shots 04
+   Eight Bank`.
 2. **Acceptance:** load the generated Classic and handed variants on the Key
    37, reload them, compare playability, and close the v0.2 exit gate.
 3. **Creative MIDI:** import the generated source/Classic MIDI pair on the Key

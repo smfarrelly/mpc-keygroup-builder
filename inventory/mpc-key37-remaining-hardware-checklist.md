@@ -50,7 +50,8 @@ alternate. Core loading, all-bank playback, named-family character, and choke
 behavior work as expected. The same pattern recorded successfully on Banks A,
 B, C, and G, and the multi-kit performance concept was reported as very
 impressive. Save/reload also restores colors, samples, and mute behavior as
-expected. Required hardware acceptance is complete.
+expected. A stricter normalized same-role layout is not necessary. Hardware
+acceptance is complete.
 
 Load:
 
@@ -66,7 +67,8 @@ Load:
 - [x] Save/reload and confirm colors, samples, and mute groups persist.
 - [x] Compare against Shots 04: Kit Banks succeeds as a complete-groove bank
   family while Shots remains the selected accent/unusual-hit program.
-- [ ] Decide whether a normalized same-role-on-every-bank variant is needed.
+- [x] Retain the source-native layouts; a stricter normalized variant is not
+  necessary.
 
 ### FG Vinyl Layered Kit 01
 
