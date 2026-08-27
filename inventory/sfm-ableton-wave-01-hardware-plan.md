@@ -84,7 +84,10 @@ outer octaves are useful or should become silent limits.
   notes trigger. The generated model reports all 128 notes populated, so the
   MPC is not honoring the outer extrapolated ranges as expected; rebuild or
   deliberately constrain/remap the useful range.
-- [ ] Chromatic Chimes — roots MIDI 35–50; status: untested; favorite: ; notes:
+- [x] Chromatic Chimes — roots MIDI 35–50; status: warn; favorite: pending;
+  notes: repeats Chromatic Analog Tom's hardware behavior and requires
+  transposing down several octaves before notes trigger. Treat this as a
+  systematic Keygroup outer-range serialization/remapping issue.
 - [ ] Chromatic Cowbell — roots MIDI 29–44; status: untested; favorite: ; notes:
 - [ ] Chromatic Tom — roots MIDI 25–40; status: untested; favorite: ; notes:
 - [ ] Chromatic Tone — roots MIDI 33–48; status: untested; favorite: ; notes:

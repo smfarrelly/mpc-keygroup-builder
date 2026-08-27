@@ -128,7 +128,9 @@ judge raw-sample playability and mapping.
   down several octaves before notes trigger. Source roots are MIDI 27–42;
   investigate why the MPC does not honor the generated outer extrapolation.
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 01 Keygroups / SP-1200 From Mars / Chromatic Percussion / Chromatic Analog Tom.xpm`
-- [ ] Chromatic Chimes
+- [x] Chromatic Chimes — `warn`; same behavior as Chromatic Analog Tom: notes
+  require transposing down several octaves before they trigger. Source roots
+  are MIDI 35–50; include in the Keygroup range-remapping investigation.
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 01 Keygroups / SP-1200 From Mars / Chromatic Percussion / Chromatic Chimes.xpm`
 - [ ] Chromatic Cowbell
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 01 Keygroups / SP-1200 From Mars / Chromatic Percussion / Chromatic Cowbell.xpm`

@@ -204,9 +204,11 @@ performance program.
 - [x] Ableton Wave 01 builds those five Keygroups plus 27 source-ordered Drum
   Programs spanning vinyl, classic machines, and character kits. All source
   preflights and semantic simulations pass. Key 37 listening is active;
-  Chromatic Analog Tom exposes a hardware range warning because only its low
-  source band triggers after octave-down transposition even though the generated
-  model declares outer-note coverage.
+  Chromatic Analog Tom and Chromatic Chimes both expose the same hardware range
+  warning because only their low source bands trigger after octave-down
+  transposition even though the generated model declares outer-note coverage.
+  The five-program Keygroup batch now requires a systematic range-remapping
+  correction before promotion.
 
 Normalized-model import and exporter behavior remain gated on manual source
 comparison and representative MPC target captures. The Clip subset remains

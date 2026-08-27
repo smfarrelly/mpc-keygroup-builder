@@ -57,7 +57,9 @@ Software status: all five are built and locally validated in Ableton Wave 01;
 Key 37 listening is in progress. Chromatic Analog Tom loads but requires
 transposing down several octaves to reach its MIDI 27–42 source band, despite
 the generated model claiming outer-note coverage; retain a hardware `warn` and
-investigate range serialization before promotion.
+investigate range serialization before promotion. Chromatic Chimes repeats the
+same behavior with MIDI 35–50 roots, confirming a systematic issue across at
+least the first two candidates rather than a single-program anomaly.
 
 ### Vinyl Drums breakbeat programs
 
