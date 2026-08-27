@@ -23,8 +23,8 @@ than promising a literal one-to-one conversion of 1,718 presets.
 Hardware checkpoint: `FG Vinyl Shots 04 Eight Bank` is accepted as the selected
 Track 2 program. `FG Vinyl Kit Banks 01` passes core eight-bank playback and is
 retained as a provisional Drum alternate; the same pattern worked impressively
-on Banks A, B, C, and G, while save/reload remains open. `FG Vinyl Layered Kit
-01` remains untested.
+on Banks A, B, C, and G, and save/reload restores expected state. `FG Vinyl
+Layered Kit 01` remains untested.
 
 1. Hardware-test `FG Vinyl Kit Banks 01` and `FG Vinyl Layered Kit 01`.
 2. Compare their feel and usefulness with `FG Vinyl Shots 04 Eight Bank`.

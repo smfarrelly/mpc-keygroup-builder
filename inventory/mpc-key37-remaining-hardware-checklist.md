@@ -49,7 +49,8 @@ Load:
 alternate. Core loading, all-bank playback, named-family character, and choke
 behavior work as expected. The same pattern recorded successfully on Banks A,
 B, C, and G, and the multi-kit performance concept was reported as very
-impressive. Project save/reload remains open.
+impressive. Save/reload also restores colors, samples, and mute behavior as
+expected. Required hardware acceptance is complete.
 
 Load:
 
@@ -62,7 +63,7 @@ Load:
   banks.
 - [x] Record the same pattern with Banks A, B, C, and G; all four worked and
   made a strong musical impression.
-- [ ] Save/reload and confirm colors, samples, and mute groups persist.
+- [x] Save/reload and confirm colors, samples, and mute groups persist.
 - [x] Compare against Shots 04: Kit Banks succeeds as a complete-groove bank
   family while Shots remains the selected accent/unusual-hit program.
 - [ ] Decide whether a normalized same-role-on-every-bank variant is needed.
@@ -440,7 +441,7 @@ optional section can use file-based baselines.
 
 - [x] Shots 04 accepted as the selected/favorite Track 2 program.
 - [x] Kit Banks passes and is retained as a provisional Drum alternate; its
-  four-bank pattern comparison also passes, while save/reload remains open.
+  four-bank pattern comparison and save/reload persistence also pass.
 - [ ] Layered Kit accepted or revised.
 - [ ] All 32 Ableton Wave 01 programs have listening results.
 - [ ] Revised Scratchpad Master saves/reloads with a recorded lead phrase.

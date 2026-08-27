@@ -70,7 +70,7 @@ The generated package is:
   kit banks during normal performance.
 - [x] Record the same pattern separately with Banks A, B, C, and G; every bank
   worked and the musical result was reported as very impressive.
-- [ ] Save, reload, and confirm colors, samples, and mute behavior persist.
+- [x] Save, reload, and confirm colors, samples, and mute behavior persist.
 - [ ] Decide whether source-native placement is sufficiently consistent or a
   second strictly normalized role-layout variant is warranted.
 
@@ -90,4 +90,6 @@ The program loads and works as expected across all eight named kit banks, with
 expected pad playback, family character, colors, and bank-local choke behavior:
 `pass`, retained as a provisional Drum alternate. The same recorded pattern
 worked on Banks A, B, C, and G and made a strong musical impression. Project
-save/reload and the final normalized-layout decision remain open.
+save/reload restores colors, samples, and mute behavior as expected. Required
+hardware acceptance is complete; only the optional normalized-layout decision
+remains open.
