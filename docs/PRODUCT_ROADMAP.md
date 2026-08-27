@@ -208,7 +208,8 @@ performance program.
   they load but trigger only after several octave-down transpositions even
   though the generated model declares outer-note coverage. Rebuild the batch
   with its 16 roots explicitly remapped into the normal Key 37 register before
-  promotion.
+  promotion. The Wave 01 Vinyl Big Break and Hand Break Drum Programs pass, as
+  do both intentionally 12-pad SP-1200 Factory kits.
 
 Normalized-model import and exporter behavior remain gated on manual source
 comparison and representative MPC target captures. The Clip subset remains

@@ -103,10 +103,14 @@ explicitly shifted into the Key 37's normal register before promotion.
 
 ## Drum bracket A — vinyl and SP-1200
 
-- [ ] Vinyl Drums / Big Break Kit — 16 pads; status: untested; favorite: ; notes:
-- [ ] Vinyl Drums / Hand Break Kit — 16 pads; status: untested; favorite: ; notes:
-- [ ] SP-1200 / Factory Kit 1 — 12 pads; status: untested; favorite: ; notes:
-- [ ] SP-1200 / Factory Kit 2 — 12 pads; status: untested; favorite: ; notes:
+- [x] Vinyl Drums / Big Break Kit — 16 pads; status: pass; favorite: pending;
+  notes: all pads and expected program behavior pass on the Key 37.
+- [x] Vinyl Drums / Hand Break Kit — 16 pads; status: pass; favorite: pending;
+  notes: all pads and expected program behavior pass on the Key 37.
+- [x] SP-1200 / Factory Kit 1 — 12 pads; status: pass; favorite: pending; notes:
+  all 12 source pads pass; A13–A16 are intentionally empty.
+- [x] SP-1200 / Factory Kit 2 — 12 pads; status: pass; favorite: pending; notes:
+  all 12 source pads pass; A13–A16 are intentionally empty.
 
 ## Drum bracket B — classic machines
 

@@ -72,7 +72,9 @@ musical style rather than a tempo-warped Clip source.
 
 Software status: both are built with source pad order and choke groups in
 Ableton Wave 01. The same wave adds 25 diverse machine/character Drum Programs
-to make the next hardware session more informative.
+to make the next hardware session more informative. Hardware status: Big Break
+and Hand Break both pass. SP-1200 Factory Kits 1 and 2 also pass; their 12-pad
+source layouts and empty A13–A16 slots are intentional.
 
 ### Curated Vinyl Synths favorites
 

@@ -150,13 +150,17 @@ these versions as finished instruments.
 
 ### Vinyl and SP-1200 Drum Programs
 
-- [ ] Vinyl Drums — Big Break Kit
+- [x] Vinyl Drums — Big Break Kit — `pass`; all 16 source pads work as
+  expected.
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / Vinyl Drums / Big Break Kit / Big Break Kit.xpm`
-- [ ] Vinyl Drums — Hand Break Kit
+- [x] Vinyl Drums — Hand Break Kit — `pass`; all 16 source pads work as
+  expected.
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / Vinyl Drums / Hand Break Kit / Hand Break Kit.xpm`
-- [ ] SP-1200 — Factory Kit 1
+- [x] SP-1200 — Factory Kit 1 — `pass`; its 12 populated pads are intentional,
+  with A13–A16 empty by source design.
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / SP-1200 / Factory Kit 1 / Factory Kit 1.xpm`
-- [ ] SP-1200 — Factory Kit 2
+- [x] SP-1200 — Factory Kit 2 — `pass`; its 12 populated pads are intentional,
+  with A13–A16 empty by source design.
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 02 Drum Programs / SP-1200 / Factory Kit 2 / Factory Kit 2.xpm`
 
 ### Roland-style Drum Programs
