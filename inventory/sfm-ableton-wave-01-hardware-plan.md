@@ -79,7 +79,11 @@ The first and last samples intentionally extend beyond the 16 recorded roots.
 Judge the central source range first, then decide whether the extrapolated
 outer octaves are useful or should become silent limits.
 
-- [ ] Chromatic Analog Tom — roots MIDI 27–42; status: untested; favorite: ; notes:
+- [x] Chromatic Analog Tom — roots MIDI 27–42; status: warn; favorite: pending;
+  notes: loads, but the Key 37 must be transposed down several octaves before
+  notes trigger. The generated model reports all 128 notes populated, so the
+  MPC is not honoring the outer extrapolated ranges as expected; rebuild or
+  deliberately constrain/remap the useful range.
 - [ ] Chromatic Chimes — roots MIDI 35–50; status: untested; favorite: ; notes:
 - [ ] Chromatic Cowbell — roots MIDI 29–44; status: untested; favorite: ; notes:
 - [ ] Chromatic Tom — roots MIDI 25–40; status: untested; favorite: ; notes:

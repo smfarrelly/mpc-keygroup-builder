@@ -203,7 +203,10 @@ performance program.
   editorial roadmap groups the remaining work into curated product waves.
 - [x] Ableton Wave 01 builds those five Keygroups plus 27 source-ordered Drum
   Programs spanning vinyl, classic machines, and character kits. All source
-  preflights and semantic simulations pass; Key 37 listening is the next gate.
+  preflights and semantic simulations pass. Key 37 listening is active;
+  Chromatic Analog Tom exposes a hardware range warning because only its low
+  source band triggers after octave-down transposition even though the generated
+  model declares outer-note coverage.
 
 Normalized-model import and exporter behavior remain gated on manual source
 comparison and representative MPC target captures. The Clip subset remains

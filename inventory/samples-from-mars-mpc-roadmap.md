@@ -54,7 +54,10 @@ These are the five highest-ranked uncovered melodic programs and complement
 the pad kits instead of duplicating them.
 
 Software status: all five are built and locally validated in Ableton Wave 01;
-Key 37 listening remains pending.
+Key 37 listening is in progress. Chromatic Analog Tom loads but requires
+transposing down several octaves to reach its MIDI 27–42 source band, despite
+the generated model claiming outer-note coverage; retain a hardware `warn` and
+investigate range serialization before promotion.
 
 ### Vinyl Drums breakbeat programs
 

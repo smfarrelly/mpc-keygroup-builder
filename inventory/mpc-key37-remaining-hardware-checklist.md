@@ -124,7 +124,9 @@ judge raw-sample playability and mapping.
 
 ### Five SP-1200 Keygroups
 
-- [ ] Chromatic Analog Tom
+- [x] Chromatic Analog Tom — `warn`; loads, but requires transposing the Key 37
+  down several octaves before notes trigger. Source roots are MIDI 27–42;
+  investigate why the MPC does not honor the generated outer extrapolation.
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 01 Keygroups / SP-1200 From Mars / Chromatic Percussion / Chromatic Analog Tom.xpm`
 - [ ] Chromatic Chimes
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 01 Keygroups / SP-1200 From Mars / Chromatic Percussion / Chromatic Chimes.xpm`
