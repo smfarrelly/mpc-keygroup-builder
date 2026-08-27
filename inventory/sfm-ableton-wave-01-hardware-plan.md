@@ -1,10 +1,10 @@
 # Samples From Mars Ableton Wave 01 hardware plan
 
-**Status:** Built locally; deployment and MPC Key 37 listening pending
+**Status:** SD deployment verified; MPC Key 37 listening pending
 
 **Candidate package:** `work/hardware-candidates/sfm-ableton-wave-01`
 
-**Intended SD destination:** `00 FG Hardware Tests/SFM Ableton Wave 01`
+**Verified SD destination:** `00 FG Hardware Tests/SFM Ableton Wave 01`
 
 This wave contains 32 MPC programs derived from owned Samples From Mars audio
 and readable Ableton source intent: five Keygroups and 27 Drum Programs. The
@@ -34,7 +34,18 @@ preserved. Ableton Rack macros, effects, and non-default sampler gain are not
 serialized yet. Treat this as a playable raw-sample translation bracket, not a
 claim of exact Ableton effect matching.
 
-## Safe deployment when the SD card returns
+## Verified SD deployment — August 27, 2026
+
+The complete package was deployed additively to:
+
+`00 FG Hardware Tests/SFM Ableton Wave 01`
+
+The deployment contains exactly 552 files and 68,579,392 bytes. A second,
+independent hash pass compared every file on the SD card with the local package
+and reported a byte-for-byte match. The card was synced and cleanly unmounted
+before returning it to the MPC.
+
+For a future replacement card, first run a dry plan:
 
 First run a dry plan:
 
