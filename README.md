@@ -129,10 +129,12 @@ uv run mpc-drum-compose inventory/fg-vinyl-kit-banks.toml \
 ```
 
 The composer requires 16 populated pads in every selected source bank,
-resolves extensionless MPC sample names to WAV files, refuses ambiguous or
-colliding audio names, and rebases each bank's single mute group to an isolated
-target-bank group. This makes bank-as-kit collections reproducible without
-checking licensed XPM or WAV files into source control.
+accepts safe relative XPM paths into nested self-contained program packages,
+resolves samples beside each source before falling back to the common root,
+refuses ambiguous or flattened-name collisions, and rebases each bank's single
+mute group to an isolated target-bank group. This makes bank-as-kit collections
+reproducible without flattening libraries or checking licensed XPM or WAV files
+into source control.
 
 Inventory tempo-named loops before designing a Clip Program:
 

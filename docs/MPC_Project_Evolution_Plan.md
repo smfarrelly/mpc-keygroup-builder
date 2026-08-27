@@ -871,6 +871,12 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
 - Mirrored the 600-file batch to the external drive, passed a 32 MiB sustained
   SD write probe, transactionally deployed it as Drum Alternates 06-09, and
   added an on-card bank/test index.
+- Removed the bank composer's flat-staging prerequisite. Recipes can now use
+  safe relative XPM paths into nested self-contained packages; audio resolves
+  beside each source first, path and symlink escapes are rejected, and selected
+  WAVs are staged internally only for the final package build. All three A-H
+  programs rebuilt directly from the accepted nested package tree with
+  byte-identical XPM and package output.
 
 ## 16. Reference material
 

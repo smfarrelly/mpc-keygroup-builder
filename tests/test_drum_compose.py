@@ -151,6 +151,31 @@ class DrumComposeTests(unittest.TestCase):
             self.assertEqual(report["populated_pads"], 32)
             self.assertEqual(report["mute_groups"], {"1": [5, 6], "8": [117, 118]})
 
+    def test_builds_directly_from_nested_self_contained_program(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            template, source = self.build_source(root)
+            source_root = root / "library"
+            nested = source_root / "Family" / "Source Kit"
+            nested.parent.mkdir(parents=True)
+            source.rename(nested)
+            recipe_path = root / "recipe.toml"
+            recipe_path.write_text(
+                'name="Nested"\n'
+                '[[banks]]\ntarget="A"\n'
+                'source="Family/Source Kit/Source.xpm"\n'
+                'bank="A"\nlabel="Nested source"\n',
+                encoding="utf-8",
+            )
+            recipe = drum_compose.load_recipe(recipe_path)
+            manifest, destination = drum_compose.build_composed_program(
+                recipe, source_root, template, root / "package"
+            )
+            self.assertEqual(len(manifest.pads), 16)
+            report = drum_audit.audit_drum_program(destination)
+            self.assertEqual(report["verdict"], "pass")
+            self.assertEqual(report["populated_pads"], 16)
+
     def test_rejects_duplicate_target_bank(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "recipe.toml"
@@ -162,6 +187,37 @@ class DrumComposeTests(unittest.TestCase):
             )
             with self.assertRaisesRegex(ValueError, "duplicate target bank A"):
                 drum_compose.load_recipe(path)
+
+    def test_rejects_source_path_traversal(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "recipe.toml"
+            path.write_text(
+                'name="Bad"\n'
+                '[[banks]]\ntarget="A"\nsource="../One.xpm"\n'
+                'bank="A"\nlabel="One"\n',
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "safe relative XPM path"):
+                drum_compose.load_recipe(path)
+
+    def test_rejects_source_symlink_outside_root(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source_root = root / "library"
+            source_root.mkdir()
+            outside = root / "outside.xpm"
+            outside.write_text("not needed", encoding="utf-8")
+            (source_root / "linked.xpm").symlink_to(outside)
+            recipe_path = root / "recipe.toml"
+            recipe_path.write_text(
+                'name="Bad"\n'
+                '[[banks]]\ntarget="A"\nsource="linked.xpm"\n'
+                'bank="A"\nlabel="Linked"\n',
+                encoding="utf-8",
+            )
+            recipe = drum_compose.load_recipe(recipe_path)
+            with self.assertRaisesRegex(ValueError, "escapes source root"):
+                drum_compose.compose_recipe(recipe, source_root)
 
     def test_rejects_incomplete_source_bank(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import shutil
+import tempfile
 import tomllib
 from dataclasses import dataclass
 from pathlib import Path
@@ -52,8 +54,15 @@ def load_recipe(path: Path) -> BankRecipe:
         target = target.upper()
         if target in targets:
             raise ValueError(f"duplicate target bank {target}")
-        if not isinstance(source, str) or not source.strip() or Path(source).name != source:
-            raise ValueError(f"banks entry {index} source must be an XPM basename")
+        if not isinstance(source, str) or not source.strip():
+            raise ValueError(f"banks entry {index} source must be a relative XPM path")
+        source_path = Path(source)
+        if (
+            source_path.is_absolute()
+            or ".." in source_path.parts
+            or source_path.suffix.casefold() != ".xpm"
+        ):
+            raise ValueError(f"banks entry {index} source must be a safe relative XPM path")
         if not isinstance(bank, str) or bank.upper() not in BANKS:
             raise ValueError(f"banks entry {index} has invalid source bank {bank!r}")
         if not isinstance(label, str) or not label.strip():
@@ -89,15 +98,26 @@ def _resolve_audio(
     return candidates[0]
 
 
-def compose_recipe(recipe: BankRecipe, source_root: Path) -> DrumManifest:
-    by_name, by_stem = _audio_index(source_root)
+def _compose_recipe(
+    recipe: BankRecipe, source_root: Path
+) -> tuple[DrumManifest, dict[str, Path]]:
+    source_root = source_root.resolve()
+    root_by_name: dict[str, list[Path]] | None = None
+    root_by_stem: dict[str, list[Path]] | None = None
     pads = []
     seen_samples: dict[str, Path] = {}
     for bank_spec in recipe.banks:
-        program_path = source_root / bank_spec.source
+        program_path = (source_root / bank_spec.source).resolve()
+        try:
+            program_path.relative_to(source_root)
+        except ValueError as error:
+            raise ValueError(
+                f"source Drum Program escapes source root: {bank_spec.source}"
+            ) from error
         if not program_path.is_file():
             raise FileNotFoundError(f"source Drum Program not found: {program_path}")
         report = build_map(program_path)
+        local_by_name, local_by_stem = _audio_index(program_path.parent)
         source_pads = [pad for pad in report["pads"] if pad["bank"] == bank_spec.bank]
         positions = {(int(pad["pad"]) - 1) % 16 + 1 for pad in source_pads}
         if len(source_pads) != 16 or positions != set(range(1, 17)):
@@ -114,7 +134,16 @@ def compose_recipe(recipe: BankRecipe, source_root: Path) -> DrumManifest:
         target_group = BANKS.index(bank_spec.target) + 1
         for source_pad in sorted(source_pads, key=lambda item: int(item["pad"])):
             position = (int(source_pad["pad"]) - 1) % 16 + 1
-            audio = _resolve_audio(str(source_pad["sample"]), by_name, by_stem)
+            try:
+                audio = _resolve_audio(
+                    str(source_pad["sample"]), local_by_name, local_by_stem
+                )
+            except FileNotFoundError:
+                if root_by_name is None or root_by_stem is None:
+                    root_by_name, root_by_stem = _audio_index(source_root)
+                audio = _resolve_audio(
+                    str(source_pad["sample"]), root_by_name, root_by_stem
+                )
             key = audio.name.casefold()
             previous = seen_samples.get(key)
             if previous is not None and previous != audio:
@@ -127,7 +156,29 @@ def compose_recipe(recipe: BankRecipe, source_root: Path) -> DrumManifest:
                     mute_group=target_group if int(source_pad["mute_group"]) > 0 else 0,
                 )
             )
-    return DrumManifest(recipe.name, tuple(pads))
+    return DrumManifest(recipe.name, tuple(pads)), {
+        path.name.casefold(): path for path in seen_samples.values()
+    }
+
+
+def compose_recipe(recipe: BankRecipe, source_root: Path) -> DrumManifest:
+    manifest, _ = _compose_recipe(recipe, source_root)
+    return manifest
+
+
+def build_composed_program(
+    recipe: BankRecipe,
+    source_root: Path,
+    template: Path,
+    output: Path,
+) -> tuple[DrumManifest, Path]:
+    manifest, sample_sources = _compose_recipe(recipe, source_root)
+    with tempfile.TemporaryDirectory(prefix="mpc-drum-compose-") as directory:
+        staging = Path(directory)
+        for source in sample_sources.values():
+            shutil.copy2(source, staging / source.name)
+        destination = build_drum_program(manifest, template, staging, output)
+    return manifest, destination
 
 
 def render_manifest(recipe: BankRecipe, manifest: DrumManifest) -> str:
@@ -175,12 +226,14 @@ def main() -> int:
     print(f"Wrote: {manifest_output}")
     print(f"Banks: {len(recipe.banks)}; pads: {len(manifest.pads)}")
     if args.template is not None and args.package_output is not None:
-        destination = build_drum_program(
-            manifest,
-            args.template.expanduser().resolve(),
+        packaged_manifest, destination = build_composed_program(
+            recipe,
             source_root,
+            args.template.expanduser().resolve(),
             args.package_output.expanduser().resolve(),
         )
+        if packaged_manifest != manifest:
+            raise RuntimeError("source programs changed during composition")
         print(f"Wrote: {destination}")
     return 0
 

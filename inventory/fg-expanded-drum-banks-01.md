@@ -73,12 +73,22 @@ The three bank recipes are:
 - `inventory/fg-character-machines-banks-01.toml`
 - `inventory/fg-breaks-texture-banks-01.toml`
 
-Their inputs are flat staging directories assembled from the accepted
-`work/hardware-candidates/sfm-ableton-wave-01/02 Drum Programs` packages. XPM
-files are copied under the unambiguous basenames named in each recipe; their
-adjacent WAV files retain their original names. `mpc-drum-compose` then rebases
-source Bank A into target Banks A-H and isolates each nonzero source choke group
-to its target-bank group.
+Their safe relative XPM paths resolve directly below the accepted
+`work/hardware-candidates/sfm-ableton-wave-01/02 Drum Programs` root. The
+composer resolves each program's samples locally, stages only selected audio
+internally, rebases source Bank A into target Banks A-H, and isolates each
+nonzero source choke group to its target-bank group. No hand-built flat source
+folder is required.
+
+For example:
+
+```bash
+uv run mpc-drum-compose inventory/fg-classic-machines-banks-01.toml \
+  --source-root "work/hardware-candidates/sfm-ableton-wave-01/02 Drum Programs" \
+  --manifest-output work/fg-classic-machines-banks-01.toml \
+  --template "/path/to/four-layer-drum-template.xpm" \
+  --package-output "work/generated-drum-programs/FG Classic Machines Banks 01"
+```
 
 The four-bank velocity recipe is
 `inventory/fg-vinyl-layered-banks-03.toml`. It inherits Bank A from
