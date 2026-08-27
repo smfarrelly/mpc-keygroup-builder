@@ -200,7 +200,7 @@ Programs/Keygroups/Samples From Mars/Emulator From Mars/Keys/Ghost Keys.xpm,Keyg
 Programs/Keygroups/Samples From Mars/Emulator From Mars/Keys/Lullaby.xpm,Keygroup,gzip-json,pass,61,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Emulator From Mars/Keys/Optimistic.xpm,Keygroup,gzip-json,pass,57,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Emulator From Mars/Leads/Bots.xpm,Keygroup,gzip-json,pass,70,production,pass,,untested,,,
-Programs/Keygroups/Samples From Mars/Emulator From Mars/Leads/Dark FM.xpm,Keygroup,gzip-json,pass,61,production,pass,,untested,,,
+Programs/Keygroups/Samples From Mars/Emulator From Mars/Leads/Dark FM.xpm,Keygroup,gzip-json,pass,61,production,pass,,pass,provisional,candidate:lead/pad,"Plays successfully on the Key 37 and is strongly liked as an additional FM lead option."
 Programs/Keygroups/Samples From Mars/Emulator From Mars/Leads/Drippy.xpm,Keygroup,gzip-json,pass,34,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Emulator From Mars/Leads/Loony Bin.xpm,Keygroup,gzip-json,pass,60,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Emulator From Mars/Leads/Machinas.xpm,Keygroup,gzip-json,pass,61,production,pass,,untested,,,

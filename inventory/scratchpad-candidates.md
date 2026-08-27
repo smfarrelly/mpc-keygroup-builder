@@ -44,6 +44,10 @@ Replacement-round hardware results:
 - `OneFiftySeven` — 2600 From Mars
 - `HumanMusic` — 101 From Mars
 
+Replacement-round hardware result:
+
+- `Dark FM` — Emulator From Mars; pass and provisional additional lead.
+
 ## Key 37 listening order
 
 For each program, load it from `Programs`, play it for at least one minute, then
