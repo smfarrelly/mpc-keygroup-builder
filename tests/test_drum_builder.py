@@ -55,7 +55,7 @@ class DrumBuilderTests(unittest.TestCase):
             manifest_path = root / "manifest.toml"
             manifest_path.write_text(
                 'name = "FG Shots"\n'
-                '[[pads]]\npad = 1\nsample = "Bongo Test.wav"\n'
+                '[[pads]]\npad = 1\nsample = "Bongo Test.wav"\nmute_group = 3\n'
                 '[[pads]]\npad = 17\nsample = "FX Test.wav"\n',
                 encoding="utf-8",
             )
@@ -71,8 +71,10 @@ class DrumBuilderTests(unittest.TestCase):
             self.assertEqual(first.findtext("./Layers/Layer/SampleFile"), "Bongo Test.wav")
             self.assertEqual(first.findtext("./Layers/Layer/SliceEnd"), "19")
             self.assertEqual(first.findtext("OneShot"), "True")
+            self.assertEqual(first.findtext("MuteGroup"), "3")
             self.assertEqual(second.findtext("./Layers/Layer/SampleFile"), "")
             self.assertEqual(seventeenth.findtext("./Layers/Layer/SliceEnd"), "29")
+            self.assertEqual(seventeenth.findtext("MuteGroup"), "0")
             settings = json.loads(program.findtext("ProgramPads"))["ProgramPads"]
             self.assertFalse(settings["Universal"]["value0"])
             self.assertEqual(settings["Type"]["value0"], 2)
@@ -89,6 +91,16 @@ class DrumBuilderTests(unittest.TestCase):
                 encoding="utf-8",
             )
             with self.assertRaisesRegex(ValueError, "duplicate pad 1"):
+                drum_builder.load_manifest(path)
+
+    def test_rejects_invalid_mute_group(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "manifest.toml"
+            path.write_text(
+                'name="Bad"\n[[pads]]\npad=1\nsample="Hat.wav"\nmute_group=33\n',
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "invalid mute_group 33"):
                 drum_builder.load_manifest(path)
 
     def test_extends_a_base_manifest_with_additional_banks(self):

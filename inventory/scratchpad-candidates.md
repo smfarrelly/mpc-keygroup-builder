@@ -1,11 +1,10 @@
 # FG Vinyl Scratchpad v0.1 candidates
 
-These programs pass structural and semantic tests and produced non-silent local
-audition renders. The three Drum Programs have loaded and triggered expected
-samples on the Key 37; the four melodic Keygroups still require hardware
-listening tests.
+The original seven programs pass structural and semantic tests and produced
+non-silent local audition renders. All seven were hardware-tested; later
+replacement rounds selected the current Scratchpad instruments below.
 
-## Provisional core for the routing capture
+## Original provisional core for the routing capture
 
 - Main drums: `Vinyl SP From Mars 01 FG COLORS` — broad 808-oriented Bank A
   with kick, snare, clap, rim, closed/open hats, percussion, toms, and cymbal.
@@ -16,8 +15,8 @@ listening tests.
 - Lead: `HumanMusic` — provisionally preferred over a second pad because the
   core already has E Piano for sustained harmony.
 
-`Provisional` means suitable for tomorrow's two-track routing experiment, not a
-final musical-favorite verdict.
+These choices document the original routing capture and are superseded by the
+replacement-round decisions below.
 
 ## Main drums — choose one after listening
 
@@ -44,14 +43,14 @@ Replacement-round hardware results:
 
 ## Lead or pad — choose one after listening
 
-- `OneFiftySeven` — 2600 From Mars
+- `OneFiftySeven` — 2600 From Mars; passing non-selected alternative
 - `HumanMusic` — 101 From Mars
 
 Replacement-round hardware result:
 
-- `Dark FM` — Emulator From Mars; pass and provisional additional lead.
+- `Dark FM` — Emulator From Mars; selected Lead track.
 - `Muted Guitar` — Emulator From Mars; pass and provisional additional lead.
-- `Glass Howl` — Kawaii Dreams From Mars; pass and provisional atmospheric pad.
+- `Glass Howl` — Kawaii Dreams From Mars; selected dedicated Pad track.
 
 ## Key 37 listening order
 

@@ -58,7 +58,7 @@ Programs/Keygroups/Samples From Mars/2600 From Mars/Leads/RankingDons.xpm,Keygro
 Programs/Keygroups/Samples From Mars/2600 From Mars/Leads/Sehnsucht.xpm,Keygroup,gzip-json,pass,97,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/2600 From Mars/Leads/TechNoir.xpm,Keygroup,gzip-json,pass,109,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/2600 From Mars/Pads/BuildAShimmerPad.xpm,Keygroup,gzip-json,pass,97,production,pass,,untested,,,
-Programs/Keygroups/Samples From Mars/2600 From Mars/Pads/OneFiftySeven.xpm,Keygroup,gzip-json,pass,96,production,pass,,pass,provisional,lead/pad,Passes on the Key 37 and is retained as the provisional Scratchpad lead/pad choice.
+Programs/Keygroups/Samples From Mars/2600 From Mars/Pads/OneFiftySeven.xpm,Keygroup,gzip-json,pass,96,production,pass,,pass,no,candidate:lead/pad,"Passes on the Key 37 and remains a known-good alternative; Dark FM and Glass Howl were selected for the dedicated Lead and Pad tracks."
 Programs/Keygroups/Samples From Mars/2600 From Mars/Pads/Osc2Sine.xpm,Keygroup,gzip-json,pass,109,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/2600 From Mars/Pads/TheThreeStorms.xpm,Keygroup,gzip-json,pass,97,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/2600 From Mars/Pads/WheelToHell.xpm,Keygroup,gzip-json,pass,85,production,pass,,untested,,,
@@ -200,7 +200,7 @@ Programs/Keygroups/Samples From Mars/Emulator From Mars/Keys/Ghost Keys.xpm,Keyg
 Programs/Keygroups/Samples From Mars/Emulator From Mars/Keys/Lullaby.xpm,Keygroup,gzip-json,pass,61,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Emulator From Mars/Keys/Optimistic.xpm,Keygroup,gzip-json,pass,57,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Emulator From Mars/Leads/Bots.xpm,Keygroup,gzip-json,pass,70,production,pass,,untested,,,
-Programs/Keygroups/Samples From Mars/Emulator From Mars/Leads/Dark FM.xpm,Keygroup,gzip-json,pass,61,production,pass,,pass,provisional,candidate:lead/pad,"Plays successfully on the Key 37 and is strongly liked as an additional FM lead option."
+Programs/Keygroups/Samples From Mars/Emulator From Mars/Leads/Dark FM.xpm,Keygroup,gzip-json,pass,61,production,pass,,pass,yes,lead,"Plays successfully on the Key 37 and is selected for the dedicated Scratchpad Lead track."
 Programs/Keygroups/Samples From Mars/Emulator From Mars/Leads/Drippy.xpm,Keygroup,gzip-json,pass,34,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Emulator From Mars/Leads/Loony Bin.xpm,Keygroup,gzip-json,pass,60,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Emulator From Mars/Leads/Machinas.xpm,Keygroup,gzip-json,pass,61,production,pass,,untested,,,
@@ -239,7 +239,7 @@ Programs/Keygroups/Samples From Mars/Kawaii Dreams From Mars/Keys/Randroid.xpm,K
 Programs/Keygroups/Samples From Mars/Kawaii Dreams From Mars/Organs/Indie Organ.xpm,Keygroup,gzip-json,pass,80,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Kawaii Dreams From Mars/Organs/Leslie.xpm,Keygroup,gzip-json,pass,81,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Kawaii Dreams From Mars/Pads/Analog Strings.xpm,Keygroup,gzip-json,pass,21,production,pass,,untested,,,
-Programs/Keygroups/Samples From Mars/Kawaii Dreams From Mars/Pads/Glass Howl.xpm,Keygroup,gzip-json,pass,79,production,pass,,pass,provisional,candidate:lead/pad,"Plays successfully on the Key 37 and is strongly liked as an atmospheric pad option."
+Programs/Keygroups/Samples From Mars/Kawaii Dreams From Mars/Pads/Glass Howl.xpm,Keygroup,gzip-json,pass,79,production,pass,,pass,yes,pad,"Plays successfully on the Key 37 and is selected for the dedicated Scratchpad Pad track."
 Programs/Keygroups/Samples From Mars/Kawaii Dreams From Mars/Pads/Warm Strings.xpm,Keygroup,gzip-json,pass,21,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Kawaii Dreams From Mars/Voices/Bell Air.xpm,Keygroup,gzip-json,pass,64,production,pass,,untested,,,
 Programs/Keygroups/Samples From Mars/Kawaii Dreams From Mars/Voices/Hello.xpm,Keygroup,gzip-json,pass,69,production,pass,,untested,,,

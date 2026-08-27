@@ -105,8 +105,8 @@ All templates should preserve the same eight-strip mental model wherever practic
 | 2 | Percussion/one-shots | Stabs, vocals, FX | MPC percussion/one-shots |
 | 3 | Bass | Vinyl bass keygroup | Volca Bass |
 | 4 | Chords/keys | Vinyl piano, EP, or chords | Volca Keys |
-| 5 | Lead/pad | Warbly lead or pad | Internal lead/pad |
-| 6 | Loops | Breaks and melodic loops | Loops or additional sequence material |
+| 5 | Lead | Dark FM | Internal lead/pad |
+| 6 | Pad/loops | Glass Howl | Loops or additional sequence material |
 | 7 | Bass pad/texture | Juno Sub Smooth | Texture or guest hardware |
 | 8 | Capture/transition | Resampling and transitions | Resampling and transitions |
 
@@ -474,14 +474,16 @@ These are not initial priorities:
   the captured four-bar sequence).
 - [x] Add Juno Sub Smooth as a dedicated Bass Pad Keygroup on Track 7.
 - [x] Choose one favorite vinyl keys/chord sound: Mirage Wurli.
-- [x] Choose one favorite lead, pad, or texture: OneFiftySeven (provisional).
+- [x] Choose a favorite lead: Emulator Dark FM.
+- [x] Choose a dedicated pad: Kawaii Dreams Glass Howl on Track 6.
 - [ ] Create the eight-track project skeleton.
 - [x] Load the four core sounds into a working Scratchpad project.
 - [ ] Set starting levels and one useful shared reverb/delay environment.
 - [ ] Save as `FG_Vinyl_Scratchpad_v0_1`.
 - [x] Make a short sequence and perform a few changes to prove the concept: a
   captured four-bar drums, Pluck Bass, and Wurli idea passed on the Key 37.
-  OneFiftySeven still needs a recorded-part comparison.
+  Dark FM and Glass Howl still need recorded-part save/reload confirmation in
+  the revised project.
 
 ### Session completion rule
 
@@ -662,6 +664,22 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   follows its Classic pad-note assignment.
 - Hardware import and groove acceptance remain open. No generated MIDI or
   licensed program material is committed.
+
+### August 26, 2026 — final internal palette and eight-bank shots
+
+- Selected Mirage Pluck Bass for Track 3, Emulator Dark FM for Track 5 Lead,
+  Kawaii Dreams Glass Howl for Track 6 Pad, and Juno Sub Smooth for Track 7
+  Bass Pad; Mirage Wurli remains the Track 4 keys favorite.
+- Replaced the unused Scratchpad Loops strip with the dedicated Glass Howl Pad
+  while retaining Track 8 for audio capture and resampling.
+- Extended Vinyl Shots to version 04 with all 128 pads populated. Bank G holds
+  eight kicks and eight snares; Bank H holds eight matched closed/open hat
+  pairs.
+- Added declarative per-pad mute groups to the Drum manifest builder. All eight
+  Bank H hat pairs pass the independent choke-group audit.
+- Generated the self-contained 128-WAV hardware package in ignored local
+  storage. Semantic simulation and Drum audit pass; SD deployment and Key 37
+  load/reload acceptance remain open.
 
 ## 16. Reference material
 

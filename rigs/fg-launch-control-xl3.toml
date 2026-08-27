@@ -33,6 +33,8 @@ index = 2
 name = "Shots"
 role = "percussion/one-shots"
 type = "drum"
+program = "FG Vinyl Shots 04 Eight Bank"
+program_path = "Programs/Drum Programs/FG Scratchpad Candidates/FG Vinyl Shots 04 Eight Bank/FG Vinyl Shots 04 Eight Bank.xpm"
 
 [[tracks]]
 index = 3
@@ -50,16 +52,17 @@ program = "Wurli"
 
 [[tracks]]
 index = 5
-name = "Lead Pad"
-role = "lead/pad"
+name = "Lead"
+role = "lead"
 type = "keygroup"
-program = "OneFiftySeven"
+program = "Dark FM"
 
 [[tracks]]
 index = 6
-name = "Loops"
-role = "loops"
-type = "clip"
+name = "Pad"
+role = "pad"
+type = "keygroup"
+program = "Glass Howl"
 
 [[tracks]]
 index = 7

@@ -108,6 +108,8 @@ directory so an existing program cannot be silently overwritten.
 A manifest may set `extends = "base-manifest.toml"` to append new pad banks
 without repeating an established layout. Inherited pad numbers are locked:
 accidental collisions are rejected rather than silently replacing a tested pad.
+Each `[[pads]]` entry may also set `mute_group = 1` through `32`; this is used
+for explicit closed/open-hat choking and defaults to no mute group.
 
 ## Normalized programs and layout planning
 

@@ -1,0 +1,120 @@
+name = "FG Vinyl Shots 04 Eight Bank"
+extends = "fg-vinyl-shots-six-bank.toml"
+
+# Banks A-F are inherited unchanged from FG Vinyl Shots 03 Six Bank.
+
+# Bank G: eight contrasting kicks followed by eight snares.
+[[pads]]
+pad = 97
+sample = "BD 808 Warm Vinyl SP.WAV"
+[[pads]]
+pad = 98
+sample = "BD 909 House Vinyl SP.WAV"
+[[pads]]
+pad = 99
+sample = "BD Acoustic Nice Vinyl SP Clean.WAV"
+[[pads]]
+pad = 100
+sample = "BD CR78 Dark Vinyl SP.WAV"
+[[pads]]
+pad = 101
+sample = "BD Club Smack Vinyl SP 01.WAV"
+[[pads]]
+pad = 102
+sample = "BD DR110 Standard Vinyl SP.WAV"
+[[pads]]
+pad = 103
+sample = "BD LM1 Vinyl SP Clean 02.WAV"
+[[pads]]
+pad = 104
+sample = "BD Machinedrum Classic Vinyl SP.WAV"
+[[pads]]
+pad = 105
+sample = "SD 808 Nice Vinyl SP.WAV"
+[[pads]]
+pad = 106
+sample = "SD 909 Soft Vinyl SP.WAV"
+[[pads]]
+pad = 107
+sample = "SD Acoustic Snap Vinyl SP.WAV"
+[[pads]]
+pad = 108
+sample = "SD CR78 Vinyl SP 02.WAV"
+[[pads]]
+pad = 109
+sample = "SD DR110 Vinyl SP 01.WAV"
+[[pads]]
+pad = 110
+sample = "SD LM1 Vinyl SP 02.WAV"
+[[pads]]
+pad = 111
+sample = "SD Machinedrum Hollow Vinyl SP 03.WAV"
+[[pads]]
+pad = 112
+sample = "SD Vintage Vinyl SP.WAV"
+
+# Bank H: matched closed/open hat families for easy comparison and performance.
+[[pads]]
+pad = 113
+sample = "CH 707 Standard Vinyl SP.WAV"
+mute_group = 1
+[[pads]]
+pad = 114
+sample = "CH 808 Standard Vinyl SP 01.WAV"
+mute_group = 2
+[[pads]]
+pad = 115
+sample = "CH 909 House Vinyl SP.WAV"
+mute_group = 3
+[[pads]]
+pad = 116
+sample = "CH Acoustic Tite Vinyl SP.WAV"
+mute_group = 4
+[[pads]]
+pad = 117
+sample = "CH CR78 Standard Vinyl SP.WAV"
+mute_group = 5
+[[pads]]
+pad = 118
+sample = "CH LM1 Standard Vinyl SP 01.WAV"
+mute_group = 6
+[[pads]]
+pad = 119
+sample = "CH Machinedrum Vinyl SP 02.WAV"
+mute_group = 7
+[[pads]]
+pad = 120
+sample = "CH Tape Classic Vinyl SP.WAV"
+mute_group = 8
+[[pads]]
+pad = 121
+sample = "OH 707 Standard Vinyl SP.WAV"
+mute_group = 1
+[[pads]]
+pad = 122
+sample = "OH 808 Standard Vinyl SP 01.WAV"
+mute_group = 2
+[[pads]]
+pad = 123
+sample = "OH 909 Dark Vinyl SP 01.WAV"
+mute_group = 3
+[[pads]]
+pad = 124
+sample = "OH Acoustic Classic Vinyl SP 01.WAV"
+mute_group = 4
+[[pads]]
+pad = 125
+sample = "OH CR78 Standard Vinyl SP.WAV"
+mute_group = 5
+[[pads]]
+pad = 126
+sample = "OH LM1 Standard Vinyl SP.WAV"
+mute_group = 6
+[[pads]]
+pad = 127
+sample = "OH Machinedrum Vinyl SP 01.WAV"
+mute_group = 7
+[[pads]]
+pad = 128
+sample = "OH Tape Hard Vinyl SP.WAV"
+mute_group = 8

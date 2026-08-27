@@ -75,6 +75,7 @@ compares the incumbent OneFiftySeven against a shimmer pad, a glassy digital
 pad, and a focused lead. The four programs are already present on the full SD
 library, so no duplicate deployment is required.
 
-`fg-vinyl-shots.toml` is the reproducible 32-pad Track 2 one-shot manifest.
+`fg-vinyl-shots.toml` begins the reproducible Track 2 one-shot manifest chain;
+`fg-vinyl-shots-eight-bank.toml` is the selected 128-pad expansion.
 See `scratchpad-shots.md` for its bank layout, build command, SD location, and
 hardware checklist.

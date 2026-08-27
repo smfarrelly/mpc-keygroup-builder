@@ -18,6 +18,20 @@ class ProgramModelTests(unittest.TestCase):
         self.assertEqual(program.zones[64].role, "clap.primary")
         self.assertEqual(program.validate(), {"errors": [], "warnings": []})
 
+    def test_loads_inherited_eight_bank_manifest(self):
+        root = Path(__file__).parents[1]
+        program = model.from_drum_manifest(root / "inventory/fg-vinyl-shots-eight-bank.toml")
+        self.assertEqual(program.name, "FG Vinyl Shots 04 Eight Bank")
+        self.assertEqual(program.kind, "drum")
+        self.assertEqual(len(program.zones), 128)
+        self.assertEqual(program.zones[96].role, "kick.primary")
+        self.assertEqual(program.zones[104].role, "snare.primary")
+        self.assertEqual(program.zones[112].role, "hihat.closed")
+        self.assertEqual(program.zones[120].role, "hihat.open")
+        self.assertEqual(program.zones[112].mute_group, 1)
+        self.assertEqual(program.zones[120].mute_group, 1)
+        self.assertEqual(program.validate(), {"errors": [], "warnings": []})
+
     def test_loads_legacy_xml_drum_program(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "Kit.xpm"

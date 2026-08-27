@@ -130,6 +130,7 @@ def from_drum_manifest(
                 color=palette[category],
                 layers=(SampleLayer(sample=spec.sample),),
                 playback_mode="one-shot",
+                mute_group=spec.mute_group,
                 monophonic=True,
             )
         )

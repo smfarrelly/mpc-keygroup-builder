@@ -77,9 +77,9 @@ and semantic pattern generation.
 
 ### Current slices
 
-1. **Hardware closeout.** Finish `FG Vinyl Shots 01` and final lead/pad
-   listening; preserve the resulting Scratchpad master and jam copy. Pluck
-   Bass is selected for primary bass and Sub Smooth for the Bass Pad track.
+1. **Hardware closeout.** Deploy and listen to `FG Vinyl Shots 04 Eight Bank`,
+   then preserve the revised Scratchpad master and jam copy. Pluck Bass, Wurli,
+   Dark FM, Glass Howl, and Sub Smooth now have final track roles.
 2. **Normalized Program Model v1.** Represent samples, zones, velocity layers,
    playback mode, semantic roles, pads, colors, mute groups, and source
    provenance independently from XPM serialization.
@@ -103,9 +103,9 @@ and semantic pattern generation.
   deterministic JSON or Markdown assignments.
 - [x] Classic MPC-ish, right-handed, left-handed, and full-library presets run
   against the declarative 37-key, 16-pad, eight-bank Key 37 profile.
-- [x] The 96-zone six-bank Vinyl Shots manifest and 73-zone Mirage Wurli XPM
-  pass real-data normalization; all four Vinyl Shots plans assign 96 zones with
-  no overflow.
+- [x] The selected 128-zone eight-bank Vinyl Shots manifest and 73-zone Mirage
+  Wurli XPM pass real-data normalization; the prior 96-zone layout remains the
+  basis of the generated layout-comparison package.
 - [x] A non-destructive XML/compressed XPM exporter permutes complete 128-record
   Drum layouts, moves colors with records, refuses in-place writes, and verifies
   global/unknown-field preservation independently.
@@ -276,8 +276,9 @@ for release gates:
 
 ## Immediate next three increments
 
-1. **Hardware:** load `FG Vinyl Shots 03 Six Bank` on Scratchpad Track 2,
-   compare navigation with versions 01/02, and save a revised protected master.
+1. **Hardware:** deploy and load `FG Vinyl Shots 04 Eight Bank` on Scratchpad
+   Track 2, compare navigation with versions 01–03, and save a revised protected
+   master.
 2. **Acceptance:** load the generated Classic and handed variants on the Key
    37, reload them, compare playability, and close the v0.2 exit gate.
 3. **Creative MIDI:** import the generated source/Classic MIDI pair on the Key

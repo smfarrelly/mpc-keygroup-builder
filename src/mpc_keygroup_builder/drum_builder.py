@@ -18,6 +18,7 @@ from .programs import classify_sample, load_palette
 class PadSpec:
     pad: int
     sample: str
+    mute_group: int = 0
 
 
 @dataclass(frozen=True)
@@ -55,6 +56,7 @@ def _load_manifest(path: Path, loading: set[Path]) -> DrumManifest:
             raise ValueError(f"pads entry {index} must be a table")
         pad = raw.get("pad")
         sample = raw.get("sample")
+        mute_group = raw.get("mute_group", 0)
         if not isinstance(pad, int) or not 1 <= pad <= 128:
             raise ValueError(f"pads entry {index} has invalid pad {pad!r}")
         if pad in seen:
@@ -63,8 +65,10 @@ def _load_manifest(path: Path, loading: set[Path]) -> DrumManifest:
             raise ValueError(f"pads entry {index} has no sample")
         if Path(sample).name != sample:
             raise ValueError(f"sample must be a basename, not a path: {sample!r}")
+        if not isinstance(mute_group, int) or not 0 <= mute_group <= 32:
+            raise ValueError(f"pads entry {index} has invalid mute_group {mute_group!r}")
         seen.add(pad)
-        pads.append(PadSpec(pad=pad, sample=sample))
+        pads.append(PadSpec(pad=pad, sample=sample, mute_group=mute_group))
     if not pads:
         raise ValueError("manifest must contain at least one [[pads]] table")
     loading.remove(path)
@@ -149,6 +153,7 @@ def build_drum_program(
     if set(instruments) != set(range(1, 129)):
         raise ValueError("template must contain instruments 1 through 128")
     sources: dict[int, tuple[Path, int]] = {}
+    specs = {spec.pad: spec for spec in manifest.pads}
     for spec in manifest.pads:
         source = source_root / spec.sample
         if not source.is_file():
@@ -194,7 +199,7 @@ def build_drum_program(
             polyphony.text = "1"
         mute_group = instrument.find("MuteGroup")
         if mute_group is not None:
-            mute_group.text = "0"
+            mute_group.text = str(specs[pad].mute_group)
 
     pad_node.text = json.dumps({"ProgramPads": settings}, indent=4)
     output.mkdir(parents=True, exist_ok=True)
