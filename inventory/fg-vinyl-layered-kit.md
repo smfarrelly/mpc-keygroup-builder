@@ -79,3 +79,12 @@ The ignored hardware package is:
 - [ ] Save/reload and repeat A01, A03, A09, A10, and A15.
 - [ ] Mark each pad pass, warn, or revise; keep the concept only if velocity
   variation makes the kit more playable.
+
+### Deployment attempt — August 27, 2026
+
+Deployment to `01 FG Favorites/04 Drum Alternates/04 FG Vinyl Layered Kit 01`
+was interrupted by the same USB-reader disconnect as the Kit Banks copy. The
+SD folder contains 65 zero-length files, including its XPM, and is not usable.
+Remove it only after the card is attached through a stable reader, repaired,
+and confirmed writable. Redeploy from the intact ignored local package and
+require complete size and SHA-256 agreement before hardware testing.

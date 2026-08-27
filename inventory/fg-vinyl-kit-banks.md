@@ -72,3 +72,14 @@ The generated package is:
 - [ ] Save, reload, and confirm colors, samples, and mute behavior persist.
 - [ ] Decide whether source-native placement is sufficiently consistent or a
   second strictly normalized role-layout variant is warranted.
+
+### Deployment attempt — August 27, 2026
+
+Deployment to `01 FG Favorites/04 Drum Alternates/03 FG Vinyl Kit Banks 01`
+was interrupted when the USB card reader disconnected during writeback. The
+kernel reported `DID_NO_CONNECT`, write I/O errors, and lost asynchronous page
+writes. The resulting SD folder has all 129 filenames but many zero-length
+files and is not usable. Remove it only after the card is attached through a
+stable reader, repaired, and confirmed writable; then redeploy from the intact
+ignored local package and verify every file by size and SHA-256 before hardware
+testing.
