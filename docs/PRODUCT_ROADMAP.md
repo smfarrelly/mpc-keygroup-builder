@@ -128,6 +128,10 @@ and semantic pattern generation.
   duration, estimated beats, and timing deviations. The complete 200-loop
   Vinyl Breaks library indexes cleanly from 73–200 BPM; Clip serialization is
   correctly gated on a minimal MPC-authored reference capture.
+- [x] Transaction-safe package deployment uses a sustained write probe,
+  verified resumable staging, per-file and aggregate SHA-256 identities,
+  atomic promotion, and strict conflict/symlink refusal. Reader disconnects
+  can no longer expose a partially copied package under its final browser name.
 
 Software export is complete. The two-variant Key 37 comparison remains the v0.2
 exit gate.

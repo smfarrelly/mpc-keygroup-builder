@@ -63,6 +63,38 @@ The deployer is additive: it does not remove unrelated card content. Each copy
 uses a temporary file, SHA-256 verification, and atomic replacement. An
 existing changed target is backed up and verified before replacement.
 
+### Transaction-safe self-contained packages
+
+Use `mpc-package-deploy` when the source is already a complete package folder
+containing its XPM and copied audio. Preview the exact inventory and aggregate
+package digest first:
+
+```bash
+uv run mpc-package-deploy \
+  "work/generated-drum-programs/FG Vinyl Kit Banks 01" \
+  "/media/$USER/MPC_SD/01 FG Favorites/04 Drum Alternates/03 FG Vinyl Kit Banks 01" \
+  --report work/package-deploy-plan.json
+```
+
+Apply only when the action is `CREATE`:
+
+```bash
+uv run mpc-package-deploy \
+  "work/generated-drum-programs/FG Vinyl Kit Banks 01" \
+  "/media/$USER/MPC_SD/01 FG Favorites/04 Drum Alternates/03 FG Vinyl Kit Banks 01" \
+  --apply --report work/package-deploy-applied.json
+```
+
+Apply runs a temporary 64 MiB sustained write/read/hash/delete probe by
+default. Set `--probe-mib 0` only when another write test has already passed.
+Files are copied and fsynced into a hidden sibling staging directory, verified
+individually, then promoted with one same-filesystem rename. A disconnect
+leaves the final destination absent and the stage available for inspection.
+After reconnecting and repairing the filesystem, rerun the same command with
+`--apply --resume`; verified staged files are reused and incomplete files are
+replaced. Unexpected stage files, symbolic links, and changed final
+destinations are refused rather than deleted or overwritten.
+
 ## Controlled Key 37 routing capture
 
 On the MPC, save exactly `Key37_Routing_Baseline.xpj` and

@@ -206,6 +206,10 @@ The hardware workflow also includes reusable, dry-run-first utilities:
 - `mpc-sd-deploy` plans additive card updates. It never deletes, requires
   `--include-audio` for companion audio, and requires a checksum-verified
   backup before replacing any existing file.
+- `mpc-package-deploy` installs a complete self-contained package through a
+  verified sibling staging directory. It runs a sustained write probe, leaves
+  interrupted work resumable and hidden from the MPC browser, atomically
+  promotes only a complete package, and refuses changed destinations.
 - `mpc-audio-levels` measures WAV peak, RMS, crest factor, DC offset, clipping,
   and silence, and flags relative level outliers.
 - `mpc-routing-capture` copies and hashes the controlled baseline/changed XPJ
