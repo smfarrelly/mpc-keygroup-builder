@@ -88,9 +88,18 @@ outer octaves are useful or should become silent limits.
   notes: repeats Chromatic Analog Tom's hardware behavior and requires
   transposing down several octaves before notes trigger. Treat this as a
   systematic Keygroup outer-range serialization/remapping issue.
-- [ ] Chromatic Cowbell — roots MIDI 29–44; status: untested; favorite: ; notes:
-- [ ] Chromatic Tom — roots MIDI 25–40; status: untested; favorite: ; notes:
-- [ ] Chromatic Tone — roots MIDI 33–48; status: untested; favorite: ; notes:
+- [x] Chromatic Cowbell — roots MIDI 29–44; status: warn; favorite: pending;
+  notes: repeats the same octave-down-only trigger behavior; remap required.
+- [x] Chromatic Tom — roots MIDI 25–40; status: warn; favorite: pending; notes:
+  repeats the same octave-down-only trigger behavior; remap required.
+- [x] Chromatic Tone — roots MIDI 33–48; status: warn; favorite: pending;
+  notes: repeats the same octave-down-only trigger behavior; remap required.
+
+**Bracket verdict:** all five SP-1200 Keygroups load, but all require
+transposing down several octaves before notes trigger. This contradicts the
+generated model's full 0–127 coverage and confirms a systematic hardware range
+serialization/remapping issue. Build a comparison set with the 16 source roots
+explicitly shifted into the Key 37's normal register before promotion.
 
 ## Drum bracket A — vinyl and SP-1200
 

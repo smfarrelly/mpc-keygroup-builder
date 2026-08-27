@@ -59,7 +59,10 @@ transposing down several octaves to reach its MIDI 27–42 source band, despite
 the generated model claiming outer-note coverage; retain a hardware `warn` and
 investigate range serialization before promotion. Chromatic Chimes repeats the
 same behavior with MIDI 35–50 roots, confirming a systematic issue across at
-least the first two candidates rather than a single-program anomaly.
+least the first two candidates rather than a single-program anomaly. Cowbell,
+Chromatic Tom, and Tone then repeated the behavior: all five load but only
+trigger after several octave-down transpositions. Rebuild the batch with its
+16 roots shifted explicitly into the Key 37's normal register before promotion.
 
 ### Vinyl Drums breakbeat programs
 

@@ -204,11 +204,11 @@ performance program.
 - [x] Ableton Wave 01 builds those five Keygroups plus 27 source-ordered Drum
   Programs spanning vinyl, classic machines, and character kits. All source
   preflights and semantic simulations pass. Key 37 listening is active;
-  Chromatic Analog Tom and Chromatic Chimes both expose the same hardware range
-  warning because only their low source bands trigger after octave-down
-  transposition even though the generated model declares outer-note coverage.
-  The five-program Keygroup batch now requires a systematic range-remapping
-  correction before promotion.
+  all five SP-1200 chromatic Keygroups expose the same hardware range warning:
+  they load but trigger only after several octave-down transpositions even
+  though the generated model declares outer-note coverage. Rebuild the batch
+  with its 16 roots explicitly remapped into the normal Key 37 register before
+  promotion.
 
 Normalized-model import and exporter behavior remain gated on manual source
 comparison and representative MPC target captures. The Clip subset remains

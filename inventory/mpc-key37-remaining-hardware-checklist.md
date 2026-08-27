@@ -132,15 +132,21 @@ judge raw-sample playability and mapping.
   require transposing down several octaves before they trigger. Source roots
   are MIDI 35–50; include in the Keygroup range-remapping investigation.
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 01 Keygroups / SP-1200 From Mars / Chromatic Percussion / Chromatic Chimes.xpm`
-- [ ] Chromatic Cowbell
+- [x] Chromatic Cowbell — `warn`; repeats the same octave-down-only trigger
+  behavior. Source roots are MIDI 29–44; include in the corrected remap batch.
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 01 Keygroups / SP-1200 From Mars / Chromatic Percussion / Chromatic Cowbell.xpm`
-- [ ] Chromatic Tom
+- [x] Chromatic Tom — `warn`; repeats the same octave-down-only trigger
+  behavior. Source roots are MIDI 25–40; include in the corrected remap batch.
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 01 Keygroups / SP-1200 From Mars / Chromatic Percussion / Chromatic Tom.xpm`
-- [ ] Chromatic Tone
+- [x] Chromatic Tone — `warn`; repeats the same octave-down-only trigger
+  behavior. Source roots are MIDI 33–48; include in the corrected remap batch.
   `SD Card / 00 FG Hardware Tests / SFM Ableton Wave 01 / 01 Keygroups / SP-1200 From Mars / Chromatic Percussion / Chromatic Tone.xpm`
 
-The software warnings concern only deliberate extrapolation beyond the 16
-source roots. Judge the central musical range first.
+**Five-program verdict:** all five load, but all require transposing down
+several octaves before triggering. The software model's claimed outer-note
+coverage is not honored by the MPC. Rebuild a comparison batch with the 16
+source roots explicitly shifted into the normal Key 37 register; do not promote
+these versions as finished instruments.
 
 ### Vinyl and SP-1200 Drum Programs
 
