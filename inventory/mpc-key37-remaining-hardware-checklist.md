@@ -238,8 +238,15 @@ Known source behavior to verify rather than automatically fail:
 
 ## 3. Do now: build and accept the revised Scratchpad project
 
-Create a new project from the known-good dedicated-input routing posture. Do
-not overwrite the earlier protected master.
+**Captured structure — August 27, 2026:**
+`FG Vinyl Scratchpad v02 Master.xpj` and its ProjectData folder were copied
+read-only from the SD and hash-verified. The project contains the intended two
+Drum tracks, six Keygroup tracks, and one Audio track, with all seven selected
+programs present. It has no saved sequence. Track 8 is named `Clip` but is
+actually a Keygroup track, and Track 9 is still named `Audio 001`.
+
+Preserve this captured v02 Master. Make the corrections and musical acceptance
+work in a new Jam copy rather than overwriting it.
 
 Load the selected programs from these complete paths:
 
@@ -258,8 +265,15 @@ Load the selected programs from these complete paths:
 - Track 7 Bass Pad:
   `SD Card / 00 FG Scratchpad / 07 Bass Pad / Sub Smooth.xpm`
 
-Then create Track 8 as an empty reserved Clip track and Track 9 as an Audio
-capture/transition track.
+Current track structure:
+
+- [x] Tracks 1–2 are Drum tracks: Main Drums and Shots.
+- [x] Tracks 3–7 are Keygroups: Pluck Bass, Wurli, Dark FM, Glass Howl, and Sub
+  Smooth.
+- [ ] Replace Track 8, currently a Keygroup merely named `Clip`, with an actual
+  MPC Clip track/program after the reference capture in Section 4.
+- [x] Track 9 is an Audio track; rename `Audio 001` to `Capture` or `Audio
+  Capture` in the Jam copy.
 
 - [ ] Preserve the closest known-good routing: melodic tracks use `MPC
   Keyboard`, Drum tracks use `MPC Pads`, Rec Arm Behaviour is `Multi`, and the
@@ -269,8 +283,8 @@ capture/transition track.
   least one actual Dark FM lead phrase. The prior capture had no lead events.
 - [ ] Add Glass Howl and Sub Smooth only if they improve the idea; their track
   existence and reload still need confirmation even if no notes are recorded.
-- [ ] Save the protected master as:
-  `SD Card / Projects / FG Scratchpad / FG Vinyl Scratchpad v0.2 Master.xpj`
+- [x] Preserve the captured protected master at:
+  `SD Card / Projects / FG Scratchpad / FG Vinyl Scratchpad v02 Master.xpj`
 - [ ] Save a disposable copy as:
   `SD Card / Projects / FG Scratchpad / FG Vinyl Scratchpad v0.2 Jam.xpj`
 - [ ] Power-cycle/reload the Master and confirm programs, colors, track names,
@@ -280,11 +294,16 @@ capture/transition track.
 
 ## 4. Do now: create the minimal Clip reference
 
-This is an on-device format capture, not a musical loop-library test. It is
-blocked only if no suitable short Vinyl Breaks WAV is currently on the SD.
+This is an on-device format capture, not a musical loop-library test. The
+reference audio is deployed and verified byte-for-byte at:
+
+`SD Card / 00 FG Hardware Tests / Clip Reference / 080 Black Phase Vinyl Breaks Clean.wav`
+
+It is a stereo 44.1 kHz, 80 BPM, 12-second loop estimated at 16 beats/four
+bars. The destination project folder also exists.
 
 - [ ] Start an empty disposable project and create one Clip track/program.
-- [ ] Assign one short Vinyl Breaks WAV to A01.
+- [ ] Assign the exact deployed Vinyl Breaks WAV above to A01.
 - [ ] Set one-bar launch quantization and tempo/warp synchronization if exposed.
 - [ ] Save the baseline as:
   `SD Card / Projects / FG Clip Reference / Key37_Clip_Reference_01.xpj`
@@ -403,10 +422,9 @@ survive import and project reload.
 
 ### Clip reference audio
 
-If no Vinyl Breaks WAV is already accessible on the SD, Ubuntu must deploy one
-short legal source WAV to this planned path before Section 4:
+**Deployed and checksum-verified — August 27, 2026:**
 
-`SD Card / 00 FG Hardware Tests / Clip Reference / Vinyl Breaks Test.wav`
+`SD Card / 00 FG Hardware Tests / Clip Reference / 080 Black Phase Vinyl Breaks Clean.wav`
 
 ## 8. Waiting on or using external hardware
 

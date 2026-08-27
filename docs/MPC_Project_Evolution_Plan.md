@@ -785,6 +785,20 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   complete pad maps, audio-level reports, and a committed listening plan. No
   licensed WAV or generated XPM is tracked.
 
+### August 27, 2026 — Scratchpad v02 capture and Clip reference deployment
+
+- Copied the new `FG Vinyl Scratchpad v02 Master` and its companion ProjectData
+  read-only from SD into ignored local capture storage and verified every
+  source/capture hash.
+- Confirmed the seven selected programs and nine musical tracks are present,
+  but the project contains no sequence. The track named `Clip` is currently a
+  Keygroup, not an MPC Clip track; the Audio track remains `Audio 001`.
+- Deployed the 80 BPM `080 Black Phase Vinyl Breaks Clean.wav` reference loop
+  to the shallow SD hardware-test folder with a sustained-write probe and
+  byte-for-byte verification.
+- The next hardware gate is a minimal MPC-authored Clip baseline/changed pair,
+  followed by replacing the Scratchpad's placeholder Track 8 in a Jam copy.
+
 ## 16. Reference material
 
 - [Akai: Understanding and Loading MPC Programs](https://support.akaipro.com/en/support/solutions/articles/69000804211-akai-pro-mpc-series-understanding-and-loading-programs)

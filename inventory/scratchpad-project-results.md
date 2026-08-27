@@ -48,3 +48,30 @@ note playback.
 Verdict: channel routing, Drum pad mapping, track names, clock, and transport
 are preserved. Recording and reloading an actual MPC-authored Volca note
 sequence remains pending.
+
+## August 27, 2026 Scratchpad v02 capture
+
+`FG Vinyl Scratchpad v02 Master.xpj` and its 587-file companion ProjectData
+folder were copied read-only from the mounted SD into the ignored capture
+directory:
+
+`work/project-captures/2026-08-27-scratchpad-v02/`
+
+Source and capture hashes match. The MPC 3 project reports firmware `3.9.1.2`,
+schema 28, 120 BPM, no sequences, 587 project samples, and nine musical tracks:
+
+1. Main Drums — Drum.
+2. Shots — Drum.
+3. Pluck Bass — Keygroup.
+4. Wurli — Keygroup.
+5. Dark FM — Keygroup.
+6. Glass Howl — Keygroup.
+7. Sub Smooth — Keygroup.
+8. Clip — **Keygroup**, despite its track name.
+9. Audio 001 — Audio.
+
+Verdict: the selected seven-program palette and intended nine-track shell are
+present, but this is a structure-only master rather than the final Scratchpad
+acceptance project. Track 8 must be replaced by an actual Clip track/program,
+Track 9 should be renamed, and a Jam copy still needs a saved musical sequence
+including a Dark FM phrase.

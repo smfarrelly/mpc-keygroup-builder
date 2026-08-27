@@ -34,11 +34,21 @@ preserved instead of guessed.
 
 ## Required Key 37 reference capture
 
-After the SD filesystem is repaired:
+The selected reference audio was deployed and checksum-verified on August 27,
+2026:
+
+`SD Card / 00 FG Hardware Tests / Clip Reference / 080 Black Phase Vinyl Breaks Clean.wav`
+
+It is an 80 BPM, stereo 44.1 kHz, 12-second loop estimated at 16 beats/four
+bars. The empty project destination also exists at:
+
+`SD Card / Projects / FG Clip Reference`
+
+On the Key 37:
 
 1. Start an empty disposable project.
 2. Create one Clip track/program using the MPC interface.
-3. Assign one short Vinyl Breaks WAV to A01.
+3. Assign the exact deployed Vinyl Breaks WAV above to A01.
 4. Set only the desired baseline behaviors: one-bar launch quantization,
    tempo/warp synchronization if available, and exclusive switching if Clip
    Programs support it directly.
@@ -47,8 +57,10 @@ After the SD filesystem is repaired:
    MPC exposes that operation.
 7. Copy the XPJ, XPM, and companion ProjectData without opening or resaving
    them off-device.
-8. Make one controlled setting change, save `Key37_Clip_Reference_02`, and use
-   the XPJ/XPM comparison tools to isolate the changed field.
+8. Change only launch quantization from `1 Bar` to `1/4` if those values are
+   exposed; otherwise record the exact single launch setting changed.
+9. Save `Key37_Clip_Reference_02` and use the XPJ/XPM comparison tools to
+   isolate the changed field.
 
 ## First musical layout after capture
 
