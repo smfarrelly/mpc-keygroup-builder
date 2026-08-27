@@ -72,6 +72,12 @@ Load:
 
 ### FG Vinyl Layered Kit 01
 
+**Initial hardware result — August 27, 2026:** strong provisional success. The
+velocity-layered-pad concept was reported as excellent and worth developing
+further. Hat choking was difficult to hear and may not be working, so retain a
+`warn` until the velocity-specific test below passes. Full pad, boundary, groove,
+and reload acceptance remain open.
+
 Load:
 
 `SD Card / 01 FG Favorites / 04 Drum Alternates / 04 FG Vinyl Layered Kit 01 / FG Vinyl Layered Kit 01.xpm`
@@ -81,12 +87,17 @@ Load:
 - [ ] Listen around velocity boundaries 31/32, 63/64, and 95/96 for disruptive
   pitch, volume, or character jumps.
 - [ ] Confirm every velocity produces one sound with no silent band.
-- [ ] Confirm A09/A10 and A11/A12 are two independent hat-choke pairs.
+- [ ] Confirm A09/A10 and A11/A12 are two independent hat-choke pairs. The XPM
+  contains Mute Groups 1 and 2, but the first hardware audition was
+  inconclusive. For the clearest test, turn Full Level off, strike A12 at
+  velocity 32–63 to select its 1.60-second LM1 open-hat layer, then strike A11;
+  the A12 tail should stop abruptly. Cross-test A12 followed by A09; that must
+  not choke.
 - [ ] Record a two-bar groove without Full Level and judge whether normal playing
   reaches all four timbres naturally.
 - [ ] Repeat with Full Level and confirm the hardest layer is predictable.
 - [ ] Save/reload and repeat A01, A03, A09, A10, A13, and A15.
-- [ ] Decide whether velocity morphing is more expressive than a normal kit.
+- [x] Velocity morphing is an excellent concept and merits further development.
 
 ### Close the selected main-kit behavior checks
 
@@ -444,7 +455,8 @@ optional section can use file-based baselines.
 - [x] Shots 04 accepted as the selected/favorite Track 2 program.
 - [x] Kit Banks passes and is retained as a provisional Drum alternate; its
   four-bank pattern comparison and save/reload persistence also pass.
-- [ ] Layered Kit accepted or revised.
+- [ ] Layered Kit concept accepted; complete pad/boundary/reload tests and
+  resolve the hardware choke warning.
 - [ ] All 32 Ableton Wave 01 programs have listening results.
 - [ ] Revised Scratchpad Master saves/reloads with a recorded lead phrase.
 - [ ] Cold-start idea captured in under one minute.

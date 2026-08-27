@@ -72,13 +72,17 @@ The ignored hardware package is:
 - [ ] Confirm every velocity produces exactly one sound with no silent band.
 - [ ] Listen specifically at velocities 31/32, 63/64, and 95/96 for disruptive
   jumps in pitch, loudness, or character.
-- [ ] Confirm A09/A10 and A11/A12 choke within their own hat pairs.
+- [ ] Confirm A09/A10 and A11/A12 choke within their own hat pairs. The first
+  hardware audition was inconclusive. Turn Full Level off, strike A12 at
+  velocity 32–63 to select its 1.60-second `OH LM1 Standard` layer, then strike
+  A11; the A12 tail should stop. A12 followed by A09 must not choke.
 - [ ] Record a two-bar groove without Full Level, then inspect whether natural
   playing reaches all four regions.
 - [ ] Repeat with Full Level and confirm the hardest layer is predictable.
 - [ ] Save/reload and repeat A01, A03, A09, A10, and A15.
-- [ ] Mark each pad pass, warn, or revise; keep the concept only if velocity
-  variation makes the kit more playable.
+- [x] Keep and develop the velocity-layered-pad concept; the initial hardware
+  audition found it excellent. Individual pad and boundary verdicts remain
+  open.
 
 ### Deployment status — August 27, 2026
 
@@ -89,3 +93,13 @@ was moved to the SD Trash and a clean package was deployed to
 match the laptop SHA-256 manifest, semantic simulation passes with zero dead or
 stacked trigger cells, and the SD XPM passes Drum audit. Hardware velocity and
 feel testing remain open.
+
+### Initial hardware result — August 27, 2026
+
+The velocity-layered-pad concept is a strong provisional success and was
+described as excellent. Hat choking was difficult to hear and may not be
+working, despite the XPM carrying Mute Group 1 on A09/A10 and Mute Group 2 on
+A11/A12 using the same serialized field as the accepted Shots program. The
+hardest open-hat layers are short, so the corrected acceptance test uses A12's
+1.60-second velocity-32–63 LM1 layer. Retain `warn` until that controlled test
+passes; full pad, boundary, groove, and reload testing also remain open.

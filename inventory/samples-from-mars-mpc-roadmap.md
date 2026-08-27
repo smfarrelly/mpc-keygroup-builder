@@ -24,7 +24,10 @@ Hardware checkpoint: `FG Vinyl Shots 04 Eight Bank` is accepted as the selected
 Track 2 program. `FG Vinyl Kit Banks 01` is complete and retained as a
 provisional Drum alternate: the same pattern worked impressively on Banks A,
 B, C, and G, save/reload restores expected state, and its source-native layouts
-need no stricter normalized variant. `FG Vinyl Layered Kit 01` remains untested.
+need no stricter normalized variant. `FG Vinyl Layered Kit 01` has a strong
+initial hardware verdict—the velocity-layered-pad concept is excellent—but
+retains a choke warning and still needs complete pad, boundary, groove, and
+reload acceptance.
 
 1. Hardware-test `FG Vinyl Kit Banks 01` and `FG Vinyl Layered Kit 01`.
 2. Compare their feel and usefulness with `FG Vinyl Shots 04 Eight Bank`.
