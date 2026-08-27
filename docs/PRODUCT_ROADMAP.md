@@ -290,9 +290,9 @@ for release gates:
 
 ## Immediate next three increments
 
-1. **Hardware:** after repairing the SD filesystem, deploy and compare `FG
-   Vinyl Shots 04 Eight Bank` with `FG Vinyl Kit Banks 01`, then save a revised
-   protected Scratchpad master.
+1. **Hardware:** compare the verified SD deployment of `FG Vinyl Kit Banks 01`
+   with `FG Vinyl Shots 04 Eight Bank`, test `FG Vinyl Layered Kit 01`, then
+   save a revised protected Scratchpad master.
 2. **Acceptance:** load the generated Classic and handed variants on the Key
    37, reload them, compare playability, and close the v0.2 exit gate.
 3. **Creative MIDI:** import the generated source/Classic MIDI pair on the Key

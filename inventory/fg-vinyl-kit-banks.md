@@ -62,7 +62,7 @@ The generated package is:
 
 ## Key 37 acceptance
 
-- [ ] Repair and confirm reliable SD write behavior before deployment.
+- [x] Repair and confirm reliable SD write behavior before deployment.
 - [ ] Load the program and leave the Browser so assigned colors appear.
 - [ ] Confirm all 16 pads in every Bank A–H trigger once.
 - [ ] Confirm each bank sounds like its named kit family.
@@ -73,13 +73,13 @@ The generated package is:
 - [ ] Decide whether source-native placement is sufficiently consistent or a
   second strictly normalized role-layout variant is warranted.
 
-### Deployment attempt — August 27, 2026
+### Deployment status — August 27, 2026
 
-Deployment to `01 FG Favorites/04 Drum Alternates/03 FG Vinyl Kit Banks 01`
-was interrupted when the USB card reader disconnected during writeback. The
-kernel reported `DID_NO_CONNECT`, write I/O errors, and lost asynchronous page
-writes. The resulting SD folder has all 129 filenames but many zero-length
-files and is not usable. Remove it only after the card is attached through a
-stable reader, repaired, and confirmed writable; then redeploy from the intact
-ignored local package and verify every file by size and SHA-256 before hardware
-testing.
+The first deployment was interrupted when the USB card reader disconnected
+during writeback. After reseating the connection, the card passed offline
+repair plus a 64 MiB sustained write/read/hash/delete/sync test. The incomplete
+folder was moved to the SD Trash and a clean package was deployed to
+`01 FG Favorites/04 Drum Alternates/03 FG Vinyl Kit Banks 01`. All 129 files
+match the laptop SHA-256 manifest, semantic simulation passes with zero dead or
+stacked trigger cells, and the SD XPM passes Drum audit. Hardware listening is
+the remaining gate.

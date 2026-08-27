@@ -66,7 +66,7 @@ The ignored hardware package is:
 
 ## Key 37 acceptance
 
-- [ ] Repair and confirm reliable SD write behavior before deployment.
+- [x] Repair and confirm reliable SD write behavior before deployment.
 - [ ] Load the program and confirm only Bank A is populated.
 - [ ] Strike every pad softly, medium-soft, medium-hard, and hard.
 - [ ] Confirm every velocity produces exactly one sound with no silent band.
@@ -80,11 +80,12 @@ The ignored hardware package is:
 - [ ] Mark each pad pass, warn, or revise; keep the concept only if velocity
   variation makes the kit more playable.
 
-### Deployment attempt — August 27, 2026
+### Deployment status — August 27, 2026
 
-Deployment to `01 FG Favorites/04 Drum Alternates/04 FG Vinyl Layered Kit 01`
-was interrupted by the same USB-reader disconnect as the Kit Banks copy. The
-SD folder contains 65 zero-length files, including its XPM, and is not usable.
-Remove it only after the card is attached through a stable reader, repaired,
-and confirmed writable. Redeploy from the intact ignored local package and
-require complete size and SHA-256 agreement before hardware testing.
+The first copy was interrupted by the same USB-reader disconnect as Kit Banks.
+After the repaired card passed a sustained write test, the incomplete folder
+was moved to the SD Trash and a clean package was deployed to
+`01 FG Favorites/04 Drum Alternates/04 FG Vinyl Layered Kit 01`. All 65 files
+match the laptop SHA-256 manifest, semantic simulation passes with zero dead or
+stacked trigger cells, and the SD XPM passes Drum audit. Hardware velocity and
+feel testing remain open.
