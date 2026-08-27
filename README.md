@@ -147,6 +147,22 @@ duration, estimated beats, and timing deviations. It is format-independent:
 Clip XPM serialization remains gated on a minimal MPC-authored reference
 capture rather than a guessed file structure.
 
+Inspect readable musical intent in gzip-compressed or plain XML Ableton racks
+and sets:
+
+```bash
+uv run mpc-ableton inspect "/path/to/Preset.adg" \
+  --json work/ableton-preset.json
+uv run mpc-ableton inventory "/path/to/Ableton pack" \
+  --json work/ableton-pack.json
+```
+
+Reports include device and branch types, named macros, sample references,
+key/velocity zones, roots, tuning, sample endpoints, loops, warp state, and a
+conservative A–D translation-fidelity suggestion. This is read-only source
+analysis; it does not promise literal Ableton-to-MPC effect conversion. See
+[Ableton source inspection](docs/ableton-source-inspector.md).
+
 ## Normalized programs and layout planning
 
 `mpc-program-model` imports legacy XML XPMs, MPC 3 compressed XPMs, and Drum

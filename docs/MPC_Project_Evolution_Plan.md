@@ -306,11 +306,11 @@ MPC listening or routing acceptance test as passed.
 
 **Goal:** Understand the richer source designs before expanding the generators.
 
-- [ ] Inventory Ableton `.adg`, `.als`, and related preset files for the first vinyl pack.
+- [x] Inventory Ableton `.adg`, `.als`, and related preset files for the first vinyl pack.
 - [ ] Manually inspect five representative presets.
-- [ ] Build an analyzer that emits a structured report of samples, zones, chains, macros, playback, and effects.
+- [x] Build an analyzer that emits a structured report of samples, zones, chains, macros, playback, and effects.
 - [ ] Compare analyzer results against what is visible in Ableton or against readable source metadata.
-- [ ] Assign translation-fidelity labels.
+- [x] Assign translation-fidelity labels.
 - [ ] Produce a translation specification for the pilot pack.
 
 **Exit test:** We can explain how the pilot pack's Ableton instruments work and identify the best MPC target for each one.
@@ -729,6 +729,21 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
 - Defined the minimal Key 37 Clip capture needed before serialization. A true
   Clip exporter remains gated on evidence for launch, quantization, warp,
   tempo, mute, and project-link fields rather than guessed XPM values.
+
+### August 27, 2026 — transaction-safe deployment and Ableton intent
+
+- Added resumable, transaction-safe self-contained package deployment with a
+  sustained write probe, per-file and aggregate hashes, hidden verified
+  staging, atomic promotion, and strict conflict/symlink refusal.
+- Simulated a mid-copy device disconnect: the final browser path remains absent
+  and the verified stage resumes without recopying completed files.
+- Added read-only gzip/plain XML Ableton `.adg` and `.als` inspection for
+  devices, branches, macros, sample maps, zones, endpoints, loops, and warp
+  state, plus conservative A–D translation suggestions.
+- Indexed all 23 Vinyl SP Ableton presets without errors. The two Live sets are
+  Close translations; the individual-hits and 20 prepared Rack presets are
+  Template translations because their Drum/instrument/effect branch structure
+  exceeds a literal one-program mapping.
 
 ## 16. Reference material
 

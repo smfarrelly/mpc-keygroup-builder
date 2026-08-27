@@ -183,6 +183,19 @@ performance program.
 - Add Kontakt or Maschine import only when a representative pack demonstrates
   value beyond WAV/Ableton metadata.
 
+### Read-only foundation delivered early
+
+- [x] `mpc-ableton` reads gzip or plain XML `.adg`/`.als` files and extracts
+  device/branch types, macros, sample references, zones, roots, velocity/key
+  ranges, endpoints, loop settings, tuning, and warp state.
+- [x] Pack inventory skips macOS metadata, preserves parse issues, and assigns
+  conservative Direct, Close, Template, or Reference-only suggestions.
+- [x] The complete Vinyl SP Ableton source set inventories 23 presets with zero
+  errors: two Close sets and 21 Template racks, totaling 2,884 zone instances.
+
+Normalized-model import and exporter behavior remain gated on manual source
+comparison and representative MPC target captures.
+
 **Exit gate:** The utility can explain a representative Ableton preset and
 generate an MPC result that preserves more intent than filename inference alone.
 
