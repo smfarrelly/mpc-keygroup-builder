@@ -15,6 +15,47 @@ class DrumComposeTests(unittest.TestCase):
         self.assertEqual(recipe.name, "FG Vinyl Kit Banks 01")
         self.assertEqual([bank.target for bank in recipe.banks], list("ABCDEFGH"))
 
+    def test_repository_expansion_recipes_fill_all_eight_banks(self):
+        root = Path(__file__).parents[1]
+        recipes = {
+            "fg-classic-machines-banks-01.toml": "FG Classic Machines Banks 01",
+            "fg-character-machines-banks-01.toml": "FG Character Machines Banks 01",
+            "fg-breaks-texture-banks-01.toml": "FG Breaks Texture Banks 01",
+        }
+        for filename, expected_name in recipes.items():
+            with self.subTest(filename=filename):
+                recipe = drum_compose.load_recipe(root / "inventory" / filename)
+                self.assertEqual(recipe.name, expected_name)
+                self.assertEqual([bank.target for bank in recipe.banks], list("ABCDEFGH"))
+
+    def test_repository_layered_expansion_has_four_complete_banks(self):
+        root = Path(__file__).parents[1]
+        manifest = drum_builder.load_manifest(
+            root / "inventory/fg-vinyl-layered-banks-03.toml"
+        )
+        self.assertEqual(manifest.name, "FG Vinyl Layered Banks 03")
+        self.assertEqual([pad.pad for pad in manifest.pads], list(range(1, 65)))
+        self.assertTrue(all(len(pad.resolved_layers()) == 4 for pad in manifest.pads))
+        self.assertEqual(
+            {pad.pad: pad.mute_group for pad in manifest.pads if pad.mute_group},
+            {
+                9: 1,
+                10: 1,
+                11: 2,
+                12: 2,
+                23: 3,
+                24: 3,
+                25: 4,
+                26: 4,
+                39: 5,
+                40: 5,
+                41: 6,
+                42: 6,
+                55: 7,
+                56: 7,
+            },
+        )
+
     def write_template(self, path: Path) -> None:
         pads = {f"value{index}": 0 for index in range(128)}
         root = ET.Element("MPCVObject")

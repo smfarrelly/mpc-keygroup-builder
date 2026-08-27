@@ -1,0 +1,49 @@
+name = "FG Breaks Texture Banks 01"
+
+[[banks]]
+target = "A"
+source = "Big Break.xpm"
+bank = "A"
+label = "Vinyl Drums Big Break"
+
+[[banks]]
+target = "B"
+source = "Hand Break.xpm"
+bank = "A"
+label = "Vinyl Drums Hand Break"
+
+[[banks]]
+target = "C"
+source = "Drumtrax Kit 1.xpm"
+bank = "A"
+label = "Drumtrax Kit 1"
+
+[[banks]]
+target = "D"
+source = "Drumulator Clean.xpm"
+bank = "A"
+label = "Drumulator Clean"
+
+[[banks]]
+target = "E"
+source = "LM1 Computer Love.xpm"
+bank = "A"
+label = "LM-1 Computer Love"
+
+[[banks]]
+target = "F"
+source = "Body Kit.xpm"
+bank = "A"
+label = "Found Sounds Body Kit A"
+
+[[banks]]
+target = "G"
+source = "S950 Club 8.xpm"
+bank = "A"
+label = "S950 Club 8"
+
+[[banks]]
+target = "H"
+source = "S950 Hard Glitch.xpm"
+bank = "A"
+label = "S950 Hard Glitch"

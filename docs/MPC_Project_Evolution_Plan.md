@@ -847,6 +847,31 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   Key 37. Clip Matrix is therefore an optional purchase-gated capability, and
   a Keygroup named `Clip` will not be treated as a substitute.
 
+### August 27, 2026 — recoverable SD cleanup and broad Drum expansion
+
+- Snapshotted and checksum-verified the live Scratchpad, protected project,
+  completed hardware tests, and legacy test project to the external drive.
+  Completed-test clutter, empty Clip placeholders, the old test XPJ, and stale
+  Trash copies were moved into a recoverable quarantine; the protected
+  Scratchpad master and ProjectData were not modified.
+- Updated the shallow Scratchpad layout guide to identify the Track 8 Keygroup
+  placeholder accurately and explicitly deferred cold-start timing.
+- Recombined 24 hardware-accepted Ableton Drum Programs into three 128-pad
+  performance collections: Classic Machines, Character Machines, and
+  Breaks/Texture. Source pad order is preserved and bank choke groups are
+  isolated.
+- Expanded the accepted velocity-layer architecture into `FG Vinyl Layered
+  Banks 03`: 64 pads, 212 copied WAVs, four complete velocity regions per pad,
+  and seven independent hat pairs across refined, machine, acoustic/tape, and
+  experimental banks.
+- All four new packages pass Program Model import and semantic simulation with
+  zero missing samples, dead cells, or stacked cells. Classic and Layered pass
+  Drum audit; Character and Breaks/Texture retain only their already accepted
+  source-choke warnings.
+- Mirrored the 600-file batch to the external drive, passed a 32 MiB sustained
+  SD write probe, transactionally deployed it as Drum Alternates 06-09, and
+  added an on-card bank/test index.
+
 ## 16. Reference material
 
 - [Akai: Understanding and Loading MPC Programs](https://support.akaipro.com/en/support/solutions/articles/69000804211-akai-pro-mpc-series-understanding-and-loading-programs)

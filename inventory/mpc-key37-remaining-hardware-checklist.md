@@ -17,6 +17,67 @@ For pad-specific problems include bank and pad, for example:
 
 `808 Distorted Kit — warn — provisional — reload pass — A07 much louder; hats choke correctly`
 
+## New unattended batch: expanded Drum banks 01
+
+**Built, validated, and deployed — August 27, 2026.** These are the only new
+programs added by the cleanup/expansion pass. A shallow on-card guide is at:
+
+`SD Card / 01 FG Favorites / 04 Drum Alternates / 00 DRUM ALTERNATES INDEX.txt`
+
+Full maps and technical results are in `inventory/fg-expanded-drum-banks-01.md`.
+
+### 06 FG Classic Machines Banks 01
+
+Load:
+
+`SD Card / 01 FG Favorites / 04 Drum Alternates / 06 FG Classic Machines Banks 01 / FG Classic Machines Banks 01.xpm`
+
+- [ ] Leave Browser and confirm colors.
+- [ ] Test all pads: A=505, B=606, C=626, D=707, E=808, F=909, G=CR-78,
+  H=DMX.
+- [ ] Record one pattern on two contrasting banks.
+
+### 07 FG Character Machines Banks 01
+
+Load:
+
+`SD Card / 01 FG Favorites / 04 Drum Alternates / 07 FG Character Machines Banks 01 / FG Character Machines Banks 01.xpm`
+
+- [ ] Leave Browser and confirm colors.
+- [ ] Test all pads: A=505 Glitch, B=606 Blender, C=626 Color, D=707 Dark,
+  E=808 Distorted, F=909 Dirt, G=DMX S612, H=Hardware Glitch.
+- [ ] Record one pattern on two contrasting banks.
+- [ ] H10 has the accepted source program's missing-choke warning; judge it as
+  source behavior, not a new composer failure.
+
+### 08 FG Breaks Texture Banks 01
+
+Load:
+
+`SD Card / 01 FG Favorites / 04 Drum Alternates / 08 FG Breaks Texture Banks 01 / FG Breaks Texture Banks 01.xpm`
+
+- [ ] Leave Browser and confirm colors.
+- [ ] Test all pads: A=Big Break, B=Hand Break, C=Drumtrax, D=Drumulator,
+  E=LM-1, F=Body Kit, G=S950 Club 8, H=S950 Hard Glitch.
+- [ ] Record one pattern on two contrasting banks.
+- [ ] H16 has the accepted source program's missing-choke warning; judge it as
+  source behavior, not a new composer failure.
+
+### 09 FG Vinyl Layered Banks 03
+
+Load:
+
+`SD Card / 01 FG Favorites / 04 Drum Alternates / 09 FG Vinyl Layered Banks 03 / FG Vinyl Layered Banks 03.xpm`
+
+- [ ] Confirm Banks A-D are populated and E-H are intentionally empty.
+- [ ] Play all pads in A-D at soft, medium-soft, medium-hard, and hard velocity.
+- [ ] Check boundaries 31/32, 63/64, and 95/96 on each bank's kicks, snares,
+  hats, cymbal, and FX pad.
+- [ ] Test hat choke pairs A09/A10, A11/A12, B07/B08, B09/B10, C07/C08,
+  C09/C10, and D07/D08. Cross-group hits must not choke.
+- [ ] Save/reload the preferred new program and confirm colors, layers, samples,
+  and mute groups persist.
+
 ## 1. Do now: close the Vinyl Scratchpad program tests
 
 ### FG Vinyl Shots 04 Eight Bank
@@ -139,6 +200,12 @@ Load:
 - [ ] Save/reload and confirm the expressive alternate persists correctly.
 
 ## 2. Do now: Ableton Wave 01 — 32 programs
+
+**Cleanup note — August 27, 2026:** the completed source batch was removed from
+the live SD after all 27 Drum results were accepted. It remains recoverable in
+the external cleanup archive documented by `inventory/sd-cleanup-2026-08-27.md`.
+Paths below are historical and require selective redeployment before any
+optional retest.
 
 Common root:
 
@@ -352,24 +419,25 @@ Current track structure:
   `SD Card / Projects / FG Scratchpad / FG Vinyl Scratchpad v0.2 Jam.xpj`
 - [ ] Power-cycle/reload the Master and confirm programs, colors, track names,
   inputs, record-arm state, and sequence return.
-- [ ] Time a cold start from power-on to the first recorded drum-and-keys idea;
-  target under one minute.
+- [x] Defer cold-start timing at the user's request; the under-one-minute target
+  remains available when operational timing work resumes.
 
 ## 4. Deferred: create the minimal Clip reference
 
 **Purchase-gated — August 27, 2026:** The MPC Key 37 does not own MPC Pro
 Pack, so MPC 3 Clip Workflow and Clip Matrix are unavailable. This is an
 optional paid-feature boundary, not a hardware or OS failure. Do not substitute
-a Keygroup merely named `Clip`; retain the deployed WAV and resume this section
-only if Pro Pack is purchased later.
+a Keygroup merely named `Clip`; resume this section only if Pro Pack is
+purchased later.
 
 This is an on-device format capture, not a musical loop-library test. The
-reference audio is deployed and verified byte-for-byte at:
+reference audio was verified byte-for-byte, then removed from the live card
+during cleanup. It is recoverable from the external archive at its former path:
 
 `SD Card / 00 FG Hardware Tests / Clip Reference / 080 Black Phase Vinyl Breaks Clean.wav`
 
 It is a stereo 44.1 kHz, 80 BPM, 12-second loop estimated at 16 beats/four
-bars. The destination project folder also exists.
+bars. The empty destination project folder was also removed from the live card.
 
 - [ ] Start an empty disposable project and create one Clip track/program.
 - [ ] Assign the exact deployed Vinyl Breaks WAV above to A01.
@@ -612,7 +680,7 @@ optional section can use file-based baselines.
 - [x] All 32 Ableton Wave 01 programs have results: five Keygroup range warnings,
   25 Drum passes, and two accepted source-choke Drum warnings.
 - [ ] Revised Scratchpad Master saves/reloads with a recorded lead phrase.
-- [ ] Cold-start idea captured in under one minute.
+- [x] Cold-start timing explicitly deferred; no failure is implied.
 - [ ] Minimal Clip reference pair deferred; MPC Pro Pack is not owned.
 - [x] Layout package deployed and tested; Right is selected and save/reload
   color persistence passes.

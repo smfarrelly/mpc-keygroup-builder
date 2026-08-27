@@ -1,0 +1,49 @@
+name = "FG Character Machines Banks 01"
+
+[[banks]]
+target = "A"
+source = "505 SP1200 Glitch.xpm"
+bank = "A"
+label = "505 SP-1200 Glitch"
+
+[[banks]]
+target = "B"
+source = "606 Blender.xpm"
+bank = "A"
+label = "606 Blender"
+
+[[banks]]
+target = "C"
+source = "626 Color.xpm"
+bank = "A"
+label = "626 Color"
+
+[[banks]]
+target = "D"
+source = "707 SP1200 Dark.xpm"
+bank = "A"
+label = "707 SP-1200 Dark"
+
+[[banks]]
+target = "E"
+source = "808 Distorted.xpm"
+bank = "A"
+label = "808 Distorted"
+
+[[banks]]
+target = "F"
+source = "909 Dirt.xpm"
+bank = "A"
+label = "909 Dirt"
+
+[[banks]]
+target = "G"
+source = "DMX S612 Boogie.xpm"
+bank = "A"
+label = "DMX S612 Boogie"
+
+[[banks]]
+target = "H"
+source = "Hardware Glitch.xpm"
+bank = "A"
+label = "Modern Oddities Hardware Glitch"

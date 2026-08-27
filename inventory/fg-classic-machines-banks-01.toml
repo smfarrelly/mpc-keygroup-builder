@@ -1,0 +1,49 @@
+name = "FG Classic Machines Banks 01"
+
+[[banks]]
+target = "A"
+source = "505 Clean.xpm"
+bank = "A"
+label = "505 Clean"
+
+[[banks]]
+target = "B"
+source = "606 Clean.xpm"
+bank = "A"
+label = "606 Clean"
+
+[[banks]]
+target = "C"
+source = "626 Clean.xpm"
+bank = "A"
+label = "626 Clean"
+
+[[banks]]
+target = "D"
+source = "707 Mod Combo.xpm"
+bank = "A"
+label = "707 Mod Combo"
+
+[[banks]]
+target = "E"
+source = "808 Clean.xpm"
+bank = "A"
+label = "808 Clean"
+
+[[banks]]
+target = "F"
+source = "909 Clean.xpm"
+bank = "A"
+label = "909 Clean"
+
+[[banks]]
+target = "G"
+source = "CR78 Kit 1.xpm"
+bank = "A"
+label = "CR-78 Kit 1"
+
+[[banks]]
+target = "H"
+source = "DMX Clean.xpm"
+bank = "A"
+label = "DMX Clean"

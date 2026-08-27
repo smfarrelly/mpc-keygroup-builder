@@ -130,6 +130,16 @@ and semantic pattern generation.
   regions. Its 65-file SD package passes simulation, model validation, Drum
   audit, and checksum comparison. Hardware listening selects it as an
   expressive alternate; Vinyl SP remains the Scratchpad main-drums favorite.
+- [x] Broaden the proven builders before adding another subsystem: three A-H
+  collections reuse 24 accepted Ableton-converted kits as Classic Machines,
+  Character Machines, and Breaks/Texture programs. A fourth program expands
+  the velocity-layered idea to 64 pads across refined, machine, acoustic/tape,
+  and experimental banks. All four are deployed, checksum-verified, and ready
+  for hardware listening.
+- [x] Reduce SD navigation debt without destructive loss: retain only the
+  protected Scratchpad master under Projects, quarantine completed tests and
+  obsolete test projects to a verified external archive, and add shallow
+  on-card Scratchpad and Drum Alternates guides.
 - [x] A format-independent loop inventory extracts BPM, variant, WAV shape,
   duration, estimated beats, and timing deviations. The complete 200-loop
   Vinyl Breaks library indexes cleanly from 73–200 BPM; Clip serialization is
@@ -352,15 +362,12 @@ for release gates:
 
 ## Immediate next three increments
 
-1. **Hardware:** `FG Vinyl Kit Banks 01` now passes eight-bank listening, the
-   same-pattern comparison on Banks A, B, C, and G, and save/reload
-   persistence. Its source-native layouts are accepted without a stricter
-   normalized variant. `FG Vinyl Layered Kit 01` proves that velocity-layered
-   pads are an excellent musical direction and is promoted to a provisional
-   main-drum candidate. `FG Vinyl Layered Main 02` is now built, deployed, and
-   selected as the expressive alternate; Vinyl SP remains main. Finish the
-   alternate's choke/reload acceptance, then save a revised protected
-   Scratchpad master containing the accepted `FG Vinyl Shots 04 Eight Bank`.
+1. **Hardware:** audition expanded Drum Alternates 06-09 from the new on-card
+   index. Prioritize bank identity and fixed-pattern comparisons on the three
+   A-H collections, then velocity boundaries and seven choke pairs on `FG Vinyl
+   Layered Banks 03`. Keep Vinyl SP as main unless listening proves a clearly
+   better role; these packages are deliberately alternatives, not forced
+   replacements. Cold-start timing remains deferred.
 2. **Program Designer:** begin the v0.3 read-only viewer with program import,
    Bank A–H switching, pad roles, samples, colors, layers, and mute groups.
 3. **Creative MIDI:** import the now-deployed source/Classic MIDI pair on the

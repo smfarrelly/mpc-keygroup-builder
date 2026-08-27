@@ -79,3 +79,8 @@ library, so no duplicate deployment is required.
 `fg-vinyl-shots-eight-bank.toml` is the selected 128-pad expansion.
 See `scratchpad-shots.md` for its bank layout, build command, SD location, and
 hardware checklist.
+
+`fg-expanded-drum-banks-01.md` documents the next expansion batch: three
+hardware-proven-source A-H kit collections plus a four-bank velocity-layered
+Vinyl SP program. `sd-cleanup-2026-08-27.md` records the recoverable card
+cleanup, exact external archive, and protected-project boundary.

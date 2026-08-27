@@ -1,0 +1,451 @@
+extends = "fg-vinyl-layered-main-02.toml"
+name = "FG Vinyl Layered Banks 03"
+
+# Bank A (pads 1-16) is inherited unchanged from FG Vinyl Layered Main 02.
+# Each added pad progresses through four related timbres at velocities
+# 0-31, 32-63, 64-95, and 96-127.
+
+# Bank B: classic and character drum machines.
+[[pads]]
+pad = 17
+layers = [
+  { sample = "BD 808 Air Vinyl SP.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "BD 808 Warm Vinyl SP.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "BD 808 Long Vinyl SP 01.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "BD 808 Dirt Vari Vinyl SP 01.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 18
+layers = [
+  { sample = "BD 909 Short Vinyl SP 01.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "BD 909 House Vinyl SP.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "BD 909 Fat Vinyl SP 02.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "BD 909 Crush Vinyl SP Clean 02.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 19
+layers = [
+  { sample = "SD 808 Mid Vinyl SP 03.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "SD 808 Nice Vinyl SP.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "SD 909 Soft Vinyl SP.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "SD 909 Hi Vinyl SP 01.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 20
+layers = [
+  { sample = "SD CR78 Vinyl SP 02.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "SD DR110 Vinyl SP 01.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "SD LM1 Vinyl SP 02.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "SD Machinedrum Splash Vinyl SP 03.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 21
+layers = [
+  { sample = "Clap DR110 Standard Vinyl SP.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "Clap 808 Standard Vinyl SP.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "Clap 909 Dark Vinyl SP.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "Clap 707 Hard Vinyl SP.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 22
+layers = [
+  { sample = "Rim CR78 Vinyl SP 01.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "Rim 707 Vinyl SP.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "Rim 808 Standard Vinyl SP.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "Rim 909 Standard Vinyl SP.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 23
+mute_group = 3
+layers = [
+  { sample = "CH CR78 Standard Vinyl SP.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "CH LM1 Standard Vinyl SP 01.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "CH 808 Standard Vinyl SP 02.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "CH 909 Sharp Vinyl SP.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 24
+mute_group = 3
+layers = [
+  { sample = "OH CR78 Standard Vinyl SP.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "OH LM1 Standard Vinyl SP.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "OH 808 Standard Vinyl SP 01.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "OH 909 Standard Vinyl SP 01.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 25
+mute_group = 4
+layers = [
+  { sample = "CH 606 Pitched Vinyl SP 01.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "CH DR110 Lite Vinyl SP 02.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "CH Tape Classic Vinyl SP.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "CH Machinedrum Snap Vinyl SP 02.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 26
+mute_group = 4
+layers = [
+  { sample = "OH 707 Standard Vinyl SP.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "OH Acoustic Tamb Vinyl SP 01.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "OH Tape Hard Vinyl SP.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "OH Machinedrum Vinyl SP 03.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 27
+layers = [
+  { sample = "Tom 808 Harm Vinyl SP 02.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "Tom 909 Dark Vinyl SP.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "Tom LM1 Vinyl SP 01.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "Tom MR10 Vinyl SP 01.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 28
+layers = [
+  { sample = "Tom 808 Pop Vinyl SP 01.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "Tom 909 Air Vinyl SP 01.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "Tom LM1 Vinyl SP 02.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "Tom 707 Vinyl SP 02.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 29
+layers = [
+  { sample = "Cymbal 808 Lite Vinyl SP.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "Cymbal DR110 Boost Vinyl SP.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "Crash 909 Standard Vinyl SP.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "Ride 909 Standard Vinyl SP.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 30
+layers = [
+  { sample = "Bongo CR78 Standard Vinyl SP.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "Conga 808 Lo Vinyl SP Clean 01.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "Conga LM1 Lo Vinyl SP Clean.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "Perc Machinedrum Bell Vinyl SP 01.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 31
+layers = [
+  { sample = "Clave 808 Standard Vinyl SP.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "Cowbell CR78 Vinyl SP.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "Cowbell LM1 Vinyl SP 01.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "Cowbell Tape Vinyl SP.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 32
+layers = [
+  { sample = "FX Machinedrum Chime Vinyl SP.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "FX Perc Chop Vinyl SP.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "FX Grain Vinyl SP Clean C.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "FX Squelch Vinyl SP.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+# Bank C: acoustic, tape, and worn-drum character.
+[[pads]]
+pad = 33
+layers = [
+  { sample = "BD Acoustic Soft Vinyl SP Clean.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "BD Acoustic Nice Vinyl SP Clean.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "BD Acoustic Air Vinyl SP 02.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "BD Acoustic Impact Vinyl SP.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 34
+layers = [
+  { sample = "BD Basstone Vinyl SP.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "BD Boom Vinyl SP 01.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "BD Club Combo Vinyl SP.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "BD Tape Sub Vinyl SP 01.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 35
+layers = [
+  { sample = "SD Acoustic Classic Vinyl SP 02.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "SD Acoustic Mid Vinyl SP.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "SD Acoustic Fat Vinyl SP 01.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "SD Acoustic Snap Vinyl SP.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 36
+layers = [
+  { sample = "SD Tape Crack Vinyl SP.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "SD Tape Res Vinyl SP.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "SD Vintage Vinyl SP.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "SD Bridge Verb Vinyl SP.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 37
+layers = [
+  { sample = "Clap Acoustic Vinyl SP 01.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "Clap Acoustic Vinyl SP 02.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "Clap Tape Crunch Vinyl SP.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "Clap House Vinyl SP 01.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 38
+layers = [
+  { sample = "Rim Acoustic Lite Vinyl SP.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "Rim Acoustic Crunch Vinyl SP 02.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "Rim Acoustic Crunch Vinyl SP 03.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "Rim Tape Skin Vinyl SP.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 39
+mute_group = 5
+layers = [
+  { sample = "CH Acoustic Nice Vinyl SP 02.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "CH Acoustic Splash Vinyl SP.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "CH Acoustic Stomp Vinyl SP 01.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "CH Acoustic Tite Vinyl SP.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 40
+mute_group = 5
+layers = [
+  { sample = "OH Acoustic Classic Vinyl SP 01.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "OH Acoustic Classic Vinyl SP 02.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "OH Acoustic Tamb Vinyl SP 01.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "OH Acoustic Tamb Vinyl SP 02.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 41
+mute_group = 6
+layers = [
+  { sample = "CH Tape Classic Vinyl SP.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "CH Tape Snap Vinyl SP 01.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "CH Vintage Drag Vinyl SP.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "CH Acoustic Stomp Vinyl SP 02.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 42
+mute_group = 6
+layers = [
+  { sample = "OH Tape Classic Vinyl SP 01.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "OH Tape Classic Vinyl SP 02.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "OH House Vinyl SP.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "OH Club Lite Vinyl SP.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 43
+layers = [
+  { sample = "Tom Acoustic Classic Dark Vinyl SP.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "Tom Acoustic Bump Vinyl SP 02.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "Tom Acoustic Fat Vinyl SP 01.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "Tom Acoustic Smooth Vinyl SP 02.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 44
+layers = [
+  { sample = "Tom Acoustic Classic Vinyl SP 02.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "Tom Acoustic Classic Vinyl SP 03.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "Tom Acoustic Nice Vinyl SP 04.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "Tom Acoustic Nice Vinyl SP 06.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 45
+layers = [
+  { sample = "Ride Acoustic Dark Vinyl SP 01.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "Ride Acoustic Dark Vinyl SP 02.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "Ride Acoustic Full Vinyl SP.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "Crash 909 Standard Vinyl SP.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 46
+layers = [
+  { sample = "Shaker Acoustic Lite Vinyl SP.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "Shaker Acoustic Slap Vinyl SP.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "Shaker Acoustic Classic Vinyl SP.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "Shaker Acoustic Vinyl SP 02.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 47
+layers = [
+  { sample = "Perc Acoustic Crunch Vinyl SP.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "Clave Acoustic Drive Vinyl SP.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "Woodblock Acoustic Sat Vinyl SP.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "Tamb Acoustic Bend Vinyl SP.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 48
+layers = [
+  { sample = "FX Boom Bap Vinyl SP.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "FX Cheeky Guit Vinyl SP A.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "FX Dark Horn Vinyl SP Ab.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "FX Mellow Chord Vinyl SP Eb.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+# Bank D: club, Machinedrum, Flux, and sound-design material.
+[[pads]]
+pad = 49
+layers = [
+  { sample = "BD Machinedrum Classic Vinyl SP.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "BD Machinedrum Smooth Vinyl SP.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "BD Machinedrum Crunch Vinyl SP.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "BD Machinedrum Long Vinyl SP.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 50
+layers = [
+  { sample = "BD Sub Buzz Vinyl SP Clean Ab.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "BD Sub Drive Vinyl SP Clean Ab.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "BD Sub Pluck Vinyl SP Clean F#.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "BD 808 Ring Vinyl SP.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 51
+layers = [
+  { sample = "SD House Filt Vinyl SP.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "SD Club Snap Vinyl SP.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "SD Club Laser Vinyl SP.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "SD Club Res Vinyl SP.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 52
+layers = [
+  { sample = "SD Flux Vinyl SP 01.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "SD Flux Vinyl SP 02.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "SD Machinedrum Dip Vinyl SP 02.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "SD Machinedrum Hollow Vinyl SP 03.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 53
+layers = [
+  { sample = "Clap Club Snap Vinyl SP.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "Clap Club Slap Vinyl SP.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "Clap Machinedrum Noise Vinyl SP 01.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "Clap Machinedrum Noise Vinyl SP 02.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 54
+layers = [
+  { sample = "Rim House Vinyl SP 01.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "Rim Vintage Dirt Vinyl SP 01.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "Rim Vintage Dirt Vinyl SP 02.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "Rim Vintage Perc Vinyl SP.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 55
+mute_group = 7
+layers = [
+  { sample = "CH Flux Vinyl SP 01.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "CH Flux Vinyl SP 02.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "CH Machinedrum Vinyl SP 02.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "CH Machinedrum Snap Vinyl SP 02.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 56
+mute_group = 7
+layers = [
+  { sample = "OH Flux Vinyl SP.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "OH Machinedrum Vinyl SP 01.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "OH Machinedrum Vinyl SP 03.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "OH Perkons Vinyl SP.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 57
+layers = [
+  { sample = "Perc Machinedrum Air Vinyl SP 01.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "Perc Machinedrum Air Vinyl SP 02.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "Perc Machinedrum Air Vinyl SP 03.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "Perc Machinedrum Boom Vinyl SP Clean 01.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 58
+layers = [
+  { sample = "Tom Casio Soft Vinyl SP.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "Tom Casio Delay Vinyl SP 01.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "Tom Casio Delay Vinyl SP 02.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "Tom Casio Laser Vinyl SP.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 59
+layers = [
+  { sample = "Cymbal Machinedrum Lite Vinyl SP.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "Cymbal Machinedrum Bell Vinyl SP.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "Cymbal Machinedrum Ring Vinyl SP 01.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "Cymbal Mellow Vinyl SP.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 60
+layers = [
+  { sample = "Bongo CR78 Hi Vinyl SP Clean.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "Bongo CR78 Pop Vinyl SP Clean.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "Bongo CR78 Sat Vinyl SP 01.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "Bongo CR78 Sat Vinyl SP 02.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 61
+layers = [
+  { sample = "Conga 808 Drive Vinyl SP 01.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "Conga 808 Drive Vinyl SP 02.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "Conga Vintage Muted Vinyl SP.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "Conga Vintage Open Vinyl SP.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 62
+layers = [
+  { sample = "Shaker Flux Vinyl SP.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "Shaker House Vinyl SP.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "Shaker Tape Vinyl SP.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "Tamb Club Lite Vinyl SP 01.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 63
+layers = [
+  { sample = "FX Bass Fuzz Vinyl SP F.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "FX Fat Bass Vinyl SP Ab.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "FX Key Stab Vinyl SP G.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "FX Club Chord Vinyl SP 02.WAV", velocity_start = 96, velocity_end = 127 },
+]
+
+[[pads]]
+pad = 64
+layers = [
+  { sample = "FX Flux Vox Vinyl SP.WAV", velocity_start = 0, velocity_end = 31 },
+  { sample = "FX Vox Blip Vinyl SP.WAV", velocity_start = 32, velocity_end = 63 },
+  { sample = "FX Vox Breath Vinyl SP.WAV", velocity_start = 64, velocity_end = 95 },
+  { sample = "FX Yeah Yeah Vinyl SP.WAV", velocity_start = 96, velocity_end = 127 },
+]
