@@ -163,6 +163,19 @@ conservative A–D translation-fidelity suggestion. This is read-only source
 analysis; it does not promise literal Ableton-to-MPC effect conversion. See
 [Ableton source inspection](docs/ableton-source-inspector.md).
 
+Turn a complete Ableton inventory into a coverage-aware MPC backlog:
+
+```bash
+uv run mpc-ableton-backlog work/samples-from-mars-ableton-inventory.json \
+  --catalog work/program-catalog.json \
+  --json work/samples-from-mars-mpc-backlog.json \
+  --markdown inventory/samples-from-mars-mpc-backlog.md
+```
+
+The complete JSON retains every source preset. The Markdown view groups work by
+pack and lowers priority when the existing MPC catalog already provides the
+same program type.
+
 ## Normalized programs and layout planning
 
 `mpc-program-model` imports legacy XML XPMs, MPC 3 compressed XPMs, and Drum

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import concurrent.futures
 import gzip
 import json
 import xml.etree.ElementTree as ET
@@ -294,37 +295,52 @@ def inspect(path: Path) -> dict[str, object]:
     }
 
 
-def inventory(root: Path) -> dict[str, object]:
+def _inventory_row(arguments: tuple[Path, Path]) -> tuple[dict[str, object] | None, str | None]:
+    path, root = arguments
+    try:
+        report = inspect(path)
+    except ValueError as error:
+        return None, str(error)
+    summary = report["summary"]
+    fidelity = report["suggested_fidelity"]
+    return (
+        {
+            "path": path.relative_to(root).as_posix(),
+            "kind": report["kind"],
+            "name": report["name"],
+            **summary,
+            "device_types": report["device_types"],
+            "fidelity": fidelity,
+        },
+        None,
+    )
+
+
+def inventory(root: Path, *, jobs: int = 1) -> dict[str, object]:
     root = root.expanduser().resolve()
     if not root.is_dir():
         raise NotADirectoryError(f"Ableton inventory root is missing: {root}")
-    presets = []
-    issues = []
-    for path in sorted(root.rglob("*")):
-        if (
+    if jobs < 1:
+        raise ValueError("inventory jobs must be at least one")
+    paths = [
+        path
+        for path in sorted(root.rglob("*"))
+        if not (
             not path.is_file()
             or path.suffix.casefold() not in ABLETON_SUFFIXES
             or path.name.startswith("._")
             or "__MACOSX" in path.parts
-        ):
-            continue
-        try:
-            report = inspect(path)
-        except ValueError as error:
-            issues.append(str(error))
-            continue
-        summary = report["summary"]
-        fidelity = report["suggested_fidelity"]
-        presets.append(
-            {
-                "path": path.relative_to(root).as_posix(),
-                "kind": report["kind"],
-                "name": report["name"],
-                **summary,
-                "device_types": report["device_types"],
-                "fidelity": fidelity,
-            }
         )
+    ]
+    arguments = [(path, root) for path in paths]
+    if jobs == 1:
+        results = map(_inventory_row, arguments)
+        materialized = list(results)
+    else:
+        with concurrent.futures.ProcessPoolExecutor(max_workers=jobs) as executor:
+            materialized = list(executor.map(_inventory_row, arguments, chunksize=1))
+    presets = [row for row, _ in materialized if row is not None]
+    issues = [issue for _, issue in materialized if issue is not None]
     grades = Counter(str(item["fidelity"]["grade"]) for item in presets)
     return {
         "format": 1,
@@ -354,8 +370,13 @@ def main() -> int:
     inventory_parser = subparsers.add_parser("inventory")
     inventory_parser.add_argument("root", type=Path)
     inventory_parser.add_argument("--json", type=Path)
+    inventory_parser.add_argument("--jobs", type=int, default=1)
     args = parser.parse_args()
-    report = inspect(args.path) if args.command == "inspect" else inventory(args.root)
+    report = (
+        inspect(args.path)
+        if args.command == "inspect"
+        else inventory(args.root, jobs=args.jobs)
+    )
     _write_json(args.json, report)
     if args.json:
         if args.command == "inspect":

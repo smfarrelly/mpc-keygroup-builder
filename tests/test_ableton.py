@@ -74,6 +74,15 @@ class AbletonInspectorTests(unittest.TestCase):
             self.assertEqual(len(report["issues"]), 1)
             self.assertEqual(report["fidelity_grades"], {"B": 1})
 
+    def test_parallel_inventory_matches_serial_order_and_content(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.write(root / "B.adg")
+            self.write(root / "A.adg")
+            serial = ableton.inventory(root)
+            parallel = ableton.inventory(root, jobs=2)
+            self.assertEqual(parallel, serial)
+
     def test_plugin_device_is_reference_only(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "Plugin.adg"

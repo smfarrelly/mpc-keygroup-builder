@@ -750,6 +750,23 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   a stable Tune/Decay/Drive/Cutoff/Comp/Reverb vocabulary; their curated sample
   membership is the primary musical difference.
 
+### August 27, 2026 — complete Ableton corpus audit and MPC backlog
+
+- Audited all 1,718 readable `.adg` and `.als` sources across 82 Samples From
+  Mars packs with zero parse failures: 1,612 device groups and 106 Live sets.
+- Added bounded parallel inventory so the complete local library can be
+  rescanned reproducibly without changing serial ordering or output.
+- Added a catalog-aware backlog generator that classifies Drum, Keygroup, Clip,
+  and project targets; scores P0–P3 priority; and preserves the complete
+  preset-level queue in ignored local JSON.
+- Hashed every source preset and found 12 byte-identical files in the duplicate
+  `modern_oddities_from_mars(1)` tree. They remain visible for provenance but
+  are automatically demoted and linked to the canonical files.
+- Generated a committed 82-pack queue and a curated execution roadmap. The five
+  P0 candidates are SP-1200 chromatic Keygroups; the unwarped 16-pad Big Break
+  and Hand Break racks lead the next Drum Program wave. Vinyl Breaks remains
+  intentionally gated on the MPC-authored Clip reference.
+
 ## 16. Reference material
 
 - [Akai: Understanding and Loading MPC Programs](https://support.akaipro.com/en/support/solutions/articles/69000804211-akai-pro-mpc-series-understanding-and-loading-programs)

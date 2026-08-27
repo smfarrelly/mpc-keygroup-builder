@@ -21,12 +21,29 @@ normalized-model import rather than being reduced to summary counts.
 
 ```bash
 uv run mpc-ableton inventory "/path/to/Ableton pack" \
-  --json work/ableton-pack.json
+  --jobs 4 --json work/ableton-pack.json
 ```
 
 Inventory scans `.adg` and `.als`, skips AppleDouble and `__MACOSX` metadata,
-keeps parse errors visible, and emits compact per-preset summaries. Licensed
-samples and preset XML are never copied into the repository.
+keeps parse errors visible, and emits compact per-preset summaries. `--jobs`
+uses bounded process workers while preserving the same deterministic ordering
+as the serial scan. Licensed samples and preset XML are never copied into the
+repository.
+
+## Build a coverage-aware backlog
+
+```bash
+uv run mpc-ableton-backlog work/ableton-pack.json \
+  --catalog work/program-catalog.json \
+  --json work/ableton-mpc-backlog.json \
+  --markdown inventory/ableton-mpc-backlog.md
+```
+
+The planner assigns Drum, Keygroup, Clip, project, or Reference-only targets.
+Prepared reusable racks rank above full Live sets and demos; giant
+individual-hit racks remain catalog sources; existing Drum/Keygroup coverage
+reduces duplicate work. Scores are transparent triage signals, not musical
+quality judgments, and every entry retains its reasons and source fidelity.
 
 ## Fidelity suggestions
 

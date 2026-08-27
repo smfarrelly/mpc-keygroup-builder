@@ -192,9 +192,18 @@ performance program.
   conservative Direct, Close, Template, or Reference-only suggestions.
 - [x] The complete Vinyl SP Ableton source set inventories 23 presets with zero
   errors: two Close sets and 21 Template racks, totaling 2,884 zone instances.
+- [x] The complete owned Samples From Mars tree inventories 1,718 Ableton
+  sources across 82 packs with zero parse failures. A catalog-aware backlog
+  assigns MPC targets and P0–P3 priorities, records source hashes, and demotes
+  12 byte-identical duplicate presets.
+- [x] The first generated queue identifies five P0 candidates: uncovered
+  SP-1200 chromatic Keygroups. Big Break and Hand Break are confirmed as
+  unwarped 16-pad Drum Racks and lead the immediate Drum Program wave. The
+  editorial roadmap groups the remaining work into curated product waves.
 
 Normalized-model import and exporter behavior remain gated on manual source
-comparison and representative MPC target captures.
+comparison and representative MPC target captures. The Clip subset remains
+gated on the minimal MPC-authored Clip reference.
 
 **Exit gate:** The utility can explain a representative Ableton preset and
 generate an MPC result that preserves more intent than filename inference alone.
