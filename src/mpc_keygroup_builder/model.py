@@ -119,16 +119,29 @@ def from_drum_manifest(
     palette = load_palette()
     zones = []
     for spec in manifest.pads:
-        if source_root is not None and not (source_root / spec.sample).is_file():
-            raise FileNotFoundError(f"missing sample for pad {spec.pad}: {source_root / spec.sample}")
-        category = classify_sample(spec.sample)
+        resolved_layers = spec.resolved_layers()
+        if not resolved_layers:
+            raise ValueError(f"pad {spec.pad} has no sample layers")
+        for layer in resolved_layers:
+            if source_root is not None and not (source_root / layer.sample).is_file():
+                raise FileNotFoundError(
+                    f"missing sample for pad {spec.pad}: {source_root / layer.sample}"
+                )
+        category = classify_sample(resolved_layers[0].sample)
         zones.append(
             Zone(
                 index=spec.pad,
                 pad=spec.pad,
-                role=infer_role(spec.sample, role_overrides),
+                role=infer_role(resolved_layers[0].sample, role_overrides),
                 color=palette[category],
-                layers=(SampleLayer(sample=spec.sample),),
+                layers=tuple(
+                    SampleLayer(
+                        sample=layer.sample,
+                        velocity_start=layer.velocity_start,
+                        velocity_end=layer.velocity_end,
+                    )
+                    for layer in resolved_layers
+                ),
                 playback_mode="one-shot",
                 mute_group=spec.mute_group,
                 monophonic=True,

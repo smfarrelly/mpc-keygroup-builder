@@ -119,6 +119,11 @@ and semantic pattern generation.
   build a self-contained package. `FG Vinyl Kit Banks 01` combines eight
   source-native kits across Banks A–H and passes real-data simulation and Drum
   audit with all 128 pads populated.
+- [x] Drum manifests support one through four explicit velocity layers per pad,
+  require complete non-overlapping 0–127 coverage, write layer endpoints into
+  legacy XPMs, and deactivate unused template layers. `FG Vinyl Layered Kit 01`
+  exercises 64 timbre layers across 16 pads and passes real-data simulation
+  with zero dead or stacked velocity cells.
 
 Software export is complete. The two-variant Key 37 comparison remains the v0.2
 exit gate.

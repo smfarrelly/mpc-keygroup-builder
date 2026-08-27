@@ -8,6 +8,21 @@ from mpc_keygroup_builder import model
 
 
 class ProgramModelTests(unittest.TestCase):
+    def test_loads_layered_drum_manifest_velocities(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "layered.toml"
+            path.write_text(
+                'name="Layered"\n[[pads]]\npad=1\n'
+                '[[pads.layers]]\nsample="BD Soft.wav"\nvelocity_start=0\nvelocity_end=63\n'
+                '[[pads.layers]]\nsample="BD Hard.wav"\nvelocity_start=64\nvelocity_end=127\n',
+                encoding="utf-8",
+            )
+            program = model.from_drum_manifest(path)
+            self.assertEqual(len(program.zones[0].layers), 2)
+            self.assertEqual(program.zones[0].layers[0].velocity_end, 63)
+            self.assertEqual(program.zones[0].layers[1].velocity_start, 64)
+            self.assertEqual(program.validate(), {"errors": [], "warnings": []})
+
     def test_loads_inherited_six_bank_manifest(self):
         root = Path(__file__).parents[1]
         program = model.from_drum_manifest(root / "inventory/fg-vinyl-shots-six-bank.toml")

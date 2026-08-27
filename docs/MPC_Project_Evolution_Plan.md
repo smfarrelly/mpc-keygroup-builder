@@ -702,6 +702,21 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   groups. SD deployment waits for the card filesystem to be repaired and
   confirmed reliably writable.
 
+### August 27, 2026 — explicit Drum velocity layers
+
+- Extended the Drum manifest and builder with one through four explicit layers
+  per pad, strict complete 0–127 velocity coverage, per-layer sample endpoints,
+  and inactive clearing for unused template layers.
+- Preserved the single-sample manifest shorthand and all existing one-shot
+  output behavior.
+- Created `FG Vinyl Layered Kit 01`, a 16-pad timbre-morph kit using four
+  velocity-selected Vinyl SP hits per pad. It deliberately distinguishes
+  curated timbre morphing from true multisampled acoustic dynamics.
+- The ignored 64-WAV package passes Program Model validation, semantic
+  simulation, and Drum audit with zero missing, dead, or stacked velocity cells
+  and two valid closed/open-hat mute groups. Hardware feel and transition
+  acceptance wait for SD repair.
+
 ## 16. Reference material
 
 - [Akai: Understanding and Loading MPC Programs](https://support.akaipro.com/en/support/solutions/articles/69000804211-akai-pro-mpc-series-understanding-and-loading-programs)

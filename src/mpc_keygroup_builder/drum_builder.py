@@ -15,10 +15,25 @@ from .programs import classify_sample, load_palette
 
 
 @dataclass(frozen=True)
+class LayerSpec:
+    sample: str
+    velocity_start: int = 0
+    velocity_end: int = 127
+
+
+@dataclass(frozen=True)
 class PadSpec:
     pad: int
-    sample: str
+    sample: str | None = None
     mute_group: int = 0
+    layers: tuple[LayerSpec, ...] = ()
+
+    def resolved_layers(self) -> tuple[LayerSpec, ...]:
+        if self.layers:
+            return self.layers
+        if self.sample is None:
+            return ()
+        return (LayerSpec(self.sample),)
 
 
 @dataclass(frozen=True)
@@ -56,19 +71,65 @@ def _load_manifest(path: Path, loading: set[Path]) -> DrumManifest:
             raise ValueError(f"pads entry {index} must be a table")
         pad = raw.get("pad")
         sample = raw.get("sample")
+        raw_layers = raw.get("layers")
         mute_group = raw.get("mute_group", 0)
         if not isinstance(pad, int) or not 1 <= pad <= 128:
             raise ValueError(f"pads entry {index} has invalid pad {pad!r}")
         if pad in seen:
             raise ValueError(f"duplicate pad {pad}")
-        if not isinstance(sample, str) or not sample.strip():
-            raise ValueError(f"pads entry {index} has no sample")
-        if Path(sample).name != sample:
-            raise ValueError(f"sample must be a basename, not a path: {sample!r}")
+        layers: tuple[LayerSpec, ...] = ()
+        if raw_layers is not None:
+            if sample is not None:
+                raise ValueError(f"pads entry {index} cannot set both sample and layers")
+            if not isinstance(raw_layers, list) or not 1 <= len(raw_layers) <= 4:
+                raise ValueError(f"pads entry {index} layers must contain one through four tables")
+            parsed_layers = []
+            for layer_index, layer in enumerate(raw_layers, 1):
+                if not isinstance(layer, dict):
+                    raise ValueError(f"pads entry {index} layer {layer_index} must be a table")
+                layer_sample = layer.get("sample")
+                velocity_start = layer.get("velocity_start")
+                velocity_end = layer.get("velocity_end")
+                if not isinstance(layer_sample, str) or not layer_sample.strip():
+                    raise ValueError(f"pads entry {index} layer {layer_index} has no sample")
+                if Path(layer_sample).name != layer_sample:
+                    raise ValueError(
+                        f"sample must be a basename, not a path: {layer_sample!r}"
+                    )
+                if (
+                    not isinstance(velocity_start, int)
+                    or not isinstance(velocity_end, int)
+                    or not 0 <= velocity_start <= velocity_end <= 127
+                ):
+                    raise ValueError(
+                        f"pads entry {index} layer {layer_index} has invalid velocity range "
+                        f"{velocity_start!r}..{velocity_end!r}"
+                    )
+                parsed_layers.append(LayerSpec(layer_sample, velocity_start, velocity_end))
+            parsed_layers.sort(key=lambda item: item.velocity_start)
+            expected_start = 0
+            for layer_index, layer in enumerate(parsed_layers, 1):
+                if layer.velocity_start != expected_start:
+                    raise ValueError(
+                        f"pads entry {index} layers must cover velocities 0..127 without gaps "
+                        "or overlaps"
+                    )
+                expected_start = layer.velocity_end + 1
+            if expected_start != 128:
+                raise ValueError(
+                    f"pads entry {index} layers must cover velocities 0..127 without gaps or overlaps"
+                )
+            layers = tuple(parsed_layers)
+            sample = None
+        else:
+            if not isinstance(sample, str) or not sample.strip():
+                raise ValueError(f"pads entry {index} has no sample")
+            if Path(sample).name != sample:
+                raise ValueError(f"sample must be a basename, not a path: {sample!r}")
         if not isinstance(mute_group, int) or not 0 <= mute_group <= 32:
             raise ValueError(f"pads entry {index} has invalid mute_group {mute_group!r}")
         seen.add(pad)
-        pads.append(PadSpec(pad=pad, sample=sample, mute_group=mute_group))
+        pads.append(PadSpec(pad=pad, sample=sample, mute_group=mute_group, layers=layers))
     if not pads:
         raise ValueError("manifest must contain at least one [[pads]] table")
     loading.remove(path)
@@ -91,6 +152,9 @@ def _frames(path: Path) -> int:
 
 
 def _clear_layer(layer: ET.Element) -> None:
+    active = layer.find("Active")
+    if active is not None:
+        active.text = "False"
     for name in ("SampleName", "SampleFile"):
         node = layer.find(name)
         if node is not None:
@@ -108,16 +172,25 @@ def _clear_layer(layer: ET.Element) -> None:
             node.text = value
 
 
-def _set_layer(layer: ET.Element, sample: str, frames: int) -> None:
+def _set_layer(layer: ET.Element, spec: LayerSpec, frames: int) -> None:
     _clear_layer(layer)
+    active = layer.find("Active")
+    if active is None:
+        active = ET.SubElement(layer, "Active")
+    active.text = "True"
     sample_name = layer.find("SampleName")
     if sample_name is None:
         sample_name = ET.SubElement(layer, "SampleName")
-    sample_name.text = Path(sample).stem
+    sample_name.text = Path(spec.sample).stem
     sample_file = layer.find("SampleFile")
     if sample_file is None:
         sample_file = ET.SubElement(layer, "SampleFile")
-    sample_file.text = sample
+    sample_file.text = spec.sample
+    for name, value in (("VelStart", spec.velocity_start), ("VelEnd", spec.velocity_end)):
+        node = layer.find(name)
+        if node is None:
+            node = ET.SubElement(layer, name)
+        node.text = str(value)
     for name, value in (
         ("SampleStart", "0"),
         ("SampleEnd", str(frames - 1)),
@@ -152,13 +225,19 @@ def build_drum_program(
     }
     if set(instruments) != set(range(1, 129)):
         raise ValueError("template must contain instruments 1 through 128")
-    sources: dict[int, tuple[Path, int]] = {}
+    sources: dict[int, tuple[tuple[LayerSpec, Path, int], ...]] = {}
     specs = {spec.pad: spec for spec in manifest.pads}
     for spec in manifest.pads:
-        source = source_root / spec.sample
-        if not source.is_file():
-            raise FileNotFoundError(f"missing sample for pad {spec.pad}: {source}")
-        sources[spec.pad] = (source, _frames(source))
+        resolved = []
+        layer_specs = spec.resolved_layers()
+        if not layer_specs:
+            raise ValueError(f"pad {spec.pad} has no sample layers")
+        for layer_spec in layer_specs:
+            source = source_root / layer_spec.sample
+            if not source.is_file():
+                raise FileNotFoundError(f"missing sample for pad {spec.pad}: {source}")
+            resolved.append((layer_spec, source, _frames(source)))
+        sources[spec.pad] = tuple(resolved)
 
     name_node = program.find("ProgramName")
     if name_node is None:
@@ -177,17 +256,22 @@ def build_drum_program(
         layers = instrument.findall("./Layers/Layer")
         if not layers:
             raise ValueError(f"template instrument {pad} has no layers")
-        source_info = sources.get(pad)
-        if source_info is None:
+        source_layers = sources.get(pad)
+        if source_layers is None:
             for layer in layers:
                 _clear_layer(layer)
             colors[f"value{pad - 1}"] = 0
             continue
-        source, frames = source_info
-        _set_layer(layers[0], source.name, frames)
-        for layer in layers[1:]:
+        if len(source_layers) > len(layers):
+            raise ValueError(
+                f"template instrument {pad} has {len(layers)} layers, "
+                f"but the manifest requires {len(source_layers)}"
+            )
+        for layer, (layer_spec, _, frames) in zip(layers, source_layers, strict=False):
+            _set_layer(layer, layer_spec, frames)
+        for layer in layers[len(source_layers):]:
             _clear_layer(layer)
-        colors[f"value{pad - 1}"] = palette[classify_sample(source.name)]
+        colors[f"value{pad - 1}"] = palette[classify_sample(source_layers[0][0].sample)]
         one_shot = instrument.find("OneShot")
         if one_shot is not None:
             one_shot.text = "True"
@@ -203,8 +287,12 @@ def build_drum_program(
 
     pad_node.text = json.dumps({"ProgramPads": settings}, indent=4)
     output.mkdir(parents=True, exist_ok=True)
-    for source, _ in sources.values():
-        shutil.copy2(source, output / source.name)
+    copied: set[Path] = set()
+    for source_layers in sources.values():
+        for _, source, _ in source_layers:
+            if source not in copied:
+                shutil.copy2(source, output / source.name)
+                copied.add(source)
     destination = output / f"{manifest.name}.xpm"
     ET.indent(tree, space="  ")
     tree.write(destination, encoding="UTF-8", xml_declaration=True)
@@ -226,7 +314,8 @@ def main() -> int:
         args.output.expanduser().resolve(),
     )
     print(f"Wrote: {destination}")
-    print(f"Pads: {len(manifest.pads)}; copied WAVs: {len(manifest.pads)}")
+    copied = {layer.sample.casefold() for spec in manifest.pads for layer in spec.resolved_layers()}
+    print(f"Pads: {len(manifest.pads)}; copied WAVs: {len(copied)}")
     return 0
 
 

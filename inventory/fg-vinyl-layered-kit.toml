@@ -1,0 +1,312 @@
+name = "FG Vinyl Layered Kit 01"
+
+# Bank A is a focused performance kit. Each pad morphs through four related
+# timbres at velocities 0-31, 32-63, 64-95, and 96-127.
+
+[[pads]]
+pad = 1
+[[pads.layers]]
+sample = "BD Acoustic Soft Vinyl SP Clean.WAV"
+velocity_start = 0
+velocity_end = 31
+[[pads.layers]]
+sample = "BD 808 Air Vinyl SP.WAV"
+velocity_start = 32
+velocity_end = 63
+[[pads.layers]]
+sample = "BD 808 Warm Vinyl SP.WAV"
+velocity_start = 64
+velocity_end = 95
+[[pads.layers]]
+sample = "BD 909 Fat Vinyl SP 02.WAV"
+velocity_start = 96
+velocity_end = 127
+
+[[pads]]
+pad = 2
+[[pads.layers]]
+sample = "BD 808 Ring Vinyl SP.WAV"
+velocity_start = 0
+velocity_end = 31
+[[pads.layers]]
+sample = "BD 909 Short Vinyl SP 03.WAV"
+velocity_start = 32
+velocity_end = 63
+[[pads.layers]]
+sample = "BD 909 Crush Vinyl SP Clean 02.WAV"
+velocity_start = 64
+velocity_end = 95
+[[pads.layers]]
+sample = "BD Club Smack Vinyl SP 01.WAV"
+velocity_start = 96
+velocity_end = 127
+
+[[pads]]
+pad = 3
+[[pads.layers]]
+sample = "SD 909 Soft Vinyl SP.WAV"
+velocity_start = 0
+velocity_end = 31
+[[pads.layers]]
+sample = "SD 808 Mid Vinyl SP 03.WAV"
+velocity_start = 32
+velocity_end = 63
+[[pads.layers]]
+sample = "SD 808 Nice Vinyl SP.WAV"
+velocity_start = 64
+velocity_end = 95
+[[pads.layers]]
+sample = "SD 909 Hi Vinyl SP 01.WAV"
+velocity_start = 96
+velocity_end = 127
+
+[[pads]]
+pad = 4
+[[pads.layers]]
+sample = "SD Acoustic Classic Vinyl SP 02.WAV"
+velocity_start = 0
+velocity_end = 31
+[[pads.layers]]
+sample = "SD Acoustic Mid Vinyl SP.WAV"
+velocity_start = 32
+velocity_end = 63
+[[pads.layers]]
+sample = "SD Acoustic Snap Vinyl SP.WAV"
+velocity_start = 64
+velocity_end = 95
+[[pads.layers]]
+sample = "SD Acoustic Fat Vinyl SP 02.WAV"
+velocity_start = 96
+velocity_end = 127
+
+[[pads]]
+pad = 5
+[[pads.layers]]
+sample = "Clap 909 Dark Vinyl SP.WAV"
+velocity_start = 0
+velocity_end = 31
+[[pads.layers]]
+sample = "Clap 808 Pitched Vinyl SP 01.WAV"
+velocity_start = 32
+velocity_end = 63
+[[pads.layers]]
+sample = "Clap 808 Standard Vinyl SP.WAV"
+velocity_start = 64
+velocity_end = 95
+[[pads.layers]]
+sample = "Clap 909 Standard Vinyl SP 02.WAV"
+velocity_start = 96
+velocity_end = 127
+
+[[pads]]
+pad = 6
+[[pads.layers]]
+sample = "Clap Acoustic Vinyl SP 01.WAV"
+velocity_start = 0
+velocity_end = 31
+[[pads.layers]]
+sample = "Clap House Vinyl SP 01.WAV"
+velocity_start = 32
+velocity_end = 63
+[[pads.layers]]
+sample = "Clap Tape Crunch Vinyl SP.WAV"
+velocity_start = 64
+velocity_end = 95
+[[pads.layers]]
+sample = "Clap Club Slap Vinyl SP.WAV"
+velocity_start = 96
+velocity_end = 127
+
+[[pads]]
+pad = 7
+[[pads.layers]]
+sample = "Rim Acoustic Lite Vinyl SP.WAV"
+velocity_start = 0
+velocity_end = 31
+[[pads.layers]]
+sample = "Rim 808 Standard Vinyl SP.WAV"
+velocity_start = 32
+velocity_end = 63
+[[pads.layers]]
+sample = "Rim 909 Standard Vinyl SP.WAV"
+velocity_start = 64
+velocity_end = 95
+[[pads.layers]]
+sample = "Rim Tape Skin Vinyl SP.WAV"
+velocity_start = 96
+velocity_end = 127
+
+[[pads]]
+pad = 8
+[[pads.layers]]
+sample = "Rim Vintage Perc Vinyl SP.WAV"
+velocity_start = 0
+velocity_end = 31
+[[pads.layers]]
+sample = "Rim CR78 Vinyl SP 01.WAV"
+velocity_start = 32
+velocity_end = 63
+[[pads.layers]]
+sample = "Rim 707 Vinyl SP.WAV"
+velocity_start = 64
+velocity_end = 95
+[[pads.layers]]
+sample = "Rim Vintage Dirt Vinyl SP 01.WAV"
+velocity_start = 96
+velocity_end = 127
+
+[[pads]]
+pad = 9
+mute_group = 1
+[[pads.layers]]
+sample = "CH DR110 Lite Vinyl SP 02.WAV"
+velocity_start = 0
+velocity_end = 31
+[[pads.layers]]
+sample = "CH Acoustic Nice Vinyl SP 02.WAV"
+velocity_start = 32
+velocity_end = 63
+[[pads.layers]]
+sample = "CH 808 Standard Vinyl SP 01.WAV"
+velocity_start = 64
+velocity_end = 95
+[[pads.layers]]
+sample = "CH 909 Sharp Vinyl SP.WAV"
+velocity_start = 96
+velocity_end = 127
+
+[[pads]]
+pad = 10
+mute_group = 1
+[[pads.layers]]
+sample = "OH Club Lite Vinyl SP.WAV"
+velocity_start = 0
+velocity_end = 31
+[[pads.layers]]
+sample = "OH Acoustic Classic Vinyl SP 01.WAV"
+velocity_start = 32
+velocity_end = 63
+[[pads.layers]]
+sample = "OH 808 Standard Vinyl SP 01.WAV"
+velocity_start = 64
+velocity_end = 95
+[[pads.layers]]
+sample = "OH Tape Hard Vinyl SP.WAV"
+velocity_start = 96
+velocity_end = 127
+
+[[pads]]
+pad = 11
+mute_group = 2
+[[pads.layers]]
+sample = "CH CR78 Pitched Vinyl SP 02.WAV"
+velocity_start = 0
+velocity_end = 31
+[[pads.layers]]
+sample = "CH LM1 Standard Vinyl SP 01.WAV"
+velocity_start = 32
+velocity_end = 63
+[[pads.layers]]
+sample = "CH 909 Standard Vinyl SP 01.WAV"
+velocity_start = 64
+velocity_end = 95
+[[pads.layers]]
+sample = "CH Tape Snap Vinyl SP 01.WAV"
+velocity_start = 96
+velocity_end = 127
+
+[[pads]]
+pad = 12
+mute_group = 2
+[[pads.layers]]
+sample = "OH CR78 Pitched Vinyl SP 01.WAV"
+velocity_start = 0
+velocity_end = 31
+[[pads.layers]]
+sample = "OH LM1 Standard Vinyl SP.WAV"
+velocity_start = 32
+velocity_end = 63
+[[pads.layers]]
+sample = "OH 909 Standard Vinyl SP 02.WAV"
+velocity_start = 64
+velocity_end = 95
+[[pads.layers]]
+sample = "OH Machinedrum Vinyl SP 03.WAV"
+velocity_start = 96
+velocity_end = 127
+
+[[pads]]
+pad = 13
+[[pads.layers]]
+sample = "Tom Acoustic Classic Dark Vinyl SP.WAV"
+velocity_start = 0
+velocity_end = 31
+[[pads.layers]]
+sample = "Tom 808 Harm Vinyl SP 02.WAV"
+velocity_start = 32
+velocity_end = 63
+[[pads.layers]]
+sample = "Tom 909 Dark Vinyl SP.WAV"
+velocity_start = 64
+velocity_end = 95
+[[pads.layers]]
+sample = "Tom Tape Pop Vinyl SP 01.WAV"
+velocity_start = 96
+velocity_end = 127
+
+[[pads]]
+pad = 14
+[[pads.layers]]
+sample = "Tom Acoustic Nice Vinyl SP 01.WAV"
+velocity_start = 0
+velocity_end = 31
+[[pads.layers]]
+sample = "Tom 808 Pop Vinyl SP 02.WAV"
+velocity_start = 32
+velocity_end = 63
+[[pads.layers]]
+sample = "Tom 909 Air Vinyl SP 02.WAV"
+velocity_start = 64
+velocity_end = 95
+[[pads.layers]]
+sample = "Tom Tape Pop Vinyl SP 02.WAV"
+velocity_start = 96
+velocity_end = 127
+
+[[pads]]
+pad = 15
+[[pads.layers]]
+sample = "Cymbal Mellow Vinyl SP.WAV"
+velocity_start = 0
+velocity_end = 31
+[[pads.layers]]
+sample = "Cymbal 808 Lite Vinyl SP.WAV"
+velocity_start = 32
+velocity_end = 63
+[[pads.layers]]
+sample = "Ride 909 Standard Vinyl SP.WAV"
+velocity_start = 64
+velocity_end = 95
+[[pads.layers]]
+sample = "Crash 909 Vari Vinyl SP.WAV"
+velocity_start = 96
+velocity_end = 127
+
+[[pads]]
+pad = 16
+[[pads.layers]]
+sample = "Shaker Acoustic Lite Vinyl SP.WAV"
+velocity_start = 0
+velocity_end = 31
+[[pads.layers]]
+sample = "Maraca 808 Vinyl SP 01.WAV"
+velocity_start = 32
+velocity_end = 63
+[[pads.layers]]
+sample = "Cowbell LM1 Vinyl SP 01.WAV"
+velocity_start = 64
+velocity_end = 95
+[[pads.layers]]
+sample = "Perc Machinedrum Bell Vinyl SP 02.WAV"
+velocity_start = 96
+velocity_end = 127

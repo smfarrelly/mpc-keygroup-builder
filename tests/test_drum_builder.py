@@ -103,6 +103,74 @@ class DrumBuilderTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "invalid mute_group 33"):
                 drum_builder.load_manifest(path)
 
+    def test_builds_explicit_velocity_layers(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            template = root / "template.xpm"
+            source = root / "samples"
+            output = root / "output"
+            source.mkdir()
+            self.write_template(template)
+            self.write_wav(source / "BD Soft.wav", 10)
+            self.write_wav(source / "BD Hard.wav", 30)
+            manifest_path = root / "manifest.toml"
+            manifest_path.write_text(
+                'name="Layered"\n[[pads]]\npad=1\n'
+                '[[pads.layers]]\nsample="BD Soft.wav"\nvelocity_start=0\nvelocity_end=63\n'
+                '[[pads.layers]]\nsample="BD Hard.wav"\nvelocity_start=64\nvelocity_end=127\n',
+                encoding="utf-8",
+            )
+            manifest = drum_builder.load_manifest(manifest_path)
+            self.assertEqual(
+                manifest.pads[0].layers,
+                (
+                    drum_builder.LayerSpec("BD Soft.wav", 0, 63),
+                    drum_builder.LayerSpec("BD Hard.wav", 64, 127),
+                ),
+            )
+            destination = drum_builder.build_drum_program(manifest, template, source, output)
+            instrument = ET.parse(destination).getroot().find(
+                './Program/Instruments/Instrument[@number="1"]'
+            )
+            layers = instrument.findall("./Layers/Layer")
+            self.assertEqual(layers[0].findtext("SampleFile"), "BD Soft.wav")
+            self.assertEqual(layers[0].findtext("VelStart"), "0")
+            self.assertEqual(layers[0].findtext("VelEnd"), "63")
+            self.assertEqual(layers[1].findtext("SampleFile"), "BD Hard.wav")
+            self.assertEqual(layers[1].findtext("VelStart"), "64")
+            self.assertEqual(layers[1].findtext("VelEnd"), "127")
+            self.assertEqual(layers[0].findtext("Active"), "True")
+            self.assertEqual(layers[1].findtext("Active"), "True")
+            self.assertEqual((output / "BD Soft.wav").is_file(), True)
+            self.assertEqual((output / "BD Hard.wav").is_file(), True)
+
+    def test_rejects_gapped_or_overlapping_velocity_layers(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for name, second_start in (("gap", 65), ("overlap", 63)):
+                path = root / f"{name}.toml"
+                path.write_text(
+                    'name="Bad"\n[[pads]]\npad=1\n'
+                    '[[pads.layers]]\nsample="Soft.wav"\nvelocity_start=0\nvelocity_end=63\n'
+                    f'[[pads.layers]]\nsample="Hard.wav"\nvelocity_start={second_start}\nvelocity_end=127\n',
+                    encoding="utf-8",
+                )
+                with self.assertRaisesRegex(ValueError, "without gaps or overlaps"):
+                    drum_builder.load_manifest(path)
+
+    def test_rejects_more_than_four_velocity_layers(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "manifest.toml"
+            layers = []
+            for index, (start, end) in enumerate(((0, 24), (25, 49), (50, 74), (75, 99), (100, 127))):
+                layers.append(
+                    f'[[pads.layers]]\nsample="Layer {index}.wav"\n'
+                    f'velocity_start={start}\nvelocity_end={end}\n'
+                )
+            path.write_text('name="Bad"\n[[pads]]\npad=1\n' + "".join(layers), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "one through four"):
+                drum_builder.load_manifest(path)
+
     def test_extends_a_base_manifest_with_additional_banks(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -160,6 +228,19 @@ class DrumBuilderTests(unittest.TestCase):
             with self.assertRaisesRegex(FileExistsError, "not empty"):
                 drum_builder.build_drum_program(manifest, template, source, output)
             self.assertEqual((output / "keep.txt").read_text(), "user data")
+
+    def test_rejects_programmatic_pad_without_a_sample_layer(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            template = root / "template.xpm"
+            source = root / "samples"
+            source.mkdir()
+            self.write_template(template)
+            manifest = drum_builder.DrumManifest(
+                name="Bad", pads=(drum_builder.PadSpec(pad=1),)
+            )
+            with self.assertRaisesRegex(ValueError, "pad 1 has no sample layers"):
+                drum_builder.build_drum_program(manifest, template, source, root / "output")
 
 
 if __name__ == "__main__":
