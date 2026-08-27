@@ -21,24 +21,27 @@ For pad-specific problems include bank and pad, for example:
 
 ### FG Vinyl Shots 04 Eight Bank
 
+**Hardware result — August 27, 2026:** `pass`, selected/favorite Track 2 Shots
+program. All Banks A–H and every acceptance item below passed.
+
 Load:
 
 `SD Card / 00 FG Scratchpad / 02 Vinyl Shots / FG Vinyl Shots 04 Eight Bank.xpm`
 
-- [ ] Confirm all 16 pads trigger exactly once in every Bank A–H.
-- [ ] Confirm Banks A and C are useful percussion banks.
-- [ ] Confirm Bank B contains FX, stabs, and vocal fragments.
-- [ ] Confirm Bank D contains character and transition hits.
-- [ ] Confirm Bank E contains claps, snaps, rims, and textured snares.
-- [ ] Confirm Bank F contains toms, metallic cymbals, and resonant percussion.
-- [ ] Confirm Bank G has kicks on G01–G08 and snares on G09–G16.
-- [ ] Confirm Bank H has closed hats on H01–H08 and the matching open hats on
+- [x] Confirm all 16 pads trigger exactly once in every Bank A–H.
+- [x] Confirm Banks A and C are useful percussion banks.
+- [x] Confirm Bank B contains FX, stabs, and vocal fragments.
+- [x] Confirm Bank D contains character and transition hits.
+- [x] Confirm Bank E contains claps, snaps, rims, and textured snares.
+- [x] Confirm Bank F contains toms, metallic cymbals, and resonant percussion.
+- [x] Confirm Bank G has kicks on G01–G08 and snares on G09–G16.
+- [x] Confirm Bank H has closed hats on H01–H08 and the matching open hats on
   H09–H16.
-- [ ] Confirm every matched Bank H closed/open pair chokes correctly.
-- [ ] Confirm semantic colors remain visible after leaving Browser.
-- [ ] Record a two-bar fill, save/reload, and confirm colors, samples, sequence,
+- [x] Confirm every matched Bank H closed/open pair chokes correctly.
+- [x] Confirm semantic colors remain visible after leaving Browser.
+- [x] Record a two-bar fill, save/reload, and confirm colors, samples, sequence,
   and choke behavior return.
-- [ ] Decide keep/revise and record any exact pad needing replacement.
+- [x] Keep as the selected Track 2 program; no pad replacement requested.
 
 ### FG Vinyl Kit Banks 01
 
@@ -428,7 +431,7 @@ optional section can use file-based baselines.
 
 ## 10. Completion gates
 
-- [ ] Shots 04 accepted or revised.
+- [x] Shots 04 accepted as the selected/favorite Track 2 program.
 - [ ] Kit Banks accepted or revised.
 - [ ] Layered Kit accepted or revised.
 - [ ] All 32 Ableton Wave 01 programs have listening results.

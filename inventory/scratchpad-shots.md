@@ -102,17 +102,21 @@ matched closed/open hat choke groups. The XPM SHA-256 is
 
 ## Hardware acceptance
 
-- [ ] Load the program, then leave the Browser so assigned pad colors appear.
-- [ ] Bank A pads A01–A13 are percussion/rim sounds; A14–A16 are cymbals.
-- [ ] Bank B pads B01–B16 are FX/stabs/vocal fragments.
-- [ ] Confirm every populated pad triggers exactly one sound.
-- [ ] Test Bank C: additional percussion.
-- [ ] Test Bank D: character and transition hits.
-- [ ] Test Bank E: claps, snaps, rims, and textured snares.
-- [ ] Test Bank F: toms, metallic cymbals, and resonant percussion.
-- [ ] Test Bank G: kicks on G01–G08 and snares on G09–G16.
-- [ ] Test Bank H: closed hats on H01–H08 and open hats on H09–H16.
-- [ ] Confirm teal percussion, white rim, orange cymbals, and purple FX are
+- [x] Load the program, then leave the Browser so assigned pad colors appear.
+- [x] Bank A pads A01–A13 are percussion/rim sounds; A14–A16 are cymbals.
+- [x] Bank B pads B01–B16 are FX/stabs/vocal fragments.
+- [x] Confirm every populated pad triggers exactly one sound.
+- [x] Test Bank C: additional percussion.
+- [x] Test Bank D: character and transition hits.
+- [x] Test Bank E: claps, snaps, rims, and textured snares.
+- [x] Test Bank F: toms, metallic cymbals, and resonant percussion.
+- [x] Test Bank G: kicks on G01–G08 and snares on G09–G16.
+- [x] Test Bank H: closed hats on H01–H08 and open hats on H09–H16.
+- [x] Confirm teal percussion, white rim, orange cymbals, and purple FX are
   easy to distinguish.
-- [ ] Record a two-bar fill using both banks, save/reload, and replay it.
-- [ ] Decide `favorite=yes`, `favorite=no`, or revise the manifest by pad.
+- [x] Record a two-bar fill, save/reload, and replay it.
+- [x] Retain as `favorite=yes`, the selected Track 2 Shots program.
+
+**Hardware result — August 27, 2026:** `pass`. The complete eight-bank program
+and every acceptance item passed on the MPC Key 37; no pad revision was
+requested.

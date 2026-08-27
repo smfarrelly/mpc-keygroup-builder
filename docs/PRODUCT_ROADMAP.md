@@ -77,9 +77,10 @@ and semantic pattern generation.
 
 ### Current slices
 
-1. **Hardware closeout.** Deploy and listen to `FG Vinyl Shots 04 Eight Bank`,
-   then preserve the revised Scratchpad master and jam copy. Pluck Bass, Wurli,
-   Dark FM, Glass Howl, and Sub Smooth now have final track roles.
+1. **Hardware closeout.** `FG Vinyl Shots 04 Eight Bank` passes all eight banks
+   and is the selected Track 2 program. Preserve it in the revised Scratchpad
+   master and jam copy. Pluck Bass, Wurli, Dark FM, Glass Howl, and Sub Smooth
+   have final track roles.
 2. **Normalized Program Model v1.** Represent samples, zones, velocity layers,
    playback mode, semantic roles, pads, colors, mute groups, and source
    provenance independently from XPM serialization.
@@ -320,8 +321,8 @@ for release gates:
 ## Immediate next three increments
 
 1. **Hardware:** compare the verified SD deployment of `FG Vinyl Kit Banks 01`
-   with `FG Vinyl Shots 04 Eight Bank`, test `FG Vinyl Layered Kit 01`, then
-   save a revised protected Scratchpad master.
+   with the now-accepted `FG Vinyl Shots 04 Eight Bank`, test `FG Vinyl Layered
+   Kit 01`, then save a revised protected Scratchpad master.
 2. **Acceptance:** load the generated Classic and handed variants on the Key
    37, reload them, compare playability, and close the v0.2 exit gate.
 3. **Creative MIDI:** import the generated source/Classic MIDI pair on the Key
