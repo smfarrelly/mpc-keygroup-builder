@@ -1,9 +1,13 @@
 # MPC Key 37 field review
 
-**Review unit:** Steve Farrelly's MPC Key 37  
-**Review status:** Living document, updated from hands-on testing  
-**Current observation window:** August 25–27, 2026  
-**Observed MPC firmware:** 3.9.1.2  
+**Review unit:** Steve Farrelly's MPC Key 37
+
+**Review status:** Living document, updated from hands-on testing
+
+**Current observation window:** August 25–27, 2026
+
+**Observed MPC firmware:** 3.9.1.2
+
 **Hardware acceptance posture:** New acceptance sessions are deferred; completed
 results remain authoritative.
 
