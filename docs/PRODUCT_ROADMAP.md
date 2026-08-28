@@ -484,7 +484,16 @@ control.
 - [x] A transactional portable demo synthesizes 16 CC0 WAVs and exercises
   source-program, catalog, cross-kit, Drum build, four-track workstation, and
   five-section arrangement workflows with checksums and editable recipes.
-- Document bring-your-own-samples licensing boundaries.
+- [x] Document bring-your-own-samples licensing boundaries, including explicit
+  local-use guidance for Samples From Mars, open/CC0 options, per-source
+  provenance, and redistribution restrictions.
+- [x] Add a nondeveloper installation path, umbrella command discovery,
+  environment diagnosis, contextual expected errors, version/help guarantees,
+  troubleshooting, and a clean installed-tool smoke test outside the checkout.
+- [x] Add a no-install offline landing page and synthetic Program Designer demo
+  with an explicit boundary around XPM import/export, audio, and SD access.
+- [x] Publish a validated repository AI skill and a checksum-verified personal
+  vendor-document cache that keeps copyrighted Korg PDFs out of Git.
 - Publish schemas, device profiles, layouts, recipes, validators, and tests.
 - Prove the workflow through at least three completed compositions.
 - Confirm another MPC owner can generate, validate, preview, install, and play

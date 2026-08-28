@@ -1,0 +1,37 @@
+schema_version = 1
+
+[[documents]]
+id = "korg-volca-bass-midi"
+title = "Korg Volca Bass MIDI Implementation Chart"
+publisher = "Korg"
+url = "https://cdn.korg.com/us/support/download/files/5b722ac465bb10f1907528e571968f4e.pdf"
+filename = "korg-volca-bass-midi.pdf"
+redistribution = "personal-copy-only"
+sha256 = "761eb13dd2202936dad695ca726025607cbdc41f3253d6da560c84a9d31a24e5"
+
+[[documents]]
+id = "korg-volca-keys-midi"
+title = "Korg Volca Keys MIDI Implementation Chart"
+publisher = "Korg"
+url = "https://cdn.korg.com/us/support/download/files/d9a276cdfce7ff88c32a38ba6f3ba8aa.pdf"
+filename = "korg-volca-keys-midi.pdf"
+redistribution = "personal-copy-only"
+sha256 = "8ce1f4022e433457abffcc1e326514482ec1d4c4b381ab7644f80e33e68b8676"
+
+[[documents]]
+id = "korg-volca-drum-midi-single"
+title = "Korg Volca Drum MIDI Implementation Chart — Single Channel"
+publisher = "Korg"
+url = "https://cdn.korg.com/us/support/download/files/68ae4f439b41bcb2cdc8350874a84cec.pdf"
+filename = "korg-volca-drum-midi-single.pdf"
+redistribution = "personal-copy-only"
+sha256 = "06cb9f9a4d8c3d0bc274f283e0742030908a3b23285383cb0c6f9af9c1904138"
+
+[[documents]]
+id = "korg-volca-drum-midi-split"
+title = "Korg Volca Drum MIDI Implementation Chart — Split Channel"
+publisher = "Korg"
+url = "https://cdn.korg.com/us/support/download/files/aa0a404eb2b0fa59873677d825cc272e.pdf"
+filename = "korg-volca-drum-midi-split.pdf"
+redistribution = "personal-copy-only"
+sha256 = "ad743abcff4f085ce14998afdbe3a2afd89c9f19257d17694e6562bbe3bec223"

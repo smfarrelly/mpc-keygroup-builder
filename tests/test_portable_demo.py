@@ -37,6 +37,15 @@ class PortableDemoTests(unittest.TestCase):
             with self.assertRaises(FileExistsError):
                 build_demo(output, repository / "recipes")
 
+    def test_builds_with_packaged_recipe_defaults(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "installed-style-demo"
+            report = build_demo(output, None)
+            self.assertEqual(report["cross_kit_simulation"], "pass")
+            self.assertTrue((output / "Recipes/drums/dusty-pocket.toml").is_file())
+            self.assertTrue((output / "Recipes/harmony/dusty-dorian.toml").is_file())
+            self.assertTrue((output / "Recipes/melody/dusty-answer.toml").is_file())
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -49,6 +49,19 @@ class DeviceProfile:
         return errors
 
 
+BUILTIN_DEVICES = {
+    "key37": DeviceProfile(1, "mpc-key-37", "Akai MPC Key 37", 37, 4, 4, tuple("ABCDEFGH")),
+    "key61": DeviceProfile(1, "mpc-key-61", "Akai MPC Key 61", 61, 4, 4, tuple("ABCDEFGH")),
+}
+
+
+def resolve_device(value: str | Path) -> DeviceProfile:
+    name = str(value).casefold()
+    aliases = {"key-37": "key37", "mpc-key-37": "key37", "key-61": "key61", "mpc-key-61": "key61"}
+    builtin = BUILTIN_DEVICES.get(aliases.get(name, name))
+    return builtin if builtin is not None else load_device(Path(value).expanduser().resolve())
+
+
 def load_device(path: Path) -> DeviceProfile:
     with path.open("rb") as stream:
         data = tomllib.load(stream)

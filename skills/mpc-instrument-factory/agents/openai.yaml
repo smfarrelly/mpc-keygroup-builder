@@ -1,0 +1,4 @@
+interface:
+  display_name: "MPC Instrument Factory"
+  short_description: "Build and validate safe MPC instrument workflows"
+  default_prompt: "Use $mpc-instrument-factory to build or audit this MPC program workflow."

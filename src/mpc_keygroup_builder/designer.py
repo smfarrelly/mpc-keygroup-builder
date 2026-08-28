@@ -12,7 +12,7 @@ from pathlib import Path
 from statistics import median
 from typing import Any
 
-from .device import DeviceProfile, load_device
+from .device import BUILTIN_DEVICES, DeviceProfile, resolve_device
 from .layout import LayoutPreset, load_preset
 from .layout_draft import DRAFT_KIND, file_sha256, model_fingerprint
 from .midi_groove import MidiGroove, analyse_program_groove, load_groove
@@ -959,9 +959,9 @@ def main() -> int:
     parser.add_argument(
         "--device",
         action="append",
-        type=Path,
-        required=True,
-        help="device profile to bundle; repeatable",
+        default=[],
+        metavar="KEY37|KEY61|TOML",
+        help="built-in key37/key61 or a device TOML; repeatable (default: key37)",
     )
     parser.add_argument("--format", choices=("html", "json"), default="html")
     parser.add_argument("--output", type=Path, required=True)
@@ -988,7 +988,7 @@ def main() -> int:
         programs.append(
             (compare_program, infer_sample_root(compare_program, compare_root))
         )
-    devices = [load_device(path.expanduser().resolve()) for path in args.device]
+    devices = [resolve_device(value) for value in args.device] or [BUILTIN_DEVICES["key37"]]
     layouts = [load_preset(path.expanduser().resolve()) for path in args.layout]
     groove = (
         load_groove(groove_paths)

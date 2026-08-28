@@ -163,6 +163,20 @@ class ProgramDesignerTests(unittest.TestCase):
             self.assertTrue(output.is_file())
             self.assertIn("source unchanged", output.read_text(encoding="utf-8"))
 
+    def test_cli_defaults_to_builtin_key37_for_installed_use(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "kit.toml"
+            output = root / "kit.json"
+            source.write_text('name="Kit"\n[[pads]]\npad=1\nsample="BD Test.wav"\n')
+            with patch(
+                "sys.argv",
+                ["mpc-program-designer", str(source), "--format", "json", "--output", str(output)],
+            ):
+                self.assertEqual(designer.main(), 0)
+            payload = json.loads(output.read_text())
+            self.assertEqual(payload["devices"][0]["id"], "mpc-key-37")
+
     def test_bundle_renders_each_program_and_device_with_pairwise_comparisons(self):
         first = model.ProgramModel(
             1,

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MPC Instrument Factory — Offline Demo</title>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #101311; color: #edf4ee; }
+    main { width: min(880px, calc(100% - 36px)); margin: 0 auto; padding: 72px 0; }
+    .eyebrow { color: #91cfa2; font-size: .8rem; font-weight: 750; letter-spacing: .13em; text-transform: uppercase; }
+    h1 { max-width: 760px; margin: 12px 0 18px; font-size: clamp(2.4rem, 8vw, 5.4rem); line-height: .96; letter-spacing: -.055em; }
+    .lead { max-width: 680px; color: #b9c4bb; font-size: 1.15rem; line-height: 1.65; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 32px 0 48px; }
+    a { color: #b9edc6; }
+    .button { display: inline-block; border: 1px solid #91cfa2; border-radius: 999px; padding: 12px 18px; color: #101311; background: #a7e5b6; text-decoration: none; font-weight: 750; }
+    .button.secondary { color: #dce8de; background: transparent; border-color: #526158; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+    section { padding: 22px; border: 1px solid #29322c; border-radius: 18px; background: #161b18; }
+    h2 { margin: 0 0 10px; font-size: 1.05rem; }
+    p, li { color: #aeb9b0; line-height: 1.55; }
+    ul { padding-left: 20px; }
+    footer { margin-top: 40px; color: #7f8b82; font-size: .9rem; }
+    code { color: #d2eed8; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="eyebrow">MPC Instrument Factory · offline preview</div>
+    <h1>Design the pads before touching the card.</h1>
+    <p class="lead">Explore two metadata-only synthetic Drum Programs, compare semantic pad layouts, make reversible edits, and download a draft. Nothing is uploaded, and no commercial samples are included.</p>
+    <div class="actions">
+      <a class="button" href="program-designer-demo.html">Open Program Designer demo</a>
+      <a class="button secondary" href="../docs/getting-started.md">Read the installation guide</a>
+    </div>
+    <div class="grid">
+      <section>
+        <h2>Works here</h2>
+        <ul><li>Inspect and compare</li><li>Switch MPC device views</li><li>Edit pad assignments</li><li>Undo and download draft JSON</li></ul>
+      </section>
+      <section>
+        <h2>Needs the CLI</h2>
+        <ul><li>Read arbitrary XPM files</li><li>Copy or analyze WAVs</li><li>Export validated XPMs</li><li>Deploy to removable media</li></ul>
+      </section>
+      <section>
+        <h2>Safety boundary</h2>
+        <p>This page has no server, remote assets, analytics, API calls, licensed audio, or SD-card access. Hardware listening remains a separate acceptance step.</p>
+      </section>
+    </div>
+    <footer>Generated program files remain subject to the licenses of their source audio. Project source is MIT licensed.</footer>
+  </main>
+</body>
+</html>

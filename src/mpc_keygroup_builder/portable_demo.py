@@ -205,17 +205,93 @@ def _write_ledger(path: Path) -> None:
         )
 
 
-def _copy_creative_recipes(recipe_root: Path, destination: Path) -> Path:
-    sources = (
-        recipe_root / "drums/dusty-pocket.toml",
-        recipe_root / "harmony/dusty-dorian.toml",
-        recipe_root / "melody/dusty-answer.toml",
-    )
-    for source in sources:
+DEFAULT_CREATIVE_RECIPES = {
+    "drums/dusty-pocket.toml": """schema_version = 1
+id = "dusty-pocket"
+name = "Dusty Pocket"
+bars = 2
+steps_per_bar = 16
+swing = 0.57
+gate = 0.45
+channel = 10
+[[events]]
+role = "kick"
+steps = [0, 7, 10, 16, 23, 26]
+velocity = 112
+humanize_velocity = 5
+[[events]]
+role = "snare"
+steps = [4, 12, 20, 28]
+velocity = 108
+humanize_velocity = 4
+selection = "cycle"
+[[events]]
+role = "hihat.closed"
+steps = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30]
+velocity = 78
+probability = 0.88
+humanize_velocity = 12
+[[events]]
+role = "hihat.open"
+steps = [15, 31]
+velocity = 90
+probability = 0.7
+""",
+    "harmony/dusty-dorian.toml": """schema_version = 1
+id = "dusty-dorian"
+name = "Dusty Dorian"
+key = "D"
+scale = "dorian"
+bars = 4
+beats_per_bar = 4
+progression = [1, 4, 2, 5]
+chord_beats = [4, 4, 4, 4]
+chord_notes = 4
+chord_range = [48, 76]
+bass_range = [28, 52]
+bass_pattern = [0, 7, 12, 7, 0, 7, 10, 7]
+bass_steps_per_beat = 2
+chord_velocity = 82
+bass_velocity = 102
+gate = 0.82
+humanize_velocity = 7
+chord_channel = 1
+bass_channel = 2
+""",
+    "melody/dusty-answer.toml": """schema_version = 1
+id = "dusty-answer"
+name = "Dusty Answer"
+key = "D"
+scale = "dorian"
+bars = 4
+beats_per_bar = 4
+steps_per_beat = 4
+motif_steps = 16
+rhythm = [0, 3, 6, 10, 14]
+contour = [0, 2, 4, 3, 1]
+start_degree = 1
+note_range = [60, 88]
+variation = 0.28
+rest_probability = 0.10
+octave_probability = 0.08
+velocity = 94
+humanize_velocity = 7
+gate = 0.72
+channel = 3
+""",
+}
+
+
+def _copy_creative_recipes(recipe_root: Path | None, destination: Path) -> Path:
+    for relative, bundled in DEFAULT_CREATIVE_RECIPES.items():
+        target = destination / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if recipe_root is None:
+            target.write_text(bundled, encoding="utf-8")
+            continue
+        source = recipe_root / relative
         if not source.is_file():
             raise FileNotFoundError(f"portable demo recipe is missing: {source}")
-        target = destination / source.relative_to(recipe_root)
-        target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, target)
     workstation = destination / "workstation/portable-demo.toml"
     workstation.parent.mkdir(parents=True, exist_ok=True)
@@ -267,9 +343,9 @@ Notes:
 """
 
 
-def build_demo(output: Path, recipe_root: Path) -> dict[str, object]:
+def build_demo(output: Path, recipe_root: Path | None = None) -> dict[str, object]:
     output = output.resolve()
-    recipe_root = recipe_root.resolve()
+    recipe_root = recipe_root.resolve() if recipe_root is not None else None
     if output.exists():
         raise FileExistsError(f"portable demo output already exists: {output}")
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -426,9 +502,13 @@ software source remains licensed under the repository's MIT License.
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--recipe-root", type=Path, default=Path("recipes"))
+    parser.add_argument(
+        "--recipe-root", type=Path,
+        help="optional checkout recipe directory; the installed command has bundled defaults",
+    )
     args = parser.parse_args()
-    report = build_demo(args.output.expanduser(), args.recipe_root.expanduser())
+    recipe_root = args.recipe_root.expanduser() if args.recipe_root is not None else None
+    report = build_demo(args.output.expanduser(), recipe_root)
     print(f"Built: {report['cross_kit_program']}")
     print(f"Synthetic WAVs: {report['generated_samples']}; software acceptance: pass")
     print(f"Hardware status: {report['hardware_status']}")

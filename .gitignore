@@ -28,3 +28,6 @@ config.local.*
 artifacts/
 output/
 staging/
+
+# Personal vendor-document cache (upstream copyright terms prohibit redistribution)
+references/vendor/
