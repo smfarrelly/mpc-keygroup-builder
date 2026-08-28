@@ -943,6 +943,36 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   target 60–96 and infers the same +36 correction for all five programs across
   80 unique WAVs; broad already-useful mappings remain unchanged on ties.
 
+### August 27–28, 2026 — unattended creative workstation software
+
+- Completed deterministic chord and harmonic-rhythm generation with
+  scale-degree progressions, nearest voice leading, strict chord/bass note
+  ranges, configurable three- or four-note voicings, and chord-following bass
+  patterns. Each run writes named format-1 tracks and full JSON evidence.
+- Added scale-safe motifs whose literal first statement receives seeded
+  neighbor, octave, and rest variation on later repetitions. Useful range is a
+  hard boundary and every event records its origin and variation decision.
+- Combined semantic Drums, Bass, Chords, and Melody into four-track workstation
+  bundles. The generator fingerprints the real Drum Program used for note-map
+  resolution and writes MIDI, JSON, and exact program-assignment guidance.
+- Expanded the initial dusty, ambient, and electro setups with complete 80s
+  funk, house, and weird families. All six have independent drum, harmony,
+  bass, and melody behavior and were generated successfully against real Drum
+  Programs on the external-drive mirror.
+- Added a reversible arrangement outline: Main, Main B, Breakdown, Build, and
+  Outro remain separate MIDI candidates. Main B changes velocity on an exact
+  seeded percentage, locked tracks survive every section unchanged, and stable
+  source IDs plus omitted-ID lists retain a path back to the complete base.
+- Added bounded seed batches as the reproducible `Surprise Me` path. Ranking is
+  explicitly limited to observable event diversity and never presented as a
+  substitute for musical listening.
+- The dependency-free test suite now passes 213 tests. Repository artifact
+  guards confirm no licensed WAV, XPM, or XPJ entered Git. Six complete
+  workstation candidates, a five-section arrangement, six additional dusty
+  seeds, standalone components, guides, and recipes were byte-compared after
+  mirroring to `MPC Transfer/FG Software Candidates 2026-08-28` on the external
+  drive. All MPC import/listening status remains deliberately deferred.
+
 ## 16. Reference material
 
 - [Akai: Understanding and Loading MPC Programs](https://support.akaipro.com/en/support/solutions/articles/69000804211-akai-pro-mpc-series-understanding-and-loading-programs)

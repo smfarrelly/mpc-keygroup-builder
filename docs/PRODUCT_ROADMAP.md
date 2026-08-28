@@ -466,11 +466,16 @@ for release gates:
 
 ## Immediate next three increments
 
-1. **Program Designer hardware gate, deferred:** load one validated
-   browser-authored groove suggestion on the Key 37 and confirm placement,
-   explicit colors, save/reload, and source preservation.
-2. **Expressive instruments:** begin v0.4 with a preservation audit and
-   declarative Clean/Warm/Pad/Pluck/Bass/Lo-Fi Keygroup variant specification.
-3. **Creative MIDI:** build chord and bass generators on the accepted format-1
-   MIDI path and keep their output inspectable without requiring an immediate
-   Key 37 acceptance session.
+1. **Catalog breadth:** enrich the existing metadata catalog with range and
+   measurable audio facets, then define deterministic cross-library selection
+   recipes without checking licensed assets into Git.
+2. **Reusable release fixtures:** add freely redistributable synthetic or
+   permissively licensed examples that let another MPC owner exercise program,
+   creative-MIDI, workstation, and arrangement workflows end to end.
+3. **Project serialization, evidence-gated:** use the detached XPJ inspector
+   branch and MPC-authored baseline/changed captures only when project writing
+   becomes necessary; do not guess a project schema or merge the Mac branch
+   merely because the MIDI workstation foundation is complete.
+
+Program Designer, Keygroup variants, creative MIDI, and arrangement hardware
+acceptance remain intentionally deferred until the Key 37 is available.
