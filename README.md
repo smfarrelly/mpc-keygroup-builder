@@ -235,7 +235,11 @@ and reports sample or velocity problems. Keygroups receive a movable 37-note
 range viewer. Repeat `--compare` and `--device` to bundle multiple sources and
 hardware profiles with in-view switching and side-by-side comparison. Repeat
 `--layout` to add a source-safe Drum layout workspace with swaps, locks, color
-editing, handed presets, undo/redo, and source-versus-draft inspection. See
+editing, handed presets, undo/redo, source-versus-draft inspection, and a
+fingerprinted JSON draft download. `mpc-layout-draft` validates that download
+against the exact source and device, exports a reusable Drum manifest, or
+creates a separately verified XPM while preserving complete instrument records
+and global settings. See
 [MPC Program Designer](docs/program-designer.md).
 
 ## Metadata catalog

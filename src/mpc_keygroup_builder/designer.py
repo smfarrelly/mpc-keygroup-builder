@@ -14,6 +14,7 @@ from typing import Any
 
 from .device import DeviceProfile, load_device
 from .layout import LayoutPreset, load_preset
+from .layout_draft import DRAFT_KIND, file_sha256, model_fingerprint
 from .model import ProgramModel, Zone, from_drum_manifest, from_xpm
 from .roles import load_role_overrides
 
@@ -305,6 +306,7 @@ def build_view_data(
         if zone.mute_group and zone.pad:
             label = device.label(zone.pad) if zone.pad <= device.capacity else f"Pad {zone.pad}"
             mute_groups.setdefault(str(zone.mute_group), []).append(label)
+    source_path = Path(program.source_path) if program.source_path else None
     return {
         "schema_version": 1,
         "read_only": True,
@@ -313,6 +315,10 @@ def build_view_data(
             "kind": program.kind,
             "source_format": program.source_format,
             "source_path": program.source_path,
+            "source_sha256": (
+                file_sha256(source_path) if source_path is not None and source_path.is_file() else ""
+            ),
+            "source_model_sha256": model_fingerprint(program),
             "zones": zones,
         },
         "device": {
@@ -670,6 +676,7 @@ HTML_TEMPLATE = r'''<!doctype html>
           <button class="action" id="redo-layout" type="button" disabled>Redo</button>
           <button class="action" id="reset-bank" type="button" disabled>Reset bank</button>
           <button class="action" id="reset-layout" type="button" disabled>Reset all</button>
+          <button class="action primary" id="download-draft" type="button" disabled>Download draft JSON</button>
         </div>
         <p class="editor-note" id="editor-note">Start a draft to rearrange pads without changing the embedded source model.</p>
         <div class="draft-layout hidden" id="draft-layout">
@@ -736,6 +743,7 @@ HTML_TEMPLATE = r'''<!doctype html>
     $('redo-layout').addEventListener('click',redoDraft);
     $('reset-bank').addEventListener('click',resetCurrentBank);
     $('reset-layout').addEventListener('click',resetDraft);
+    $('download-draft').addEventListener('click',downloadDraft);
   }
 
   function renderHeader(){const p=DATA.program,s=DATA.summary;$('title').textContent=p.name||'Unnamed program';document.title=`${p.name||'Unnamed program'} — MPC Program Designer`;$('source').textContent=`${p.kind} · ${p.source_format} · ${p.source_path||'in-memory source'}`;$('chips').replaceChildren();addChip(`${s.zones} zones`);addChip(`${s.layers} layers`);addChip(DATA.device.name);if(p.kind==='drum')addChip(`${s.populated_banks.length}/${DATA.device.banks.length} populated banks`);Object.entries(s.issues).forEach(([kind,count])=>addChip(`${count} ${kind}${count===1?'':'s'}`));}
@@ -800,13 +808,15 @@ HTML_TEMPLATE = r'''<!doctype html>
   function resetCurrentBank(){const draft=currentDraft(),offset=bankOffset(currentBank),count=DATA.device.pads_per_bank;remember(draft);draft.slots.splice(offset,count,...clone(draft.source.slice(offset,offset+count)));selectedSlot=null;$('editor-note').textContent=`Reset Bank ${currentBank} to the source layout.`;renderDrums();}
   function resetDraft(){const draft=currentDraft();remember(draft);draft.slots=clone(draft.source);selectedSlot=null;$('editor-note').textContent='Reset the entire draft to the source layout.';renderDrums();}
 
-  function draftPayload(){const draft=currentDraft();return {schema_version:1,program:DATA.program.name,device:DATA.device.id,source_path:DATA.program.source_path,assignments:draft.slots.map((zone,index)=>zone?{slot:index+1,label:slotLabel(index+1),source_zone:zone.index,role:zone.role,color:zone.color_hex,locked:Boolean(zone.locked),sample:zone.layers[0]?.sample||''}:null).filter(Boolean)};}
+  function draftPayload(){const draft=currentDraft(),sourceByZone=new Map(draft.source.filter(Boolean).map(zone=>[zone.index,zone]));return {schema_version:1,kind:'__DRAFT_KIND__',program:DATA.program.name,device:DATA.device.id,source_path:DATA.program.source_path,source_format:DATA.program.source_format,source_sha256:DATA.program.source_sha256,source_model_sha256:DATA.program.source_model_sha256,assignments:draft.slots.map((zone,index)=>{if(!zone)return null;const source=sourceByZone.get(zone.index);return {slot:index+1,label:slotLabel(index+1),source_zone:zone.index,source_pad:source.pad,role:source.role,source_color:source.color,color:zone.color,source_locked:Boolean(source.locked),locked:Boolean(zone.locked),playback_mode:source.playback_mode,mute_group:source.mute_group,layers:source.layers.map(layer=>({sample:layer.sample,velocity_start:layer.velocity_start,velocity_end:layer.velocity_end,root_note:layer.root_note,sample_start:layer.sample_start,sample_end:layer.sample_end,loop_enabled:layer.loop_enabled,loop_start:layer.loop_start,loop_end:layer.loop_end}))};}).filter(Boolean)};}
+  function draftFilename(){const slug=String(DATA.program.name||'mpc-program').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'mpc-program';return `${slug}-${DATA.device.id}-layout-draft.json`;}
+  function downloadDraft(){const payload=JSON.stringify(draftPayload(),null,2)+'\n',blob=new Blob([payload],{type:'application/json'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=draftFilename();document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),0);$('editor-note').textContent=`Downloaded ${link.download}. Validate it with mpc-layout-draft before exporting.`;}
   function draftCard(zone){if(!zone)return el('div','draft-card detail-empty','Empty');const card=el('div','draft-card');card.append(el('strong','',zone.role));card.append(el('span','',`${basename(zone.layers[0]?.sample)}${zone.locked?' · locked':''}`));return card;}
   function renderEditorWorkspace(){
     if(DATA.program.kind!=='drum'){$('editor-panel').classList.add('hidden');return;}
     const draft=currentDraft(),changes=draftChangeCount(draft),active=editMode;
     $('editor-panel').classList.remove('hidden');$('edit-toggle').textContent=active?'View source':changes?'Resume layout draft':'Edit layout draft';$('layout-status').textContent=active?`${changes} changed slot${changes===1?'':'s'}`:changes?`Source view · ${changes} draft change${changes===1?'':'s'} retained`:'Source view';
-    ['move-toggle','mirror-bank','layout-select','apply-layout','reset-bank','reset-layout'].forEach(id=>$(id).disabled=!active);
+    ['move-toggle','mirror-bank','layout-select','apply-layout','reset-bank','reset-layout','download-draft'].forEach(id=>$(id).disabled=!active);
     $('move-toggle').disabled=!active||!selectedSlot||!draft.slots[selectedSlot-1]||draft.slots[selectedSlot-1].locked;$('move-toggle').textContent=moveMode?'Cancel move':'Move / swap selected';
     $('undo-layout').disabled=!active||!draft.history.length;$('redo-layout').disabled=!active||!draft.future.length;$('apply-layout').disabled=!active||!BUNDLE.layouts.length;
     $('draft-layout').classList.toggle('hidden',!active);if(!active){$('editor-note').textContent=changes?`${changes} draft change${changes===1?' is':'s are'} retained in this page; resume editing to inspect them.`:'Start a draft to rearrange pads without changing the embedded source model.';return;}
@@ -860,7 +870,11 @@ def render_html(data: dict[str, Any]) -> str:
     )
     payload = json.dumps(data, separators=(",", ":"), ensure_ascii=False)
     payload = payload.replace("&", "\\u0026").replace("<", "\\u003C").replace(">", "\\u003E")
-    return HTML_TEMPLATE.replace("__TITLE__", title).replace("__DATA__", payload)
+    return (
+        HTML_TEMPLATE.replace("__TITLE__", title)
+        .replace("__DATA__", payload)
+        .replace("__DRAFT_KIND__", DRAFT_KIND)
+    )
 
 
 def load_program(

@@ -86,14 +86,64 @@ the editor. Drum Programs then expose a source-safe draft workspace with:
 - Classic, right-handed, left-handed, full-library, or custom semantic presets;
 - a bounded 50-step undo history, redo, reset-bank, and reset-all;
 - a current-bank source-versus-draft comparison; and
-- deterministic JSON assignment preview containing slot, source zone, role,
-  color, lock state, and sample reference.
+- deterministic JSON assignment preview containing slot, source zone, full
+  layer metadata, role, color, lock state, source SHA-256, and normalized model
+  fingerprint; and
+- a deterministic `Download draft JSON` action.
 
 Drafts are isolated by program and device profile and survive source/device
 switching while the HTML page remains open. The editor never writes to disk,
-embeds no licensed audio, and currently offers no download/export action. The
-assignment preview is the contract intended for the next manifest-export
-slice.
+embeds no licensed audio, and only downloads a portable JSON draft when asked.
+It never writes an XPM in the browser.
+
+## Validate and export a layout draft
+
+Treat the downloaded JSON as a proposal, not an instrument. The separate CLI
+requires the exact source file and device profile before it will write any
+artifact:
+
+```bash
+uv run mpc-layout-draft inspect downloaded-layout-draft.json \
+  --source "/exact/path/to/Source.xpm" \
+  --device devices/mpc-key-37.toml
+```
+
+Validation requires matching source-file and normalized-model SHA-256 hashes,
+program and device identity, a complete one-to-one source-zone assignment,
+correct device slot labels, and unchanged source metadata for every zone.
+Duplicate, missing, out-of-range, stale, or tampered assignments are refused.
+If the viewer was generated with `--roles`, pass that same overrides file to
+`mpc-layout-draft --roles` so the normalized fingerprints remain identical.
+
+Export a reusable Drum builder manifest from either a source manifest or XPM:
+
+```bash
+uv run mpc-layout-draft manifest downloaded-layout-draft.json \
+  --source inventory/source-kit.toml \
+  --device devices/mpc-key-37.toml \
+  --output work/layouts/source-kit-right-handed.toml \
+  --name "Source Kit Right Handed"
+```
+
+The builder manifest preserves placement, sample layers, velocity ranges, and
+mute groups. The current manifest schema does not encode pad colors or editor
+locks, so those remain recorded in the draft JSON.
+
+Only an exact XPM source can produce an XPM export:
+
+```bash
+uv run mpc-layout-draft xpm downloaded-layout-draft.json \
+  --source "/exact/path/to/Source.xpm" \
+  --device devices/mpc-key-37.toml \
+  --output work/layouts/Source-Kit-Right-Handed.xpm \
+  --name "Source Kit Right Handed"
+```
+
+This command delegates to the tested record-permutation exporter. Its
+independent post-write verifier requires a complete instrument-record
+bijection, unchanged sample-layer count and global settings, the requested
+name, exact placement, and only the explicitly declared color edits. In-place
+source modification and accidental output replacement are refused.
 
 ## Keygroup viewer
 
@@ -158,6 +208,10 @@ unchanged.
   lock-preserving mirror, right-handed semantic layout, undo/redo, reset, and
   per-device draft-isolation checks. Assignment count remained 64 and the
   original manifest remained byte-identical.
+- The same 64-pad program produced a deterministic, fingerprinted download
+  payload after a swap and recolor with zero browser warnings. Draft validation,
+  manifest re-import, XML XPM record permutation, explicit color override, and
+  stale/tampered-source rejection are covered by automated tests.
 
 Generated HTML/JSON belongs under ignored `work/` storage. Licensed audio and
 generated XPMs remain outside Git.

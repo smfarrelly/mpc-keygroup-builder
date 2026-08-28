@@ -142,6 +142,43 @@ class LayoutExportTests(unittest.TestCase):
             self.assertEqual(data["unknownGlobal"], {"keep": True})
             self.assertEqual(report.source_format, "gzip-json")
 
+    def test_explicit_color_override_is_verified(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, output = root / "Source.xpm", root / "Output.xpm"
+            self._xml_program(source)
+            report = export_layout(
+                source,
+                output,
+                self._plan(),
+                name="Kit Recolored",
+                color_overrides={1: 0xABCDEF},
+            )
+            colors = json.loads(
+                ET.parse(output).getroot().findtext("./Program/ProgramPads")
+            )["ProgramPads"]["pads"]
+            self.assertEqual(colors["value0"], 0xABCDEF)
+            self.assertEqual(report.color_overrides, 1)
+            self.assertTrue(report.colors_follow_records)
+
+    def test_compressed_explicit_color_override_is_verified(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, output = root / "Source.xpm", root / "Output.xpm"
+            self._compressed_program(source)
+            report = export_layout(
+                source,
+                output,
+                self._plan(),
+                name="Kit Recolored",
+                color_overrides={1: 0xABCDEF},
+            )
+            raw = gzip.decompress(output.read_bytes())
+            colors = json.loads(raw[raw.find(b"{") :])["data"]["programPads"]["pads"]
+            self.assertEqual(colors["value0"], 0xABCDEF)
+            self.assertEqual(report.color_overrides, 1)
+            self.assertTrue(report.colors_follow_records)
+
     def test_refuses_in_place_and_existing_outputs(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

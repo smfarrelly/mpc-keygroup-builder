@@ -36,6 +36,7 @@ class ExportReport:
     instrument_records: int
     preserved_sample_layers: int
     preserved_colors: int
+    color_overrides: int
     record_bijection: bool
     colors_follow_records: bool
     global_settings_unchanged: bool
@@ -222,7 +223,13 @@ def _atomic_write(path: Path, payload: bytes, *, force: bool) -> None:
 
 
 def _export_xml(
-    source: Path, output: Path, permutation: dict[int, int], name: str, *, force: bool
+    source: Path,
+    output: Path,
+    permutation: dict[int, int],
+    name: str,
+    *,
+    color_overrides: dict[int, int | None],
+    force: bool,
 ) -> None:
     tree = ET.parse(source)
     root = tree.getroot()
@@ -246,7 +253,7 @@ def _export_xml(
         instrument = records[permutation[destination]]
         instrument.set("number", str(destination))
         instruments_node.append(instrument)
-        color = source_colors[permutation[destination]]
+        color = color_overrides.get(destination, source_colors[permutation[destination]])
         key = f"value{destination - 1}"
         if color is None:
             pads.pop(key, None)
@@ -263,7 +270,13 @@ def _export_xml(
 
 
 def _export_compressed(
-    source: Path, output: Path, permutation: dict[int, int], name: str, *, force: bool
+    source: Path,
+    output: Path,
+    permutation: dict[int, int],
+    name: str,
+    *,
+    color_overrides: dict[int, int | None],
+    force: bool,
 ) -> None:
     prefix, document = _read_compressed(source)
     data = document["data"]
@@ -276,7 +289,7 @@ def _export_compressed(
         for destination in range(1, len(instruments) + 1)
     ]
     for destination in range(1, len(instruments) + 1):
-        color = source_colors[permutation[destination]]
+        color = color_overrides.get(destination, source_colors[permutation[destination]])
         key = f"value{destination - 1}"
         if color is None:
             pads.pop(key, None)
@@ -293,6 +306,7 @@ def export_layout(
     plan: LayoutPlan,
     *,
     name: str,
+    color_overrides: dict[int, int | None] | None = None,
     force: bool = False,
 ) -> ExportReport:
     if source.resolve() == output.resolve():
@@ -301,11 +315,36 @@ def export_layout(
     if len(before.records) != 128 or set(before.records) != set(range(1, 129)):
         raise ValueError("layout export requires exactly 128 Drum instrument records")
     permutation = _permutation(plan, len(before.records))
+    overrides = dict(color_overrides or {})
+    if any(not 1 <= slot <= len(before.records) for slot in overrides):
+        raise ValueError("color override slots must be within 1..128")
+    if any(color is not None and not 0 <= color <= 0xFFFFFF for color in overrides.values()):
+        raise ValueError("color overrides must be RGB integers or null")
     if before.container == "xml":
-        _export_xml(source, output, permutation, name, force=force)
+        _export_xml(
+            source,
+            output,
+            permutation,
+            name,
+            color_overrides=overrides,
+            force=force,
+        )
     else:
-        _export_compressed(source, output, permutation, name, force=force)
-    return verify_layout_export(source, output, plan, expected_name=name)
+        _export_compressed(
+            source,
+            output,
+            permutation,
+            name,
+            color_overrides=overrides,
+            force=force,
+        )
+    return verify_layout_export(
+        source,
+        output,
+        plan,
+        expected_name=name,
+        color_overrides=overrides,
+    )
 
 
 def verify_layout_export(
@@ -314,12 +353,14 @@ def verify_layout_export(
     plan: LayoutPlan,
     *,
     expected_name: str | None = None,
+    color_overrides: dict[int, int | None] | None = None,
 ) -> ExportReport:
-    """Independently verify that only name and record/color placement changed."""
+    """Independently verify that only name, placement, and declared colors changed."""
     before = _shape(source)
     if len(before.records) != 128 or set(before.records) != set(range(1, 129)):
         raise ValueError("layout verification requires exactly 128 Drum instrument records")
     permutation = _permutation(plan, len(before.records))
+    overrides = dict(color_overrides or {})
     after = _shape(output)
     if after.container != before.container:
         raise ValueError("export changed the XPM container format")
@@ -330,14 +371,14 @@ def verify_layout_export(
         for destination, source_index in permutation.items()
     )
     colors_follow = all(
-        after.colors[destination] == before.colors[source_index]
+        after.colors[destination] == overrides.get(destination, before.colors[source_index])
         for destination, source_index in permutation.items()
     )
     globals_unchanged = after.global_value == before.global_value
     if not record_bijection:
         raise ValueError("instrument records changed during layout export")
     if not colors_follow:
-        raise ValueError("pad colors did not follow their instrument records")
+        raise ValueError("pad colors did not match the declared layout colors")
     if not globals_unchanged:
         raise ValueError("non-layout program settings changed during export")
     if after.sample_layers != before.sample_layers:
@@ -355,6 +396,7 @@ def verify_layout_export(
         len(before.records),
         before.sample_layers,
         sum(value is not None for value in before.colors.values()),
+        len(overrides),
         record_bijection,
         colors_follow,
         globals_unchanged,
