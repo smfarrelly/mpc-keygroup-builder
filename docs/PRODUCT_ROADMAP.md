@@ -343,9 +343,15 @@ Implement deterministic, seed-reproducible generators in this order:
   at 480 PPQ; format 0 remains an explicit compatibility option.
 - [x] A real source/Classic comparison preserves events and velocities while
   changing the moved snare's MIDI note.
+- [x] TOML harmony recipes generate deterministic scale-degree progressions,
+  explicit harmonic rhythm, range-safe three- or four-note voice-led chords,
+  and chord-following bass patterns.
+- [x] Chords and Bass render as named tracks in format-1 MIDI, with a JSON
+  receipt containing every voicing, event, seed, and useful-range decision.
 
-Format-1 hardware import and qualified musical acceptance pass on MPC 3.9.1.2;
-chords, bass, and melody generators are not yet implemented.
+Format-1 drum import and qualified musical acceptance pass on MPC 3.9.1.2.
+Chord and bass generation is implemented and computer-tested; its hardware
+import remains deliberately deferred. Melody generation remains next.
 
 Later controls include density, swing, syncopation, octave range, harmonic
 adventurousness, repetition, and variation. Generated events must resolve

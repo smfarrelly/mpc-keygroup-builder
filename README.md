@@ -40,6 +40,18 @@ descriptive hardware findings: practical strengths, routing behavior, program
 compatibility, storage lessons, external MIDI results, and explicitly deferred
 acceptance work.
 
+Generate deterministic, range-safe Chords and Bass MIDI tracks from a reusable
+TOML recipe:
+
+```bash
+uv run mpc-harmony-idea recipes/harmony/dusty-dorian.toml \
+  --seed 37 --tempo 92 --output-prefix work/ideas/dusty-dorian-37
+```
+
+The format-1 MIDI contains Conductor, Chords, and Bass tracks; a companion JSON
+file records the exact voicings and events. See [Creative MIDI
+generators](docs/creative-midi.md) for recipe controls and bundled styles.
+
 ## License
 
 The source code is available under the [MIT License](LICENSE). Sample libraries,

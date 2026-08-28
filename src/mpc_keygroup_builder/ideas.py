@@ -5,7 +5,6 @@ from __future__ import annotations
 import argparse
 import json
 import random
-import struct
 import tomllib
 from dataclasses import asdict, dataclass, replace
 from pathlib import Path
@@ -13,6 +12,7 @@ from pathlib import Path
 from .device import load_device
 from .layout import LayoutPlan, arrange, load_preset
 from .model import ProgramModel, Zone, from_xpm
+from .midi_writer import MidiNote, MidiTrack, render_standard_midi
 from .roles import load_role_overrides, role_matches
 
 
@@ -268,62 +268,25 @@ def generate_idea(
     )
 
 
-def _variable_length(value: int) -> bytes:
-    buffer = value & 0x7F
-    result = bytearray([buffer])
-    while value >> 7:
-        value >>= 7
-        buffer = (value & 0x7F) | 0x80
-        result.insert(0, buffer)
-    return bytes(result)
-
-
-def _render_midi_track(timeline: list[tuple[int, int, bytes]]) -> bytes:
-    timeline.sort(key=lambda item: (item[0], item[1]))
-    track = bytearray()
-    previous = 0
-    for tick, _, message in timeline:
-        track.extend(_variable_length(tick - previous))
-        track.extend(message)
-        previous = tick
-    return b"MTrk" + struct.pack(">I", len(track)) + bytes(track)
-
-
 def render_midi(idea: DrumIdea, *, midi_format: int = 1) -> bytes:
-    if midi_format not in (0, 1):
-        raise ValueError("MIDI format must be 0 or 1")
-
-    channel = idea.channel - 1
-    tempo_microseconds = round(60_000_000 / idea.tempo)
-    name = f"{idea.recipe} seed {idea.seed}".encode("utf-8")[:127]
     end_tick = idea.bars * 4 * idea.ppq
-    conductor = [
-        (0, 0, b"\xff\x03\x09Conductor"),
-        (0, 1, b"\xff\x51\x03" + tempo_microseconds.to_bytes(3, "big")),
-        (0, 2, b"\xff\x58\x04\x04\x02\x18\x08"),
-        (end_tick, 3, b"\xff\x2f\x00"),
-    ]
-    notes = [(0, 0, b"\xff\x03" + _variable_length(len(name)) + name)]
-    for event in idea.events:
-        notes.append(
-            (event.tick, 2, bytes([0x90 | channel, event.midi_note, event.velocity]))
+    notes = tuple(
+        MidiNote(
+            event.tick,
+            event.duration_ticks,
+            event.midi_note,
+            event.velocity,
+            idea.channel,
         )
-        notes.append(
-            (
-                event.tick + event.duration_ticks,
-                1,
-                bytes([0x80 | channel, event.midi_note, 0]),
-            )
-        )
-    notes.append((end_tick, 3, b"\xff\x2f\x00"))
-
-    if midi_format == 0:
-        timeline = conductor[1:-1] + notes
-        header = b"MThd" + struct.pack(">IHHH", 6, 0, 1, idea.ppq)
-        return header + _render_midi_track(timeline)
-
-    header = b"MThd" + struct.pack(">IHHH", 6, 1, 2, idea.ppq)
-    return header + _render_midi_track(conductor) + _render_midi_track(notes)
+        for event in idea.events
+    )
+    return render_standard_midi(
+        (MidiTrack(f"{idea.recipe} seed {idea.seed}", notes),),
+        tempo=idea.tempo,
+        ppq=idea.ppq,
+        end_tick=end_tick,
+        midi_format=midi_format,
+    )
 
 
 def main() -> int:

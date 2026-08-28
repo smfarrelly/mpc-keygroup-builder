@@ -42,6 +42,7 @@ mpc-rig = "mpc_keygroup_builder.rig:main"
 mpc-library = "mpc_keygroup_builder.library:main"
 mpc-catalog = "mpc_keygroup_builder.catalog:main"
 mpc-drum-idea = "mpc_keygroup_builder.ideas:main"
+mpc-harmony-idea = "mpc_keygroup_builder.harmony:main"
 mpc-session-report = "mpc_keygroup_builder.session:main"
 mpc-plugin-audit = "mpc_keygroup_builder.plugin_audit:main"
 
