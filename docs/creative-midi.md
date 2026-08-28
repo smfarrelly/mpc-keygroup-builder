@@ -82,3 +82,27 @@ The expanded family adds `funk-scratchpad`, `house-scratchpad`, and
 figure, and motif rather than a cosmetic preset rename.
 These are musical starting points rather than claims of MPC project-file
 generation; import and listening remain explicit hardware gates.
+
+## Arrangement outlines
+
+Turn one generated four-bar idea into five separately importable sequence
+candidates without guessing MPC project serialization:
+
+```bash
+uv run mpc-arrange-idea recipes/workstation/dusty-scratchpad.toml \
+  --program "/full/path/to/Vinyl SP From Mars 01.xpm" \
+  --seed 37 --arrangement-seed 1037 --tempo 92 --mutation 0.2 \
+  --lock-track chords \
+  --output-dir work/arrangements/dusty-37
+```
+
+The output contains Main, Main B, Breakdown, Build, and Outro MIDI files plus a
+JSON manifest and loading guide. Main is the exact source idea. Main B changes
+only velocity on an exact seeded percentage of unlocked events. Breakdown
+reduces rhythmic density, Build applies a velocity ramp without changing notes
+or timing, and Outro reprises the first half before leaving space. A locked
+track is copied byte-for-event through every section.
+
+Every derived event keeps a stable source ID and action label. Omitted source
+IDs and the entire base idea remain in JSON, so transformations are auditable,
+reproducible, and reversible rather than destructive edits to an MPC project.

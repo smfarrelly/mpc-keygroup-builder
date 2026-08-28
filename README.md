@@ -57,6 +57,11 @@ Chords, and Melody tracks using `mpc-workstation-idea`. It also writes a JSON
 reproduction record and a human-readable MPC loading guide; see the Creative
 MIDI documentation for the full command.
 
+`mpc-arrange-idea` expands a generated idea into traceable Main, Main B,
+Breakdown, Build, and Outro MIDI sequence candidates. Seeded velocity mutation,
+track locks, source IDs, and omitted-event evidence keep the operation
+reproducible and reversible.
+
 ## License
 
 The source code is available under the [MIT License](LICENSE). Sample libraries,

@@ -397,6 +397,16 @@ recoverable project that reaches first playable sound in under one minute.
 - Preserve locked tracks, notes, pads, and user performances.
 - Make every mutation reversible and reproducible by seed.
 
+### Software foundation delivered
+
+- [x] A four-part idea expands into separately importable Main, Main B,
+  Breakdown, Build, and Outro format-1 MIDI files.
+- [x] Main B mutates only velocity for an exact seeded percentage of unlocked
+  events; Build ramps velocity without moving notes or timing.
+- [x] Track locks preserve their source events through every section.
+- [x] Stable source IDs, action labels, omitted IDs, and the complete base idea
+  make each arrangement auditable and reversible in JSON.
+
 **Exit gate:** A useful four-bar idea becomes a coherent multi-sequence song
 outline without editing a computer timeline.
 
