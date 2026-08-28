@@ -1,0 +1,10 @@
+schema_version = 1
+id = "warm"
+name = "Warm"
+description = "Darker filter candidate with a small resonant contour."
+
+[parameters]
+amp_attack = 0.02
+amp_release = 0.12
+filter_cutoff = 0.65
+filter_resonance = 0.08

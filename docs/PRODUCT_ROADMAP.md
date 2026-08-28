@@ -2,7 +2,7 @@
 
 **Status:** Active
 
-**Current milestone:** v0.3 — MPC Program Designer
+**Current milestone:** v0.4 — Expressive Instrument Factory
 
 **Primary hardware:** Akai MPC Key 37
 
@@ -221,14 +221,36 @@ bank, export it, and load the result on hardware without manually editing XML.
 
 ## v0.4 — Expressive Instrument Factory
 
-- Preserve the current reliable Keygroup mapping path.
+- [x] Preserve the current reliable Keygroup mapping path with raw-document
+  copy-on-write export and independent allowlist verification.
+- [x] Add a strict declarative Clean/Warm/Pad/Pluck/Bass/Lo-Fi candidate schema
+  and a one-command, self-contained multi-variant hardware package.
 - Improve root-note and useful-range inference.
-- Preserve and validate velocity layers, loops, envelopes, filters, polyphony,
-  and Q-Link-facing parameters.
-- Generate purposeful variants such as Clean, Warm, Pad, Pluck, Bass, and
-  Lo-Fi from a single normalized source instrument.
+- [x] Preserve and validate velocity layers, loops, filters, sample registries,
+  unknown settings, and Q-Link mappings while changing proven envelope/filter
+  values. Polyphony editing remains deliberately unsupported pending evidence.
+- [ ] Hardware-rank the first purposeful variants and promote only accepted
+  settings from candidate to production status.
 - Add Clip/slice output only after loop tempo, launch, mute, and transition
   behavior has a hardware-tested design.
+
+**Preservation-first slice delivered August 27, 2026:**
+`mpc-keygroup-variant` inspects MPC 3 compressed Keygroups, accepts only twelve
+documented transpose/envelope/filter controls, updates the three matching stock
+Q-Link control values, and rejects unsupported parameters. Export is never
+in-place. Every companion audio file is copied and checksum-verified, while an
+independent full-document comparison proves that zones, velocity layers, loops,
+roots, effects, registries, and unknown fields changed only where declared.
+Clean, Warm, Pad, Pluck, Bass, and Lo-Fi specs are software candidates rather
+than claims of hardware-approved musical values.
+
+The first real package uses the hardware-accepted Mirage Wurli: six candidates,
+74 instrument records and layers per candidate, 73 registry/audio files per
+candidate, byte-identical serialization prefixes, checksum-identical audio, and
+zero new semantic issues. Each candidate inherits the source's two outer-range
+extrapolation warnings; all 128 notes remain covered with no dead or stacked
+velocity cells. The 410 MiB ignored package is ready locally for a later SD
+deployment and listening pass.
 
 **Exit gate:** One source instrument produces at least three musically distinct,
 validated variants, and one loop collection produces a useful MPC-native

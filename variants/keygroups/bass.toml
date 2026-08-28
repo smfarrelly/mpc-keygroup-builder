@@ -1,0 +1,11 @@
+schema_version = 1
+id = "bass"
+name = "Bass"
+description = "One-octave-down, darker candidate for bass-register audition."
+
+[parameters]
+transpose = -12
+amp_attack = 0.0
+amp_release = 0.10
+filter_cutoff = 0.55
+filter_resonance = 0.08

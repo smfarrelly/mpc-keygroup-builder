@@ -624,6 +624,40 @@ small integration regression, not a new layout-engine hardware gate.
 
 `SD Card / 00 FG Hardware Tests / Clip Reference / 080 Black Phase Vinyl Breaks Clean.wav`
 
+## 7B. Deferred: Wurli expressive Keygroup candidates
+
+Prepared locally on August 27, 2026; not yet deployed because the SD was
+mounted read-only during this unattended slice.
+
+Local package:
+`/home/steve-farrelly/Projects/mpc-keygroup-builder/work/hardware-candidates/wurli-expressive-01`
+
+Planned shallow MPC location after deployment:
+`SD Card / 00 FG Scratchpad / 08 Expressive Candidates / Wurli Expressive 01`
+
+Software preservation passes for all six candidates. Each contains 74
+instrument/layer records and 73 checksum-identical ProgramData WAVs. Semantic
+simulation covers all 128 notes with no dead or stacked cells and no new
+issues. The two outer-range warnings are inherited unchanged from the accepted
+Wurli source.
+
+- [ ] Load `Wurli Clean.xpm` as the level-matched source reference.
+- [ ] Compare `Wurli Warm.xpm`: darkness, resonance, attack, and release.
+- [ ] Compare `Wurli Pad.xpm`: chord onset, held texture, release tail, and
+  voice buildup.
+- [ ] Compare `Wurli Pluck.xpm`: transient clarity, decay, useful note length,
+  and repeated-note behavior.
+- [ ] Compare `Wurli Bass.xpm`: confirm the saved octave change, playable
+  register, and whether it adds value beyond Pluck Bass/Sub Smooth.
+- [ ] Compare `Wurli Lo-Fi.xpm`: confirm the darker sound remains useful rather
+  than merely muffled.
+- [ ] On Warm, Pad, and Lo-Fi, move Attack and Cutoff Q-Links and check their
+  initial position, pickup, range, and absence of jumps.
+- [ ] Save/reload the strongest three and confirm program identity, audio,
+  envelopes, filter, transpose where applicable, and Q-Links persist.
+- [ ] Record pass/warn/fail and concise listening notes; promote only genuinely
+  distinct, reusable profiles.
+
 ## 8. Waiting on or using external hardware
 
 ### Volca Jam

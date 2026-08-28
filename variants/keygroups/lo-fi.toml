@@ -1,0 +1,10 @@
+schema_version = 1
+id = "lo-fi"
+name = "Lo-Fi"
+description = "Strongly darkened filter candidate; no invented effects chain."
+
+[parameters]
+amp_attack = 0.01
+amp_release = 0.16
+filter_cutoff = 0.38
+filter_resonance = 0.14

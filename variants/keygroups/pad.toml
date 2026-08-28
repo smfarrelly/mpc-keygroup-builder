@@ -1,0 +1,12 @@
+schema_version = 1
+id = "pad"
+name = "Pad"
+description = "Slow attack and long release candidate for sustained chords."
+
+[parameters]
+amp_attack = 0.35
+amp_decay = 0.75
+amp_sustain = 0.85
+amp_release = 0.55
+filter_cutoff = 0.72
+filter_resonance = 0.10

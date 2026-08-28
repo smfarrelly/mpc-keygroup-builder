@@ -913,6 +913,21 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   locks. The accepted 28-note `dusty-pocket` file mapped completely across
   seven sounds in the 64-pad layered XPM; browser toggle, apply, undo, and
   uniqueness checks passed with no console warnings.
+- Started v0.4 with a preservation-first expressive Keygroup exporter. A strict
+  TOML allowlist changes proven MPC 3 transpose, amp/filter envelope, cutoff,
+  and resonance fields, while the complete raw source document and companion
+  audio remain the authority. Independent verification rejects any undeclared
+  document change or ProgramData checksum mismatch. Clean, Warm, Pad, Pluck,
+  Bass, and Lo-Fi candidate specs can be packaged together in one command;
+  their musical values remain pending Key 37 listening rather than being
+  silently promoted from software inspection.
+- Exercised that exporter against the accepted Mirage Wurli. The ignored local
+  package contains six self-contained candidates and 438 checksum-verified
+  ProgramData copies. All candidates retain 74 instrument/layer records, 73
+  registry entries, full 128-note coverage, and no dead or stacked cells. They
+  introduce no semantic issues; the two reported outer-register extrapolation
+  warnings are identical to the accepted source and remain clearly labeled as
+  inherited rather than new variant failures.
 
 ## 16. Reference material
 

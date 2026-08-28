@@ -1,0 +1,6 @@
+schema_version = 1
+id = "clean"
+name = "Clean"
+description = "Unchanged reference voice for level-matched comparison."
+
+[parameters]

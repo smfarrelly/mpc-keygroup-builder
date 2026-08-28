@@ -244,6 +244,26 @@ usage heat, hit/velocity summaries, unmapped-note reporting, and reversible
 right- or left-hand usage-compaction suggestions. See
 [MPC Program Designer](docs/program-designer.md).
 
+## Expressive Keygroup variants
+
+`mpc-keygroup-variant` creates self-contained, source-preserving candidates from
+an MPC 3 compressed Keygroup. It changes only a strict declarative allowlist,
+copies the matching ProgramData folder, and independently verifies the complete
+output document plus every audio checksum. Six starting specifications live in
+`variants/keygroups/`; their musical settings remain listening candidates until
+accepted on hardware.
+
+```bash
+uv run mpc-keygroup-variant package "/path/to/Wurli.xpm" \
+  --spec variants/keygroups/clean.toml \
+  --spec variants/keygroups/warm.toml \
+  --spec variants/keygroups/pad.toml \
+  --output work/wurli-expressive
+```
+
+See [Expressive Keygroup variants](docs/keygroup-variants.md) for the schema,
+preservation contract, supported parameters, and hardware listening protocol.
+
 ## Metadata catalog
 
 `mpc-catalog build` combines the existing hardware ledger with normalized XPM
