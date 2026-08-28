@@ -33,6 +33,23 @@ Use `--midi-format 0` only when testing a legacy importer. The JSON includes
 each chosen voicing, scale degree, beat position, range, note, duration, and
 velocity. Hardware import remains a separate acceptance gate.
 
+## Melody motifs
+
+Generate a scale-safe motif with controlled repetition and variation:
+
+```bash
+uv run mpc-melody-idea recipes/melody/dusty-answer.toml \
+  --seed 37 --tempo 92 \
+  --output-prefix work/ideas/dusty-answer-37
+```
+
+The motif declares an onset rhythm and a contour in scale steps. The first pass
+is literal; later repetitions can substitute neighboring scale tones, move a
+note by an octave, or leave a deliberate rest. All decisions are seeded and
+recorded as `repeat`, `neighbor`, `octave`, or a combination in JSON. The
+declared note range is a hard boundary. `dusty-answer`, `ambient-drift`, and
+`electro-hook` provide matching counterparts to the harmony recipe families.
+
 ## Semantic drums
 
 `mpc-drum-idea` remains the drum counterpart. It addresses roles such as

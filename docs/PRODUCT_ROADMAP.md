@@ -348,10 +348,14 @@ Implement deterministic, seed-reproducible generators in this order:
   and chord-following bass patterns.
 - [x] Chords and Bass render as named tracks in format-1 MIDI, with a JSON
   receipt containing every voicing, event, seed, and useful-range decision.
+- [x] Scale-safe motif recipes preserve a recognizable first pass and apply
+  seeded neighbor, octave, and rest variations on later repetitions, with hard
+  note-range enforcement and per-event JSON evidence.
 
 Format-1 drum import and qualified musical acceptance pass on MPC 3.9.1.2.
-Chord and bass generation is implemented and computer-tested; its hardware
-import remains deliberately deferred. Melody generation remains next.
+Chord, bass, and melody generation is implemented and computer-tested; their
+hardware import remains deliberately deferred. A combined four-part idea
+bundle is the remaining v0.6 integration step.
 
 Later controls include density, swing, syncopation, octave range, harmonic
 adventurousness, repetition, and variation. Generated events must resolve
