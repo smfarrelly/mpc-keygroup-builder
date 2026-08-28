@@ -177,7 +177,7 @@ Start with a local, read-only viewer and add editing in small usable releases:
 4. [x] Emit self-contained HTML and machine-readable JSON without changing the
    source; accept declarative device profiles at generation time.
 5. [x] Add in-view source/device switching and side-by-side comparison.
-6. [ ] Add drag/drop rearrangement, locked pads, palette editing, handedness
+6. [x] Add drag/drop rearrangement, locked pads, palette editing, handedness
    conversion, and layout comparison.
 7. [ ] Export a manifest first; export a validated XPM only through the tested
    engine used by the CLI.
@@ -195,6 +195,12 @@ device arguments now create one self-contained viewer with toolbar switching,
 bank-aware side-by-side program alignment, changed-field labels, summary
 deltas, and the same deterministic comparisons in JSON. The reusable device
 library now also includes an Akai-specification-backed MPC Key 61 profile.
+
+**Layout draft slice delivered August 27, 2026:** Drum viewers now support
+isolated in-memory drafts with drag or accessible click-to-move swaps, position
+locks, pad colors, bank mirroring, reusable semantic presets, undo/redo,
+bank/all reset, source-versus-draft comparison, and deterministic assignment
+JSON. No browser action writes or exports a source or audio file.
 
 **Exit gate:** A user can inspect a kit, create a handed layout, preview every
 bank, export it, and load the result on hardware without manually editing XML.

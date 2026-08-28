@@ -894,6 +894,12 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   comparisons. Comparison JSON records changed locations and fields plus
   zone, layer, warning, and error deltas; the bundled UI never accesses or
   rewrites source files. Added an Akai-specification-backed Key 61 profile.
+- Added a source-safe Drum layout workspace using the existing reusable preset
+  definitions. It supports cross-bank drag/click swaps, position locks, pad
+  colors, bank mirroring, handed semantic layouts, undo/redo and resets,
+  source-versus-draft comparison, and deterministic assignment preview. Drafts
+  remain in memory and isolated per program/device; export stays a separate
+  explicitly validated step.
 
 ## 16. Reference material
 

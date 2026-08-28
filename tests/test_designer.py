@@ -127,6 +127,9 @@ class ProgramDesignerTests(unittest.TestCase):
         self.assertIn("const BUNDLE=", rendered)
         self.assertIn('id="program-select"', rendered)
         self.assertIn('id="comparison-panel"', rendered)
+        self.assertIn('id="editor-panel"', rendered)
+        self.assertIn('id="edit-toggle"', rendered)
+        self.assertIn("Draft only · source unchanged", rendered)
         self.assertNotIn("Kit </script><script>alert(1)</script>", rendered)
         self.assertNotIn("https://", rendered)
 
@@ -154,7 +157,7 @@ class ProgramDesignerTests(unittest.TestCase):
                 self.assertEqual(designer.main(), 0)
             self.assertEqual(source.read_bytes(), before)
             self.assertTrue(output.is_file())
-            self.assertIn("Read only", output.read_text(encoding="utf-8"))
+            self.assertIn("source unchanged", output.read_text(encoding="utf-8"))
 
     def test_bundle_renders_each_program_and_device_with_pairwise_comparisons(self):
         first = model.ProgramModel(
@@ -177,12 +180,14 @@ class ProgramDesignerTests(unittest.TestCase):
         key_61 = DeviceProfile(
             1, "mpc-key-61", "Akai MPC Key 61", 61, 4, 4, tuple("ABCDEFGH")
         )
+        layout = designer.load_preset(self.root / "layouts/right-handed-performance.toml")
         bundle = designer.build_view_bundle(
-            [(first, None), (second, None)], [self.device, key_61]
+            [(first, None), (second, None)], [self.device, key_61], [layout]
         )
         self.assertEqual(bundle["schema_version"], 2)
         self.assertEqual([item["id"] for item in bundle["programs"]], ["kit", "kit-2"])
         self.assertEqual(set(bundle["views"]["kit"]), {"mpc-key-37", "mpc-key-61"})
+        self.assertEqual(bundle["layouts"][0]["id"], "right-handed-performance")
         comparison = bundle["comparisons"]["mpc-key-37"]["kit"]["kit-2"]
         self.assertEqual(comparison["summary"]["changed_locations"], 2)
         self.assertEqual(comparison["summary"]["right_only"], 1)
@@ -214,6 +219,8 @@ class ProgramDesignerTests(unittest.TestCase):
                     str(self.root / "devices/mpc-key-37.toml"),
                     "--device",
                     str(device),
+                    "--layout",
+                    str(self.root / "layouts/right-handed-performance.toml"),
                     "--format",
                     "json",
                     "--output",
@@ -225,6 +232,7 @@ class ProgramDesignerTests(unittest.TestCase):
             self.assertEqual(payload["schema_version"], 2)
             self.assertEqual(len(payload["programs"]), 2)
             self.assertEqual(len(payload["devices"]), 2)
+            self.assertEqual(payload["layouts"][0]["id"], "right-handed-performance")
             self.assertEqual((first.read_bytes(), second.read_bytes()), before)
 
 

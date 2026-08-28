@@ -233,7 +233,9 @@ The Program Designer switches Drum Banks A–H, renders the physical 4-by-4 pad
 surface, displays layers, colors, roles, MIDI notes, playback and mute groups,
 and reports sample or velocity problems. Keygroups receive a movable 37-note
 range viewer. Repeat `--compare` and `--device` to bundle multiple sources and
-hardware profiles with in-view switching and side-by-side comparison. See
+hardware profiles with in-view switching and side-by-side comparison. Repeat
+`--layout` to add a source-safe Drum layout workspace with swaps, locks, color
+editing, handed presets, undo/redo, and source-versus-draft inspection. See
 [MPC Program Designer](docs/program-designer.md).
 
 ## Metadata catalog

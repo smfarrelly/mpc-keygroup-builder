@@ -13,6 +13,7 @@ from statistics import median
 from typing import Any
 
 from .device import DeviceProfile, load_device
+from .layout import LayoutPreset, load_preset
 from .model import ProgramModel, Zone, from_drum_manifest, from_xpm
 from .roles import load_role_overrides
 
@@ -452,6 +453,7 @@ def compare_view_data(left: dict[str, Any], right: dict[str, Any]) -> dict[str, 
 def build_view_bundle(
     programs: list[tuple[ProgramModel, Path | None]],
     devices: list[DeviceProfile],
+    layouts: list[LayoutPreset] | None = None,
 ) -> dict[str, Any]:
     """Render every requested program/device combination into a portable bundle."""
     if not programs:
@@ -513,6 +515,7 @@ def build_view_bundle(
         "devices": [
             {"id": item["id"], "name": item["name"]} for item in device_items
         ],
+        "layouts": [asdict(layout) for layout in (layouts or [])],
         "views": views,
         "comparisons": comparisons,
     }
@@ -540,6 +543,10 @@ HTML_TEMPLATE = r'''<!doctype html>
     .control label { color:var(--muted); font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
     .control select { color:var(--text); border:1px solid var(--line); background:#11151a; border-radius:9px; padding:8px 10px; }
     .toolbar-note { color:var(--muted); margin-left:auto; padding:8px 4px; }
+    .action { color:var(--text); border:1px solid var(--line); background:#11151a; border-radius:9px; padding:8px 11px; cursor:pointer; }
+    .action:hover,.action:focus-visible { border-color:#687483; outline:none; }
+    .action.primary { border-color:#725b26; background:#352a16; color:#ffd579; }
+    .action:disabled { cursor:default; opacity:.42; }
     .chips { display:flex; flex-wrap:wrap; gap:9px; margin:0 0 22px; }
     .chip { padding:7px 10px; border:1px solid var(--line); border-radius:999px; background:#12161b; color:#dbe1e7; }
     .layout { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(320px,.65fr); gap:20px; align-items:start; }
@@ -556,6 +563,10 @@ HTML_TEMPLATE = r'''<!doctype html>
     .pad:hover,.pad:focus-visible { transform:translateY(-2px); border-color:white; box-shadow:0 10px 28px rgba(0,0,0,.35); outline:none; }
     .pad.selected { border-color:var(--accent); box-shadow:0 0 0 3px rgba(243,179,61,.22); }
     .pad.empty { cursor:default; opacity:.28; background:#222830!important; }
+    .pad.editable { cursor:grab; }
+    .pad.editable:active { cursor:grabbing; }
+    .pad.move-target { cursor:copy; outline:2px dashed var(--info); outline-offset:-7px; }
+    .pad.locked { background-image:repeating-linear-gradient(135deg,transparent,transparent 12px,rgba(0,0,0,.13) 12px,rgba(0,0,0,.13) 18px)!important; }
     .pad-label { font-weight:900; letter-spacing:.06em; }
     .pad-role { display:block; margin-top:22px; font-size:13px; font-weight:750; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
     .pad-sample { display:block; margin-top:4px; font-size:11px; opacity:.82; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
@@ -591,6 +602,22 @@ HTML_TEMPLATE = r'''<!doctype html>
     .zone-card:hover { border-color:#687483; }
     .zone-card strong { display:block; }
     .zone-card span { color:var(--muted); }
+    .editor { margin-top:20px; }
+    .editor-toolbar { display:flex; flex-wrap:wrap; gap:9px; align-items:end; }
+    .editor-toolbar .control { min-width:220px; }
+    .editor-note { color:var(--muted); margin:12px 0 0; }
+    .selection-editor { border-top:1px solid var(--line); margin-top:18px; padding-top:16px; display:grid; gap:10px; }
+    .selection-editor label { color:var(--muted); font-size:12px; }
+    .color-row { display:flex; gap:10px; align-items:center; }
+    .color-row input { width:52px; height:34px; padding:2px; border:1px solid var(--line); border-radius:8px; background:#11151a; }
+    .draft-layout { display:grid; grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr); gap:16px; margin-top:18px; }
+    .draft-json { max-height:360px; overflow:auto; margin:0; padding:13px; border:1px solid var(--line); border-radius:11px; background:#0c1014; color:#b8d8c2; font:12px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace; white-space:pre-wrap; overflow-wrap:anywhere; }
+    .draft-grid { display:grid; gap:7px; }
+    .draft-row { display:grid; grid-template-columns:62px minmax(0,1fr) minmax(0,1fr); gap:8px; }
+    .draft-row.changed .compare-location { color:#ffd579; border-color:#725b26; background:#2b2414; }
+    .draft-card { padding:9px 10px; border:1px solid var(--line); background:#12161b; border-radius:9px; overflow:hidden; }
+    .draft-card strong,.draft-card span { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .draft-card span { color:var(--muted); font-size:11px; }
     .comparison { margin-top:20px; }
     .comparison-summary { display:flex; flex-wrap:wrap; gap:9px; margin-bottom:16px; }
     .comparison-grid { display:grid; gap:8px; }
@@ -603,15 +630,15 @@ HTML_TEMPLATE = r'''<!doctype html>
     .compare-fields { grid-column:2/4; color:#d8b765; font-size:11px; padding:0 4px 4px; }
     .hidden { display:none!important; }
     footer { color:var(--muted); margin:22px 2px; font-size:13px; }
-    @media (max-width:900px) { .layout { grid-template-columns:1fr; } .shell { padding:18px; } header { flex-direction:column; } .pad { min-height:108px; } }
+    @media (max-width:900px) { .layout,.draft-layout { grid-template-columns:1fr; } .shell { padding:18px; } header { flex-direction:column; } .pad { min-height:108px; } }
     @media (max-width:520px) { .pad-grid { gap:7px; } .pad { min-height:94px; padding:8px; } .pad-role { margin-top:15px; font-size:11px; } .pad-sample { display:none; } .kv { grid-template-columns:90px 1fr; } .compare-row { grid-template-columns:55px 1fr; } .compare-card:last-of-type { grid-column:2; } .compare-fields { grid-column:2; } }
   </style>
 </head>
 <body>
   <div class="shell">
     <header>
-      <div><div class="eyebrow">MPC Program Designer · v0.3 read-only</div><h1 id="title"></h1><div class="source" id="source"></div></div>
-      <div class="readonly">Read only · source unchanged</div>
+      <div><div class="eyebrow">MPC Program Designer · v0.3 source-safe</div><h1 id="title"></h1><div class="source" id="source"></div></div>
+      <div class="readonly">Draft only · source unchanged</div>
     </header>
     <section class="panel toolbar" aria-label="Viewer controls">
       <div class="control"><label for="program-select">Inspect source</label><select id="program-select"></select></div>
@@ -630,11 +657,32 @@ HTML_TEMPLATE = r'''<!doctype html>
         <section class="panel issues"><div class="panel-head"><h2>Validation</h2><span id="issue-total"></span></div><div class="panel-body" id="issues"></div></section>
       </aside>
     </div>
+    <section class="panel editor hidden" id="editor-panel">
+      <div class="panel-head"><h2>Layout draft workspace</h2><span id="layout-status">Source view</span></div>
+      <div class="panel-body">
+        <div class="editor-toolbar">
+          <button class="action primary" id="edit-toggle" type="button">Start layout draft</button>
+          <button class="action" id="move-toggle" type="button" disabled>Move / swap selected</button>
+          <button class="action" id="mirror-bank" type="button" disabled>Mirror current bank</button>
+          <div class="control"><label for="layout-select">Semantic preset</label><select id="layout-select" disabled></select></div>
+          <button class="action" id="apply-layout" type="button" disabled>Apply preset</button>
+          <button class="action" id="undo-layout" type="button" disabled>Undo</button>
+          <button class="action" id="redo-layout" type="button" disabled>Redo</button>
+          <button class="action" id="reset-bank" type="button" disabled>Reset bank</button>
+          <button class="action" id="reset-layout" type="button" disabled>Reset all</button>
+        </div>
+        <p class="editor-note" id="editor-note">Start a draft to rearrange pads without changing the embedded source model.</p>
+        <div class="draft-layout hidden" id="draft-layout">
+          <div><h3 id="draft-title">Source ↔ draft · current bank</h3><div class="draft-grid" id="draft-grid"></div></div>
+          <div><h3>Deterministic draft assignments</h3><pre class="draft-json" id="draft-json"></pre></div>
+        </div>
+      </div>
+    </section>
     <section class="panel comparison hidden" id="comparison-panel">
       <div class="panel-head"><h2 id="comparison-title">Side-by-side comparison</h2><span id="comparison-total"></span></div>
       <div class="panel-body"><div class="comparison-summary" id="comparison-summary"></div><div class="comparison-grid" id="comparison-grid"></div></div>
     </section>
-    <footer>Generated locally from the normalized Program Model. This viewer contains metadata only and has no editing or export controls.</footer>
+    <footer>Generated locally from the normalized Program Model. Layout edits remain an in-memory draft; no source or audio file is opened for writing.</footer>
   </div>
   <script>const BUNDLE=__DATA__;
   const $=id=>document.getElementById(id);
@@ -642,44 +690,143 @@ HTML_TEMPLATE = r'''<!doctype html>
   const basename=value=>String(value||'').split(/[\\/]/).pop();
   const noteName=n=>['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'][n%12]+(Math.floor(n/12)-1);
   const isBlack=n=>[1,3,6,8,10].includes(n%12);
-  function addChip(text){$('chips').append(el('span','chip',text));}
-  function contrast(hex){if(!hex)return '#fff';const n=parseInt(hex.slice(1),16),r=n>>16,g=n>>8&255,b=n&255;return (.299*r+.587*g+.114*b)>155?'#111':'#fff';}
-  let programId=BUNDLE.default_program,deviceId=BUNDLE.default_device,compareId=null,DATA=null,selectedPad=null,currentBank=null,keyStart=0,selectedNote=null;
+  const clone=value=>JSON.parse(JSON.stringify(value));
+  let programId=BUNDLE.default_program,deviceId=BUNDLE.default_device,compareId=null,DATA=null;
+  let selectedSlot=null,currentBank=null,keyStart=0,selectedNote=null,editMode=false,moveMode=false,draggedSlot=null;
+  const drafts=new Map();
+
   function currentView(){return BUNDLE.views[programId][deviceId];}
   function option(value,label){const node=el('option','',label);node.value=value;return node;}
-  function populateControls(){const program=$('program-select'),device=$('device-select'),compare=$('compare-select');BUNDLE.programs.forEach(item=>program.append(option(item.id,`${item.name} · ${item.kind}`)));BUNDLE.devices.forEach(item=>device.append(option(item.id,item.name)));program.value=programId;device.value=deviceId;$('bundle-note').textContent=`Portable bundle · ${BUNDLE.programs.length} source${BUNDLE.programs.length===1?'':'s'} · ${BUNDLE.devices.length} device profile${BUNDLE.devices.length===1?'':'s'}`;function fillCompare(){const previous=compareId;compare.replaceChildren(option('','No comparison'));BUNDLE.programs.filter(item=>item.id!==programId).forEach(item=>compare.append(option(item.id,`${item.name} · ${item.kind}`)));compareId=previous&&previous!==programId&&BUNDLE.programs.some(item=>item.id===previous)?previous:(BUNDLE.programs.find(item=>item.id!==programId)?.id||null);compare.value=compareId||'';}fillCompare();program.addEventListener('change',()=>{programId=program.value;fillCompare();renderAll();});device.addEventListener('change',()=>{deviceId=device.value;renderAll();});compare.addEventListener('change',()=>{compareId=compare.value||null;renderComparison();});}
+  function addChip(text){$('chips').append(el('span','chip',text));}
+  function contrast(hex){if(!hex)return '#fff';const n=parseInt(hex.slice(1),16),r=n>>16,g=n>>8&255,b=n&255;return (.299*r+.587*g+.114*b)>155?'#111':'#fff';}
+  function slotLabel(slot){const per=DATA.device.pads_per_bank,bank=DATA.device.banks[Math.floor((slot-1)/per)];return `${bank}${String((slot-1)%per+1).padStart(2,'0')}`;}
+  function bankOffset(bank){return DATA.device.banks.indexOf(bank)*DATA.device.pads_per_bank;}
+  function sourceSlots(){const slots=Array(DATA.device.capacity).fill(null);DATA.program.zones.forEach(zone=>{if(zone.pad>=1&&zone.pad<=slots.length)slots[zone.pad-1]=clone(zone);});return slots;}
+  function draftKey(){return `${programId}|${deviceId}`;}
+  function currentDraft(){if(!drafts.has(draftKey())){const source=sourceSlots();drafts.set(draftKey(),{source,slots:clone(source),history:[],future:[]});}return drafts.get(draftKey());}
+  function slotsForBank(bank){const all=editMode?currentDraft().slots:currentDraft().source,offset=bankOffset(bank);return all.slice(offset,offset+DATA.device.pads_per_bank);}
+  function snapshot(slots){return JSON.stringify(slots);}
+  function remember(draft){draft.history.push(snapshot(draft.slots));if(draft.history.length>50)draft.history.shift();draft.future=[];}
+  function sameZone(left,right){return (!left&&!right)||Boolean(left&&right&&left.index===right.index&&left.color_hex===right.color_hex&&left.locked===right.locked);}
+  function draftChangeCount(draft=currentDraft()){return draft.slots.reduce((count,zone,index)=>count+(sameZone(draft.source[index],zone)?0:1),0);}
+  function roleMatches(role,requested){return role===requested||role.startsWith(`${requested}.`);}
+
+  function populateControls(){
+    const program=$('program-select'),device=$('device-select'),compare=$('compare-select');
+    BUNDLE.programs.forEach(item=>program.append(option(item.id,`${item.name} · ${item.kind}`)));
+    BUNDLE.devices.forEach(item=>device.append(option(item.id,item.name)));
+    program.value=programId;device.value=deviceId;
+    $('bundle-note').textContent=`Portable bundle · ${BUNDLE.programs.length} source${BUNDLE.programs.length===1?'':'s'} · ${BUNDLE.devices.length} device profile${BUNDLE.devices.length===1?'':'s'} · ${BUNDLE.layouts.length} layout${BUNDLE.layouts.length===1?'':'s'}`;
+    function fillCompare(){const previous=compareId;compare.replaceChildren(option('','No comparison'));BUNDLE.programs.filter(item=>item.id!==programId).forEach(item=>compare.append(option(item.id,`${item.name} · ${item.kind}`)));compareId=previous&&previous!==programId&&BUNDLE.programs.some(item=>item.id===previous)?previous:(BUNDLE.programs.find(item=>item.id!==programId)?.id||null);compare.value=compareId||'';}
+    fillCompare();
+    program.addEventListener('change',()=>{programId=program.value;fillCompare();renderAll();});
+    device.addEventListener('change',()=>{deviceId=device.value;renderAll();});
+    compare.addEventListener('change',()=>{compareId=compare.value||null;renderComparison();});
+  }
+
+  function populateEditorControls(){
+    const select=$('layout-select');
+    if(BUNDLE.layouts.length)BUNDLE.layouts.forEach(layout=>select.append(option(layout.id,layout.name)));
+    else select.append(option('','No presets bundled'));
+    $('edit-toggle').addEventListener('click',()=>{editMode=!editMode;moveMode=false;selectedSlot=null;renderDrums();renderEditorWorkspace();});
+    $('move-toggle').addEventListener('click',()=>{moveMode=!moveMode;$('editor-note').textContent=moveMode?'Select any unlocked destination pad, including one in another bank.':'Move / swap mode cancelled.';renderBank(currentBank);});
+    $('mirror-bank').addEventListener('click',mirrorCurrentBank);
+    $('apply-layout').addEventListener('click',applySelectedLayout);
+    $('undo-layout').addEventListener('click',undoDraft);
+    $('redo-layout').addEventListener('click',redoDraft);
+    $('reset-bank').addEventListener('click',resetCurrentBank);
+    $('reset-layout').addEventListener('click',resetDraft);
+  }
+
   function renderHeader(){const p=DATA.program,s=DATA.summary;$('title').textContent=p.name||'Unnamed program';document.title=`${p.name||'Unnamed program'} — MPC Program Designer`;$('source').textContent=`${p.kind} · ${p.source_format} · ${p.source_path||'in-memory source'}`;$('chips').replaceChildren();addChip(`${s.zones} zones`);addChip(`${s.layers} layers`);addChip(DATA.device.name);if(p.kind==='drum')addChip(`${s.populated_banks.length}/${DATA.device.banks.length} populated banks`);Object.entries(s.issues).forEach(([kind,count])=>addChip(`${count} ${kind}${count===1?'':'s'}`));}
-  function renderIssues(){const box=$('issues');box.replaceChildren();$('issue-total').textContent=DATA.issues.length?`${DATA.issues.length} findings`:'clear';if(!DATA.issues.length){box.append(el('div','detail-empty','No model, sample, velocity, or mute-group findings.'));return;}DATA.issues.forEach(issue=>{const card=el('div',`issue ${issue.severity}`);const top=el('strong','',`${issue.severity} · ${issue.code}`);card.append(top);card.append(el('p','',`${issue.zone?`Zone ${issue.zone}: `:''}${issue.message}`));box.append(card);});}
-  function layerNode(layer){const card=el('div','layer');const top=el('div','layer-top');top.append(el('span','layer-sample',basename(layer.sample)));top.append(el('span',`status ${layer.sample_status}`,layer.sample_status));card.append(top);card.append(el('div','source',`Velocity ${layer.velocity_start}–${layer.velocity_end}${layer.root_note!==null?` · root MIDI ${layer.root_note}`:''}${layer.loop_enabled?' · loop':''}`));const velocity=el('div','velocity');const fill=el('span');fill.style.left=`${layer.velocity_start/128*100}%`;fill.style.width=`${(layer.velocity_end-layer.velocity_start+1)/128*100}%`;velocity.append(fill);card.append(velocity);return card;}
-  function renderZone(zone,label){const box=$('detail');box.replaceChildren();const rows=[['Location',label],['Role',zone.role]];if(zone.low_note!==null&&zone.high_note!==null)rows.push(['Key range',`${noteName(zone.low_note)}–${noteName(zone.high_note)} · MIDI ${zone.low_note}–${zone.high_note}`]);if(zone.midi_note!==null)rows.push(['MIDI note',`${zone.midi_note} (${noteName(zone.midi_note)})`]);rows.push(['Playback',zone.playback_mode],['Mute group',zone.mute_group||'none'],['Polyphony',zone.polyphony],['Monophonic',zone.monophonic?'yes':'no'],['Color',zone.color_hex||'not declared'],['Locked',zone.locked?'yes':'no']);const dl=el('dl','kv');rows.forEach(([k,v])=>{dl.append(el('dt','',k));dl.append(el('dd','',String(v)));});box.append(dl);box.append(el('h3','',`Layers · ${zone.layers.length}`));zone.layers.forEach(layer=>box.append(layerNode(layer)));}
-  function renderBank(bank){currentBank=bank;document.querySelectorAll('.bank').forEach(node=>node.classList.toggle('active',node.dataset.bank===bank));const grid=$('pad-grid');grid.replaceChildren();const slots=DATA.banks[bank],cols=DATA.device.pad_columns,rows=DATA.device.pad_rows;for(let row=rows-1;row>=0;row--){for(let col=0;col<cols;col++){const position=row*cols+col,zone=slots[position],label=`${bank}${String(position+1).padStart(2,'0')}`;const button=el('button',`pad${zone?'':' empty'}`);button.type='button';button.dataset.label=label;button.append(el('span','pad-label',label));if(zone){button.style.background=zone.color_hex||'#39424d';button.style.color=contrast(zone.color_hex);const badges=el('span','badges');if(zone.layers.length>1)badges.append(el('span','badge',`${zone.layers.length}L`));if(zone.mute_group)badges.append(el('span','badge',`M${zone.mute_group}`));button.append(badges);button.append(el('span','pad-role',zone.role));button.append(el('span','pad-sample',basename(zone.layers[0]?.sample)));button.addEventListener('click',()=>{document.querySelectorAll('.pad').forEach(n=>n.classList.remove('selected'));button.classList.add('selected');selectedPad=label;renderZone(zone,label);});}else{button.disabled=true;button.append(el('span','pad-role','Empty'));}grid.append(button);}}const first=grid.querySelector('.pad:not(.empty)');if(first&&(!selectedPad||!selectedPad.startsWith(bank)))first.click();renderComparison();}
-  function renderDrums(){$('banks').replaceChildren();DATA.device.banks.forEach(bank=>{const populated=DATA.banks[bank].some(Boolean),button=el('button',`bank${populated?'':' empty'}`,bank);button.type='button';button.dataset.bank=bank;button.disabled=!populated;button.addEventListener('click',()=>renderBank(bank));$('banks').append(button);});renderBank(DATA.summary.populated_banks[0]||DATA.device.banks[0]);}
+  function renderIssues(){const box=$('issues');box.replaceChildren();$('issue-total').textContent=DATA.issues.length?`${DATA.issues.length} findings`:'clear';if(!DATA.issues.length){box.append(el('div','detail-empty','No model, sample, velocity, or mute-group findings.'));return;}DATA.issues.forEach(issue=>{const card=el('div',`issue ${issue.severity}`);card.append(el('strong','',`${issue.severity} · ${issue.code}`));card.append(el('p','',`${issue.zone?`Zone ${issue.zone}: `:''}${issue.message}`));box.append(card);});}
+  function layerNode(layer){const card=el('div','layer'),top=el('div','layer-top');top.append(el('span','layer-sample',basename(layer.sample)));top.append(el('span',`status ${layer.sample_status}`,layer.sample_status));card.append(top);card.append(el('div','source',`Velocity ${layer.velocity_start}–${layer.velocity_end}${layer.root_note!==null?` · root MIDI ${layer.root_note}`:''}${layer.loop_enabled?' · loop':''}`));const velocity=el('div','velocity'),fill=el('span');fill.style.left=`${layer.velocity_start/128*100}%`;fill.style.width=`${(layer.velocity_end-layer.velocity_start+1)/128*100}%`;velocity.append(fill);card.append(velocity);return card;}
+
+  function renderZone(zone,label,slot=null){
+    const box=$('detail');box.replaceChildren();
+    if(!zone){box.append(el('div','detail-empty',`${label} is empty.${editMode?' Use Move / swap to place a sound here.':''}`));return;}
+    const rows=[['Location',label],['Role',zone.role]];
+    if(zone.low_note!==null&&zone.high_note!==null)rows.push(['Key range',`${noteName(zone.low_note)}–${noteName(zone.high_note)} · MIDI ${zone.low_note}–${zone.high_note}`]);
+    if(zone.midi_note!==null)rows.push(['MIDI note',`${zone.midi_note} (${noteName(zone.midi_note)})`]);
+    rows.push(['Playback',zone.playback_mode],['Mute group',zone.mute_group||'none'],['Polyphony',zone.polyphony],['Monophonic',zone.monophonic?'yes':'no'],['Color',zone.color_hex||'not declared'],['Locked',zone.locked?'yes':'no']);
+    const dl=el('dl','kv');rows.forEach(([key,value])=>{dl.append(el('dt','',key));dl.append(el('dd','',String(value)));});box.append(dl);
+    box.append(el('h3','',`Layers · ${zone.layers.length}`));zone.layers.forEach(layer=>box.append(layerNode(layer)));
+    if(editMode&&slot){
+      const editor=el('div','selection-editor'),row=el('div','color-row'),input=el('input');input.type='color';input.value=zone.color_hex||'#39424D';
+      row.append(el('label','',`Draft pad color`));row.append(input);editor.append(row);
+      const lock=el('button','action',zone.locked?'Unlock position':'Lock position');lock.type='button';editor.append(lock);
+      input.addEventListener('change',()=>{const draft=currentDraft();remember(draft);draft.slots[slot-1].color_hex=input.value.toUpperCase();draft.slots[slot-1].color=parseInt(input.value.slice(1),16);renderBank(currentBank);});
+      lock.addEventListener('click',()=>{const draft=currentDraft();remember(draft);draft.slots[slot-1].locked=!draft.slots[slot-1].locked;renderBank(currentBank);});
+      box.append(editor);
+    }
+  }
+
+  function selectDraftSlot(slot,zone){selectedSlot=slot;document.querySelectorAll('.pad').forEach(node=>node.classList.toggle('selected',Number(node.dataset.slot)===slot));renderZone(zone,slotLabel(slot),slot);renderEditorWorkspace();}
+  function moveSlot(from,to){const draft=currentDraft(),source=draft.slots[from-1],target=draft.slots[to-1];if(!source||source.locked||target?.locked){$('editor-note').textContent='Locked pads cannot be moved or replaced.';return;}remember(draft);[draft.slots[from-1],draft.slots[to-1]]=[target,source];selectedSlot=to;moveMode=false;$('editor-note').textContent=`Moved ${source.role} from ${slotLabel(from)} to ${slotLabel(to)}${target?' and swapped the destination':''}.`;renderDrums();}
+
+  function renderBank(bank){
+    currentBank=bank;document.querySelectorAll('.bank').forEach(node=>node.classList.toggle('active',node.dataset.bank===bank));
+    const grid=$('pad-grid');grid.replaceChildren();const slots=slotsForBank(bank),cols=DATA.device.pad_columns,rows=DATA.device.pad_rows,offset=bankOffset(bank);
+    for(let row=rows-1;row>=0;row--){for(let col=0;col<cols;col++){
+      const position=row*cols+col,slot=offset+position+1,zone=slots[position],label=slotLabel(slot),classes=`pad${zone?'':' empty'}${editMode?' editable':''}${moveMode?' move-target':''}${zone?.locked?' locked':''}`;
+      const button=el('button',classes);button.type='button';button.dataset.label=label;button.dataset.slot=String(slot);button.append(el('span','pad-label',label));
+      if(zone){button.style.background=zone.color_hex||'#39424d';button.style.color=contrast(zone.color_hex);const badges=el('span','badges');if(zone.layers.length>1)badges.append(el('span','badge',`${zone.layers.length}L`));if(zone.mute_group)badges.append(el('span','badge',`M${zone.mute_group}`));if(zone.locked)badges.append(el('span','badge','LOCK'));button.append(badges);button.append(el('span','pad-role',zone.role));button.append(el('span','pad-sample',basename(zone.layers[0]?.sample)));}
+      else button.append(el('span','pad-role','Empty'));
+      if(!editMode&&!zone)button.disabled=true;
+      button.draggable=Boolean(editMode&&zone&&!zone.locked);
+      button.addEventListener('click',()=>{if(editMode&&moveMode&&selectedSlot&&slot!==selectedSlot){moveSlot(selectedSlot,slot);return;}selectDraftSlot(slot,zone);});
+      button.addEventListener('dragstart',event=>{draggedSlot=slot;event.dataTransfer.effectAllowed='move';event.dataTransfer.setData('text/plain',String(slot));});
+      button.addEventListener('dragover',event=>{if(editMode&&!zone?.locked&&draggedSlot)event.preventDefault();});
+      button.addEventListener('drop',event=>{event.preventDefault();const source=draggedSlot||Number(event.dataTransfer.getData('text/plain'));if(source&&source!==slot)moveSlot(source,slot);draggedSlot=null;});
+      button.addEventListener('dragend',()=>{draggedSlot=null;});
+      if(slot===selectedSlot)button.classList.add('selected');grid.append(button);
+    }}
+    const selected=grid.querySelector(`[data-slot="${selectedSlot}"]`),first=grid.querySelector('.pad:not(.empty)');
+    if(selected){const slot=Number(selected.dataset.slot),zone=(editMode?currentDraft().slots:currentDraft().source)[slot-1];renderZone(zone,slotLabel(slot),slot);}
+    else if(first&&!moveMode){first.click();}
+    renderEditorWorkspace();renderComparison();
+  }
+
+  function renderDrums(){
+    $('editor-panel').classList.remove('hidden');$('banks').replaceChildren();
+    DATA.device.banks.forEach(bank=>{const populated=slotsForBank(bank).some(Boolean),button=el('button',`bank${populated?'':' empty'}`,bank);button.type='button';button.dataset.bank=bank;button.disabled=!populated&&!editMode;button.addEventListener('click',()=>renderBank(bank));$('banks').append(button);});
+    const requested=currentBank&&DATA.device.banks.includes(currentBank)?currentBank:(DATA.summary.populated_banks[0]||DATA.device.banks[0]);renderBank(requested);
+  }
+
+  function mirrorCurrentBank(){const draft=currentDraft(),offset=bankOffset(currentBank),cols=DATA.device.pad_columns,rows=DATA.device.pad_rows;remember(draft);let swaps=0;for(let row=0;row<rows;row++){for(let col=0;col<Math.floor(cols/2);col++){const left=offset+row*cols+col,right=offset+row*cols+(cols-1-col);if(draft.slots[left]?.locked||draft.slots[right]?.locked)continue;[draft.slots[left],draft.slots[right]]=[draft.slots[right],draft.slots[left]];swaps++;}}$('editor-note').textContent=`Mirrored Bank ${currentBank}; ${swaps} unlocked pad pairs swapped.`;selectedSlot=null;renderDrums();}
+  function applySelectedLayout(){const preset=BUNDLE.layouts.find(item=>item.id===$('layout-select').value);if(!preset)return;const draft=currentDraft(),currentByIndex=new Map(draft.slots.filter(Boolean).map(zone=>[zone.index,zone])),ordered=DATA.program.zones.map(zone=>currentByIndex.get(zone.index)).filter(Boolean),result=Array(DATA.device.capacity).fill(null),remaining=[];ordered.forEach(zone=>{const current=draft.slots.indexOf(zone);if(zone.locked&&current>=0)result[current]=zone;else remaining.push(zone);});if(preset.strategy==='sequential'){remaining.slice().forEach(zone=>{const preferred=zone.pad>=1&&zone.pad<=result.length&&result[zone.pad-1]===null?zone.pad-1:result.findIndex(value=>value===null);if(preferred>=0){result[preferred]=zone;remaining.splice(remaining.indexOf(zone),1);}});}else{preset.role_order.forEach((requested,index)=>{if(index>=result.length||result[index])return;const found=remaining.findIndex(zone=>roleMatches(zone.role,requested));if(found>=0)result[index]=remaining.splice(found,1)[0];});if(preset.fill_remaining)result.forEach((value,index)=>{if(value===null&&remaining.length)result[index]=remaining.shift();});}remember(draft);draft.slots=result;$('editor-note').textContent=`Applied ${preset.name}; locked positions were preserved.`;selectedSlot=null;renderDrums();}
+  function undoDraft(){const draft=currentDraft();if(!draft.history.length)return;draft.future.push(snapshot(draft.slots));draft.slots=JSON.parse(draft.history.pop());selectedSlot=null;$('editor-note').textContent='Undid the last draft change.';renderDrums();}
+  function redoDraft(){const draft=currentDraft();if(!draft.future.length)return;draft.history.push(snapshot(draft.slots));draft.slots=JSON.parse(draft.future.pop());selectedSlot=null;$('editor-note').textContent='Redid the draft change.';renderDrums();}
+  function resetCurrentBank(){const draft=currentDraft(),offset=bankOffset(currentBank),count=DATA.device.pads_per_bank;remember(draft);draft.slots.splice(offset,count,...clone(draft.source.slice(offset,offset+count)));selectedSlot=null;$('editor-note').textContent=`Reset Bank ${currentBank} to the source layout.`;renderDrums();}
+  function resetDraft(){const draft=currentDraft();remember(draft);draft.slots=clone(draft.source);selectedSlot=null;$('editor-note').textContent='Reset the entire draft to the source layout.';renderDrums();}
+
+  function draftPayload(){const draft=currentDraft();return {schema_version:1,program:DATA.program.name,device:DATA.device.id,source_path:DATA.program.source_path,assignments:draft.slots.map((zone,index)=>zone?{slot:index+1,label:slotLabel(index+1),source_zone:zone.index,role:zone.role,color:zone.color_hex,locked:Boolean(zone.locked),sample:zone.layers[0]?.sample||''}:null).filter(Boolean)};}
+  function draftCard(zone){if(!zone)return el('div','draft-card detail-empty','Empty');const card=el('div','draft-card');card.append(el('strong','',zone.role));card.append(el('span','',`${basename(zone.layers[0]?.sample)}${zone.locked?' · locked':''}`));return card;}
+  function renderEditorWorkspace(){
+    if(DATA.program.kind!=='drum'){$('editor-panel').classList.add('hidden');return;}
+    const draft=currentDraft(),changes=draftChangeCount(draft),active=editMode;
+    $('editor-panel').classList.remove('hidden');$('edit-toggle').textContent=active?'View source':changes?'Resume layout draft':'Edit layout draft';$('layout-status').textContent=active?`${changes} changed slot${changes===1?'':'s'}`:changes?`Source view · ${changes} draft change${changes===1?'':'s'} retained`:'Source view';
+    ['move-toggle','mirror-bank','layout-select','apply-layout','reset-bank','reset-layout'].forEach(id=>$(id).disabled=!active);
+    $('move-toggle').disabled=!active||!selectedSlot||!draft.slots[selectedSlot-1]||draft.slots[selectedSlot-1].locked;$('move-toggle').textContent=moveMode?'Cancel move':'Move / swap selected';
+    $('undo-layout').disabled=!active||!draft.history.length;$('redo-layout').disabled=!active||!draft.future.length;$('apply-layout').disabled=!active||!BUNDLE.layouts.length;
+    $('draft-layout').classList.toggle('hidden',!active);if(!active){$('editor-note').textContent=changes?`${changes} draft change${changes===1?' is':'s are'} retained in this page; resume editing to inspect them.`:'Start a draft to rearrange pads without changing the embedded source model.';return;}
+    $('draft-title').textContent=`Source ↔ draft · Bank ${currentBank} · ${changes} changed overall`;
+    const grid=$('draft-grid');grid.replaceChildren();const offset=bankOffset(currentBank);
+    for(let index=0;index<DATA.device.pads_per_bank;index++){const source=draft.source[offset+index],candidate=draft.slots[offset+index],changed=!sameZone(source,candidate),row=el('div',`draft-row${changed?' changed':''}`);row.append(el('div','compare-location',slotLabel(offset+index+1)));row.append(draftCard(source));row.append(draftCard(candidate));grid.append(row);}
+    $('draft-json').textContent=JSON.stringify(draftPayload(),null,2);
+  }
+
   function activeZones(note){return DATA.program.zones.filter(zone=>zone.low_note!==null&&zone.high_note!==null&&zone.low_note<=note&&note<=zone.high_note);}
   function renderNote(note){selectedNote=note;document.querySelectorAll('.key').forEach(node=>node.classList.toggle('selected',Number(node.dataset.note)===note));const zones=activeZones(note);if(!zones.length){$('detail').replaceChildren(el('div','detail-empty',`${noteName(note)} · MIDI ${note} has no mapped zone.`));return;}renderZone(zones[0],`${noteName(note)} · MIDI ${note}`);}
-  function renderKeybed(){const bed=$('keybed');bed.replaceChildren();if(DATA.keyboard.keys<1){$('key-window').textContent='No physical keys in this device profile';return;}bed.style.setProperty('--keys',DATA.keyboard.keys);$('key-window').textContent=`${noteName(keyStart)}–${noteName(keyStart+DATA.keyboard.keys-1)} · MIDI ${keyStart}–${keyStart+DATA.keyboard.keys-1}`;for(let note=keyStart;note<keyStart+DATA.keyboard.keys;note++){const zones=activeZones(note),key=el('button',`key ${isBlack(note)?'black':'white'}${zones.length?' active':''}`,`${noteName(note)}\n${note}`);key.type='button';key.dataset.note=String(note);key.title=zones.length?zones.map(z=>`${z.index}: ${basename(z.layers[0]?.sample)}`).join('\n'):'Unmapped';key.addEventListener('click',()=>renderNote(note));bed.append(key);}if(selectedNote===null||selectedNote<keyStart||selectedNote>=keyStart+DATA.keyboard.keys)renderNote(keyStart+Math.floor(DATA.keyboard.keys/2));else renderNote(selectedNote);}
-  function renderKeygroups(){$('drum-surface').classList.add('hidden');$('keygroup-surface').classList.remove('hidden');$('banks').classList.add('hidden');$('key-controls').classList.remove('hidden');$('surface-title').textContent=`${DATA.keyboard.keys}-note keybed viewport`;$('oct-down').onclick=()=>{keyStart=Math.max(DATA.keyboard.minimum,keyStart-12);renderKeybed();};$('oct-up').onclick=()=>{keyStart=Math.min(DATA.keyboard.maximum_start,keyStart+12);renderKeybed();};const list=$('zone-list');list.replaceChildren();DATA.program.zones.forEach(zone=>{const card=el('button','zone-card');card.type='button';card.append(el('strong','',`Zone ${zone.index} · MIDI ${zone.low_note}–${zone.high_note}`));card.append(el('span','',`${zone.layers.length} layer${zone.layers.length===1?'':'s'} · ${basename(zone.layers[0]?.sample)}`));card.addEventListener('click',()=>renderZone(zone,`Zone ${zone.index} · MIDI ${zone.low_note}–${zone.high_note}`));list.append(card);});renderKeybed();}
+  function renderKeybed(){const bed=$('keybed');bed.replaceChildren();if(DATA.keyboard.keys<1){$('key-window').textContent='No physical keys in this device profile';return;}bed.style.setProperty('--keys',DATA.keyboard.keys);$('key-window').textContent=`${noteName(keyStart)}–${noteName(keyStart+DATA.keyboard.keys-1)} · MIDI ${keyStart}–${keyStart+DATA.keyboard.keys-1}`;for(let note=keyStart;note<keyStart+DATA.keyboard.keys;note++){const zones=activeZones(note),key=el('button',`key ${isBlack(note)?'black':'white'}${zones.length?' active':''}`,`${noteName(note)}\n${note}`);key.type='button';key.dataset.note=String(note);key.title=zones.length?zones.map(zone=>`${zone.index}: ${basename(zone.layers[0]?.sample)}`).join('\n'):'Unmapped';key.addEventListener('click',()=>renderNote(note));bed.append(key);}if(selectedNote===null||selectedNote<keyStart||selectedNote>=keyStart+DATA.keyboard.keys)renderNote(keyStart+Math.floor(DATA.keyboard.keys/2));else renderNote(selectedNote);}
+  function renderKeygroups(){$('editor-panel').classList.add('hidden');$('drum-surface').classList.add('hidden');$('keygroup-surface').classList.remove('hidden');$('banks').classList.add('hidden');$('key-controls').classList.remove('hidden');$('surface-title').textContent=`${DATA.keyboard.keys}-note keybed viewport`;$('oct-down').onclick=()=>{keyStart=Math.max(DATA.keyboard.minimum,keyStart-12);renderKeybed();};$('oct-up').onclick=()=>{keyStart=Math.min(DATA.keyboard.maximum_start,keyStart+12);renderKeybed();};const list=$('zone-list');list.replaceChildren();DATA.program.zones.forEach(zone=>{const card=el('button','zone-card');card.type='button';card.append(el('strong','',`Zone ${zone.index} · MIDI ${zone.low_note}–${zone.high_note}`));card.append(el('span','',`${zone.layers.length} layer${zone.layers.length===1?'':'s'} · ${basename(zone.layers[0]?.sample)}`));card.addEventListener('click',()=>renderZone(zone,`Zone ${zone.index} · MIDI ${zone.low_note}–${zone.high_note}`));list.append(card);});renderKeybed();}
+
   function compareCard(zone,emptyLabel){if(!zone)return el('div','compare-card detail-empty',emptyLabel);const card=el('div','compare-card');card.append(el('strong','',zone.role));card.append(el('span','',`${zone.layers.length} layer${zone.layers.length===1?'':'s'} · ${basename(zone.layers[0]?.sample)}`));return card;}
   function signed(value){return value>0?`+${value}`:String(value);}
-  function renderComparison(){
-    const panel=$('comparison-panel');
-    if(!compareId){panel.classList.add('hidden');return;}
-    const comparison=BUNDLE.comparisons[deviceId]?.[programId]?.[compareId];
-    if(!comparison){panel.classList.add('hidden');return;}
-    panel.classList.remove('hidden');
-    $('comparison-title').textContent=`${comparison.left_name} ↔ ${comparison.right_name}`;
-    const summary=comparison.summary,summaryBox=$('comparison-summary');
-    summaryBox.replaceChildren();
-    [`Zones ${signed(summary.zone_delta)}`,`Layers ${signed(summary.layer_delta)}`,`Errors ${signed(summary.error_delta)}`,`Warnings ${signed(summary.warning_delta)}`,`${summary.left_only} left only`,`${summary.right_only} right only`].forEach(add=>summaryBox.append(el('span','chip',add)));
-    const grid=$('comparison-grid');grid.replaceChildren();
-    let rows=comparison.locations;
-    if(comparison.kind==='drum'&&currentBank)rows=rows.filter(item=>item.location.startsWith(currentBank));
-    const changed=rows.filter(item=>item.changed).length,unchanged=rows.length-changed;
-    $('comparison-total').textContent=comparison.kind==='drum'&&currentBank?`${changed} changed in Bank ${currentBank} · ${unchanged} unchanged · ${summary.changed_locations} changed overall`:`${changed} changed · ${unchanged} unchanged`;
-    if(!rows.length){grid.append(el('div','detail-empty','No comparable locations in the current bank.'));return;}
-    rows.forEach(item=>{const row=el('div',`compare-row${item.changed?' changed':''}`);row.append(el('div','compare-location',item.location));row.append(compareCard(item.left,'Empty'));row.append(compareCard(item.right,'Empty'));if(item.changed_fields.length)row.append(el('div','compare-fields',`Changed: ${item.changed_fields.join(', ')}`));grid.append(row);});
-  }
-  function renderAll(){DATA=currentView();selectedPad=null;selectedNote=null;currentBank=null;keyStart=DATA.keyboard.default_start;$('detail').replaceChildren(el('div','detail-empty','Select a populated pad or key.'));$('drum-surface').classList.remove('hidden');$('keygroup-surface').classList.add('hidden');$('banks').classList.remove('hidden');$('key-controls').classList.add('hidden');$('surface-title').textContent='Performance surface';renderHeader();renderIssues();if(DATA.program.kind==='drum')renderDrums();else renderKeygroups();renderComparison();}
-  populateControls();renderAll();
+  function renderComparison(){const panel=$('comparison-panel');if(!compareId){panel.classList.add('hidden');return;}const comparison=BUNDLE.comparisons[deviceId]?.[programId]?.[compareId];if(!comparison){panel.classList.add('hidden');return;}panel.classList.remove('hidden');$('comparison-title').textContent=`${comparison.left_name} ↔ ${comparison.right_name}`;const summary=comparison.summary,summaryBox=$('comparison-summary');summaryBox.replaceChildren();[`Zones ${signed(summary.zone_delta)}`,`Layers ${signed(summary.layer_delta)}`,`Errors ${signed(summary.error_delta)}`,`Warnings ${signed(summary.warning_delta)}`,`${summary.left_only} left only`,`${summary.right_only} right only`].forEach(text=>summaryBox.append(el('span','chip',text)));const grid=$('comparison-grid');grid.replaceChildren();let rows=comparison.locations;if(comparison.kind==='drum'&&currentBank)rows=rows.filter(item=>item.location.startsWith(currentBank));const changed=rows.filter(item=>item.changed).length,unchanged=rows.length-changed;$('comparison-total').textContent=comparison.kind==='drum'&&currentBank?`${changed} changed in Bank ${currentBank} · ${unchanged} unchanged · ${summary.changed_locations} changed overall`:`${changed} changed · ${unchanged} unchanged`;if(!rows.length){grid.append(el('div','detail-empty','No comparable locations in the current bank.'));return;}rows.forEach(item=>{const row=el('div',`compare-row${item.changed?' changed':''}`);row.append(el('div','compare-location',item.location));row.append(compareCard(item.left,'Empty'));row.append(compareCard(item.right,'Empty'));if(item.changed_fields.length)row.append(el('div','compare-fields',`Changed: ${item.changed_fields.join(', ')}`));grid.append(row);});}
+
+  function renderAll(){DATA=currentView();selectedSlot=null;selectedNote=null;currentBank=null;keyStart=DATA.keyboard.default_start;editMode=false;moveMode=false;$('detail').replaceChildren(el('div','detail-empty','Select a populated pad or key.'));$('drum-surface').classList.remove('hidden');$('keygroup-surface').classList.add('hidden');$('banks').classList.remove('hidden');$('key-controls').classList.add('hidden');$('surface-title').textContent='Performance surface';renderHeader();renderIssues();if(DATA.program.kind==='drum')renderDrums();else renderKeygroups();renderComparison();}
+  populateControls();populateEditorControls();renderAll();
   </script>
 </body>
 </html>
@@ -703,6 +850,7 @@ def render_html(data: dict[str, Any]) -> str:
                 }
             ],
             "devices": [{"id": device_id, "name": data["device"]["name"]}],
+            "layouts": [],
             "views": {"program": {device_id: data}},
             "comparisons": {device_id: {"program": {}}},
         }
@@ -755,6 +903,14 @@ def main() -> int:
     )
     parser.add_argument("--roles", type=Path, help="TOML file with explicit [roles] overrides")
     parser.add_argument(
+        "--layout",
+        action="append",
+        default=[],
+        type=Path,
+        metavar="PRESET",
+        help="layout preset available to the browser draft editor; repeatable",
+    )
+    parser.add_argument(
         "--device",
         action="append",
         type=Path,
@@ -786,7 +942,8 @@ def main() -> int:
             (compare_program, infer_sample_root(compare_program, compare_root))
         )
     devices = [load_device(path.expanduser().resolve()) for path in args.device]
-    data = build_view_bundle(programs, devices)
+    layouts = [load_preset(path.expanduser().resolve()) for path in args.layout]
+    data = build_view_bundle(programs, devices, layouts)
     rendered = json.dumps(data, indent=2) + "\n" if args.format == "json" else render_html(data)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(rendered, encoding="utf-8")
@@ -794,7 +951,7 @@ def main() -> int:
     error_count = sum(view["summary"]["issues"].get("error", 0) for view in view_list)
     print(f"Wrote: {output}")
     print(
-        f"Programs: {len(programs)}; devices={len(devices)}; "
+        f"Programs: {len(programs)}; devices={len(devices)}; layouts={len(layouts)}; "
         f"comparisons={len(programs) * max(0, len(programs) - 1) * len(devices)}"
     )
     return 2 if error_count else 0

@@ -1,8 +1,9 @@
 # MPC Program Designer
 
-`mpc-program-designer` creates a self-contained, read-only HTML viewer from the
-normalized Program Model. It does not run a server, load remote assets, modify
-the source program, or expose editing/export controls.
+`mpc-program-designer` creates a self-contained, source-safe HTML workspace from
+the normalized Program Model. It does not run a server, load remote assets, or
+modify the source program. Drum layout changes remain an in-memory draft until
+a later export step is explicitly requested.
 
 ## Drum Program viewer
 
@@ -57,6 +58,8 @@ uv run mpc-program-designer inventory/fg-vinyl-layered-banks-03.toml \
   --compare-source-root "/path/to/Vinyl SP From Mars" \
   --device devices/mpc-key-37.toml \
   --device devices/mpc-key-61.toml \
+  --layout layouts/right-handed-performance.toml \
+  --layout layouts/left-handed-performance.toml \
   --output work/program-designer/layered-comparison.html
 ```
 
@@ -69,6 +72,28 @@ follow the currently displayed bank so large A–H programs remain readable.
 `--compare-source-root` entries correspond by position to repeated `--compare`
 arguments. XPM companion ProgramData directories are still inferred
 automatically, so this option is mainly needed for manifest-based programs.
+
+## Layout draft workspace
+
+Repeat `--layout` to bundle any reusable layout presets that should appear in
+the editor. Drum Programs then expose a source-safe draft workspace with:
+
+- native pad drag/swap plus a click-based Move/Swap workflow that can cross
+  banks;
+- per-zone position locks that block moves, replacement, and mirror swaps;
+- a selected-pad color picker;
+- current-bank horizontal mirroring;
+- Classic, right-handed, left-handed, full-library, or custom semantic presets;
+- a bounded 50-step undo history, redo, reset-bank, and reset-all;
+- a current-bank source-versus-draft comparison; and
+- deterministic JSON assignment preview containing slot, source zone, role,
+  color, lock state, and sample reference.
+
+Drafts are isolated by program and device profile and survive source/device
+switching while the HTML page remains open. The editor never writes to disk,
+embeds no licensed audio, and currently offers no download/export action. The
+assignment preview is the contract intended for the next manifest-export
+slice.
 
 ## Keygroup viewer
 
@@ -105,13 +130,13 @@ Velocity coverage is checked at every integer value from 0 through 127, not
 only at a small set of representative velocities. A warning describes data
 that deserves review; it is not automatically a hardware or musical failure.
 
-## Read-only guarantee
+## Source-safety guarantee
 
-The source is parsed before the viewer output is created. The CLI refuses
+The source is parsed before the workspace output is created. The CLI refuses
 source/output identity, refuses replacement by default, embeds no audio, and
-contains no browser-side file access or write path. HTML interaction only
-changes the selected bundled source/device/comparison, displayed bank,
-selected pad/note, or keybed viewport.
+contains no browser-side file access or write path. Layout actions mutate only
+the page's isolated draft model; source and normalized comparison data remain
+unchanged.
 
 ## Real-data proof — August 27, 2026
 
@@ -129,6 +154,10 @@ selected pad/note, or keybed viewport.
   current-bank comparison counts remained aligned with the displayed pads.
 - The same Wurli source switched between Key 37 and Key 61 profiles in place,
   rendering exactly 37 and 61 keys respectively with zero browser warnings.
+- The 64-pad layered program passed cross-bank swaps, colors, locks,
+  lock-preserving mirror, right-handed semantic layout, undo/redo, reset, and
+  per-device draft-isolation checks. Assignment count remained 64 and the
+  original manifest remained byte-identical.
 
 Generated HTML/JSON belongs under ignored `work/` storage. Licensed audio and
 generated XPMs remain outside Git.
