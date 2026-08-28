@@ -360,6 +360,21 @@ preserving intervals, velocity layers, sample endpoints, and source audio. Batch
 manifests accept the same integer as `root_shift`. A shift that would move any
 root outside MIDI 0–127 is rejected.
 
+Prefer an explainable automatic target when the useful hardware range is known
+but the shift is not:
+
+```bash
+uv run mpc-keygroup "/path/to/pitched-wavs" \
+  --template "/path/to/known-good-keygroup.xpm" \
+  --root-target 60:96 \
+  --dry-run
+```
+
+The octave-only inference maximizes sampled roots inside the target, then
+prefers the smallest shift. Batch manifests use `"root_target": [60, 96]`.
+Explicit shifts and targets are mutually exclusive. See
+[Keygroup range inference](docs/keygroup-range-inference.md).
+
 Velocity variants use a four-digit suffix. The unsuffixed file is the first
 layer, `_0001` is the second, and so on:
 

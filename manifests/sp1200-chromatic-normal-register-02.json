@@ -9,7 +9,7 @@
       "category": "Chromatic Percussion",
       "source": "7. Tom",
       "velocity_preset": "sp1200_from_mars/SP1200 From Mars/Ableton Live/SP 1200 From Mars/Presets/Drums/Chromatic/Chromatic Analog Tom.adg",
-      "root_shift": 36,
+      "root_target": [60, 96],
       "sample_selection": {
         "include": ["Tom_606_Lo_SP1200_*.wav"]
       }
@@ -19,7 +19,7 @@
       "category": "Chromatic Percussion",
       "source": "15. Perc",
       "velocity_preset": "sp1200_from_mars/SP1200 From Mars/Ableton Live/SP 1200 From Mars/Presets/Drums/Chromatic/Chromatic Chimes.adg",
-      "root_shift": 36,
+      "root_target": [60, 96],
       "sample_selection": {
         "include": ["Chimes_SP1200_*.wav"]
       }
@@ -29,7 +29,7 @@
       "category": "Chromatic Percussion",
       "source": "11. Cowbell",
       "velocity_preset": "sp1200_from_mars/SP1200 From Mars/Ableton Live/SP 1200 From Mars/Presets/Drums/Chromatic/Chromatic Cowbell.adg",
-      "root_shift": 36,
+      "root_target": [60, 96],
       "sample_selection": {
         "include": ["Cowb_808_Long_SP1200_*.wav"]
       }
@@ -39,7 +39,7 @@
       "category": "Chromatic Percussion",
       "source": "7. Tom",
       "velocity_preset": "sp1200_from_mars/SP1200 From Mars/Ableton Live/SP 1200 From Mars/Presets/Drums/Chromatic/Chromatic Tom.adg",
-      "root_shift": 36,
+      "root_target": [60, 96],
       "sample_selection": {
         "include": ["Tom_707_Lo_SP1200_*.wav"]
       }
@@ -49,7 +49,7 @@
       "category": "Chromatic Percussion",
       "source": "15. Perc",
       "velocity_preset": "sp1200_from_mars/SP1200 From Mars/Ableton Live/SP 1200 From Mars/Presets/Drums/Chromatic/Chromatic Tone.adg",
-      "root_shift": 36,
+      "root_target": [60, 96],
       "sample_selection": {
         "include": ["Tone_SP1200_*.wav"]
       }

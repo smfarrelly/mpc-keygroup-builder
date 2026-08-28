@@ -21,7 +21,7 @@ from .cli import (
     build_program,
     copy_file_durable,
     discover_samples,
-    shift_sample_groups,
+    place_sample_groups,
     validate_written_program,
     write_program,
 )
@@ -47,6 +47,7 @@ class Instrument:
     include: tuple[str, ...] = ("*.wav",)
     exclude: tuple[str, ...] = ()
     root_shift: int = 0
+    root_target: tuple[int, int] | None = None
 
 
 @dataclass(frozen=True)
@@ -163,6 +164,24 @@ def load_batch(manifest_path: Path, settings: Settings) -> Batch:
         root_shift = entry.get("root_shift", 0)
         if isinstance(root_shift, bool) or not isinstance(root_shift, int):
             raise ValueError(f"{name} root_shift must be an integer")
+        root_target_value = entry.get("root_target")
+        root_target = None
+        if root_target_value is not None:
+            if "root_shift" in entry:
+                raise ValueError(f"{name} root_shift and root_target are mutually exclusive")
+            if (
+                not isinstance(root_target_value, list)
+                or len(root_target_value) != 2
+                or any(
+                    isinstance(note, bool) or not isinstance(note, int)
+                    for note in root_target_value
+                )
+            ):
+                raise ValueError(f"{name} root_target must be [LOW, HIGH] MIDI integers")
+            low, high = root_target_value
+            if not 0 <= low <= high <= 127:
+                raise ValueError(f"{name} root_target must satisfy 0 <= LOW <= HIGH <= 127")
+            root_target = (low, high)
         instruments.append(
             Instrument(
                 name=name,
@@ -175,6 +194,7 @@ def load_batch(manifest_path: Path, settings: Settings) -> Batch:
                 include=include,
                 exclude=exclude,
                 root_shift=root_shift,
+                root_target=root_target,
             )
         )
     return Batch(manifest_path.resolve(), library, destination, tuple(instruments))
@@ -254,11 +274,12 @@ def inspect_batch(settings: Settings, batch: Batch) -> int:
     for instrument in batch.instruments:
         try:
             selected = selected_wav_map(instrument)
-            groups = shift_sample_groups(
+            groups, placement = place_sample_groups(
                 discover_samples(
                     instrument.source, instrument.velocity_preset, set(selected)
                 ),
-                instrument.root_shift,
+                root_shift=instrument.root_shift,
+                root_target=instrument.root_target,
             )
             samples = all_samples(groups)
             discovered = {sample.path.name for sample in samples}
@@ -282,7 +303,10 @@ def inspect_batch(settings: Settings, batch: Batch) -> int:
                 f"PASS\t{instrument.category}/{instrument.name}\t"
                 f"keygroups={len(groups)}\tsamples={len(samples)}\tcentral={central}"
                 f"\texcluded={len(wav_map(instrument.source)) - len(selected)}"
-                f"\troot_shift={instrument.root_shift:+d}"
+                f"\troot_shift="
+                f"{(placement.shift if placement is not None else instrument.root_shift):+d}"
+                f"\troot_target="
+                f"{instrument.root_target if instrument.root_target is not None else 'none'}"
             )
         except (FileNotFoundError, KeyError, ValueError, wave.Error) as error:
             failures += 1
@@ -300,11 +324,12 @@ def inspect_batch(settings: Settings, batch: Batch) -> int:
 def build_batch(settings: Settings, batch: Batch, *, force: bool) -> None:
     for index, instrument in enumerate(batch.instruments, 1):
         selected = selected_wav_map(instrument)
-        groups = shift_sample_groups(
+        groups, _ = place_sample_groups(
             discover_samples(
                 instrument.source, instrument.velocity_preset, set(selected)
             ),
-            instrument.root_shift,
+            root_shift=instrument.root_shift,
+            root_target=instrument.root_target,
         )
         program_path, data_path = artifact_paths(settings, batch, instrument)
         if force:

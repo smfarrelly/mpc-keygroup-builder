@@ -13,6 +13,7 @@
         "include": ["*Clean*.wav"],
         "exclude": ["*_L.wav", "*_R.wav"]
       },
+      "root_target": [48, 84],
       "install": "copy"
     },
     {

@@ -18,6 +18,8 @@ from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 
+from .range_inference import RootPlacement, infer_octave_shift, parse_target
+
 
 MIDI_PREFIX = re.compile(
     r"^(?P<note>\d{1,3})(?=\D).*?(?:_(?P<variant>\d{4}))?\.wav$", re.IGNORECASE
@@ -259,6 +261,24 @@ def shift_sample_groups(samples: list[SampleGroup], semitones: int) -> list[Samp
         )
         shifted.append(SampleGroup(note, layers))
     return shifted
+
+
+def place_sample_groups(
+    samples: list[SampleGroup],
+    *,
+    root_shift: int = 0,
+    root_target: tuple[int, int] | None = None,
+) -> tuple[list[SampleGroup], RootPlacement | None]:
+    """Apply an explicit shift or infer an octave shift into a useful range."""
+    if root_target is not None and root_shift != 0:
+        raise ValueError("root_shift and root_target are mutually exclusive")
+    placement = (
+        infer_octave_shift((group.note for group in samples), *root_target)
+        if root_target is not None
+        else None
+    )
+    effective_shift = placement.shift if placement is not None else root_shift
+    return shift_sample_groups(samples, effective_shift), placement
 
 
 def read_xpm(path: Path) -> tuple[str, dict]:
@@ -518,12 +538,19 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--velocity-preset", type=Path, help="Ableton ADG containing velocity zones")
     parser.add_argument("--output", type=Path, help="destination .xpm path")
     parser.add_argument("--name", help="MPC program name (defaults to source directory name)")
-    parser.add_argument(
+    placement = parser.add_mutually_exclusive_group()
+    placement.add_argument(
         "--root-shift",
         type=int,
         default=0,
         metavar="SEMITONES",
         help="shift all sample roots/playable ranges by a fixed semitone offset",
+    )
+    placement.add_argument(
+        "--root-target",
+        type=parse_target,
+        metavar="LOW:HIGH",
+        help="infer the smallest octave shift that places most roots in this MIDI range",
     )
     parser.add_argument("--force", action="store_true", help="replace an existing output program")
     parser.add_argument("--dry-run", action="store_true", help="inspect mapping without writing")
@@ -533,8 +560,10 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv or sys.argv[1:])
     source = args.source.resolve()
-    samples = shift_sample_groups(
-        discover_samples(source, args.velocity_preset), args.root_shift
+    samples, placement = place_sample_groups(
+        discover_samples(source, args.velocity_preset),
+        root_shift=args.root_shift,
+        root_target=args.root_target,
     )
     ranges = note_ranges(samples)
     flattened = all_samples(samples)
@@ -544,6 +573,14 @@ def main(argv: list[str] | None = None) -> int:
         f"Keygroups: {len(samples)} ({samples[0].note}-{samples[-1].note}); "
         f"samples: {len(flattened)}"
     )
+    if placement is not None:
+        print(
+            f"Root placement: source {placement.source_low}-{placement.source_high}; "
+            f"target {placement.target_low}-{placement.target_high}; "
+            f"shift {placement.shift:+d}; result "
+            f"{placement.result_low}-{placement.result_high}; "
+            f"inside {placement.roots_in_target}/{placement.total_roots}"
+        )
     for group, (low, high) in zip(samples, ranges):
         layer_text = ", ".join(
             f"v{sample.velocity_start}-{sample.velocity_end}:{sample.path.name}"

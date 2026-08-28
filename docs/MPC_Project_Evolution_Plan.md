@@ -935,6 +935,13 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   A second full inventory returned unchanged, the staging directory was
   cleared, and an on-card semantic scan found the same inherited warnings with
   no dead or stacked cells.
+- Replaced the next manual-register guess with reusable octave-only useful-range
+  inference. Single builds accept `--root-target LOW:HIGH`; batch manifests use
+  `root_target`. The decision report exposes source, target, shift, result, and
+  coverage, while strict validation prevents simultaneous fixed/automatic
+  shifts and MIDI overflow. The accepted NR2 real-data fixture now declares
+  target 60–96 and infers the same +36 correction for all five programs across
+  80 unique WAVs; broad already-useful mappings remain unchanged on ties.
 
 ## 16. Reference material
 

@@ -225,7 +225,8 @@ bank, export it, and load the result on hardware without manually editing XML.
   copy-on-write export and independent allowlist verification.
 - [x] Add a strict declarative Clean/Warm/Pad/Pluck/Bass/Lo-Fi candidate schema
   and a one-command, self-contained multi-variant hardware package.
-- Improve root-note and useful-range inference.
+- [x] Improve useful-range placement with strict octave-only `root_target`
+  inference while retaining explicit hardware-proven shifts.
 - [x] Preserve and validate velocity layers, loops, filters, sample registries,
   unknown settings, and Q-Link mappings while changing proven envelope/filter
   values. Polyphony editing remains deliberately unsupported pending evidence.
@@ -254,6 +255,15 @@ to the shallow Scratchpad candidate folder after exFAT repair. All 446 files
 are ready for a later listening pass, with package checksum
 `082b51106a1b575a2e82c5b746d70d77aadd9a445da2d0e4ad175d15be74a8f2`
 matching the local source after sync.
+
+**Automatic range slice delivered August 27, 2026:** single and batch builds
+can declare a useful MIDI window instead of guessing a fixed correction. The
+scored octave-only algorithm maximizes roots inside the window and prefers the
+smallest shift, reports its decision, rejects conflicts and MIDI overflow, and
+preserves pitch classes and all audio/layer data. Target 60–96 independently
+reproduces the accepted +36 NR2 correction and exact result spans for all five
+real SP-1200 chromatic sources; a broad accepted Wurli-style 24–96 mapping stays
+at zero.
 
 **Exit gate:** One source instrument produces at least three musically distinct,
 validated variants, and one loop collection produces a useful MPC-native

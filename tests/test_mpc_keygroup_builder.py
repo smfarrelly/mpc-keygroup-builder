@@ -43,6 +43,36 @@ class MappingTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "outside 0..127"):
             builder.shift_sample_groups(groups, 12)
 
+    def test_root_target_places_groups_and_preserves_layers(self):
+        path = Path("sample.wav")
+        groups = [
+            builder.SampleGroup(
+                note,
+                (
+                    builder.Sample(note, path, 10, 0, 63),
+                    builder.Sample(note, path, 12, 64, 127),
+                ),
+            )
+            for note in (25, 40)
+        ]
+        placed, report = builder.place_sample_groups(
+            groups, root_target=(60, 96)
+        )
+        self.assertIsNotNone(report)
+        self.assertEqual(report.shift, 36)
+        self.assertEqual([group.note for group in placed], [61, 76])
+        self.assertEqual(
+            [(layer.velocity_start, layer.velocity_end) for layer in placed[0].layers],
+            [(0, 63), (64, 127)],
+        )
+
+    def test_root_target_and_explicit_shift_are_mutually_exclusive(self):
+        groups = [builder.SampleGroup(60, (builder.Sample(60, Path("x.wav"), 1),))]
+        with self.assertRaisesRegex(ValueError, "mutually exclusive"):
+            builder.place_sample_groups(
+                groups, root_shift=12, root_target=(48, 84)
+            )
+
     def test_discovery_reads_frames_and_sorts_notes(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

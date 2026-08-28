@@ -202,6 +202,55 @@ class WorkflowTests(unittest.TestCase):
         instrument = payload["data"]["drum"]["instruments"][1]
         self.assertEqual(instrument["layersv"][0]["rootNote"], 60)
 
+    def test_manifest_root_target_infers_hardware_proven_octave(self):
+        self.write_wav(self.source / "25 Patch C0.wav")
+        self.write_wav(self.source / "40 Patch D#1.wav", frames=9)
+        manifest = self.root / "targeted.json"
+        manifest.write_text(json.dumps({
+            "version": 1,
+            "library": "Test",
+            "source_root": "Test From Mars/WAV",
+            "destination": "Programs/Test",
+            "instruments": [{
+                "name": "Patch",
+                "category": "Chromatic Percussion",
+                "source": "Patch",
+                "root_target": [60, 96],
+            }],
+        }))
+        batch = workflow.load_batch(manifest, self.settings)
+        self.assertEqual(batch.instruments[0].root_target, (60, 96))
+        with redirect_stdout(StringIO()) as output:
+            workflow.build_batch(self.settings, batch, force=False)
+            self.assertEqual(workflow.inspect_batch(self.settings, batch), 0)
+        self.assertIn("root_shift=+36", output.getvalue())
+        program, _ = workflow.artifact_paths(self.settings, batch, batch.instruments[0])
+        _, payload = read_xpm(program)
+        instruments = payload["data"]["drum"]["instruments"][1:]
+        self.assertEqual(
+            [instrument["layersv"][0]["rootNote"] for instrument in instruments],
+            [61, 76],
+        )
+
+    def test_manifest_rejects_invalid_or_conflicting_root_target(self):
+        for name, fields in (
+            ("invalid", {"root_target": [96, 60]}),
+            ("conflict", {"root_target": [60, 96], "root_shift": 0}),
+        ):
+            with self.subTest(name=name):
+                manifest = self.root / f"{name}.json"
+                manifest.write_text(json.dumps({
+                    "version": 1,
+                    "library": "Test",
+                    "source_root": "Test From Mars/WAV",
+                    "destination": "Programs/Test",
+                    "instruments": [{
+                        "name": "Patch", "source": "Patch", **fields,
+                    }],
+                }))
+                with self.assertRaisesRegex(ValueError, "root_target"):
+                    workflow.load_batch(manifest, self.settings)
+
 
 if __name__ == "__main__":
     unittest.main()
