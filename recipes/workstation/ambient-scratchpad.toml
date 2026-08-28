@@ -6,7 +6,7 @@ harmony = "../harmony/ambient-minor.toml"
 melody = "../melody/ambient-drift.toml"
 
 [programs]
-drums = "FG Layered Main 01"
+drums = "FG Vinyl Layered Banks 03"
 bass = "Juno Sub Smooth"
 chords = "Glass Howl"
 melody = "Muted Guitar"
