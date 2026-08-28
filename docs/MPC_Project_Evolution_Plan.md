@@ -993,7 +993,13 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   results ledger, and semantic map comparison. The conservative and USB-DIN
   bridge variants change three mode outputs and three MPC routes while changing
   zero control assignments.
-- The dependency-free suite now passes 229 tests, the wheel/sdist build passes,
+- Deployed the five-program cross-library Drum wave, the five-program NR2
+  Keygroup package, the portable workflow Drum/MIDI fixture, and the generated
+  creative-MIDI/arrangement backlog to a new shallow `00 FG Hardware Tests`
+  tree. A 64 MiB sustained-write probe and all 266 package checksums passed;
+  hardware listening remains deliberately open. The previously laptop-only NR2
+  source package now also has a checksum-verified canonical external-drive copy.
+- The dependency-free suite now passes 242 tests, the wheel/sdist build passes,
   and the licensed-artifact repository guard remains clean.
 
 ## 16. Reference material

@@ -269,13 +269,14 @@ normal keyboard register, test neighboring keys, and save/reload the best one.
 octave to the right. Do not repeat this set unless directly comparing a boundary
 with NR2.
 
-### Normal-register 02 — built, awaiting SD transfer
+### Normal-register 02 — deployed; listening pending
 
 These shift the original roots up 36 semitones, one octave farther right than
-NR1. Do not search for them on the MPC until Ubuntu deploys the package after
-the next SD insertion.
+NR1. The 85-file package was transactionally deployed and checksum-verified on
+August 28, 2026. Its canonical recoverable copy is on the external drive under
+`MPC Transfer / FG Software Candidates 2026-08-28 / SFM Keygroup Register Fix 02`.
 
-Planned common root:
+Verified common root:
 
 `SD Card / 00 FG Hardware Tests / SFM Keygroup Register Fix 02 / Chromatic Percussion`
 
@@ -623,6 +624,62 @@ small integration regression, not a new layout-engine hardware gate.
 **Deployed and checksum-verified — August 27, 2026:**
 
 `SD Card / 00 FG Hardware Tests / Clip Reference / 080 Black Phase Vinyl Breaks Clean.wav`
+
+## 7A. Newly deployed software breadth — August 28, 2026
+
+These are software-accepted and checksum-verified on the card. Hardware
+listening remains open; none is promoted to a favorite merely because it loads.
+
+### Cross-library Drum wave
+
+Common MPC path:
+
+`SD Card / 00 FG Hardware Tests / Cross Library Kit Wave 01`
+
+- [ ] `01 FG Dusty Cross-Library 01 / FG Dusty Cross-Library 01.xpm`
+- [ ] `02 FG Tight Machine 01 / FG Tight Machine 01.xpm`
+- [ ] `03 FG Ambient Percussion 01 / FG Ambient Percussion 01.xpm`
+- [ ] `04 FG SP Punch 01 / FG SP Punch 01.xpm`
+- [ ] `05 FG Experimental Texture 01 / FG Experimental Texture 01.xpm`
+
+For each program, confirm all 16 pads sound, the semantic colors are useful,
+the closed/open hats behave sensibly, and save/reload preserves the program.
+Then record whether it is a main candidate, expressive alternate, or redundant.
+
+### Portable workflow fixture
+
+Drum Program:
+
+`SD Card / 00 FG Hardware Tests / Portable Workflow Demo 01 / 01 Cross Kit / FG Portable Cross Kit.xpm`
+
+MIDI and five arrangement variants are beside it under `02 Creative MIDI` and
+`03 Arrangements`. The synthetic Drum Program is a workflow/reference fixture,
+not a production-sound candidate.
+
+- [ ] Load the Cross Kit and trigger all 16 pads.
+- [ ] Confirm A07/A08 behave as a closed/open-hat choke pair.
+- [ ] Save/reload and confirm colors and audio references persist.
+- [ ] Import `02 Creative MIDI / portable-demo.mid` using the same qualified
+  semantic-MIDI procedure already accepted on the Key 37.
+
+### Creative MIDI backlog
+
+Common MPC path:
+
+`SD Card / 00 FG Hardware Tests / Creative MIDI 2026-08-28`
+
+Start with these bounded representatives instead of testing every seed:
+
+- [ ] `01 Generators / workstation / dusty-scratchpad-seed37.mid`
+- [ ] `01 Generators / workstation / ambient-scratchpad-seed37.mid`
+- [ ] `01 Generators / workstation / house-scratchpad-seed37.mid`
+- [ ] `02 Arrangements / dusty-scratchpad-seed37 / main-b.mid`
+- [ ] `02 Arrangements / dusty-scratchpad-seed37 / breakdown.mid`
+- [ ] One alternative from `03 Seed Batches / dusty-seeds-40-45`.
+
+Judge useful musical starting point, track naming/routing clarity, register,
+and whether the import produces a new sequence. JSON and Markdown files are
+reproduction evidence for the computer and do not need to be opened on MPC.
 
 ## 7B. Deferred: Wurli expressive Keygroup candidates
 
