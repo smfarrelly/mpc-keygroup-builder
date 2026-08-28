@@ -1,0 +1,71 @@
+schema_version = 1
+id = "volca-bass"
+name = "Korg Volca Bass"
+kind = "synth"
+midi_channel = 1
+sources = [
+  "https://cdn.korg.com/us/support/download/files/5b722ac465bb10f1907528e571968f4e.pdf",
+]
+
+[[parameters]]
+id = "slide-time"
+label = "Slide Time"
+cc = 5
+midi_only = true
+
+[[parameters]]
+id = "expression"
+label = "Expression"
+cc = 11
+midi_only = true
+
+[[parameters]]
+id = "octave"
+label = "Octave"
+cc = 40
+
+[[parameters]]
+id = "lfo-rate"
+label = "LFO Rate"
+cc = 41
+
+[[parameters]]
+id = "lfo-intensity"
+label = "LFO Intensity"
+cc = 42
+
+[[parameters]]
+id = "vco-pitch-1"
+label = "VCO 1 Pitch"
+cc = 43
+
+[[parameters]]
+id = "vco-pitch-2"
+label = "VCO 2 Pitch"
+cc = 44
+
+[[parameters]]
+id = "vco-pitch-3"
+label = "VCO 3 Pitch"
+cc = 45
+
+[[parameters]]
+id = "eg-attack"
+label = "EG Attack"
+cc = 46
+
+[[parameters]]
+id = "eg-decay-release"
+label = "EG Decay/Release"
+cc = 47
+
+[[parameters]]
+id = "cutoff-eg-intensity"
+label = "Cutoff EG Intensity"
+cc = 48
+
+[[parameters]]
+id = "gate-time"
+label = "Gate Time"
+cc = 49
+midi_only = true

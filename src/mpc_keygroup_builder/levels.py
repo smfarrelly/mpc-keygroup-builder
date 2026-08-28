@@ -21,6 +21,23 @@ def analyze_file(path: Path) -> dict[str, object]:
     count = len(samples)
     peak = max((abs(value) for value in samples), default=0.0)
     rms = math.sqrt(sum(value * value for value in samples) / count) if count else 0.0
+    onset_count = min(count, max(1, round(rate * 0.05)))
+    onset_rms = (
+        math.sqrt(sum(value * value for value in samples[:onset_count]) / onset_count)
+        if count
+        else 0.0
+    )
+    body = samples[onset_count:]
+    body_rms = (
+        math.sqrt(sum(value * value for value in body) / len(body))
+        if body
+        else rms
+    )
+    peak_threshold = peak * 0.95
+    peak_index = next(
+        (index for index, value in enumerate(samples) if abs(value) >= peak_threshold),
+        0,
+    )
     return {
         "path": str(path.resolve()),
         "sample_rate": rate,
@@ -28,6 +45,14 @@ def analyze_file(path: Path) -> dict[str, object]:
         "peak_dbfs": _db(peak),
         "rms_dbfs": _db(rms),
         "crest_db": _db(peak / rms) if rms else None,
+        "onset_rms_dbfs": _db(onset_rms),
+        "body_rms_dbfs": _db(body_rms),
+        "onset_to_body_db": (
+            _db(onset_rms / body_rms)
+            if body_rms
+            else 120.0 if onset_rms else None
+        ),
+        "attack_milliseconds": peak_index / rate * 1000,
         "dc_offset": sum(samples) / count if count else 0.0,
         "clipped_fraction": sum(abs(value) >= 0.999 for value in samples) / count if count else 0.0,
         "silent_fraction": sum(abs(value) < 0.0001 for value in samples) / count if count else 1.0,

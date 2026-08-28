@@ -1,8 +1,10 @@
 # MPC Program Catalog
 
-The catalog turns the structural ledger and XPM metadata into a portable,
-audio-free index. It never reads sample contents and never copies licensed
-audio.
+The catalog turns the structural ledger and XPM metadata into a portable
+index. Its default mode is metadata-only: it never reads sample contents and
+never copies licensed audio. An explicit enrichment mode measures referenced
+local WAVs while still writing only numeric descriptors and provenance to the
+catalog.
 
 Build it from an SD card, immutable backup, or another directory whose layout
 matches the ledger paths:
@@ -12,6 +14,19 @@ uv run mpc-catalog build inventory/program-status.csv \
   --program-root "/path/to/MPC media root" \
   --output work/program-catalog.json
 ```
+
+Add duration, RMS/crest, onset contrast, and attack facets when the licensed
+audio is locally available:
+
+```bash
+uv run mpc-catalog build inventory/program-status.csv \
+  --program-root "/path/to/MPC media root" \
+  --audio-facets \
+  --output work/program-catalog-audio.json
+```
+
+Audio lookup is confined to the declared program root. Missing or unreadable
+samples are recorded per program and do not abort the scan.
 
 Each program entry contains:
 
@@ -34,10 +49,36 @@ Query the saved index without reconnecting the drive:
 uv run mpc-catalog query work/program-catalog.json --type drum --role kick
 uv run mpc-catalog query work/program-catalog.json --hardware pass --favorite yes
 uv run mpc-catalog query work/program-catalog.json --search "Mirage" --format json
+uv run mpc-catalog query work/program-catalog-audio.json \
+  --type drum --role kick --duration short --transient sharp --loudness loud
 ```
 
 Semantic roles accept a complete role such as `hihat.closed` or a family such
 as `kick`, `tom`, or `percussion`. Scratchpad-role text is also considered.
+Keygroup searches can also constrain the measured/modelled note span with
+`--note-low-at-most`, `--note-low-at-least`, `--note-high-at-most`, and
+`--note-high-at-least`.
+
+## Deterministic cross-library kits
+
+An audio-enriched catalog can feed a strict, seeded kit recipe. The selector
+scores semantic role, preferred duration/loudness/transient descriptors,
+hardware status, favorite status, and source diversity. It emits provenance
+and a basename-only Drum manifest without placing licensed WAVs in Git:
+
+```bash
+uv run mpc-kit-select recipes/kits/dusty-cross-library.toml \
+  work/program-catalog-audio.json \
+  --manifest-output work/dusty-cross-library.toml \
+  --report-output work/dusty-cross-library.json \
+  --markdown-output work/dusty-cross-library.md \
+  --seed 37
+```
+
+Use `--stage-output` and `--stage-report` only in ignored/local storage to copy
+the selected source WAVs into a flat build staging directory. Every staged file
+is SHA-256 verified. Ambiguous duplicate basenames are rejected so the result
+remains safe for `mpc-drum-build`.
 
 ## Current full-library proof
 

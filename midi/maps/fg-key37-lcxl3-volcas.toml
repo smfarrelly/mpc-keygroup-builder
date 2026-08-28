@@ -1,0 +1,713 @@
+schema_version = 1
+name = "FG Key 37 + Launch Control XL 3 + Volcas"
+description = "Four reusable Launch Control modes: one MPC mix surface and direct parameter surfaces for the Volca Bass, Keys, and Drum routed through MPC MIDI tracks."
+device_definitions = ["volca-bass.toml", "volca-keys.toml", "volca-drum.toml"]
+sources = [
+  "https://support.akaipro.com/en/support/solutions/articles/69000858700-mpc-series-mapping-plugin-parameters-in-mpc-standalone-and-mpc-2-0-mpc-beats",
+  "https://support.akaipro.com/en/support/solutions/articles/69000804431-akai-pro-mpc-series-configuring-midi-ports-for-multi-midi-control",
+  "https://support.akaipro.com/en/support/solutions/articles/69000871268-akai-pro-mpc-key-37-using-the-mpc-key-37-as-a-midi-controller",
+  "https://fael-downloads-prod.focusrite.com/customer/prod/downloads/launch_control_xl_3_programmer_s_reference_guide-pdf_en.pdf",
+  "https://support.novationmusic.com/hc/en-gb/articles/27203903097362-Launch-Control-XL-3-Components-guide",
+  "https://userguides.novationmusic.com/hc/en-gb/articles/26190491669650-Using-Launch-Control-XL-3-outside-of-a-DAW",
+]
+
+[topology]
+launch_to_mpc = "usb"
+mpc_to_devices = "passive-thru"
+launch_direct_din = false
+midi_merger = false
+
+[[routes]]
+track = "Volca Bass Control"
+device = "volca-bass"
+input_port = "Launch Control XL 3 MIDI"
+input_channel = 1
+output_port = "MPC MIDI Out"
+output_channel = 1
+monitor = "auto"
+clock = "receive"
+
+[[routes]]
+track = "Volca Keys Control"
+device = "volca-keys"
+input_port = "Launch Control XL 3 MIDI"
+input_channel = 2
+output_port = "MPC MIDI Out"
+output_channel = 2
+monitor = "auto"
+clock = "receive"
+
+[[routes]]
+track = "Volca Drum Control"
+device = "volca-drum"
+input_port = "Launch Control XL 3 MIDI"
+input_channel = 10
+output_port = "MPC MIDI Out"
+output_channel = 10
+monitor = "auto"
+clock = "receive"
+
+[[modes]]
+id = "mpc-mix"
+slot = 1
+name = "MPC Mix"
+description = "Eight-track mix and performance layer isolated on control channel 16."
+target = "mpc"
+channel = 16
+output = "usb"
+
+[[modes.controls]]
+control = "fader-1"
+number = 20
+target = "track-1-volume"
+label = "T1 Volume"
+color = "red"
+[[modes.controls]]
+control = "fader-2"
+number = 21
+target = "track-2-volume"
+label = "T2 Volume"
+color = "orange"
+[[modes.controls]]
+control = "fader-3"
+number = 22
+target = "track-3-volume"
+label = "T3 Volume"
+color = "blue"
+[[modes.controls]]
+control = "fader-4"
+number = 23
+target = "track-4-volume"
+label = "T4 Volume"
+color = "yellow"
+[[modes.controls]]
+control = "fader-5"
+number = 24
+target = "track-5-volume"
+label = "T5 Volume"
+color = "green"
+[[modes.controls]]
+control = "fader-6"
+number = 25
+target = "track-6-volume"
+label = "T6 Volume"
+color = "purple"
+[[modes.controls]]
+control = "fader-7"
+number = 26
+target = "track-7-volume"
+label = "T7 Volume"
+color = "cyan"
+[[modes.controls]]
+control = "fader-8"
+number = 27
+target = "track-8-volume"
+label = "T8 Volume"
+color = "white"
+
+[[modes.controls]]
+control = "top-encoder-1"
+number = 28
+target = "track-1-primary-tone"
+label = "T1 Tone"
+[[modes.controls]]
+control = "top-encoder-2"
+number = 29
+target = "track-2-primary-tone"
+label = "T2 Tone"
+[[modes.controls]]
+control = "top-encoder-3"
+number = 30
+target = "track-3-primary-tone"
+label = "T3 Tone"
+[[modes.controls]]
+control = "top-encoder-4"
+number = 31
+target = "track-4-primary-tone"
+label = "T4 Tone"
+[[modes.controls]]
+control = "top-encoder-5"
+number = 32
+target = "track-5-primary-tone"
+label = "T5 Tone"
+[[modes.controls]]
+control = "top-encoder-6"
+number = 33
+target = "track-6-primary-tone"
+label = "T6 Tone"
+[[modes.controls]]
+control = "top-encoder-7"
+number = 34
+target = "track-7-primary-tone"
+label = "T7 Tone"
+[[modes.controls]]
+control = "top-encoder-8"
+number = 35
+target = "track-8-primary-tone"
+label = "T8 Tone"
+
+[[modes.controls]]
+control = "middle-encoder-1"
+number = 36
+target = "track-1-movement"
+label = "T1 Move"
+[[modes.controls]]
+control = "middle-encoder-2"
+number = 37
+target = "track-2-movement"
+label = "T2 Move"
+[[modes.controls]]
+control = "middle-encoder-3"
+number = 38
+target = "track-3-movement"
+label = "T3 Move"
+[[modes.controls]]
+control = "middle-encoder-4"
+number = 39
+target = "track-4-movement"
+label = "T4 Move"
+[[modes.controls]]
+control = "middle-encoder-5"
+number = 40
+target = "track-5-movement"
+label = "T5 Move"
+[[modes.controls]]
+control = "middle-encoder-6"
+number = 41
+target = "track-6-movement"
+label = "T6 Move"
+[[modes.controls]]
+control = "middle-encoder-7"
+number = 42
+target = "track-7-movement"
+label = "T7 Move"
+[[modes.controls]]
+control = "middle-encoder-8"
+number = 43
+target = "track-8-movement"
+label = "T8 Move"
+
+[[modes.controls]]
+control = "bottom-encoder-1"
+number = 44
+target = "track-1-reverb-send"
+label = "T1 Space"
+[[modes.controls]]
+control = "bottom-encoder-2"
+number = 45
+target = "track-2-reverb-send"
+label = "T2 Space"
+[[modes.controls]]
+control = "bottom-encoder-3"
+number = 46
+target = "track-3-reverb-send"
+label = "T3 Space"
+[[modes.controls]]
+control = "bottom-encoder-4"
+number = 47
+target = "track-4-reverb-send"
+label = "T4 Space"
+[[modes.controls]]
+control = "bottom-encoder-5"
+number = 48
+target = "track-5-reverb-send"
+label = "T5 Space"
+[[modes.controls]]
+control = "bottom-encoder-6"
+number = 49
+target = "track-6-reverb-send"
+label = "T6 Space"
+[[modes.controls]]
+control = "bottom-encoder-7"
+number = 50
+target = "track-7-reverb-send"
+label = "T7 Space"
+[[modes.controls]]
+control = "bottom-encoder-8"
+number = 51
+target = "track-8-reverb-send"
+label = "T8 Space"
+
+[[modes.controls]]
+control = "upper-button-1"
+message = "cc"
+number = 52
+behavior = "toggle"
+target = "track-1-mute"
+label = "T1 Mute"
+[[modes.controls]]
+control = "upper-button-2"
+message = "cc"
+number = 53
+behavior = "toggle"
+target = "track-2-mute"
+label = "T2 Mute"
+[[modes.controls]]
+control = "upper-button-3"
+message = "cc"
+number = 54
+behavior = "toggle"
+target = "track-3-mute"
+label = "T3 Mute"
+[[modes.controls]]
+control = "upper-button-4"
+message = "cc"
+number = 55
+behavior = "toggle"
+target = "track-4-mute"
+label = "T4 Mute"
+[[modes.controls]]
+control = "upper-button-5"
+message = "cc"
+number = 56
+behavior = "toggle"
+target = "track-5-mute"
+label = "T5 Mute"
+[[modes.controls]]
+control = "upper-button-6"
+message = "cc"
+number = 57
+behavior = "toggle"
+target = "track-6-mute"
+label = "T6 Mute"
+[[modes.controls]]
+control = "upper-button-7"
+message = "cc"
+number = 58
+behavior = "toggle"
+target = "track-7-mute"
+label = "T7 Mute"
+[[modes.controls]]
+control = "upper-button-8"
+message = "cc"
+number = 59
+behavior = "toggle"
+target = "track-8-mute"
+label = "T8 Mute"
+
+[[modes.controls]]
+control = "lower-button-1"
+message = "cc"
+number = 60
+behavior = "momentary"
+target = "track-1-performance-action"
+label = "T1 Action"
+support = "unverified"
+[[modes.controls]]
+control = "lower-button-2"
+message = "cc"
+number = 61
+behavior = "momentary"
+target = "track-2-performance-action"
+label = "T2 Action"
+support = "unverified"
+[[modes.controls]]
+control = "lower-button-3"
+message = "cc"
+number = 62
+behavior = "momentary"
+target = "track-3-performance-action"
+label = "T3 Action"
+support = "unverified"
+[[modes.controls]]
+control = "lower-button-4"
+message = "cc"
+number = 63
+behavior = "momentary"
+target = "track-4-performance-action"
+label = "T4 Action"
+support = "unverified"
+[[modes.controls]]
+control = "lower-button-5"
+message = "cc"
+number = 64
+behavior = "momentary"
+target = "track-5-performance-action"
+label = "T5 Action"
+support = "unverified"
+[[modes.controls]]
+control = "lower-button-6"
+message = "cc"
+number = 65
+behavior = "momentary"
+target = "track-6-performance-action"
+label = "T6 Action"
+support = "unverified"
+[[modes.controls]]
+control = "lower-button-7"
+message = "cc"
+number = 66
+behavior = "momentary"
+target = "track-7-performance-action"
+label = "T7 Action"
+support = "unverified"
+[[modes.controls]]
+control = "lower-button-8"
+message = "cc"
+number = 67
+behavior = "momentary"
+target = "track-8-performance-action"
+label = "T8 Action"
+support = "unverified"
+
+[[modes]]
+id = "volca-bass"
+slot = 2
+name = "Volca Bass"
+description = "Complete Volca Bass CC surface; MPC passes channel 1 to MIDI Out."
+target = "volca-bass"
+channel = 1
+output = "usb"
+
+[[modes.controls]]
+control = "fader-1"
+number = 11
+target = "expression"
+label = "Expression"
+[[modes.controls]]
+control = "fader-2"
+number = 5
+target = "slide-time"
+label = "Slide"
+[[modes.controls]]
+control = "top-encoder-1"
+number = 40
+target = "octave"
+label = "Octave"
+[[modes.controls]]
+control = "top-encoder-2"
+number = 41
+target = "lfo-rate"
+label = "LFO Rate"
+[[modes.controls]]
+control = "top-encoder-3"
+number = 42
+target = "lfo-intensity"
+label = "LFO Int"
+[[modes.controls]]
+control = "top-encoder-4"
+number = 43
+target = "vco-pitch-1"
+label = "Pitch 1"
+[[modes.controls]]
+control = "top-encoder-5"
+number = 44
+target = "vco-pitch-2"
+label = "Pitch 2"
+[[modes.controls]]
+control = "top-encoder-6"
+number = 45
+target = "vco-pitch-3"
+label = "Pitch 3"
+[[modes.controls]]
+control = "top-encoder-7"
+number = 46
+target = "eg-attack"
+label = "Attack"
+[[modes.controls]]
+control = "top-encoder-8"
+number = 47
+target = "eg-decay-release"
+label = "Decay"
+[[modes.controls]]
+control = "middle-encoder-1"
+number = 48
+target = "cutoff-eg-intensity"
+label = "Cutoff EG"
+[[modes.controls]]
+control = "middle-encoder-2"
+number = 49
+target = "gate-time"
+label = "Gate"
+
+[[modes]]
+id = "volca-keys"
+slot = 3
+name = "Volca Keys"
+description = "Complete Volca Keys CC surface; MPC passes channel 2 to MIDI Out."
+target = "volca-keys"
+channel = 2
+output = "usb"
+
+[[modes.controls]]
+control = "fader-1"
+number = 11
+target = "expression"
+label = "Expression"
+[[modes.controls]]
+control = "fader-2"
+number = 5
+target = "portamento"
+label = "Portamento"
+[[modes.controls]]
+control = "top-encoder-1"
+number = 40
+target = "voice"
+label = "Voice"
+[[modes.controls]]
+control = "top-encoder-2"
+number = 41
+target = "octave"
+label = "Octave"
+[[modes.controls]]
+control = "top-encoder-3"
+number = 42
+target = "detune"
+label = "Detune"
+[[modes.controls]]
+control = "top-encoder-4"
+number = 43
+target = "vco-eg-intensity"
+label = "VCO EG"
+[[modes.controls]]
+control = "top-encoder-5"
+number = 44
+target = "cutoff"
+label = "Cutoff"
+[[modes.controls]]
+control = "top-encoder-6"
+number = 45
+target = "vcf-eg-intensity"
+label = "VCF EG"
+[[modes.controls]]
+control = "top-encoder-7"
+number = 46
+target = "lfo-rate"
+label = "LFO Rate"
+[[modes.controls]]
+control = "top-encoder-8"
+number = 47
+target = "lfo-pitch-intensity"
+label = "LFO Pitch"
+[[modes.controls]]
+control = "middle-encoder-1"
+number = 48
+target = "lfo-cutoff-intensity"
+label = "LFO Cutoff"
+[[modes.controls]]
+control = "middle-encoder-2"
+number = 49
+target = "eg-attack"
+label = "Attack"
+[[modes.controls]]
+control = "middle-encoder-3"
+number = 50
+target = "eg-decay-release"
+label = "Decay"
+[[modes.controls]]
+control = "middle-encoder-4"
+number = 51
+target = "eg-sustain"
+label = "Sustain"
+[[modes.controls]]
+control = "middle-encoder-5"
+number = 52
+target = "delay-time"
+label = "Delay Time"
+[[modes.controls]]
+control = "middle-encoder-6"
+number = 53
+target = "delay-feedback"
+label = "Delay FB"
+
+[[modes]]
+id = "volca-drum"
+slot = 4
+name = "Volca Drum"
+description = "Six performance triggers, six level faders, per-part select/mod controls, and four waveguide controls in single-channel mode."
+target = "volca-drum"
+channel = 10
+output = "usb"
+
+[[modes.controls]]
+control = "upper-button-1"
+message = "note"
+number = 60
+behavior = "momentary"
+target = "part-1"
+label = "Part 1"
+color = "red"
+[[modes.controls]]
+control = "upper-button-2"
+message = "note"
+number = 62
+behavior = "momentary"
+target = "part-2"
+label = "Part 2"
+color = "orange"
+[[modes.controls]]
+control = "upper-button-3"
+message = "note"
+number = 64
+behavior = "momentary"
+target = "part-3"
+label = "Part 3"
+color = "yellow"
+[[modes.controls]]
+control = "upper-button-4"
+message = "note"
+number = 65
+behavior = "momentary"
+target = "part-4"
+label = "Part 4"
+color = "green"
+[[modes.controls]]
+control = "upper-button-5"
+message = "note"
+number = 67
+behavior = "momentary"
+target = "part-5"
+label = "Part 5"
+color = "cyan"
+[[modes.controls]]
+control = "upper-button-6"
+message = "note"
+number = 69
+behavior = "momentary"
+target = "part-6"
+label = "Part 6"
+color = "purple"
+
+[[modes.controls]]
+control = "fader-1"
+number = 15
+target = "part-1-level"
+label = "P1 Level"
+[[modes.controls]]
+control = "fader-2"
+number = 24
+target = "part-2-level"
+label = "P2 Level"
+[[modes.controls]]
+control = "fader-3"
+number = 47
+target = "part-3-level"
+label = "P3 Level"
+[[modes.controls]]
+control = "fader-4"
+number = 56
+target = "part-4-level"
+label = "P4 Level"
+[[modes.controls]]
+control = "fader-5"
+number = 81
+target = "part-5-level"
+label = "P5 Level"
+[[modes.controls]]
+control = "fader-6"
+number = 90
+target = "part-6-level"
+label = "P6 Level"
+
+[[modes.controls]]
+control = "top-encoder-1"
+number = 14
+target = "part-1-select"
+label = "P1 Layer"
+[[modes.controls]]
+control = "top-encoder-2"
+number = 23
+target = "part-2-select"
+label = "P2 Layer"
+[[modes.controls]]
+control = "top-encoder-3"
+number = 46
+target = "part-3-select"
+label = "P3 Layer"
+[[modes.controls]]
+control = "top-encoder-4"
+number = 55
+target = "part-4-select"
+label = "P4 Layer"
+[[modes.controls]]
+control = "top-encoder-5"
+number = 80
+target = "part-5-select"
+label = "P5 Layer"
+[[modes.controls]]
+control = "top-encoder-6"
+number = 89
+target = "part-6-select"
+label = "P6 Layer"
+[[modes.controls]]
+control = "top-encoder-7"
+number = 116
+target = "waveguide-model"
+label = "WG Model"
+[[modes.controls]]
+control = "top-encoder-8"
+number = 117
+target = "waveguide-decay"
+label = "WG Decay"
+
+[[modes.controls]]
+control = "middle-encoder-1"
+number = 16
+target = "part-1-mod-amount"
+label = "P1 Mod Amt"
+[[modes.controls]]
+control = "middle-encoder-2"
+number = 25
+target = "part-2-mod-amount"
+label = "P2 Mod Amt"
+[[modes.controls]]
+control = "middle-encoder-3"
+number = 48
+target = "part-3-mod-amount"
+label = "P3 Mod Amt"
+[[modes.controls]]
+control = "middle-encoder-4"
+number = 57
+target = "part-4-mod-amount"
+label = "P4 Mod Amt"
+[[modes.controls]]
+control = "middle-encoder-5"
+number = 82
+target = "part-5-mod-amount"
+label = "P5 Mod Amt"
+[[modes.controls]]
+control = "middle-encoder-6"
+number = 96
+target = "part-6-mod-amount"
+label = "P6 Mod Amt"
+[[modes.controls]]
+control = "middle-encoder-7"
+number = 118
+target = "waveguide-body"
+label = "WG Body"
+[[modes.controls]]
+control = "middle-encoder-8"
+number = 119
+target = "waveguide-tune"
+label = "WG Tune"
+
+[[modes.controls]]
+control = "bottom-encoder-1"
+number = 17
+target = "part-1-mod-rate"
+label = "P1 Mod Rate"
+[[modes.controls]]
+control = "bottom-encoder-2"
+number = 26
+target = "part-2-mod-rate"
+label = "P2 Mod Rate"
+[[modes.controls]]
+control = "bottom-encoder-3"
+number = 49
+target = "part-3-mod-rate"
+label = "P3 Mod Rate"
+[[modes.controls]]
+control = "bottom-encoder-4"
+number = 58
+target = "part-4-mod-rate"
+label = "P4 Mod Rate"
+[[modes.controls]]
+control = "bottom-encoder-5"
+number = 83
+target = "part-5-mod-rate"
+label = "P5 Mod Rate"
+[[modes.controls]]
+control = "bottom-encoder-6"
+number = 97
+target = "part-6-mod-rate"
+label = "P6 Mod Rate"

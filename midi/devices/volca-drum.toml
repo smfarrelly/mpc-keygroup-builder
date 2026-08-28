@@ -1,0 +1,191 @@
+schema_version = 1
+id = "volca-drum"
+name = "Korg Volca Drum (single-channel mode)"
+kind = "drum-synth"
+midi_channel = 10
+sources = [
+  "https://cdn.korg.com/us/support/download/files/68ae4f439b41bcb2cdc8350874a84cec.pdf",
+  "hardware-confirmed note map recorded in inventory/volca-hardware-results.md",
+]
+
+# Korg documents that each sound accepts notes in single-channel mode, but the
+# useful six-note layout below is hardware-confirmed on this rig rather than
+# claimed by the official implementation chart.
+[[notes]]
+id = "part-1"
+label = "Part 1"
+note = 60
+evidence = "hardware-confirmed"
+
+[[notes]]
+id = "part-2"
+label = "Part 2"
+note = 62
+evidence = "hardware-confirmed"
+
+[[notes]]
+id = "part-3"
+label = "Part 3"
+note = 64
+evidence = "hardware-confirmed"
+
+[[notes]]
+id = "part-4"
+label = "Part 4"
+note = 65
+evidence = "hardware-confirmed"
+
+[[notes]]
+id = "part-5"
+label = "Part 5"
+note = 67
+evidence = "hardware-confirmed"
+
+[[notes]]
+id = "part-6"
+label = "Part 6"
+note = 69
+evidence = "hardware-confirmed"
+
+[[parameters]]
+id = "part-1-select"
+label = "Part 1 Layer Select"
+cc = 14
+scope = "part-1"
+[[parameters]]
+id = "part-1-level"
+label = "Part 1 Level"
+cc = 15
+scope = "part-1"
+[[parameters]]
+id = "part-1-mod-amount"
+label = "Part 1 Mod Amount"
+cc = 16
+scope = "part-1"
+[[parameters]]
+id = "part-1-mod-rate"
+label = "Part 1 Mod Rate"
+cc = 17
+scope = "part-1"
+
+[[parameters]]
+id = "part-2-select"
+label = "Part 2 Layer Select"
+cc = 23
+scope = "part-2"
+[[parameters]]
+id = "part-2-level"
+label = "Part 2 Level"
+cc = 24
+scope = "part-2"
+[[parameters]]
+id = "part-2-mod-amount"
+label = "Part 2 Mod Amount"
+cc = 25
+scope = "part-2"
+[[parameters]]
+id = "part-2-mod-rate"
+label = "Part 2 Mod Rate"
+cc = 26
+scope = "part-2"
+
+[[parameters]]
+id = "part-3-select"
+label = "Part 3 Layer Select"
+cc = 46
+scope = "part-3"
+[[parameters]]
+id = "part-3-level"
+label = "Part 3 Level"
+cc = 47
+scope = "part-3"
+[[parameters]]
+id = "part-3-mod-amount"
+label = "Part 3 Mod Amount"
+cc = 48
+scope = "part-3"
+[[parameters]]
+id = "part-3-mod-rate"
+label = "Part 3 Mod Rate"
+cc = 49
+scope = "part-3"
+
+[[parameters]]
+id = "part-4-select"
+label = "Part 4 Layer Select"
+cc = 55
+scope = "part-4"
+[[parameters]]
+id = "part-4-level"
+label = "Part 4 Level"
+cc = 56
+scope = "part-4"
+[[parameters]]
+id = "part-4-mod-amount"
+label = "Part 4 Mod Amount"
+cc = 57
+scope = "part-4"
+[[parameters]]
+id = "part-4-mod-rate"
+label = "Part 4 Mod Rate"
+cc = 58
+scope = "part-4"
+
+[[parameters]]
+id = "part-5-select"
+label = "Part 5 Layer Select"
+cc = 80
+scope = "part-5"
+[[parameters]]
+id = "part-5-level"
+label = "Part 5 Level"
+cc = 81
+scope = "part-5"
+[[parameters]]
+id = "part-5-mod-amount"
+label = "Part 5 Mod Amount"
+cc = 82
+scope = "part-5"
+[[parameters]]
+id = "part-5-mod-rate"
+label = "Part 5 Mod Rate"
+cc = 83
+scope = "part-5"
+
+[[parameters]]
+id = "part-6-select"
+label = "Part 6 Layer Select"
+cc = 89
+scope = "part-6"
+[[parameters]]
+id = "part-6-level"
+label = "Part 6 Level"
+cc = 90
+scope = "part-6"
+[[parameters]]
+id = "part-6-mod-amount"
+label = "Part 6 Mod Amount"
+cc = 96
+scope = "part-6"
+[[parameters]]
+id = "part-6-mod-rate"
+label = "Part 6 Mod Rate"
+cc = 97
+scope = "part-6"
+
+[[parameters]]
+id = "waveguide-model"
+label = "Waveguide Model"
+cc = 116
+[[parameters]]
+id = "waveguide-decay"
+label = "Waveguide Decay"
+cc = 117
+[[parameters]]
+id = "waveguide-body"
+label = "Waveguide Body"
+cc = 118
+[[parameters]]
+id = "waveguide-tune"
+label = "Waveguide Tune"
+cc = 119

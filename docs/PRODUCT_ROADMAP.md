@@ -114,7 +114,8 @@ and semantic pattern generation.
   audio kept in ignored storage, pad maps, checksums, and passing simulations.
 - [x] A metadata-only catalog indexes all 750 ledger entries; 746 programs from
   the immutable backup normalize successfully and four transient testing files
-  are explicitly missing.
+  are explicitly missing. Optional local-only enrichment now adds duration,
+  RMS/crest, onset/attack descriptors, and complete zone/sample provenance.
 - [x] A reusable bank composer selects complete 16-pad banks from existing Drum
   Programs, resolves their WAV references, isolates bank mute groups, and can
   build a self-contained package. `FG Vinyl Kit Banks 01` combines eight
@@ -423,6 +424,20 @@ outline without editing a computer timeline.
   or open-ended recommendations.
 - Record provenance for every selected sample and generated asset.
 
+### Software foundation delivered
+
+- [x] Optional audio enrichment measures referenced WAV duration, RMS, crest,
+  onset contrast, and attack without copying audio or placing licensed assets
+  in Git; missing measurements remain explicit.
+- [x] Catalog queries constrain short/medium/long duration,
+  quiet/moderate/loud level, soft/defined/sharp transient, and Keygroup note
+  range in addition to existing type, role, hardware, and favorite facets.
+- [x] A strict seeded cross-library recipe selects unique samples by semantic
+  role, descriptor preference, accepted-program status, and source diversity.
+- [x] Selection emits a build-ready Drum manifest and complete program/zone/WAV
+  provenance. Optional ignored-local staging copies only chosen WAVs and
+  verifies SHA-256; duplicate flattened basenames are rejected.
+
 **Exit gate:** A query returns useful candidates and a cross-library recipe
 builds a licensed-local, reproducible kit without copying audio into source
 control.
@@ -437,6 +452,22 @@ control.
 - If reliable, support live MIDI generation and mutation while the MPC remains
   the active instrument.
 - Keep SD/USB deployment as the supported fallback.
+
+### Declarative hardware-control foundation delivered early
+
+- [x] Official-chart-backed Volca Bass, Keys, and Drum single-channel device
+  definitions encode receive channels, CC parameters, and the separately
+  labeled hardware-confirmed Drum trigger notes.
+- [x] One Launch Control XL 3 map defines an isolated MPC Mix mode plus complete
+  Bass/Keys and performance-focused Drum modes, with reusable endpoints,
+  labels, colors, message behavior, routes, and topology.
+- [x] `mpc-midi-control` validates device references, CC/note correctness,
+  duplicate endpoints/messages, channels, pass-through routes, and passive-thru
+  versus merger assumptions; it emits Components, MIDI Learn, track-route,
+  device-reference, setup, and normalized JSON artifacts.
+- [x] Unsupported automation boundaries remain honest: Custom Mode `.syx`
+  serialization and XPJ MIDI Learn writing are capture-gated instead of
+  reverse-engineered from guesses.
 
 ### Release readiness
 
@@ -461,17 +492,22 @@ for release gates:
 - Complete three-device Volca isolation and sync after the CME MIDI Thru5 WC
   arrives.
 - Establish practical audio gain and capture routing.
-- Defer Launch Control XL 3 mapping until Scratchpad and Volca restore behavior
-  is stable, then preserve one universal eight-track control vocabulary.
+- Hardware-enter and export the four declarative Launch Control XL 3 Custom
+  Modes, then preserve their official Components `.syx` files locally.
+- Capture the project-scoped MPC Mix MIDI Learn assignments and choose the
+  lower-button performance target.
+- Compare the current MPC-pass-through topology with the lower-click Launch
+  Control USB-to-DIN bridge topology after its virtual DIN port is confirmed on
+  the Key 37.
 
 ## Immediate next three increments
 
-1. **Catalog breadth:** enrich the existing metadata catalog with range and
-   measurable audio facets, then define deterministic cross-library selection
-   recipes without checking licensed assets into Git.
-2. **Reusable release fixtures:** add freely redistributable synthetic or
+1. **Reusable release fixtures:** add freely redistributable synthetic or
    permissively licensed examples that let another MPC owner exercise program,
    creative-MIDI, workstation, and arrangement workflows end to end.
+2. **Cross-library product waves:** run the new measurable selector across the
+   immutable catalog, review provenance/coverage, and queue multiple style kits
+   for later hardware listening without committing licensed audio.
 3. **Project serialization, evidence-gated:** use the detached XPJ inspector
    branch and MPC-authored baseline/changed captures only when project writing
    becomes necessary; do not guess a project schema or merge the Mac branch

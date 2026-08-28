@@ -1,0 +1,55 @@
+schema_version = 1
+extends = "fg-key37-lcxl3-volcas.toml"
+name = "FG Key 37 + Launch Control XL 3 USB-DIN Bridge"
+description = "Hardware-pending lower-click variant: MPC sequences use the Launch Control virtual DIN output while Volca Custom Modes address DIN 1 directly."
+sources = [
+  "https://userguides.novationmusic.com/hc/en-gb/articles/26190543883538-Launch-Control-XL-3-hardware-overview",
+]
+
+[topology]
+mpc_to_devices = "launch-usb-din-bridge"
+launch_direct_din = true
+midi_merger = false
+hardware_status = "pending"
+
+[[routes]]
+track = "Volca Bass"
+device = "volca-bass"
+input_port = "MPC Keyboard/Pads"
+input_channel = 1
+output_port = "Launch Control XL 3 To DIN Out 1"
+output_channel = 1
+monitor = "auto"
+clock = "receive"
+
+[[routes]]
+track = "Volca Keys"
+device = "volca-keys"
+input_port = "MPC Keyboard/Pads"
+input_channel = 2
+output_port = "Launch Control XL 3 To DIN Out 1"
+output_channel = 2
+monitor = "auto"
+clock = "receive"
+
+[[routes]]
+track = "Volca Drum"
+device = "volca-drum"
+input_port = "MPC Keyboard/Pads"
+input_channel = 10
+output_port = "Launch Control XL 3 To DIN Out 1"
+output_channel = 10
+monitor = "auto"
+clock = "receive"
+
+[[mode_overrides]]
+id = "volca-bass"
+output = "din-1"
+
+[[mode_overrides]]
+id = "volca-keys"
+output = "din-1"
+
+[[mode_overrides]]
+id = "volca-drum"
+output = "din-1"

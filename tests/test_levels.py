@@ -30,6 +30,11 @@ class LevelTests(unittest.TestCase):
             self.assertIn("level-outlier", flags["quiet.wav"])
             self.assertIn("silent", flags["silent.wav"])
             self.assertIn("dc-offset", flags["dc.wav"])
+            normal = next(row for row in rows if Path(str(row["path"])).name == "normal.wav")
+            self.assertIn("onset_rms_dbfs", normal)
+            self.assertIn("body_rms_dbfs", normal)
+            self.assertIn("onset_to_body_db", normal)
+            self.assertGreaterEqual(normal["attack_milliseconds"], 0)
 
 
 if __name__ == "__main__":

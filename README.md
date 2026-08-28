@@ -66,6 +66,20 @@ reproducible and reversible.
 evidence-diversity inspection order. It never presents that mechanical score
 as musical quality; hardware listening remains the selection gate.
 
+Compile a declarative MPC/Launch Control XL 3/Volca setup into exact Components,
+MIDI Learn, track-routing, and device-reference worksheets:
+
+```bash
+uv run mpc-midi-control check midi/maps/fg-key37-lcxl3-volcas.toml
+uv run mpc-midi-control compile midi/maps/fg-key37-lcxl3-volcas.toml \
+  work/midi-control/fg-key37-lcxl3-volcas
+```
+
+The checked map uses channels 1/2/10 for Volca Bass/Keys/Drum and isolated
+channel 16 for the eight-strip MPC control surface. See [Declarative MIDI
+control](docs/declarative-midi-control.md) for the no-guessing boundary around
+Novation `.syx` export and project-scoped MPC MIDI Learn.
+
 ## License
 
 The source code is available under the [MIT License](LICENSE). Sample libraries,

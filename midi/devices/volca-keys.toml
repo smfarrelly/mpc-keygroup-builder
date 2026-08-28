@@ -1,0 +1,89 @@
+schema_version = 1
+id = "volca-keys"
+name = "Korg Volca Keys"
+kind = "synth"
+midi_channel = 2
+sources = [
+  "https://cdn.korg.com/us/support/download/files/d9a276cdfce7ff88c32a38ba6f3ba8aa.pdf",
+]
+
+[[parameters]]
+id = "portamento"
+label = "Portamento"
+cc = 5
+
+[[parameters]]
+id = "expression"
+label = "Expression"
+cc = 11
+midi_only = true
+
+[[parameters]]
+id = "voice"
+label = "Voice"
+cc = 40
+
+[[parameters]]
+id = "octave"
+label = "Octave"
+cc = 41
+
+[[parameters]]
+id = "detune"
+label = "Detune"
+cc = 42
+
+[[parameters]]
+id = "vco-eg-intensity"
+label = "VCO EG Intensity"
+cc = 43
+
+[[parameters]]
+id = "cutoff"
+label = "Cutoff"
+cc = 44
+
+[[parameters]]
+id = "vcf-eg-intensity"
+label = "VCF EG Intensity"
+cc = 45
+
+[[parameters]]
+id = "lfo-rate"
+label = "LFO Rate"
+cc = 46
+
+[[parameters]]
+id = "lfo-pitch-intensity"
+label = "LFO Pitch Intensity"
+cc = 47
+
+[[parameters]]
+id = "lfo-cutoff-intensity"
+label = "LFO Cutoff Intensity"
+cc = 48
+
+[[parameters]]
+id = "eg-attack"
+label = "EG Attack"
+cc = 49
+
+[[parameters]]
+id = "eg-decay-release"
+label = "EG Decay/Release"
+cc = 50
+
+[[parameters]]
+id = "eg-sustain"
+label = "EG Sustain"
+cc = 51
+
+[[parameters]]
+id = "delay-time"
+label = "Delay Time"
+cc = 52
+
+[[parameters]]
+id = "delay-feedback"
+label = "Delay Feedback"
+cc = 53

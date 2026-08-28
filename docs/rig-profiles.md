@@ -41,12 +41,41 @@ The first custom mode is semantic, not effect-specific:
 - Upper buttons: mute
 - Lower buttons: record arm or one consistently chosen performance function
 
+The semantic rig now has an exact, declarative companion at
+`midi/maps/fg-key37-lcxl3-volcas.toml`. It assigns isolated channel 16 CCs for
+the eight-strip MPC Mix mode and official Korg CCs on channels 1, 2, and 10 for
+Volca Bass, Keys, and Drum modes. Validate and compile it with:
+
+```bash
+uv run mpc-midi-control check midi/maps/fg-key37-lcxl3-volcas.toml
+uv run mpc-midi-control compile midi/maps/fg-key37-lcxl3-volcas.toml \
+  work/midi-control/fg-key37-lcxl3-volcas
+```
+
+The generated folder contains a Novation Components worksheet, MPC MIDI Learn
+worksheet, MPC track-routing sheet, complete device MIDI reference, normalized
+JSON, and a setup guide. The current topology sends all surface MIDI over USB
+to the MPC; three monitored MIDI tracks pass Volca channels to MPC MIDI Out and
+the Thru5. This retains the current one-source passive-thru topology.
+
 Novation currently provides an official user guide, Programmer's Reference,
 and Components editor. Components supports editable custom modes and message
-behavior, plus local SysEx export. The profile therefore marks exact MIDI
-messages as `learn` until the physical controller is tested with the Key 37.
+behavior, plus local SysEx export. Novation does not publish the Custom Mode
+binary serialization, so the compiler deliberately does not invent `.syx`
+files. Create each mode once from the worksheet, export the official `.syx`,
+and retain that binary beside the declarative source.
+
+Akai documents mixer, Drum-pad, track, and insert-effect MIDI Learn targets,
+and saves mappings with each project. It does not provide a supported project
+mapping-file writer, and transport cannot be MIDI-Learned. The compiler marks
+the lower performance-button row unverified until one exact project target is
+chosen on hardware; transport continues through MPC clock/MMC.
 See the [official XL 3 downloads](https://downloads.novationmusic.com/novation/launch-control-xl-3/launch-control-xl-3)
-and [official Components guide](https://support.novationmusic.com/hc/en-gb/articles/33076613541266-Launch-Control-3-Components-Guide).
+and [official Components guide](https://support.novationmusic.com/hc/en-gb/articles/27203903097362-Launch-Control-XL-3-Components-guide).
+
+See [Declarative MIDI control](declarative-midi-control.md) for the routing
+cross-reference, per-device control choices, supported automation boundary,
+and the optional inherited Launch Control USB-to-DIN bridge map.
 
 ## Volca acceptance order
 
