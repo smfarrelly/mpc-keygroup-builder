@@ -1,0 +1,12 @@
+schema_version = 1
+id = "dusty-scratchpad"
+name = "Dusty Scratchpad"
+drums = "../drums/dusty-pocket.toml"
+harmony = "../harmony/dusty-dorian.toml"
+melody = "../melody/dusty-answer.toml"
+
+[programs]
+drums = "Vinyl SP From Mars 01"
+bass = "Mirage Pluck Bass"
+chords = "Mirage Wurli"
+melody = "Dark FM"

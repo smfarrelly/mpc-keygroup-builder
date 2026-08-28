@@ -56,3 +56,26 @@ declared note range is a hard boundary. `dusty-answer`, `ambient-drift`, and
 `kick`, `snare`, and `hihat.closed`, resolves them through the active layout,
 and writes MIDI plus JSON. Its MIDI rendering now shares the same tested writer
 as the harmony generator, without changing its command or output contract.
+
+## Four-part workstation bundles
+
+Combine a semantic Drum Program with a matched drum, harmony, and melody recipe:
+
+```bash
+uv run mpc-workstation-idea recipes/workstation/dusty-scratchpad.toml \
+  --program "/full/path/to/Vinyl SP From Mars 01.xpm" \
+  --seed 37 --tempo 92 \
+  --output-prefix work/ideas/dusty-scratchpad-37
+```
+
+The bundle contains one format-1 MIDI file with named Drums, Bass, Chords, and
+Melody tracks, one complete JSON reproduction record, and one concise Markdown
+MPC loading guide. Short drum recipes repeat exactly to the harmonic length.
+The root seed deterministically derives separate drum, harmony, and melody
+seeds. The record fingerprints the source Drum Program and identifies any
+layout used, so a future result can be traced to its exact note map.
+
+The bundled `dusty-scratchpad`, `ambient-scratchpad`, and
+`electro-scratchpad` recipes suggest programs from the current Key 37 palette.
+These are musical starting points rather than claims of MPC project-file
+generation; import and listening remain explicit hardware gates.

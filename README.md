@@ -52,6 +52,11 @@ The format-1 MIDI contains Conductor, Chords, and Bass tracks; a companion JSON
 file records the exact voicings and events. See [Creative MIDI
 generators](docs/creative-midi.md) for recipe controls and bundled styles.
 
+Create a complete four-part MIDI starting point with semantic drums plus Bass,
+Chords, and Melody tracks using `mpc-workstation-idea`. It also writes a JSON
+reproduction record and a human-readable MPC loading guide; see the Creative
+MIDI documentation for the full command.
+
 ## License
 
 The source code is available under the [MIT License](LICENSE). Sample libraries,

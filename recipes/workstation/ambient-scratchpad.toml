@@ -1,0 +1,12 @@
+schema_version = 1
+id = "ambient-scratchpad"
+name = "Ambient Scratchpad"
+drums = "../drums/sparse-weird.toml"
+harmony = "../harmony/ambient-minor.toml"
+melody = "../melody/ambient-drift.toml"
+
+[programs]
+drums = "FG Layered Main 01"
+bass = "Juno Sub Smooth"
+chords = "Glass Howl"
+melody = "Muted Guitar"

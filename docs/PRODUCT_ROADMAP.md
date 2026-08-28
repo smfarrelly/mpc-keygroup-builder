@@ -351,11 +351,13 @@ Implement deterministic, seed-reproducible generators in this order:
 - [x] Scale-safe motif recipes preserve a recognizable first pass and apply
   seeded neighbor, octave, and rest variations on later repetitions, with hard
   note-range enforcement and per-event JSON evidence.
+- [x] Workstation recipes combine semantic Drums, Bass, Chords, and Melody as
+  four named tracks, repeat shorter drum patterns to length, fingerprint the
+  active Drum Program, and write JSON plus a practical loading guide.
 
 Format-1 drum import and qualified musical acceptance pass on MPC 3.9.1.2.
-Chord, bass, and melody generation is implemented and computer-tested; their
-hardware import remains deliberately deferred. A combined four-part idea
-bundle is the remaining v0.6 integration step.
+Chord, bass, melody, and four-part bundle generation is implemented and
+computer-tested; hardware import remains deliberately deferred.
 
 Later controls include density, swing, syncopation, octave range, harmonic
 adventurousness, repetition, and variation. Generated events must resolve

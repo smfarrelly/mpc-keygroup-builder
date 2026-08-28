@@ -44,6 +44,7 @@ mpc-catalog = "mpc_keygroup_builder.catalog:main"
 mpc-drum-idea = "mpc_keygroup_builder.ideas:main"
 mpc-harmony-idea = "mpc_keygroup_builder.harmony:main"
 mpc-melody-idea = "mpc_keygroup_builder.melody:main"
+mpc-workstation-idea = "mpc_keygroup_builder.workstation:main"
 mpc-session-report = "mpc_keygroup_builder.session:main"
 mpc-plugin-audit = "mpc_keygroup_builder.plugin_audit:main"
 
