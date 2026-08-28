@@ -626,13 +626,15 @@ small integration regression, not a new layout-engine hardware gate.
 
 ## 7B. Deferred: Wurli expressive Keygroup candidates
 
-Prepared locally on August 27, 2026; not yet deployed because the SD was
-mounted read-only during this unattended slice.
+Prepared and deployed on August 27, 2026. The first write attempt stopped safely
+on an SD `fsync` I/O error without publishing a partial destination. After
+exFAT repair and read-write remount, deployment resumed from the verified hidden
+staging area and completed transactionally.
 
 Local package:
 `/home/steve-farrelly/Projects/mpc-keygroup-builder/work/hardware-candidates/wurli-expressive-01`
 
-Planned shallow MPC location after deployment:
+Full MPC location:
 `SD Card / 00 FG Scratchpad / 08 Expressive Candidates / Wurli Expressive 01`
 
 Software preservation passes for all six candidates. Each contains 74
@@ -640,6 +642,10 @@ instrument/layer records and 73 checksum-identical ProgramData WAVs. Semantic
 simulation covers all 128 notes with no dead or stacked cells and no new
 issues. The two outer-range warnings are inherited unchanged from the accepted
 Wurli source.
+
+Deployment proof: 446 files, 428,423,434 bytes, no remaining staging directory,
+and package SHA-256
+`082b51106a1b575a2e82c5b746d70d77aadd9a445da2d0e4ad175d15be74a8f2`.
 
 - [ ] Load `Wurli Clean.xpm` as the level-matched source reference.
 - [ ] Compare `Wurli Warm.xpm`: darkness, resonance, attack, and release.

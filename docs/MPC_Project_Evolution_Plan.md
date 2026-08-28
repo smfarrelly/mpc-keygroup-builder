@@ -928,6 +928,13 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   introduce no semantic issues; the two reported outer-register extrapolation
   warnings are identical to the accepted source and remain clearly labeled as
   inherited rather than new variant failures.
+- Recovered safely from an SD `fsync` I/O error without publishing a partial
+  package. After exFAT repair and read-write remount, the transaction resumed
+  from 159 checksum-checked staged files and atomically deployed all 446 files
+  under package hash `082b51106a1b575a2e82c5b746d70d77aadd9a445da2d0e4ad175d15be74a8f2`.
+  A second full inventory returned unchanged, the staging directory was
+  cleared, and an on-card semantic scan found the same inherited warnings with
+  no dead or stacked cells.
 
 ## 16. Reference material
 

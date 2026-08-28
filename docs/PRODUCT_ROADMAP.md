@@ -249,8 +249,11 @@ The first real package uses the hardware-accepted Mirage Wurli: six candidates,
 candidate, byte-identical serialization prefixes, checksum-identical audio, and
 zero new semantic issues. Each candidate inherits the source's two outer-range
 extrapolation warnings; all 128 notes remain covered with no dead or stacked
-velocity cells. The 410 MiB ignored package is ready locally for a later SD
-deployment and listening pass.
+velocity cells. The 410 MiB ignored local package was transactionally deployed
+to the shallow Scratchpad candidate folder after exFAT repair. All 446 files
+are ready for a later listening pass, with package checksum
+`082b51106a1b575a2e82c5b746d70d77aadd9a445da2d0e4ad175d15be74a8f2`
+matching the local source after sync.
 
 **Exit gate:** One source instrument produces at least three musically distinct,
 validated variants, and one loop collection produces a useful MPC-native
