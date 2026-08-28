@@ -7,7 +7,10 @@ import copy
 import csv
 import io
 import json
+import os
 import re
+import shutil
+import tempfile
 import tomllib
 from dataclasses import dataclass
 from pathlib import Path
@@ -431,6 +434,193 @@ def render_setup(document: dict[str, Any], devices: dict[str, DeviceDefinition])
     return "\n".join(lines).rstrip() + "\n"
 
 
+def render_hardware_checklist(document: dict[str, Any]) -> str:
+    bridge = document.get("topology", {}).get("mpc_to_devices") == "launch-usb-din-bridge"
+    path_test = (
+        "Select the Launch Control `To DIN Out 1` port on each MPC MIDI track."
+        if bridge
+        else "Select MPC MIDI Out on each Volca MIDI track."
+    )
+    return f"""# {document['name']} — hardware acceptance
+
+The declarative map validates in software. Complete these tests in order and
+record results in `hardware-results.toml`.
+
+## Enumeration and isolation
+
+- [ ] Key 37 lists the Launch Control main USB input.
+- [ ] Key 37 lists the expected Launch Control output ports.
+- [ ] Custom Mode 1 controls only MPC targets on channel 16.
+- [ ] Volca modes do not move MPC-learned parameters.
+
+## Routing
+
+- [ ] {path_test}
+- [ ] Bass mode reaches only Volca Bass on channel 1.
+- [ ] Keys mode reaches only Volca Keys on channel 2.
+- [ ] Drum mode reaches all six Volca Drum parts on channel 10.
+- [ ] Key 37 notes/sequences and Launch Control CC traffic work simultaneously.
+
+## Clock and persistence
+
+- [ ] MPC Play starts the Volcas at the intended tempo without a MIDI loop.
+- [ ] Stop/restart is repeatable.
+- [ ] MPC project reload preserves MIDI Learn and track routes.
+- [ ] Launch Control power-cycle preserves all four Custom Modes and outputs.
+
+## Comparison decision
+
+- [ ] Test the passive-thru map first as the conservative baseline.
+- [ ] Test the USB-DIN bridge only if its virtual output is visible.
+- [ ] Choose the map with fewer manual steps and no lost or doubled messages.
+"""
+
+
+def render_hardware_results(document: dict[str, Any]) -> str:
+    tests = (
+        ("usb-enumeration", "Launch Control USB ports appear on Key 37"),
+        ("mpc-mode", "MPC Mix controls are isolated and learnable"),
+        ("bass-route", "Volca Bass receives channel 1 notes and CC"),
+        ("keys-route", "Volca Keys receives channel 2 notes and CC"),
+        ("drum-route", "Volca Drum receives channel 10 notes and CC"),
+        ("simultaneous-traffic", "MPC sequences and controller CC coexist"),
+        ("clock", "MPC transport and clock are stable"),
+        ("persistence", "Project and Custom Modes survive reload/power-cycle"),
+    )
+    lines = [
+        "schema_version = 1",
+        f"map = {json.dumps(document['name'])}",
+        'hardware_status = "pending"',
+        'decision = ""',
+        "",
+    ]
+    for test_id, description in tests:
+        lines.extend(
+            (
+                "[[tests]]",
+                f"id = {json.dumps(test_id)}",
+                f"description = {json.dumps(description)}",
+                'status = "untested"',
+                'notes = ""',
+                "",
+            )
+        )
+    return "\n".join(lines)
+
+
+def compare_maps(before: dict[str, Any], after: dict[str, Any]) -> dict[str, Any]:
+    topology_keys = sorted(set(before.get("topology", {})) | set(after.get("topology", {})))
+    topology_changes = [
+        {"field": key, "before": before.get("topology", {}).get(key), "after": after.get("topology", {}).get(key)}
+        for key in topology_keys
+        if before.get("topology", {}).get(key) != after.get("topology", {}).get(key)
+    ]
+    before_modes = {mode["id"]: mode for mode in before.get("modes", [])}
+    after_modes = {mode["id"]: mode for mode in after.get("modes", [])}
+    mode_output_changes = []
+    control_assignment_changes = []
+    for mode_id in sorted(set(before_modes) | set(after_modes)):
+        left = before_modes.get(mode_id, {})
+        right = after_modes.get(mode_id, {})
+        if left.get("output", "usb") != right.get("output", "usb"):
+            mode_output_changes.append(
+                {"mode": mode_id, "before": left.get("output", "usb"), "after": right.get("output", "usb")}
+            )
+        left_controls = {
+            item.get("control"): {
+                key: item.get(key, left.get("channel") if key == "channel" else "cc" if key == "message" else None)
+                for key in ("message", "channel", "number", "target", "behavior")
+            }
+            for item in left.get("controls", [])
+        }
+        right_controls = {
+            item.get("control"): {
+                key: item.get(key, right.get("channel") if key == "channel" else "cc" if key == "message" else None)
+                for key in ("message", "channel", "number", "target", "behavior")
+            }
+            for item in right.get("controls", [])
+        }
+        for endpoint in sorted(set(left_controls) | set(right_controls)):
+            if left_controls.get(endpoint) != right_controls.get(endpoint):
+                control_assignment_changes.append(
+                    {"mode": mode_id, "control": endpoint, "before": left_controls.get(endpoint), "after": right_controls.get(endpoint)}
+                )
+    before_routes = {route["device"]: route for route in before.get("routes", [])}
+    after_routes = {route["device"]: route for route in after.get("routes", [])}
+    route_changes = []
+    for device in sorted(set(before_routes) | set(after_routes)):
+        left = before_routes.get(device)
+        right = after_routes.get(device)
+        if left != right:
+            route_changes.append({"device": device, "before": left, "after": right})
+    return {
+        "schema_version": 1,
+        "before": before.get("name"),
+        "after": after.get("name"),
+        "topology_changes": topology_changes,
+        "mode_output_changes": mode_output_changes,
+        "route_changes": route_changes,
+        "control_assignment_changes": control_assignment_changes,
+        "summary": {
+            "topology_fields_changed": len(topology_changes),
+            "mode_outputs_changed": len(mode_output_changes),
+            "routes_changed": len(route_changes),
+            "control_assignments_changed": len(control_assignment_changes),
+        },
+    }
+
+
+def render_comparison(comparison: dict[str, Any]) -> str:
+    summary = comparison["summary"]
+    lines = [
+        "# MIDI control map comparison",
+        "",
+        f"Before: **{comparison['before']}**  ",
+        f"After: **{comparison['after']}**",
+        "",
+        "## Scope",
+        "",
+        f"- Topology fields changed: {summary['topology_fields_changed']}",
+        f"- Custom Mode outputs changed: {summary['mode_outputs_changed']}",
+        f"- MPC routes changed: {summary['routes_changed']}",
+        f"- Control assignments changed: {summary['control_assignments_changed']}",
+        "",
+    ]
+    if summary["control_assignments_changed"] == 0:
+        lines.append("The controller CC/note assignments are identical; this is a routing-only comparison.")
+        lines.append("")
+    lines.extend(("## Custom Mode output changes", ""))
+    lines.extend(
+        f"- `{item['mode']}`: `{item['before']}` → `{item['after']}`"
+        for item in comparison["mode_output_changes"]
+    )
+    lines.extend(("", "## MPC route changes", ""))
+    for item in comparison["route_changes"]:
+        left = item["before"] or {}
+        right = item["after"] or {}
+        lines.append(
+            f"- `{item['device']}`: `{left.get('output_port')}` → `{right.get('output_port')}`"
+        )
+    lines.extend(("", "Hardware acceptance remains required; use each compiled map's checklist.", ""))
+    return "\n".join(lines)
+
+
+def write_comparison(comparison: dict[str, Any], output: Path) -> None:
+    if output.exists():
+        raise FileExistsError(f"comparison output already exists: {output}")
+    output.parent.mkdir(parents=True, exist_ok=True)
+    staging = Path(tempfile.mkdtemp(prefix=f".{output.name}.staging-", dir=output.parent))
+    try:
+        (staging / "comparison.json").write_text(
+            json.dumps(comparison, indent=2) + "\n", encoding="utf-8"
+        )
+        (staging / "COMPARE.md").write_text(render_comparison(comparison), encoding="utf-8")
+        os.replace(staging, output)
+    except Exception:
+        shutil.rmtree(staging, ignore_errors=True)
+        raise
+
+
 def compile_map(
     document: dict[str, Any],
     devices: dict[str, DeviceDefinition],
@@ -461,6 +651,8 @@ def compile_map(
             _reference_rows(devices),
         ),
         "SETUP.md": render_setup(document, devices),
+        "HARDWARE_CHECKLIST.md": render_hardware_checklist(document),
+        "hardware-results.toml": render_hardware_results(document),
         "mapping.json": json.dumps(
             {
                 "map": document,
@@ -493,7 +685,19 @@ def main() -> int:
     compile_parser.add_argument("output", type=Path)
     compile_parser.add_argument("--device-root", type=Path)
     compile_parser.add_argument("--force", action="store_true")
+    compare_parser = subparsers.add_parser("compare")
+    compare_parser.add_argument("before", type=Path)
+    compare_parser.add_argument("after", type=Path)
+    compare_parser.add_argument("output", type=Path)
+    compare_parser.add_argument("--device-root", type=Path)
     args = parser.parse_args()
+    if args.command == "compare":
+        before, _ = load_map(args.before, args.device_root)
+        after, _ = load_map(args.after, args.device_root)
+        comparison = compare_maps(before, after)
+        write_comparison(comparison, args.output)
+        print(f"compared {comparison['before']} -> {comparison['after']} at {args.output}")
+        return 0
     document, devices = load_map(args.map, args.device_root)
     report = validate(document, devices)
     if args.command == "check":

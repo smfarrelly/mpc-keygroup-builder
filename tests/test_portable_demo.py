@@ -1,0 +1,42 @@
+import json
+import tempfile
+import unittest
+import wave
+from pathlib import Path
+
+from mpc_keygroup_builder.portable_demo import build_demo
+
+
+class PortableDemoTests(unittest.TestCase):
+    def test_builds_complete_redistributable_workflow(self):
+        repository = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "portable"
+            report = build_demo(output, repository / "recipes")
+            self.assertEqual(report["cross_kit_simulation"], "pass")
+            self.assertEqual(report["generated_samples"], 16)
+            self.assertEqual(len(report["arrangement_sections"]), 5)
+            self.assertTrue((output / "Cross Kit/FG Portable Cross Kit.xpm").is_file())
+            self.assertTrue((output / "Creative MIDI/portable-demo.mid").is_file())
+            self.assertTrue((output / "Arrangements/main-b.mid").is_file())
+            checksums = json.loads((output / "checksums.json").read_text())
+            self.assertIn("Cross Kit/FG Portable Cross Kit.xpm", checksums)
+            selection = json.loads((output / "Selection/selection.json").read_text())
+            self.assertFalse(any(".staging-" in str(value) for value in selection.values()))
+            idea = json.loads((output / "Creative MIDI/portable-demo.json").read_text())
+            self.assertEqual(
+                idea["drum_program_file"],
+                str(output / "Cross Kit/FG Portable Cross Kit.xpm"),
+            )
+            self.assertTrue((output / "LICENSE-GENERATED-AUDIO.txt").is_file())
+            wavs = sorted((output / "Synthetic Audio").glob("*.wav"))
+            self.assertEqual(len(wavs), 16)
+            with wave.open(str(wavs[0]), "rb") as stream:
+                self.assertEqual(stream.getframerate(), 44_100)
+                self.assertGreater(stream.getnframes(), 0)
+            with self.assertRaises(FileExistsError):
+                build_demo(output, repository / "recipes")
+
+
+if __name__ == "__main__":
+    unittest.main()

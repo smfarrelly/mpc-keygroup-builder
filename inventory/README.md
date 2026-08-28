@@ -84,3 +84,9 @@ hardware checklist.
 hardware-proven-source A-H kit collections plus a four-bank velocity-layered
 Vinyl SP program. `sd-cleanup-2026-08-27.md` records the recoverable card
 cleanup, exact external archive, and protected-project boundary.
+
+`fg-cross-kit-source-programs.csv` is a deliberately small, hardware-accepted
+source ledger for licensed-local cross-library kit waves. It points at the
+three proven vinyl Drum Programs in the external lean image; generated WAVs
+and XPMs stay outside Git. `recipes/kit-waves/fg-vinyl-cross-library-wave-01.toml`
+is the ordered, reproducible five-kit listening wave built from that ledger.

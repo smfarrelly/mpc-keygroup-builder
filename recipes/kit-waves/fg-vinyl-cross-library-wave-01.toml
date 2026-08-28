@@ -1,0 +1,23 @@
+schema_version = 1
+id = "fg-vinyl-cross-library-wave-01"
+name = "FG Vinyl Cross-Library Wave 01"
+
+[[kits]]
+id = "01-dusty-cross-library"
+recipe = "../kits/dusty-cross-library.toml"
+
+[[kits]]
+id = "02-tight-machine"
+recipe = "../kits/tight-machine.toml"
+
+[[kits]]
+id = "03-ambient-percussion"
+recipe = "../kits/ambient-percussion.toml"
+
+[[kits]]
+id = "04-sp-punch"
+recipe = "../kits/sp-punch.toml"
+
+[[kits]]
+id = "05-experimental-texture"
+recipe = "../kits/experimental-texture.toml"

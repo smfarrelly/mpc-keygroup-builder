@@ -80,6 +80,34 @@ the selected source WAVs into a flat build staging directory. Every staged file
 is SHA-256 verified. Ambiguous duplicate basenames are rejected so the result
 remains safe for `mpc-drum-build`.
 
+## Transactional recipe waves
+
+`mpc-kit-wave` turns an ordered `[[kits]]` document into a complete listening
+wave. With `--ledger`, audio is measured once and the enriched catalog is
+shared by every recipe. The command preflights every selection before copying,
+refuses two recipes that resolve to the same source set, records all pairwise
+sample overlap, and publishes only after every program passes model validation,
+semantic simulation, Drum audit, and source/destination checksum comparison.
+
+```bash
+uv run mpc-kit-wave recipes/kit-waves/fg-vinyl-cross-library-wave-01.toml \
+  --ledger inventory/fg-cross-kit-source-programs.csv \
+  --program-root "/path/to/local MPC media mirror" \
+  --template "/path/to/known-good-drum-template.xpm" \
+  --output work/cross-library-wave-01
+```
+
+The output is immutable-by-default: an existing target is refused. Each kit
+has its manifest, selection prose, complete provenance, staged checksums,
+self-contained Program folder, and software-acceptance report. The wave root
+adds JSON/CSV indexes, pairwise distinctness evidence, and one checklist whose
+MPC paths are absolute. Licensed WAVs belong only in ignored or external local
+storage.
+
+The first maintained wave contains Dusty Cross-Library, Tight Machine, Ambient
+Percussion, SP Punch, and Experimental Texture recipes. Their musical names are
+intent; the descriptor match and source provenance remain the auditable facts.
+
 ## Current full-library proof
 
 The August 26, 2026 scan of the immutable media backup processed all 750 ledger

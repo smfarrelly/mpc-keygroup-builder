@@ -437,6 +437,13 @@ outline without editing a computer timeline.
 - [x] Selection emits a build-ready Drum manifest and complete program/zone/WAV
   provenance. Optional ignored-local staging copies only chosen WAVs and
   verifies SHA-256; duplicate flattened basenames are rejected.
+- [x] Five contrasting maintained recipes cover dusty, tight-machine, ambient
+  percussion, SP punch, and experimental texture intents.
+- [x] One transactional wave command measures a catalog once, preflights every
+  recipe, rejects identical selections, records pairwise overlap, builds and
+  audits all programs, and emits one full-path hardware checklist.
+- [x] The first licensed-local external wave contains five software-accepted
+  16-pad candidates; hardware listening remains deferred.
 
 **Exit gate:** A query returns useful candidates and a cross-library recipe
 builds a licensed-local, reproducible kit without copying audio into source
@@ -465,13 +472,18 @@ control.
   duplicate endpoints/messages, channels, pass-through routes, and passive-thru
   versus merger assumptions; it emits Components, MIDI Learn, track-route,
   device-reference, setup, and normalized JSON artifacts.
+- [x] Compiled control maps now include an ordered hardware checklist and
+  editable results ledger. Semantic comparison proves the conservative and
+  USB-DIN bridge maps change routing while preserving every control assignment.
 - [x] Unsupported automation boundaries remain honest: Custom Mode `.syx`
   serialization and XPJ MIDI Learn writing are capture-gated instead of
   reverse-engineered from guesses.
 
 ### Release readiness
 
-- Use synthetic or freely licensed fixtures and demonstrations.
+- [x] A transactional portable demo synthesizes 16 CC0 WAVs and exercises
+  source-program, catalog, cross-kit, Drum build, four-track workstation, and
+  five-section arrangement workflows with checksums and editable recipes.
 - Document bring-your-own-samples licensing boundaries.
 - Publish schemas, device profiles, layouts, recipes, validators, and tests.
 - Prove the workflow through at least three completed compositions.
@@ -502,12 +514,11 @@ for release gates:
 
 ## Immediate next three increments
 
-1. **Reusable release fixtures:** add freely redistributable synthetic or
-   permissively licensed examples that let another MPC owner exercise program,
-   creative-MIDI, workstation, and arrangement workflows end to end.
-2. **Cross-library product waves:** run the new measurable selector across the
-   immutable catalog, review provenance/coverage, and queue multiple style kits
-   for later hardware listening without committing licensed audio.
+1. **Hardware acceptance backlog:** test the five cross-library Drum candidates
+   and the portable fixture, then record comparative musical roles without
+   changing the reproducible software evidence.
+2. **Release portability:** add schema documentation and a clean-clone CI smoke
+   run for the portable demo, then ask another MPC owner to follow it.
 3. **Project serialization, evidence-gated:** use the detached XPJ inspector
    branch and MPC-authored baseline/changed captures only when project writing
    becomes necessary; do not guess a project schema or merge the Mac branch

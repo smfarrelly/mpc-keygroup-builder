@@ -407,10 +407,10 @@ Longer-term command set:
 - [ ] Choose a project name.
 - [ ] Create a clean repository structure.
 - [ ] Document supported source and target types.
-- [ ] Use synthetic or freely licensed audio for fixtures and demonstrations.
-- [ ] Add deterministic build tests.
-- [ ] Add missing-file, invalid-zone, path, and installation validation.
-- [ ] Document the bring-your-own-samples licensing model.
+- [x] Use synthetic or freely licensed audio for fixtures and demonstrations.
+- [x] Add deterministic build tests.
+- [x] Add missing-file, invalid-zone, path, and installation validation.
+- [x] Document the bring-your-own-samples licensing model.
 - [ ] Publish an initial `v0.1` focused on the proven workflow rather than universal conversion.
 
 **Exit test:** Another MPC owner can supply their own samples, generate a program, validate it, and load it successfully by following the documentation.
@@ -972,6 +972,29 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   seeds, standalone components, guides, and recipes were byte-compared after
   mirroring to `MPC Transfer/FG Software Candidates 2026-08-28` on the external
   drive. All MPC import/listening status remains deliberately deferred.
+
+### August 28, 2026 — cross-library wave and reusable release fixture
+
+- Added four contrasting descriptor-driven kit recipes alongside Dusty
+  Cross-Library: Tight Machine, Ambient Percussion, SP Punch, and Experimental
+  Texture. One transactional wave command measures the source catalog once,
+  preflights all recipes, rejects identical source sets, publishes pairwise
+  overlap evidence, and atomically builds each independently audited Program.
+- Built the five-program licensed-local wave from the three hardware-accepted
+  vinyl source kits on the external mirror. All 80 sample copies and five XPMs
+  pass checksum, model, semantic, and Drum-audit gates. The highest pairwise
+  overlap is 6/16 samples; hardware listening remains deferred.
+- Added a freely redistributable portable demo that deterministically
+  synthesizes 16 CC0 WAVs and exercises source Drum Program, enriched catalog,
+  cross-kit selection, final Drum Program, four-track MIDI, and five-section
+  arrangement workflows. It includes recipes, provenance, checksums, licensing,
+  and a full-path hardware checklist.
+- Expanded the Launch Control compiler with a hardware checklist, editable
+  results ledger, and semantic map comparison. The conservative and USB-DIN
+  bridge variants change three mode outputs and three MPC routes while changing
+  zero control assignments.
+- The dependency-free suite now passes 229 tests, the wheel/sdist build passes,
+  and the licensed-artifact repository guard remains clean.
 
 ## 16. Reference material
 

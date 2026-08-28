@@ -80,6 +80,18 @@ channel 16 for the eight-strip MPC control surface. See [Declarative MIDI
 control](docs/declarative-midi-control.md) for the no-guessing boundary around
 Novation `.syx` export and project-scoped MPC MIDI Learn.
 
+Generate a self-contained demo without owning any sample library:
+
+```bash
+uv run mpc-portable-demo --output work/fg-portable-demo
+```
+
+The demo mathematically synthesizes 16 redistributable WAVs, builds source and
+cross-kit Drum Programs, generates a four-track Scratchpad MIDI idea, derives
+Main/Main B/Breakdown/Build/Outro variants, and writes acceptance evidence,
+checksums, editable recipes, and one hardware checklist. See [Portable workflow
+demo](docs/portable-demo.md).
+
 ## License
 
 The source code is available under the [MIT License](LICENSE). Sample libraries,
@@ -312,6 +324,11 @@ type, source format, zones, layers, sample-reference counts, key/pad ranges,
 populated banks, semantic roles, favorite status, Scratchpad role, and hardware
 notes. `mpc-catalog query` filters that portable index by type, semantic role,
 hardware status, favorite status, or text. See [Program catalog](docs/catalog.md).
+
+`mpc-kit-wave` performs the expensive catalog measurement once, resolves an
+ordered set of distinct recipes, stages and checksum-verifies each selected
+sample, builds and audits every Drum Program, and atomically publishes one
+candidate wave with a full-path hardware checklist.
 
 ## Role-addressed drum ideas
 

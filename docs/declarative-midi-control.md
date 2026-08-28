@@ -16,6 +16,9 @@ human- and machine-readable setup artifacts.
 - Topology checks, including refusal to treat a passive thru box as a merger.
 - CSV worksheets for Novation Components and MPC MIDI Learn, plus normalized
   JSON suitable for later editor or project-capture tooling.
+- An ordered hardware checklist and TOML results ledger in every compiled map.
+- A semantic map comparison that reports topology, mode-output, route, and
+  control-assignment differences without relying on line-oriented TOML diffs.
 
 ## What remains evidence-gated
 
@@ -126,12 +129,21 @@ uv run mpc-midi-control compile \
 uv run mpc-midi-control check midi/maps/fg-key37-lcxl3-volcas.toml
 uv run mpc-midi-control compile midi/maps/fg-key37-lcxl3-volcas.toml \
   work/midi-control/fg-key37-lcxl3-volcas
+
+uv run mpc-midi-control compare \
+  midi/maps/fg-key37-lcxl3-volcas.toml \
+  midi/maps/fg-key37-lcxl3-volcas-bridge.toml \
+  work/midi-control/conservative-vs-bridge
 ```
 
 Edit TOML, recompile, and review the diff in CSV/JSON. On the first hardware
 pass, enter the four Custom Modes in Components, export their `.syx` files,
 perform the MPC Mix MIDI Learn pass, and save the baseline project. Subsequent
 changes begin in TOML rather than rediscovering channels and CCs from menus.
+The current comparison proves that the bridge experiment changes three Custom
+Mode outputs, three MPC routes, and topology metadata while changing **zero**
+endpoint/message/channel/number/target assignments. This isolates the physical
+routing question from the musical mapping question.
 
 ## Primary sources
 

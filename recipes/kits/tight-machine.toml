@@ -1,0 +1,92 @@
+schema_version = 1
+id = "tight-machine"
+name = "FG Tight Machine 01"
+seed = 101
+require_hardware_pass = true
+
+[[pads]]
+pad = 1
+role = "kick"
+prefer_duration = "short"
+prefer_loudness = "loud"
+prefer_transient = "sharp"
+[[pads]]
+pad = 2
+role = "kick"
+prefer_duration = "short"
+prefer_loudness = "moderate"
+prefer_transient = "sharp"
+[[pads]]
+pad = 3
+role = "snare"
+prefer_duration = "short"
+prefer_loudness = "loud"
+prefer_transient = "sharp"
+[[pads]]
+pad = 4
+role = "snare"
+prefer_duration = "short"
+prefer_loudness = "moderate"
+prefer_transient = "sharp"
+[[pads]]
+pad = 5
+role = "clap"
+prefer_duration = "short"
+prefer_transient = "sharp"
+[[pads]]
+pad = 6
+role = "rim"
+prefer_duration = "short"
+prefer_transient = "sharp"
+[[pads]]
+pad = 7
+role = "hihat.closed"
+prefer_duration = "short"
+prefer_transient = "sharp"
+mute_group = 1
+[[pads]]
+pad = 8
+role = "hihat.open"
+prefer_duration = "medium"
+prefer_transient = "sharp"
+mute_group = 1
+[[pads]]
+pad = 9
+role = "tom"
+prefer_duration = "short"
+prefer_loudness = "loud"
+[[pads]]
+pad = 10
+role = "tom"
+prefer_duration = "short"
+prefer_loudness = "moderate"
+[[pads]]
+pad = 11
+role = "cymbal"
+prefer_duration = "medium"
+prefer_transient = "sharp"
+[[pads]]
+pad = 12
+role = "percussion"
+prefer_duration = "short"
+prefer_transient = "sharp"
+[[pads]]
+pad = 13
+role = "percussion"
+prefer_duration = "short"
+prefer_loudness = "loud"
+[[pads]]
+pad = 14
+role = "percussion"
+prefer_duration = "medium"
+prefer_transient = "sharp"
+[[pads]]
+pad = 15
+role = "kick"
+prefer_duration = "medium"
+prefer_loudness = "loud"
+[[pads]]
+pad = 16
+role = "snare"
+prefer_duration = "medium"
+prefer_transient = "defined"

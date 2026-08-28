@@ -1,0 +1,4 @@
+path,program_type,format,structural_status,sample_references,simulation_scope,semantic_verdict,semantic_issues,hardware_status,favorite,scratchpad_role,notes
+Programs/Drum Programs/FG Vinyl Candidates/Vinyl Drum Machines From Mars 1/Vinyl Drum Machines From Mars 1.xpm,Drum,xml,pass,64,production,pass,,pass,provisional,candidate:main drums,Hardware accepted source for local cross-kit selection
+Programs/Drum Programs/FG Vinyl Candidates/Vinyl Drums From Mars 01/Vinyl Drums From Mars 01.xpm,Drum,xml,pass,64,production,pass,,pass,no,candidate:main drums,Hardware accepted source for local cross-kit selection
+Programs/Drum Programs/FG Vinyl Candidates/Vinyl SP From Mars 01/Vinyl SP From Mars 01.xpm,Drum,xml,pass,64,production,pass,,pass,yes,main drums,Hardware favorite source for local cross-kit selection

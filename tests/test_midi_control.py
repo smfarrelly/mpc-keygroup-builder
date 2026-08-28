@@ -73,6 +73,8 @@ class MidiControlTests(unittest.TestCase):
                 "mpc-track-routes.csv",
                 "device-midi-reference.csv",
                 "SETUP.md",
+                "HARDWARE_CHECKLIST.md",
+                "hardware-results.toml",
                 "mapping.json",
             }
             self.assertEqual({path.name for path in output.iterdir()}, expected)
@@ -85,6 +87,21 @@ class MidiControlTests(unittest.TestCase):
             self.assertIn("Components worksheet", setup)
             with self.assertRaises(FileExistsError):
                 midi_control.compile_map(self.document, self.devices, output)
+
+    def test_compare_is_routing_only_and_atomic(self):
+        bridge, _ = midi_control.load_map(
+            self.root / "midi/maps/fg-key37-lcxl3-volcas-bridge.toml"
+        )
+        comparison = midi_control.compare_maps(self.document, bridge)
+        self.assertEqual(comparison["summary"]["control_assignments_changed"], 0)
+        self.assertEqual(comparison["summary"]["mode_outputs_changed"], 3)
+        self.assertEqual(comparison["summary"]["routes_changed"], 3)
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "comparison"
+            midi_control.write_comparison(comparison, output)
+            self.assertIn("routing-only", (output / "COMPARE.md").read_text())
+            with self.assertRaises(FileExistsError):
+                midi_control.write_comparison(comparison, output)
 
 
 if __name__ == "__main__":
