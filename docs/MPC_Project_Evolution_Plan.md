@@ -900,6 +900,19 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   source-versus-draft comparison, and deterministic assignment preview. Drafts
   remain in memory and isolated per program/device; export stays a separate
   explicitly validated step.
+- Added fingerprinted draft downloads plus a strict `mpc-layout-draft` adapter.
+  It requires exact source/model/device identity, emits builder-compatible
+  manifests, and delegates XML or compressed XPM writes to the independently
+  verified complete-record permutation engine. Browser-generated real-data
+  manifest and XPM round trips passed without tracking generated programs or
+  licensed audio.
+- Added optional Standard MIDI groove analysis to Program Designer. Format 0/1
+  note-ons map through each kit's own PadNoteMap into heat, velocity/share, and
+  unmapped-note evidence. Deterministic left/right lower-corner reach models
+  produce reversible suggestions while preserving source and current-draft
+  locks. The accepted 28-note `dusty-pocket` file mapped completely across
+  seven sounds in the 64-pad layered XPM; browser toggle, apply, undo, and
+  uniqueness checks passed with no console warnings.
 
 ## 16. Reference material
 

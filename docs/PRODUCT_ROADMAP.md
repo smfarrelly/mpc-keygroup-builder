@@ -181,7 +181,7 @@ Start with a local, read-only viewer and add editing in small usable releases:
    conversion, and layout comparison.
 7. [x] Export a manifest first; export a validated XPM only through the tested
    engine used by the CLI.
-8. [ ] Add optional MIDI-groove heat maps and ergonomic layout suggestions after
+8. [x] Add optional MIDI-groove heat maps and ergonomic layout suggestions after
    deterministic layouts are trusted.
 
 **Read-only slice delivered August 27, 2026:** real `FG Vinyl Layered Banks 03`
@@ -196,6 +196,13 @@ deterministic JSON draft containing exact source and normalized-model hashes.
 metadata-tampered drafts; emits builder-compatible manifests; and delegates XPM
 writes to the preservation-safe record exporter with independent verification
 of declared placement and color changes.
+
+**Groove ergonomics slice delivered August 27, 2026:** repeatable Standard MIDI
+inputs now add note-on heat, velocity/share detail, source checksums, mapped and
+unmapped event counts, and deterministic right/left dominant-hand suggestions.
+Suggestions preserve source and current-draft locks, remain undoable drafts,
+and use a documented lower-corner reach heuristic rather than claiming a
+universal performance layout.
 
 **Portable comparison slice delivered August 27, 2026:** repeated source and
 device arguments now create one self-contained viewer with toolbar switching,
@@ -390,12 +397,11 @@ for release gates:
 
 ## Immediate next three increments
 
-1. **Program Designer:** begin the v0.3 read-only viewer with program import,
-   Bank A–H switching, pad roles, samples, colors, layers, and mute groups.
-2. **Creative MIDI:** build chord and bass generators on the accepted format-1
+1. **Program Designer hardware gate, deferred:** load one validated
+   browser-authored groove suggestion on the Key 37 and confirm placement,
+   explicit colors, save/reload, and source preservation.
+2. **Expressive instruments:** begin v0.4 with a preservation audit and
+   declarative Clean/Warm/Pad/Pluck/Bass/Lo-Fi Keygroup variant specification.
+3. **Creative MIDI:** build chord and bass generators on the accepted format-1
    MIDI path and keep their output inspectable without requiring an immediate
    Key 37 acceptance session.
-3. **Hardware, deferred:** preserve Drum Alternates 06-09, NR2 Keygroups, Volca
-   integration, and Launch Control mapping as ready-to-resume test batches.
-   Record completed observations in the living Key 37 field review; cold-start
-   timing remains deferred.

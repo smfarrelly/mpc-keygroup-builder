@@ -239,7 +239,9 @@ editing, handed presets, undo/redo, source-versus-draft inspection, and a
 fingerprinted JSON draft download. `mpc-layout-draft` validates that download
 against the exact source and device, exports a reusable Drum manifest, or
 creates a separately verified XPM while preserving complete instrument records
-and global settings. See
+and global settings. Optional repeatable `--groove` MIDI inputs add per-pad
+usage heat, hit/velocity summaries, unmapped-note reporting, and reversible
+right- or left-hand usage-compaction suggestions. See
 [MPC Program Designer](docs/program-designer.md).
 
 ## Metadata catalog

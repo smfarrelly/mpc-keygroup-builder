@@ -602,6 +602,22 @@ Both imports express sufficiently similar kick/snare/hat intent to close the
 semantic-layout hardware gate. Exact tempo, swing, velocity, and project-reload
 persistence remain available for a stricter future diagnostic if needed.
 
+### Optional Program Designer groove-suggestion regression
+
+Software acceptance passed against the same format-1 `dusty-pocket-source.mid`:
+all 28 note-ons map to seven sounds, the right-hand usage model suggests 12
+moves, browser draft locks remain fixed, undo is exact, and the exported XPM
+uses the already hardware-accepted preservation-safe layout engine. This is a
+small integration regression, not a new layout-engine hardware gate.
+
+- [ ] At a future hardware session, package and deploy one browser-authored
+  right-hand groove suggestion with its existing ProgramData audio.
+- [ ] Load it beside the accepted source/right-handed references and trigger
+  every groove-active sound.
+- [ ] Confirm suggested placement and explicit colors, then save/reload once.
+- [ ] Remove the disposable candidate after recording the result unless it is
+  musically better than the accepted Right layout.
+
 ### Clip reference audio
 
 **Deployed and checksum-verified — August 27, 2026:**

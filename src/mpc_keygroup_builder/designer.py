@@ -15,6 +15,7 @@ from typing import Any
 from .device import DeviceProfile, load_device
 from .layout import LayoutPreset, load_preset
 from .layout_draft import DRAFT_KIND, file_sha256, model_fingerprint
+from .midi_groove import MidiGroove, analyse_program_groove, load_groove
 from .model import ProgramModel, Zone, from_drum_manifest, from_xpm
 from .roles import load_role_overrides
 
@@ -271,11 +272,16 @@ def build_view_data(
     program: ProgramModel,
     device: DeviceProfile,
     sample_root: Path | None = None,
+    groove: MidiGroove | None = None,
 ) -> dict[str, Any]:
     issues, statuses = analyse_program(program, device, sample_root)
     zones = [
         _zone_payload(zone, program, statuses.get(zone.index, [])) for zone in program.zones
     ]
+    groove_data = analyse_program_groove(program, device, groove)
+    if groove_data is not None:
+        for zone in zones:
+            zone["groove"] = groove_data["zones"].get(str(zone["index"]))
     role_counts = Counter(zone.role for zone in program.zones)
     populated_banks: list[str] = []
     banks: dict[str, list[dict[str, Any] | None]] = {}
@@ -343,6 +349,7 @@ def build_view_data(
             "maximum_start": max(0, 128 - max(1, device.keys)),
         },
         "issues": [asdict(issue) for issue in issues],
+        "groove": groove_data,
     }
 
 
@@ -460,6 +467,7 @@ def build_view_bundle(
     programs: list[tuple[ProgramModel, Path | None]],
     devices: list[DeviceProfile],
     layouts: list[LayoutPreset] | None = None,
+    groove: MidiGroove | None = None,
 ) -> dict[str, Any]:
     """Render every requested program/device combination into a portable bundle."""
     if not programs:
@@ -495,6 +503,7 @@ def build_view_bundle(
                 program_item["model"],
                 device_item["profile"],
                 program_item["sample_root"],
+                groove,
             )
     comparisons: dict[str, dict[str, dict[str, Any]]] = {}
     for device_item in device_items:
@@ -510,7 +519,7 @@ def build_view_bundle(
                     views[right["id"]][device_id],
                 )
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "read_only": True,
         "default_program": program_items[0]["id"],
         "default_device": device_items[0]["id"],
@@ -555,6 +564,8 @@ HTML_TEMPLATE = r'''<!doctype html>
     .action:disabled { cursor:default; opacity:.42; }
     .chips { display:flex; flex-wrap:wrap; gap:9px; margin:0 0 22px; }
     .chip { padding:7px 10px; border:1px solid var(--line); border-radius:999px; background:#12161b; color:#dbe1e7; }
+    .groove-strip { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:-8px 0 20px; padding:11px 14px; border:1px solid #725b26; border-radius:12px; background:#2b2414; color:#f5d98b; }
+    .groove-strip span { color:#d8c99f; }
     .layout { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(320px,.65fr); gap:20px; align-items:start; }
     .panel { background:linear-gradient(180deg,rgba(32,38,46,.96),rgba(21,25,31,.98)); border:1px solid var(--line); border-radius:18px; box-shadow:0 18px 50px rgba(0,0,0,.26); }
     .panel-head { padding:18px 20px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; gap:12px; }
@@ -573,6 +584,8 @@ HTML_TEMPLATE = r'''<!doctype html>
     .pad.editable:active { cursor:grabbing; }
     .pad.move-target { cursor:copy; outline:2px dashed var(--info); outline-offset:-7px; }
     .pad.locked { background-image:repeating-linear-gradient(135deg,transparent,transparent 12px,rgba(0,0,0,.13) 12px,rgba(0,0,0,.13) 18px)!important; }
+    .pad.heated::after { content:""; position:absolute; inset:3px; border-radius:10px; pointer-events:none; box-shadow:inset 0 0 0 var(--heat-width) rgba(255,222,96,var(--heat-alpha)); }
+    .pad > * { position:relative; z-index:1; }
     .pad-label { font-weight:900; letter-spacing:.06em; }
     .pad-role { display:block; margin-top:22px; font-size:13px; font-weight:750; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
     .pad-sample { display:block; margin-top:4px; font-size:11px; opacity:.82; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
@@ -650,9 +663,11 @@ HTML_TEMPLATE = r'''<!doctype html>
       <div class="control"><label for="program-select">Inspect source</label><select id="program-select"></select></div>
       <div class="control"><label for="device-select">Device profile</label><select id="device-select"></select></div>
       <div class="control"><label for="compare-select">Compare with</label><select id="compare-select"></select></div>
+      <button class="action primary hidden" id="groove-toggle" type="button">Groove heat: on</button>
       <div class="toolbar-note" id="bundle-note"></div>
     </section>
     <div class="chips" id="chips"></div>
+    <div class="groove-strip hidden" id="groove-strip"><strong id="groove-title"></strong><span id="groove-summary"></span></div>
     <div class="layout">
       <main class="panel">
         <div class="panel-head"><h2 id="surface-title">Performance surface</h2><div class="banks" id="banks"></div><div class="key-controls hidden" id="key-controls"><button id="oct-down">− octave</button><strong id="key-window"></strong><button id="oct-up">+ octave</button></div></div>
@@ -672,6 +687,8 @@ HTML_TEMPLATE = r'''<!doctype html>
           <button class="action" id="mirror-bank" type="button" disabled>Mirror current bank</button>
           <div class="control"><label for="layout-select">Semantic preset</label><select id="layout-select" disabled></select></div>
           <button class="action" id="apply-layout" type="button" disabled>Apply preset</button>
+          <div class="control"><label for="ergonomic-select">Groove suggestion</label><select id="ergonomic-select" disabled><option value="right">Right-hand usage compact</option><option value="left">Left-hand usage compact</option></select></div>
+          <button class="action" id="apply-ergonomic" type="button" disabled>Apply suggestion</button>
           <button class="action" id="undo-layout" type="button" disabled>Undo</button>
           <button class="action" id="redo-layout" type="button" disabled>Redo</button>
           <button class="action" id="reset-bank" type="button" disabled>Reset bank</button>
@@ -699,7 +716,7 @@ HTML_TEMPLATE = r'''<!doctype html>
   const isBlack=n=>[1,3,6,8,10].includes(n%12);
   const clone=value=>JSON.parse(JSON.stringify(value));
   let programId=BUNDLE.default_program,deviceId=BUNDLE.default_device,compareId=null,DATA=null;
-  let selectedSlot=null,currentBank=null,keyStart=0,selectedNote=null,editMode=false,moveMode=false,draggedSlot=null;
+  let selectedSlot=null,currentBank=null,keyStart=0,selectedNote=null,editMode=false,moveMode=false,draggedSlot=null,grooveHeat=true;
   const drafts=new Map();
 
   function currentView(){return BUNDLE.views[programId][deviceId];}
@@ -729,6 +746,7 @@ HTML_TEMPLATE = r'''<!doctype html>
     program.addEventListener('change',()=>{programId=program.value;fillCompare();renderAll();});
     device.addEventListener('change',()=>{deviceId=device.value;renderAll();});
     compare.addEventListener('change',()=>{compareId=compare.value||null;renderComparison();});
+    $('groove-toggle').addEventListener('click',()=>{grooveHeat=!grooveHeat;renderGroove();if(DATA.program.kind==='drum')renderBank(currentBank);});
   }
 
   function populateEditorControls(){
@@ -739,6 +757,8 @@ HTML_TEMPLATE = r'''<!doctype html>
     $('move-toggle').addEventListener('click',()=>{moveMode=!moveMode;$('editor-note').textContent=moveMode?'Select any unlocked destination pad, including one in another bank.':'Move / swap mode cancelled.';renderBank(currentBank);});
     $('mirror-bank').addEventListener('click',mirrorCurrentBank);
     $('apply-layout').addEventListener('click',applySelectedLayout);
+    $('apply-ergonomic').addEventListener('click',applyErgonomicSuggestion);
+    $('ergonomic-select').addEventListener('change',renderGroove);
     $('undo-layout').addEventListener('click',undoDraft);
     $('redo-layout').addEventListener('click',redoDraft);
     $('reset-bank').addEventListener('click',resetCurrentBank);
@@ -746,7 +766,8 @@ HTML_TEMPLATE = r'''<!doctype html>
     $('download-draft').addEventListener('click',downloadDraft);
   }
 
-  function renderHeader(){const p=DATA.program,s=DATA.summary;$('title').textContent=p.name||'Unnamed program';document.title=`${p.name||'Unnamed program'} — MPC Program Designer`;$('source').textContent=`${p.kind} · ${p.source_format} · ${p.source_path||'in-memory source'}`;$('chips').replaceChildren();addChip(`${s.zones} zones`);addChip(`${s.layers} layers`);addChip(DATA.device.name);if(p.kind==='drum')addChip(`${s.populated_banks.length}/${DATA.device.banks.length} populated banks`);Object.entries(s.issues).forEach(([kind,count])=>addChip(`${count} ${kind}${count===1?'':'s'}`));}
+  function renderHeader(){const p=DATA.program,s=DATA.summary;$('title').textContent=p.name||'Unnamed program';document.title=`${p.name||'Unnamed program'} — MPC Program Designer`;$('source').textContent=`${p.kind} · ${p.source_format} · ${p.source_path||'in-memory source'}`;$('chips').replaceChildren();addChip(`${s.zones} zones`);addChip(`${s.layers} layers`);addChip(DATA.device.name);if(p.kind==='drum')addChip(`${s.populated_banks.length}/${DATA.device.banks.length} populated banks`);if(DATA.groove)addChip(`${DATA.groove.mapped_events}/${DATA.groove.note_events} groove hits mapped`);Object.entries(s.issues).forEach(([kind,count])=>addChip(`${count} ${kind}${count===1?'':'s'}`));renderGroove();}
+  function renderGroove(){const available=Boolean(DATA?.groove),toggle=$('groove-toggle'),strip=$('groove-strip');toggle.classList.toggle('hidden',!available);strip.classList.toggle('hidden',!available);if(!available)return;toggle.textContent=`Groove heat: ${grooveHeat?'on':'off'}`;const g=DATA.groove,select=$('ergonomic-select');Array.from(select.options).forEach(option=>{const suggestion=g.suggestions?.[option.value];if(suggestion)option.textContent=`${suggestion.name} · ${suggestion.reach_improvement_percent}% · ${suggestion.moved_assignments} moves`;});const suggestion=g.suggestions?.[select.value];$('groove-title').textContent=`${g.sources.length} MIDI groove${g.sources.length===1?'':'s'}`;$('groove-summary').textContent=`${g.note_events} note-ons · ${g.mapped_events} mapped · ${g.active_zones} active sounds · ${g.unmapped_events} unmapped${suggestion?` · selected model ${suggestion.reach_improvement_percent}% / ${suggestion.moved_assignments} moves`:''}`;}
   function renderIssues(){const box=$('issues');box.replaceChildren();$('issue-total').textContent=DATA.issues.length?`${DATA.issues.length} findings`:'clear';if(!DATA.issues.length){box.append(el('div','detail-empty','No model, sample, velocity, or mute-group findings.'));return;}DATA.issues.forEach(issue=>{const card=el('div',`issue ${issue.severity}`);card.append(el('strong','',`${issue.severity} · ${issue.code}`));card.append(el('p','',`${issue.zone?`Zone ${issue.zone}: `:''}${issue.message}`));box.append(card);});}
   function layerNode(layer){const card=el('div','layer'),top=el('div','layer-top');top.append(el('span','layer-sample',basename(layer.sample)));top.append(el('span',`status ${layer.sample_status}`,layer.sample_status));card.append(top);card.append(el('div','source',`Velocity ${layer.velocity_start}–${layer.velocity_end}${layer.root_note!==null?` · root MIDI ${layer.root_note}`:''}${layer.loop_enabled?' · loop':''}`));const velocity=el('div','velocity'),fill=el('span');fill.style.left=`${layer.velocity_start/128*100}%`;fill.style.width=`${(layer.velocity_end-layer.velocity_start+1)/128*100}%`;velocity.append(fill);card.append(velocity);return card;}
 
@@ -756,6 +777,7 @@ HTML_TEMPLATE = r'''<!doctype html>
     const rows=[['Location',label],['Role',zone.role]];
     if(zone.low_note!==null&&zone.high_note!==null)rows.push(['Key range',`${noteName(zone.low_note)}–${noteName(zone.high_note)} · MIDI ${zone.low_note}–${zone.high_note}`]);
     if(zone.midi_note!==null)rows.push(['MIDI note',`${zone.midi_note} (${noteName(zone.midi_note)})`]);
+    if(zone.groove)rows.push(['Groove hits',zone.groove.hits],['Average velocity',zone.groove.average_velocity],['Groove share',`${(zone.groove.share*100).toFixed(1)}%`]);
     rows.push(['Playback',zone.playback_mode],['Mute group',zone.mute_group||'none'],['Polyphony',zone.polyphony],['Monophonic',zone.monophonic?'yes':'no'],['Color',zone.color_hex||'not declared'],['Locked',zone.locked?'yes':'no']);
     const dl=el('dl','kv');rows.forEach(([key,value])=>{dl.append(el('dt','',key));dl.append(el('dd','',String(value)));});box.append(dl);
     box.append(el('h3','',`Layers · ${zone.layers.length}`));zone.layers.forEach(layer=>box.append(layerNode(layer)));
@@ -778,7 +800,7 @@ HTML_TEMPLATE = r'''<!doctype html>
     for(let row=rows-1;row>=0;row--){for(let col=0;col<cols;col++){
       const position=row*cols+col,slot=offset+position+1,zone=slots[position],label=slotLabel(slot),classes=`pad${zone?'':' empty'}${editMode?' editable':''}${moveMode?' move-target':''}${zone?.locked?' locked':''}`;
       const button=el('button',classes);button.type='button';button.dataset.label=label;button.dataset.slot=String(slot);button.append(el('span','pad-label',label));
-      if(zone){button.style.background=zone.color_hex||'#39424d';button.style.color=contrast(zone.color_hex);const badges=el('span','badges');if(zone.layers.length>1)badges.append(el('span','badge',`${zone.layers.length}L`));if(zone.mute_group)badges.append(el('span','badge',`M${zone.mute_group}`));if(zone.locked)badges.append(el('span','badge','LOCK'));button.append(badges);button.append(el('span','pad-role',zone.role));button.append(el('span','pad-sample',basename(zone.layers[0]?.sample)));}
+      if(zone){button.style.background=zone.color_hex||'#39424d';button.style.color=contrast(zone.color_hex);const badges=el('span','badges');if(zone.layers.length>1)badges.append(el('span','badge',`${zone.layers.length}L`));if(zone.mute_group)badges.append(el('span','badge',`M${zone.mute_group}`));if(zone.locked)badges.append(el('span','badge','LOCK'));if(grooveHeat&&zone.groove){button.classList.add('heated');button.style.setProperty('--heat-width',`${2+Math.round(zone.groove.intensity*7)}px`);button.style.setProperty('--heat-alpha',String(.35+zone.groove.intensity*.55));badges.append(el('span','badge',`${zone.groove.hits}×`));}button.append(badges);button.append(el('span','pad-role',zone.role));button.append(el('span','pad-sample',basename(zone.layers[0]?.sample)));}
       else button.append(el('span','pad-role','Empty'));
       if(!editMode&&!zone)button.disabled=true;
       button.draggable=Boolean(editMode&&zone&&!zone.locked);
@@ -803,6 +825,7 @@ HTML_TEMPLATE = r'''<!doctype html>
 
   function mirrorCurrentBank(){const draft=currentDraft(),offset=bankOffset(currentBank),cols=DATA.device.pad_columns,rows=DATA.device.pad_rows;remember(draft);let swaps=0;for(let row=0;row<rows;row++){for(let col=0;col<Math.floor(cols/2);col++){const left=offset+row*cols+col,right=offset+row*cols+(cols-1-col);if(draft.slots[left]?.locked||draft.slots[right]?.locked)continue;[draft.slots[left],draft.slots[right]]=[draft.slots[right],draft.slots[left]];swaps++;}}$('editor-note').textContent=`Mirrored Bank ${currentBank}; ${swaps} unlocked pad pairs swapped.`;selectedSlot=null;renderDrums();}
   function applySelectedLayout(){const preset=BUNDLE.layouts.find(item=>item.id===$('layout-select').value);if(!preset)return;const draft=currentDraft(),currentByIndex=new Map(draft.slots.filter(Boolean).map(zone=>[zone.index,zone])),ordered=DATA.program.zones.map(zone=>currentByIndex.get(zone.index)).filter(Boolean),result=Array(DATA.device.capacity).fill(null),remaining=[];ordered.forEach(zone=>{const current=draft.slots.indexOf(zone);if(zone.locked&&current>=0)result[current]=zone;else remaining.push(zone);});if(preset.strategy==='sequential'){remaining.slice().forEach(zone=>{const preferred=zone.pad>=1&&zone.pad<=result.length&&result[zone.pad-1]===null?zone.pad-1:result.findIndex(value=>value===null);if(preferred>=0){result[preferred]=zone;remaining.splice(remaining.indexOf(zone),1);}});}else{preset.role_order.forEach((requested,index)=>{if(index>=result.length||result[index])return;const found=remaining.findIndex(zone=>roleMatches(zone.role,requested));if(found>=0)result[index]=remaining.splice(found,1)[0];});if(preset.fill_remaining)result.forEach((value,index)=>{if(value===null&&remaining.length)result[index]=remaining.shift();});}remember(draft);draft.slots=result;$('editor-note').textContent=`Applied ${preset.name}; locked positions were preserved.`;selectedSlot=null;renderDrums();}
+  function applyErgonomicSuggestion(){const suggestion=DATA.groove?.suggestions?.[$('ergonomic-select').value];if(!suggestion)return;const draft=currentDraft(),currentByIndex=new Map(draft.slots.filter(Boolean).map(zone=>[zone.index,zone])),result=Array(DATA.device.capacity).fill(null),remaining=[];draft.slots.forEach((zone,index)=>{if(zone?.locked)result[index]=zone;});suggestion.assignments.forEach(item=>{const zone=currentByIndex.get(item.source_zone);if(!zone||zone.locked)return;if(!result[item.slot-1])result[item.slot-1]=zone;else remaining.push(zone);});draft.slots.filter(zone=>zone&&!zone.locked&&!result.includes(zone)&&!remaining.includes(zone)).forEach(zone=>remaining.push(zone));result.forEach((zone,index)=>{if(!zone&&remaining.length)result[index]=remaining.shift();});remember(draft);draft.slots=result;$('editor-note').textContent=`Applied ${suggestion.name}: ${suggestion.reach_improvement_percent}% modeled reach improvement. Current draft locks were preserved.`;selectedSlot=null;renderDrums();}
   function undoDraft(){const draft=currentDraft();if(!draft.history.length)return;draft.future.push(snapshot(draft.slots));draft.slots=JSON.parse(draft.history.pop());selectedSlot=null;$('editor-note').textContent='Undid the last draft change.';renderDrums();}
   function redoDraft(){const draft=currentDraft();if(!draft.future.length)return;draft.history.push(snapshot(draft.slots));draft.slots=JSON.parse(draft.future.pop());selectedSlot=null;$('editor-note').textContent='Redid the draft change.';renderDrums();}
   function resetCurrentBank(){const draft=currentDraft(),offset=bankOffset(currentBank),count=DATA.device.pads_per_bank;remember(draft);draft.slots.splice(offset,count,...clone(draft.source.slice(offset,offset+count)));selectedSlot=null;$('editor-note').textContent=`Reset Bank ${currentBank} to the source layout.`;renderDrums();}
@@ -817,6 +840,7 @@ HTML_TEMPLATE = r'''<!doctype html>
     const draft=currentDraft(),changes=draftChangeCount(draft),active=editMode;
     $('editor-panel').classList.remove('hidden');$('edit-toggle').textContent=active?'View source':changes?'Resume layout draft':'Edit layout draft';$('layout-status').textContent=active?`${changes} changed slot${changes===1?'':'s'}`:changes?`Source view · ${changes} draft change${changes===1?'':'s'} retained`:'Source view';
     ['move-toggle','mirror-bank','layout-select','apply-layout','reset-bank','reset-layout','download-draft'].forEach(id=>$(id).disabled=!active);
+    $('ergonomic-select').disabled=!active||!DATA.groove||!DATA.groove.active_zones;$('apply-ergonomic').disabled=$('ergonomic-select').disabled;
     $('move-toggle').disabled=!active||!selectedSlot||!draft.slots[selectedSlot-1]||draft.slots[selectedSlot-1].locked;$('move-toggle').textContent=moveMode?'Cancel move':'Move / swap selected';
     $('undo-layout').disabled=!active||!draft.history.length;$('redo-layout').disabled=!active||!draft.future.length;$('apply-layout').disabled=!active||!BUNDLE.layouts.length;
     $('draft-layout').classList.toggle('hidden',!active);if(!active){$('editor-note').textContent=changes?`${changes} draft change${changes===1?' is':'s are'} retained in this page; resume editing to inspect them.`:'Start a draft to rearrange pads without changing the embedded source model.';return;}
@@ -847,7 +871,7 @@ def render_html(data: dict[str, Any]) -> str:
     if "views" not in data:
         device_id = str(data["device"]["id"])
         data = {
-            "schema_version": 2,
+            "schema_version": 3,
             "read_only": True,
             "default_program": "program",
             "default_device": device_id,
@@ -925,6 +949,14 @@ def main() -> int:
         help="layout preset available to the browser draft editor; repeatable",
     )
     parser.add_argument(
+        "--groove",
+        action="append",
+        default=[],
+        type=Path,
+        metavar="MIDI",
+        help="Standard MIDI groove used for heat maps and suggestions; repeatable",
+    )
+    parser.add_argument(
         "--device",
         action="append",
         type=Path,
@@ -937,14 +969,15 @@ def main() -> int:
     args = parser.parse_args()
     source = args.source.expanduser().resolve()
     compare_sources = [path.expanduser().resolve() for path in args.compare]
+    groove_paths = [path.expanduser().resolve() for path in args.groove]
     source_root = args.source_root.expanduser().resolve() if args.source_root else None
     compare_roots = [path.expanduser().resolve() for path in args.compare_source_root]
     roles = args.roles.expanduser().resolve() if args.roles else None
     output = args.output.expanduser().resolve()
     if len(compare_roots) > len(compare_sources):
         parser.error("--compare-source-root requires a corresponding --compare source")
-    if output in {source, *compare_sources}:
-        parser.error("viewer output cannot replace the source program")
+    if output in {source, *compare_sources, *groove_paths}:
+        parser.error("viewer output cannot replace a source program or MIDI groove")
     if output.exists() and not args.force:
         parser.error(f"viewer output exists; use --force to replace it: {output}")
     program = load_program(source, args.source_type, source_root, roles)
@@ -957,7 +990,12 @@ def main() -> int:
         )
     devices = [load_device(path.expanduser().resolve()) for path in args.device]
     layouts = [load_preset(path.expanduser().resolve()) for path in args.layout]
-    data = build_view_bundle(programs, devices, layouts)
+    groove = (
+        load_groove(groove_paths)
+        if groove_paths
+        else None
+    )
+    data = build_view_bundle(programs, devices, layouts, groove)
     rendered = json.dumps(data, indent=2) + "\n" if args.format == "json" else render_html(data)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(rendered, encoding="utf-8")
@@ -966,6 +1004,7 @@ def main() -> int:
     print(f"Wrote: {output}")
     print(
         f"Programs: {len(programs)}; devices={len(devices)}; layouts={len(layouts)}; "
+        f"grooves={len(args.groove)}; "
         f"comparisons={len(programs) * max(0, len(programs) - 1) * len(devices)}"
     )
     return 2 if error_count else 0

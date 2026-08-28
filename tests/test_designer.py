@@ -6,6 +6,8 @@ from unittest.mock import patch
 
 from mpc_keygroup_builder import designer, model
 from mpc_keygroup_builder.device import DeviceProfile, load_device
+from mpc_keygroup_builder.ideas import DrumEvent, DrumIdea, render_midi
+from mpc_keygroup_builder.midi_groove import load_groove
 
 
 class ProgramDesignerTests(unittest.TestCase):
@@ -129,6 +131,8 @@ class ProgramDesignerTests(unittest.TestCase):
         self.assertIn('id="comparison-panel"', rendered)
         self.assertIn('id="editor-panel"', rendered)
         self.assertIn('id="edit-toggle"', rendered)
+        self.assertIn('id="groove-toggle"', rendered)
+        self.assertIn('id="apply-ergonomic"', rendered)
         self.assertIn("Draft only · source unchanged", rendered)
         self.assertNotIn("Kit </script><script>alert(1)</script>", rendered)
         self.assertNotIn("https://", rendered)
@@ -184,7 +188,7 @@ class ProgramDesignerTests(unittest.TestCase):
         bundle = designer.build_view_bundle(
             [(first, None), (second, None)], [self.device, key_61], [layout]
         )
-        self.assertEqual(bundle["schema_version"], 2)
+        self.assertEqual(bundle["schema_version"], 3)
         self.assertEqual([item["id"] for item in bundle["programs"]], ["kit", "kit-2"])
         self.assertEqual(set(bundle["views"]["kit"]), {"mpc-key-37", "mpc-key-61"})
         self.assertEqual(bundle["layouts"][0]["id"], "right-handed-performance")
@@ -229,11 +233,54 @@ class ProgramDesignerTests(unittest.TestCase):
             ):
                 self.assertEqual(designer.main(), 0)
             payload = json.loads(output.read_text())
-            self.assertEqual(payload["schema_version"], 2)
+            self.assertEqual(payload["schema_version"], 3)
             self.assertEqual(len(payload["programs"]), 2)
             self.assertEqual(len(payload["devices"]), 2)
             self.assertEqual(payload["layouts"][0]["id"], "right-handed-performance")
             self.assertEqual((first.read_bytes(), second.read_bytes()), before)
+
+    def test_bundle_maps_optional_groove_into_heat_and_suggestions(self):
+        program = model.ProgramModel(
+            1,
+            "Groove Kit",
+            "drum",
+            (
+                model.Zone(
+                    1,
+                    "kick.primary",
+                    (model.SampleLayer("Kick.wav"),),
+                    pad=1,
+                    midi_note=36,
+                ),
+                model.Zone(
+                    2,
+                    "snare.primary",
+                    (model.SampleLayer("Snare.wav"),),
+                    pad=2,
+                    midi_note=38,
+                ),
+            ),
+            "fixture",
+            pad_note_map={1: 36, 2: 38},
+        )
+        events = (
+            DrumEvent(0, 0, 60, "kick.primary", 1, "A01", 36, 110, "Kick.wav"),
+            DrumEvent(1, 120, 60, "kick.primary", 1, "A01", 36, 100, "Kick.wav"),
+            DrumEvent(2, 240, 60, "snare.primary", 2, "A02", 38, 90, "Snare.wav"),
+        )
+        idea = DrumIdea(1, "fixture", "Groove Kit", None, 1, 90, 1, 1, 16, 0.5, 10, 480, events)
+        with tempfile.TemporaryDirectory() as directory:
+            midi = Path(directory) / "groove.mid"
+            midi.write_bytes(render_midi(idea))
+            bundle = designer.build_view_bundle(
+                [(program, None)], [self.device], groove=load_groove([midi])
+            )
+        view = bundle["views"]["groove-kit"]["mpc-key-37"]
+        self.assertEqual(view["groove"]["mapped_events"], 3)
+        self.assertEqual(view["banks"]["A"][0]["groove"]["hits"], 2)
+        self.assertEqual(
+            set(view["groove"]["suggestions"]), {"right", "left"}
+        )
 
 
 if __name__ == "__main__":

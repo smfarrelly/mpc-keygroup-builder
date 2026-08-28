@@ -96,6 +96,35 @@ switching while the HTML page remains open. The editor never writes to disk,
 embeds no licensed audio, and only downloads a portable JSON draft when asked.
 It never writes an XPM in the browser.
 
+## MIDI groove heat and ergonomic suggestions
+
+Pass one or more Standard MIDI files to aggregate their note-on usage. Format 0
+and format 1 files, including running status, are supported:
+
+```bash
+uv run mpc-program-designer "/path/to/Kit.xpm" \
+  --device devices/mpc-key-37.toml \
+  --layout layouts/right-handed-performance.toml \
+  --groove work/ideas/dusty-pocket-source.mid \
+  --groove work/ideas/second-pattern.mid \
+  --output work/program-designer/kit-groove.html
+```
+
+The viewer maps MIDI notes through each Drum Program's explicit zone notes or
+PadNoteMap. Heated pads show hit counts; selection detail shows average velocity
+and share of mapped events. The summary retains every MIDI source's path,
+SHA-256, format, track count, PPQ, and event count, plus all unmapped notes. A
+missing PadNoteMap therefore produces visible unmapped events instead of a
+guessed Classic MPC mapping.
+
+Right- and left-hand suggestions rank used sounds by hit count and average
+velocity, then place them toward the lower dominant-hand corner, Bank A first.
+This is an explicit repeatable reach heuristic, not an ergonomic or musical
+truth. Source locks and locks added in the current draft stay fixed; unused
+sounds retain their original locations when possible. Applying a suggestion is
+a normal undoable draft action, so it can be compared, edited, downloaded, and
+validated through the same source-safe export path.
+
 ## Validate and export a layout draft
 
 Treat the downloaded JSON as a proposal, not an instrument. The separate CLI
@@ -160,12 +189,12 @@ it through MIDI 0–127 without changing the program.
 ## Machine-readable output
 
 Use `--format json` with an `.json` output path to write the complete viewer
-payload without HTML. Schema v2 contains the source/device inventory, every
+payload without HTML. Schema v3 contains the source/device/groove inventory, every
 normalized rendered view, and deterministic pairwise comparisons including
 changed fields and summary deltas.
 
 Existing output is refused unless `--force` is supplied. The output path can
-never equal the input source path.
+never equal an input program or MIDI groove path.
 
 ## Validation meanings
 
@@ -182,11 +211,11 @@ that deserves review; it is not automatically a hardware or musical failure.
 
 ## Source-safety guarantee
 
-The source is parsed before the workspace output is created. The CLI refuses
-source/output identity, refuses replacement by default, embeds no audio, and
-contains no browser-side file access or write path. Layout actions mutate only
-the page's isolated draft model; source and normalized comparison data remain
-unchanged.
+Every source is parsed before the workspace output is created. The CLI refuses
+input/output identity, refuses replacement by default, and embeds no audio.
+Layout actions mutate only the page's isolated draft model; the browser's only
+write action is an explicit draft-JSON download. Program, MIDI, and normalized
+comparison data remain unchanged.
 
 ## Real-data proof — August 27, 2026
 
@@ -212,6 +241,11 @@ unchanged.
   payload after a swap and recolor with zero browser warnings. Draft validation,
   manifest re-import, XML XPM record permutation, explicit color override, and
   stale/tampered-source rejection are covered by automated tests.
+- The hardware-tested 28-note `dusty-pocket-source.mid` groove mapped all 28
+  events onto seven sounds in the real 64-pad layered XPM. Browser checks passed
+  heat toggling, hit/velocity/share detail, a 94.2% modeled right-hand reach
+  improvement, current-draft lock preservation, 64-zone uniqueness, exact undo,
+  and zero console warnings.
 
 Generated HTML/JSON belongs under ignored `work/` storage. Licensed audio and
 generated XPMs remain outside Git.
