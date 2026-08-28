@@ -51,10 +51,10 @@ The tool does not claim to infer musical register from audio timbre.
 
 ## Real-data regression
 
-The five accepted SP-1200 NR2 chromatic mappings previously used a manual +36
-semitone correction. Their original root spans are 25–50 in different 16-note
-windows. With target 60–96, automatic placement independently returns +36 for
-all five and recreates the accepted result spans exactly:
+The five SP-1200 NR2 chromatic software fixtures used a manual +36 semitone
+correction. Their original root spans are 25–50 in different 16-note windows.
+With target 60–96, automatic placement independently returns +36 for all five
+and recreates those result spans exactly:
 
 - Analog Tom: 63–78;
 - Chimes: 71–86;
@@ -63,9 +63,12 @@ all five and recreates the accepted result spans exactly:
 - Tone: 69–84.
 
 The real batch inspection passes 80 unique WAVs with no duplicates or mapping
-failures. A broad 24–96 mapping, representing an already useful multisampled
-instrument such as Wurli, remains at zero shift because moving it does not
-increase target coverage.
+failures. Hardware listening subsequently found seven keys unavailable at the
+default keyboard position and requested one additional octave upward. NR3 uses
+an explicit +48 shift because that hardware preference intentionally differs
+from the target-coverage heuristic. A broad 24–96 mapping, representing an
+already useful multisampled instrument such as Wurli, remains at zero shift
+because moving it does not increase target coverage.
 
 This is software evidence for repeatable mapping, not permission to overwrite
 an accepted program. New target choices still require later hardware listening.

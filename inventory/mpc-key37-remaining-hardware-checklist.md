@@ -269,7 +269,7 @@ normal keyboard register, test neighboring keys, and save/reload the best one.
 octave to the right. Do not repeat this set unless directly comparing a boundary
 with NR2.
 
-### Normal-register 02 — deployed; listening pending
+### Normal-register 02 — warning; superseded by NR3
 
 These shift the original roots up 36 semitones, one octave farther right than
 NR1. The 85-file package was transactionally deployed and checksum-verified on
@@ -285,6 +285,32 @@ Verified common root:
 - [ ] Chromatic Cowbell NR2 — `Chromatic Cowbell NR2.xpm`; roots 65–80.
 - [ ] Chromatic Tom NR2 — `Chromatic Tom NR2.xpm`; roots 61–76.
 - [ ] Chromatic Tone NR2 — `Chromatic Tone NR2.xpm`; roots 69–84.
+
+**NR2 result — August 28, 2026:** all five remain too low for the desired
+default-position workflow; seven keys are unavailable. Preserve NR2 as evidence
+and move the complete family exactly one more octave upward.
+
+### Normal-register 03 — built; SD deployment pending
+
+NR3 uses an explicit +48-semitone shift from the original mappings, +12 above
+NR2, without resampling or changing the 80 WAVs. All five programs pass batch
+inspection, structural validation, and normalized-model loading.
+
+Planned common root:
+
+`SD Card / 00 FG Hardware Tests / SFM Keygroup Register Fix 03 / Chromatic Percussion`
+
+- [ ] Chromatic Analog Tom NR3 — `Chromatic Analog Tom NR3.xpm`; roots 75–90.
+- [ ] Chromatic Chimes NR3 — `Chromatic Chimes NR3.xpm`; roots 83–98.
+- [ ] Chromatic Cowbell NR3 — `Chromatic Cowbell NR3.xpm`; roots 77–92.
+- [ ] Chromatic Tom NR3 — `Chromatic Tom NR3.xpm`; roots 73–88.
+- [ ] Chromatic Tone NR3 — `Chromatic Tone NR3.xpm`; roots 81–96.
+
+The source package is checksum-verified on the external drive at
+`MPC Transfer / FG Software Candidates 2026-08-28 / SFM Keygroup Register Fix 03`.
+The SD card was removed immediately before deployment, and the transactional
+deployer published no partial destination. Reinsert the card, deploy once, then
+test all five without keyboard octave transpose.
 
 ### Vinyl and SP-1200 Drum Programs
 

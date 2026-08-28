@@ -8,7 +8,7 @@ from mpc_keygroup_builder.range_inference import (
 
 
 class RootRangeInferenceTests(unittest.TestCase):
-    def test_infers_hardware_accepted_nr2_shifts(self):
+    def test_infers_repeatable_nr2_software_fixture_shift(self):
         source_ranges = {
             "analog tom": (27, 42),
             "chimes": (35, 50),

@@ -818,8 +818,11 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   alternate rather than the Scratchpad main kit; `Vinyl SP From Mars 01`
   remains the main-drums favorite.
 - The first +24-semitone SP-1200 register fix is close on hardware but should
-  move one more octave right. Built NR2 at +36 semitones with roots MIDI 61–86;
-  all five programs preserve the same 80 WAVs and pass structural/model checks.
+  move one more octave right. NR2 at +36 semitones preserved the same 80 WAVs
+  and passed structural/model checks, but hardware still found seven keys
+  unavailable at the default position. Built and externally preserved NR3 at
+  +48 semitones with roots MIDI 73–98; SD transfer was safely deferred when the
+  card was removed before transactional staging began.
 - Hardware layout comparison selects the right-handed performance variant over
   Classic. The improvement is modest because the source has many varied
   one-shots instead of a compact kick/snare/cymbal kit. Both variants reload
@@ -939,7 +942,7 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   inference. Single builds accept `--root-target LOW:HIGH`; batch manifests use
   `root_target`. The decision report exposes source, target, shift, result, and
   coverage, while strict validation prevents simultaneous fixed/automatic
-  shifts and MIDI overflow. The accepted NR2 real-data fixture now declares
+  shifts and MIDI overflow. The NR2 software regression fixture declares
   target 60–96 and infers the same +36 correction for all five programs across
   80 unique WAVs; broad already-useful mappings remain unchanged on ties.
 

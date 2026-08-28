@@ -124,9 +124,10 @@ after transposing down three octaves, and the first five SP-1200 chromatic
 conversions showed the same low-register behavior. Their samples were intact;
 the mapping simply placed useful roots below the default physical range. A
 +24-semitone rebuild moved them close to the desired position, and listening
-suggested moving them one more octave to the right. A +36-semitone NR2 set is
-now deployed and checksum-verified as the intended promotion target, but its
-final hardware acceptance is deferred.
+suggested moving them one more octave to the right. The +36-semitone NR2 set
+still left seven keys unavailable at the default keyboard position. NR3 moves
+the unchanged samples another octave upward, for +48 total; it is structurally
+accepted and preserved externally, with SD transfer and listening pending.
 
 Large programs can also create a misleading pause. Loading the Keygroup named
 Ultimate initially appeared to hang, then completed normally. For this unit,
@@ -279,8 +280,8 @@ Deferral means "not currently worth interrupting development for," not failure.
 
 - Hardware acceptance of Drum Alternates 06–09.
 - Detailed boundary and choke testing for the expanded layered program.
-- Final NR2 chromatic Keygroup register acceptance; the five-program package is
-  now deployed and checksum-verified on SD.
+- Final NR3 chromatic Keygroup register acceptance; NR2 received a seven-key
+  default-position warning, and the +48 NR3 package awaits SD transfer.
 - Cold-start timing.
 - A revised Scratchpad Jam copy with an inspected lead phrase.
 - MPC-authored Volca sequence save/reload and simultaneous three-Volca testing.

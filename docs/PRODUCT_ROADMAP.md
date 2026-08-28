@@ -262,9 +262,11 @@ can declare a useful MIDI window instead of guessing a fixed correction. The
 scored octave-only algorithm maximizes roots inside the window and prefers the
 smallest shift, reports its decision, rejects conflicts and MIDI overflow, and
 preserves pitch classes and all audio/layer data. Target 60–96 independently
-reproduces the accepted +36 NR2 correction and exact result spans for all five
-real SP-1200 chromatic sources; a broad accepted Wurli-style 24–96 mapping stays
-at zero.
+reproduces the +36 NR2 software fixture and exact result spans for all five real
+SP-1200 chromatic sources; a broad accepted Wurli-style 24–96 mapping stays at
+zero. Later NR2 listening found seven keys unavailable at the default keyboard
+position, so the explicit +48 NR3 hardware candidate remains a separate manual
+preference rather than a change to the inference algorithm.
 
 **Exit gate:** One source instrument produces at least three musically distinct,
 validated variants, and one loop collection produces a useful MPC-native
@@ -313,9 +315,11 @@ performance program.
   two octaves higher, placing their source roots at MIDI 49–74, and deployed
   for default-register hardware verification.
 - [x] NR1 hardware listening found the direction correct but one octave too far
-  left. A separate NR2 batch shifts the same 80 WAVs three octaves above the
-  originals, placing roots at MIDI 61–86; computer acceptance passes and SD
-  deployment is the next gate.
+  left. NR2 shifts the same 80 WAVs three octaves above the originals and places
+  roots at MIDI 61–86, but listening still found seven keys unavailable at the
+  default position. NR3 adds one more octave for roots MIDI 73–98; computer
+  acceptance and canonical external-drive preservation pass, while SD transfer
+  and hardware confirmation remain open.
 
 Normalized-model import and exporter behavior remain gated on manual source
 comparison and representative MPC target captures. The Clip subset remains

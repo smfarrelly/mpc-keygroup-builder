@@ -129,7 +129,7 @@ the best one.
 original mapping, but the complete family should move one more octave to the
 right. Retain NR1 as comparison evidence rather than the promotion target.
 
-### Normal-register 02 built; SD deployment pending
+### Normal-register 02 — hardware warning
 
 `NR2` shifts the same unmodified audio up 36 semitones from the original source,
 one octave higher than NR1. All five programs validate with 16 Keygroups, 16
@@ -141,12 +141,31 @@ samples, no model errors/warnings, and zero dead or stacked cells:
 - Chromatic Tom NR2 — roots 61–76.
 - Chromatic Tone NR2 — roots 69–84.
 
-Planned SD root after the next card insertion:
+Verified NR2 SD root:
 
 `SD Card / 00 FG Hardware Tests / SFM Keygroup Register Fix 02 / Chromatic Percussion`
 
-Test without octave transpose and compare only against NR1 if a boundary feels
-too far right. NR2 is the intended promotion target.
+**NR2 hardware result — August 28, 2026:** the direction remains correct, but
+seven keys are unavailable at the default keyboard position. Move the complete
+family one more octave upward; retain NR2 as comparison evidence.
+
+### Normal-register 03 built; SD deployment pending
+
+`NR3` shifts the original roots up 48 semitones, exactly one octave above NR2.
+The same 80 unmodified WAVs pass batch inspection and validation:
+
+- Chromatic Analog Tom NR3 — roots 75–90.
+- Chromatic Chimes NR3 — roots 83–98.
+- Chromatic Cowbell NR3 — roots 77–92.
+- Chromatic Tom NR3 — roots 73–88.
+- Chromatic Tone NR3 — roots 81–96.
+
+Planned SD root after the next card insertion:
+
+`SD Card / 00 FG Hardware Tests / SFM Keygroup Register Fix 03 / Chromatic Percussion`
+
+The exact 85-file package is checksum-verified on the external drive under
+`MPC Transfer / FG Software Candidates 2026-08-28 / SFM Keygroup Register Fix 03`.
 
 ## Drum bracket A — vinyl and SP-1200
 
