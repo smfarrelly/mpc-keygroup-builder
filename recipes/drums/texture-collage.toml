@@ -1,0 +1,36 @@
+schema_version = 1
+id = "texture-collage"
+name = "Texture Collage"
+bars = 4
+steps_per_bar = 16
+swing = 0.62
+gate = 0.55
+channel = 10
+
+[[events]]
+role = "kick"
+steps = [0, 13, 32, 43, 56]
+velocity = 108
+probability = 0.9
+
+[[events]]
+role = "snare"
+steps = [12, 28, 44, 60]
+velocity = 99
+probability = 0.75
+selection = "random"
+
+[[events]]
+role = "percussion"
+steps = [5, 9, 18, 25, 35, 38, 51, 62]
+velocity = 78
+probability = 0.68
+humanize_velocity = 16
+selection = "random"
+
+[[events]]
+role = "fx"
+steps = [15, 31, 47, 63]
+velocity = 86
+probability = 0.72
+selection = "random"

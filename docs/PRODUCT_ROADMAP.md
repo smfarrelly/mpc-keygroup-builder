@@ -377,6 +377,15 @@ drum pattern survives translation between two pad layouts.
 - Preserve the eight-strip Scratchpad/Volca mental model.
 - Add a `Surprise Me` path only after recipes remain reproducible by seed.
 
+### Software foundation delivered
+
+- [x] Six complete, seed-reproducible recipe families now cover dusty, ambient,
+  electro, 80s funk, house, and weird starting points.
+- [x] Each family owns a semantic drum pattern, harmony/bass recipe, melody
+  motif, and suggested mapping to the tested Scratchpad program palette.
+- [x] Each recipe produces MIDI, JSON evidence, and a loading guide without
+  serializing or guessing an MPC project file.
+
 **Exit gate:** One command or Program Designer action creates a validated,
 recoverable project that reaches first playable sound in under one minute.
 

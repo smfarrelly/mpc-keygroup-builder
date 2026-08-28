@@ -1,0 +1,12 @@
+schema_version = 1
+id = "house-scratchpad"
+name = "House Scratchpad"
+drums = "../drums/house-foundation.toml"
+harmony = "../harmony/house-minor.toml"
+melody = "../melody/house-spark.toml"
+
+[programs]
+drums = "Vinyl Drums From Mars 01"
+bass = "Echo Square"
+chords = "Mirage Wurli"
+melody = "Muted Guitar"

@@ -1,0 +1,12 @@
+schema_version = 1
+id = "weird-scratchpad"
+name = "Weird Scratchpad"
+drums = "../drums/texture-collage.toml"
+harmony = "../harmony/strange-mixolydian.toml"
+melody = "../melody/odd-signal.toml"
+
+[programs]
+drums = "FG Vinyl Shots 04 Eight Bank"
+bass = "Mirage Upright Bass"
+chords = "Glass Howl"
+melody = "OneFiftySeven"

@@ -77,5 +77,8 @@ layout used, so a future result can be traced to its exact note map.
 
 The bundled `dusty-scratchpad`, `ambient-scratchpad`, and
 `electro-scratchpad` recipes suggest programs from the current Key 37 palette.
+The expanded family adds `funk-scratchpad`, `house-scratchpad`, and
+`weird-scratchpad`, each with its own semantic drum pattern, progression, bass
+figure, and motif rather than a cosmetic preset rename.
 These are musical starting points rather than claims of MPC project-file
 generation; import and listening remain explicit hardware gates.

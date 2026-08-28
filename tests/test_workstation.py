@@ -79,9 +79,10 @@ class WorkstationIdeaTests(unittest.TestCase):
     def test_repository_workstation_recipes_are_structurally_compatible(self):
         root = Path(__file__).parents[1]
         loaded = [load_recipe(path) for path in sorted((root / "recipes/workstation").glob("*.toml"))]
-        self.assertEqual(len(loaded), 3)
+        self.assertEqual(len(loaded), 6)
         self.assertEqual({item.recipe.id for item in loaded}, {
-            "ambient-scratchpad", "dusty-scratchpad", "electro-scratchpad"
+            "ambient-scratchpad", "dusty-scratchpad", "electro-scratchpad",
+            "funk-scratchpad", "house-scratchpad", "weird-scratchpad",
         })
 
 
