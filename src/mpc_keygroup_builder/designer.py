@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import re
 from collections import Counter
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -301,7 +302,8 @@ def build_view_data(
     mute_groups: dict[str, list[str]] = {}
     for zone in program.zones:
         if zone.mute_group and zone.pad:
-            mute_groups.setdefault(str(zone.mute_group), []).append(device.label(zone.pad))
+            label = device.label(zone.pad) if zone.pad <= device.capacity else f"Pad {zone.pad}"
+            mute_groups.setdefault(str(zone.mute_group), []).append(label)
     return {
         "schema_version": 1,
         "read_only": True,
@@ -337,6 +339,185 @@ def build_view_data(
     }
 
 
+def _identifier(value: str, used: set[str]) -> str:
+    base = re.sub(r"[^a-z0-9]+", "-", value.casefold()).strip("-") or "program"
+    candidate = base
+    suffix = 2
+    while candidate in used:
+        candidate = f"{base}-{suffix}"
+        suffix += 1
+    used.add(candidate)
+    return candidate
+
+
+def _zone_location(zone: dict[str, Any], view: dict[str, Any]) -> str:
+    if view["program"]["kind"] != "drum":
+        return f"Zone {zone['index']}"
+    pad = zone.get("pad")
+    if not isinstance(pad, int) or pad < 1:
+        return f"Zone {zone['index']}"
+    per_bank = int(view["device"]["pads_per_bank"])
+    banks = view["device"]["banks"]
+    bank_index = (pad - 1) // per_bank
+    if bank_index >= len(banks):
+        return f"Pad {pad}"
+    return f"{banks[bank_index]}{((pad - 1) % per_bank) + 1:02d}"
+
+
+def _comparison_signature(zone: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "role": zone["role"],
+        "color": zone["color_hex"],
+        "midi_note": zone["midi_note"],
+        "key_range": [zone["low_note"], zone["high_note"]],
+        "playback_mode": zone["playback_mode"],
+        "mute_group": zone["mute_group"],
+        "polyphony": zone["polyphony"],
+        "monophonic": zone["monophonic"],
+        "layers": [
+            {
+                "sample": layer["sample"],
+                "velocity": [layer["velocity_start"], layer["velocity_end"]],
+                "root_note": layer["root_note"],
+                "loop_enabled": layer["loop_enabled"],
+            }
+            for layer in zone["layers"]
+        ],
+    }
+
+
+def compare_view_data(left: dict[str, Any], right: dict[str, Any]) -> dict[str, Any]:
+    """Return a deterministic, machine-readable comparison of two rendered views."""
+    left_zones = {
+        _zone_location(zone, left): zone for zone in left["program"]["zones"]
+    }
+    right_zones = {
+        _zone_location(zone, right): zone for zone in right["program"]["zones"]
+    }
+    locations = []
+    for location in sorted(
+        set(left_zones) | set(right_zones),
+        key=lambda value: (
+            re.sub(r"\d+$", "", value),
+            int(re.search(r"\d+$", value).group()) if re.search(r"\d+$", value) else 0,
+        ),
+    ):
+        left_zone = left_zones.get(location)
+        right_zone = right_zones.get(location)
+        left_signature = _comparison_signature(left_zone) if left_zone else None
+        right_signature = _comparison_signature(right_zone) if right_zone else None
+        changed_fields = []
+        if left_signature is None or right_signature is None:
+            changed_fields.append("population")
+        else:
+            changed_fields = [
+                field
+                for field in left_signature
+                if left_signature[field] != right_signature[field]
+            ]
+        locations.append(
+            {
+                "location": location,
+                "changed": bool(changed_fields),
+                "changed_fields": changed_fields,
+                "left": left_zone,
+                "right": right_zone,
+            }
+        )
+    left_issues = left["summary"]["issues"]
+    right_issues = right["summary"]["issues"]
+    return {
+        "left_name": left["program"]["name"],
+        "right_name": right["program"]["name"],
+        "same_kind": left["program"]["kind"] == right["program"]["kind"],
+        "kind": (
+            left["program"]["kind"]
+            if left["program"]["kind"] == right["program"]["kind"]
+            else "mixed"
+        ),
+        "summary": {
+            "changed_locations": sum(item["changed"] for item in locations),
+            "unchanged_locations": sum(not item["changed"] for item in locations),
+            "left_only": sum(item["left"] is not None and item["right"] is None for item in locations),
+            "right_only": sum(item["left"] is None and item["right"] is not None for item in locations),
+            "zone_delta": right["summary"]["zones"] - left["summary"]["zones"],
+            "layer_delta": right["summary"]["layers"] - left["summary"]["layers"],
+            "error_delta": right_issues.get("error", 0) - left_issues.get("error", 0),
+            "warning_delta": right_issues.get("warning", 0) - left_issues.get("warning", 0),
+        },
+        "locations": locations,
+    }
+
+
+def build_view_bundle(
+    programs: list[tuple[ProgramModel, Path | None]],
+    devices: list[DeviceProfile],
+) -> dict[str, Any]:
+    """Render every requested program/device combination into a portable bundle."""
+    if not programs:
+        raise ValueError("at least one program is required")
+    if not devices:
+        raise ValueError("at least one device profile is required")
+    used_program_ids: set[str] = set()
+    used_device_ids: set[str] = set()
+    program_items = [
+        {
+            "id": _identifier(program.name, used_program_ids),
+            "name": program.name,
+            "kind": program.kind,
+            "source_path": program.source_path,
+            "model": program,
+            "sample_root": sample_root,
+        }
+        for program, sample_root in programs
+    ]
+    device_items = [
+        {
+            "id": _identifier(device.id, used_device_ids),
+            "name": device.name,
+            "profile": device,
+        }
+        for device in devices
+    ]
+    views: dict[str, dict[str, dict[str, Any]]] = {}
+    for program_item in program_items:
+        views[program_item["id"]] = {}
+        for device_item in device_items:
+            views[program_item["id"]][device_item["id"]] = build_view_data(
+                program_item["model"],
+                device_item["profile"],
+                program_item["sample_root"],
+            )
+    comparisons: dict[str, dict[str, dict[str, Any]]] = {}
+    for device_item in device_items:
+        device_id = device_item["id"]
+        comparisons[device_id] = {}
+        for left in program_items:
+            comparisons[device_id][left["id"]] = {}
+            for right in program_items:
+                if left["id"] == right["id"]:
+                    continue
+                comparisons[device_id][left["id"]][right["id"]] = compare_view_data(
+                    views[left["id"]][device_id],
+                    views[right["id"]][device_id],
+                )
+    return {
+        "schema_version": 2,
+        "read_only": True,
+        "default_program": program_items[0]["id"],
+        "default_device": device_items[0]["id"],
+        "programs": [
+            {key: item[key] for key in ("id", "name", "kind", "source_path")}
+            for item in program_items
+        ],
+        "devices": [
+            {"id": item["id"], "name": item["name"]} for item in device_items
+        ],
+        "views": views,
+        "comparisons": comparisons,
+    }
+
+
 HTML_TEMPLATE = r'''<!doctype html>
 <html lang="en">
 <head>
@@ -347,13 +528,18 @@ HTML_TEMPLATE = r'''<!doctype html>
     :root { color-scheme: dark; --bg:#0d1014; --panel:#171b21; --panel2:#20262e; --line:#343c47; --text:#f4f6f8; --muted:#9aa5b1; --accent:#f3b33d; --danger:#ff6b6b; --warn:#f6c85f; --info:#61b8ff; }
     * { box-sizing:border-box; }
     body { margin:0; font:15px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:radial-gradient(circle at top left,#1a2029 0,#0d1014 42rem); color:var(--text); }
-    button { font:inherit; }
+    button,select { font:inherit; }
     .shell { max-width:1440px; margin:auto; padding:28px; }
     header { display:flex; justify-content:space-between; gap:24px; align-items:flex-start; margin-bottom:22px; }
     .eyebrow { color:var(--accent); text-transform:uppercase; letter-spacing:.14em; font-size:12px; font-weight:800; }
     h1 { margin:4px 0 6px; font-size:clamp(28px,4vw,48px); line-height:1.05; }
     .source { color:var(--muted); max-width:900px; overflow-wrap:anywhere; }
     .readonly { border:1px solid #725b26; background:#2b2414; color:#ffd77d; padding:7px 11px; border-radius:999px; white-space:nowrap; font-weight:700; }
+    .toolbar { display:flex; flex-wrap:wrap; gap:12px; padding:14px 16px; margin-bottom:18px; align-items:end; }
+    .control { display:grid; gap:5px; min-width:190px; }
+    .control label { color:var(--muted); font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    .control select { color:var(--text); border:1px solid var(--line); background:#11151a; border-radius:9px; padding:8px 10px; }
+    .toolbar-note { color:var(--muted); margin-left:auto; padding:8px 4px; }
     .chips { display:flex; flex-wrap:wrap; gap:9px; margin:0 0 22px; }
     .chip { padding:7px 10px; border:1px solid var(--line); border-radius:999px; background:#12161b; color:#dbe1e7; }
     .layout { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(320px,.65fr); gap:20px; align-items:start; }
@@ -405,10 +591,20 @@ HTML_TEMPLATE = r'''<!doctype html>
     .zone-card:hover { border-color:#687483; }
     .zone-card strong { display:block; }
     .zone-card span { color:var(--muted); }
+    .comparison { margin-top:20px; }
+    .comparison-summary { display:flex; flex-wrap:wrap; gap:9px; margin-bottom:16px; }
+    .comparison-grid { display:grid; gap:8px; }
+    .compare-row { display:grid; grid-template-columns:72px minmax(0,1fr) minmax(0,1fr); gap:9px; align-items:stretch; }
+    .compare-location { display:flex; align-items:center; justify-content:center; color:var(--muted); font-weight:850; border:1px solid var(--line); border-radius:10px; background:#11151a; }
+    .compare-card { padding:10px 12px; border:1px solid var(--line); background:#12161b; border-radius:10px; overflow-wrap:anywhere; }
+    .compare-card strong,.compare-card span { display:block; }
+    .compare-card span { color:var(--muted); font-size:12px; margin-top:2px; }
+    .compare-row.changed .compare-location { color:#ffd579; border-color:#725b26; background:#2b2414; }
+    .compare-fields { grid-column:2/4; color:#d8b765; font-size:11px; padding:0 4px 4px; }
     .hidden { display:none!important; }
     footer { color:var(--muted); margin:22px 2px; font-size:13px; }
     @media (max-width:900px) { .layout { grid-template-columns:1fr; } .shell { padding:18px; } header { flex-direction:column; } .pad { min-height:108px; } }
-    @media (max-width:520px) { .pad-grid { gap:7px; } .pad { min-height:94px; padding:8px; } .pad-role { margin-top:15px; font-size:11px; } .pad-sample { display:none; } .kv { grid-template-columns:90px 1fr; } }
+    @media (max-width:520px) { .pad-grid { gap:7px; } .pad { min-height:94px; padding:8px; } .pad-role { margin-top:15px; font-size:11px; } .pad-sample { display:none; } .kv { grid-template-columns:90px 1fr; } .compare-row { grid-template-columns:55px 1fr; } .compare-card:last-of-type { grid-column:2; } .compare-fields { grid-column:2; } }
   </style>
 </head>
 <body>
@@ -417,6 +613,12 @@ HTML_TEMPLATE = r'''<!doctype html>
       <div><div class="eyebrow">MPC Program Designer · v0.3 read-only</div><h1 id="title"></h1><div class="source" id="source"></div></div>
       <div class="readonly">Read only · source unchanged</div>
     </header>
+    <section class="panel toolbar" aria-label="Viewer controls">
+      <div class="control"><label for="program-select">Inspect source</label><select id="program-select"></select></div>
+      <div class="control"><label for="device-select">Device profile</label><select id="device-select"></select></div>
+      <div class="control"><label for="compare-select">Compare with</label><select id="compare-select"></select></div>
+      <div class="toolbar-note" id="bundle-note"></div>
+    </section>
     <div class="chips" id="chips"></div>
     <div class="layout">
       <main class="panel">
@@ -428,9 +630,13 @@ HTML_TEMPLATE = r'''<!doctype html>
         <section class="panel issues"><div class="panel-head"><h2>Validation</h2><span id="issue-total"></span></div><div class="panel-body" id="issues"></div></section>
       </aside>
     </div>
+    <section class="panel comparison hidden" id="comparison-panel">
+      <div class="panel-head"><h2 id="comparison-title">Side-by-side comparison</h2><span id="comparison-total"></span></div>
+      <div class="panel-body"><div class="comparison-summary" id="comparison-summary"></div><div class="comparison-grid" id="comparison-grid"></div></div>
+    </section>
     <footer>Generated locally from the normalized Program Model. This viewer contains metadata only and has no editing or export controls.</footer>
   </div>
-  <script>const DATA=__DATA__;
+  <script>const BUNDLE=__DATA__;
   const $=id=>document.getElementById(id);
   const el=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=text;return node;};
   const basename=value=>String(value||'').split(/[\\/]/).pop();
@@ -438,19 +644,42 @@ HTML_TEMPLATE = r'''<!doctype html>
   const isBlack=n=>[1,3,6,8,10].includes(n%12);
   function addChip(text){$('chips').append(el('span','chip',text));}
   function contrast(hex){if(!hex)return '#fff';const n=parseInt(hex.slice(1),16),r=n>>16,g=n>>8&255,b=n&255;return (.299*r+.587*g+.114*b)>155?'#111':'#fff';}
-  function renderHeader(){const p=DATA.program,s=DATA.summary;$('title').textContent=p.name||'Unnamed program';$('source').textContent=`${p.kind} · ${p.source_format} · ${p.source_path||'in-memory source'}`;addChip(`${s.zones} zones`);addChip(`${s.layers} layers`);addChip(DATA.device.name);if(p.kind==='drum')addChip(`${s.populated_banks.length}/${DATA.device.banks.length} populated banks`);Object.entries(s.issues).forEach(([kind,count])=>addChip(`${count} ${kind}${count===1?'':'s'}`));}
+  let programId=BUNDLE.default_program,deviceId=BUNDLE.default_device,compareId=null,DATA=null,selectedPad=null,currentBank=null,keyStart=0,selectedNote=null;
+  function currentView(){return BUNDLE.views[programId][deviceId];}
+  function option(value,label){const node=el('option','',label);node.value=value;return node;}
+  function populateControls(){const program=$('program-select'),device=$('device-select'),compare=$('compare-select');BUNDLE.programs.forEach(item=>program.append(option(item.id,`${item.name} · ${item.kind}`)));BUNDLE.devices.forEach(item=>device.append(option(item.id,item.name)));program.value=programId;device.value=deviceId;$('bundle-note').textContent=`Portable bundle · ${BUNDLE.programs.length} source${BUNDLE.programs.length===1?'':'s'} · ${BUNDLE.devices.length} device profile${BUNDLE.devices.length===1?'':'s'}`;function fillCompare(){const previous=compareId;compare.replaceChildren(option('','No comparison'));BUNDLE.programs.filter(item=>item.id!==programId).forEach(item=>compare.append(option(item.id,`${item.name} · ${item.kind}`)));compareId=previous&&previous!==programId&&BUNDLE.programs.some(item=>item.id===previous)?previous:(BUNDLE.programs.find(item=>item.id!==programId)?.id||null);compare.value=compareId||'';}fillCompare();program.addEventListener('change',()=>{programId=program.value;fillCompare();renderAll();});device.addEventListener('change',()=>{deviceId=device.value;renderAll();});compare.addEventListener('change',()=>{compareId=compare.value||null;renderComparison();});}
+  function renderHeader(){const p=DATA.program,s=DATA.summary;$('title').textContent=p.name||'Unnamed program';document.title=`${p.name||'Unnamed program'} — MPC Program Designer`;$('source').textContent=`${p.kind} · ${p.source_format} · ${p.source_path||'in-memory source'}`;$('chips').replaceChildren();addChip(`${s.zones} zones`);addChip(`${s.layers} layers`);addChip(DATA.device.name);if(p.kind==='drum')addChip(`${s.populated_banks.length}/${DATA.device.banks.length} populated banks`);Object.entries(s.issues).forEach(([kind,count])=>addChip(`${count} ${kind}${count===1?'':'s'}`));}
   function renderIssues(){const box=$('issues');box.replaceChildren();$('issue-total').textContent=DATA.issues.length?`${DATA.issues.length} findings`:'clear';if(!DATA.issues.length){box.append(el('div','detail-empty','No model, sample, velocity, or mute-group findings.'));return;}DATA.issues.forEach(issue=>{const card=el('div',`issue ${issue.severity}`);const top=el('strong','',`${issue.severity} · ${issue.code}`);card.append(top);card.append(el('p','',`${issue.zone?`Zone ${issue.zone}: `:''}${issue.message}`));box.append(card);});}
   function layerNode(layer){const card=el('div','layer');const top=el('div','layer-top');top.append(el('span','layer-sample',basename(layer.sample)));top.append(el('span',`status ${layer.sample_status}`,layer.sample_status));card.append(top);card.append(el('div','source',`Velocity ${layer.velocity_start}–${layer.velocity_end}${layer.root_note!==null?` · root MIDI ${layer.root_note}`:''}${layer.loop_enabled?' · loop':''}`));const velocity=el('div','velocity');const fill=el('span');fill.style.left=`${layer.velocity_start/128*100}%`;fill.style.width=`${(layer.velocity_end-layer.velocity_start+1)/128*100}%`;velocity.append(fill);card.append(velocity);return card;}
   function renderZone(zone,label){const box=$('detail');box.replaceChildren();const rows=[['Location',label],['Role',zone.role]];if(zone.low_note!==null&&zone.high_note!==null)rows.push(['Key range',`${noteName(zone.low_note)}–${noteName(zone.high_note)} · MIDI ${zone.low_note}–${zone.high_note}`]);if(zone.midi_note!==null)rows.push(['MIDI note',`${zone.midi_note} (${noteName(zone.midi_note)})`]);rows.push(['Playback',zone.playback_mode],['Mute group',zone.mute_group||'none'],['Polyphony',zone.polyphony],['Monophonic',zone.monophonic?'yes':'no'],['Color',zone.color_hex||'not declared'],['Locked',zone.locked?'yes':'no']);const dl=el('dl','kv');rows.forEach(([k,v])=>{dl.append(el('dt','',k));dl.append(el('dd','',String(v)));});box.append(dl);box.append(el('h3','',`Layers · ${zone.layers.length}`));zone.layers.forEach(layer=>box.append(layerNode(layer)));}
-  let selectedPad=null;
-  function renderBank(bank){document.querySelectorAll('.bank').forEach(node=>node.classList.toggle('active',node.dataset.bank===bank));const grid=$('pad-grid');grid.replaceChildren();const slots=DATA.banks[bank],cols=DATA.device.pad_columns,rows=DATA.device.pad_rows;for(let row=rows-1;row>=0;row--){for(let col=0;col<cols;col++){const position=row*cols+col,zone=slots[position],label=`${bank}${String(position+1).padStart(2,'0')}`;const button=el('button',`pad${zone?'':' empty'}`);button.type='button';button.dataset.label=label;button.append(el('span','pad-label',label));if(zone){button.style.background=zone.color_hex||'#39424d';button.style.color=contrast(zone.color_hex);const badges=el('span','badges');if(zone.layers.length>1)badges.append(el('span','badge',`${zone.layers.length}L`));if(zone.mute_group)badges.append(el('span','badge',`M${zone.mute_group}`));button.append(badges);button.append(el('span','pad-role',zone.role));button.append(el('span','pad-sample',basename(zone.layers[0]?.sample)));button.addEventListener('click',()=>{document.querySelectorAll('.pad').forEach(n=>n.classList.remove('selected'));button.classList.add('selected');selectedPad=label;renderZone(zone,label);});}else{button.disabled=true;button.append(el('span','pad-role','Empty'));}grid.append(button);}}const first=grid.querySelector('.pad:not(.empty)');if(first&&(!selectedPad||!selectedPad.startsWith(bank)))first.click();}
-  function renderDrums(){DATA.device.banks.forEach(bank=>{const populated=DATA.banks[bank].some(Boolean),button=el('button',`bank${populated?'':' empty'}`,bank);button.type='button';button.dataset.bank=bank;button.disabled=!populated;button.addEventListener('click',()=>renderBank(bank));$('banks').append(button);});renderBank(DATA.summary.populated_banks[0]||DATA.device.banks[0]);}
-  let keyStart=DATA.keyboard.default_start,selectedNote=null;
+  function renderBank(bank){currentBank=bank;document.querySelectorAll('.bank').forEach(node=>node.classList.toggle('active',node.dataset.bank===bank));const grid=$('pad-grid');grid.replaceChildren();const slots=DATA.banks[bank],cols=DATA.device.pad_columns,rows=DATA.device.pad_rows;for(let row=rows-1;row>=0;row--){for(let col=0;col<cols;col++){const position=row*cols+col,zone=slots[position],label=`${bank}${String(position+1).padStart(2,'0')}`;const button=el('button',`pad${zone?'':' empty'}`);button.type='button';button.dataset.label=label;button.append(el('span','pad-label',label));if(zone){button.style.background=zone.color_hex||'#39424d';button.style.color=contrast(zone.color_hex);const badges=el('span','badges');if(zone.layers.length>1)badges.append(el('span','badge',`${zone.layers.length}L`));if(zone.mute_group)badges.append(el('span','badge',`M${zone.mute_group}`));button.append(badges);button.append(el('span','pad-role',zone.role));button.append(el('span','pad-sample',basename(zone.layers[0]?.sample)));button.addEventListener('click',()=>{document.querySelectorAll('.pad').forEach(n=>n.classList.remove('selected'));button.classList.add('selected');selectedPad=label;renderZone(zone,label);});}else{button.disabled=true;button.append(el('span','pad-role','Empty'));}grid.append(button);}}const first=grid.querySelector('.pad:not(.empty)');if(first&&(!selectedPad||!selectedPad.startsWith(bank)))first.click();renderComparison();}
+  function renderDrums(){$('banks').replaceChildren();DATA.device.banks.forEach(bank=>{const populated=DATA.banks[bank].some(Boolean),button=el('button',`bank${populated?'':' empty'}`,bank);button.type='button';button.dataset.bank=bank;button.disabled=!populated;button.addEventListener('click',()=>renderBank(bank));$('banks').append(button);});renderBank(DATA.summary.populated_banks[0]||DATA.device.banks[0]);}
   function activeZones(note){return DATA.program.zones.filter(zone=>zone.low_note!==null&&zone.high_note!==null&&zone.low_note<=note&&note<=zone.high_note);}
   function renderNote(note){selectedNote=note;document.querySelectorAll('.key').forEach(node=>node.classList.toggle('selected',Number(node.dataset.note)===note));const zones=activeZones(note);if(!zones.length){$('detail').replaceChildren(el('div','detail-empty',`${noteName(note)} · MIDI ${note} has no mapped zone.`));return;}renderZone(zones[0],`${noteName(note)} · MIDI ${note}`);}
-  function renderKeybed(){const bed=$('keybed');bed.replaceChildren();bed.style.setProperty('--keys',DATA.keyboard.keys);$('key-window').textContent=`${noteName(keyStart)}–${noteName(keyStart+DATA.keyboard.keys-1)} · MIDI ${keyStart}–${keyStart+DATA.keyboard.keys-1}`;for(let note=keyStart;note<keyStart+DATA.keyboard.keys;note++){const zones=activeZones(note),key=el('button',`key ${isBlack(note)?'black':'white'}${zones.length?' active':''}`,`${noteName(note)}\n${note}`);key.type='button';key.dataset.note=String(note);key.title=zones.length?zones.map(z=>`${z.index}: ${basename(z.layers[0]?.sample)}`).join('\n'):'Unmapped';key.addEventListener('click',()=>renderNote(note));bed.append(key);}if(selectedNote===null||selectedNote<keyStart||selectedNote>=keyStart+DATA.keyboard.keys)renderNote(keyStart+Math.floor(DATA.keyboard.keys/2));else renderNote(selectedNote);}
-  function renderKeygroups(){$('drum-surface').classList.add('hidden');$('keygroup-surface').classList.remove('hidden');$('banks').classList.add('hidden');$('key-controls').classList.remove('hidden');$('surface-title').textContent='37-note keybed viewport';$('oct-down').addEventListener('click',()=>{keyStart=Math.max(DATA.keyboard.minimum,keyStart-12);renderKeybed();});$('oct-up').addEventListener('click',()=>{keyStart=Math.min(DATA.keyboard.maximum_start,keyStart+12);renderKeybed();});const list=$('zone-list');DATA.program.zones.forEach(zone=>{const card=el('button','zone-card');card.type='button';card.append(el('strong','',`Zone ${zone.index} · MIDI ${zone.low_note}–${zone.high_note}`));card.append(el('span','',`${zone.layers.length} layer${zone.layers.length===1?'':'s'} · ${basename(zone.layers[0]?.sample)}`));card.addEventListener('click',()=>renderZone(zone,`Zone ${zone.index} · MIDI ${zone.low_note}–${zone.high_note}`));list.append(card);});renderKeybed();}
-  renderHeader();renderIssues();if(DATA.program.kind==='drum')renderDrums();else renderKeygroups();
+  function renderKeybed(){const bed=$('keybed');bed.replaceChildren();if(DATA.keyboard.keys<1){$('key-window').textContent='No physical keys in this device profile';return;}bed.style.setProperty('--keys',DATA.keyboard.keys);$('key-window').textContent=`${noteName(keyStart)}–${noteName(keyStart+DATA.keyboard.keys-1)} · MIDI ${keyStart}–${keyStart+DATA.keyboard.keys-1}`;for(let note=keyStart;note<keyStart+DATA.keyboard.keys;note++){const zones=activeZones(note),key=el('button',`key ${isBlack(note)?'black':'white'}${zones.length?' active':''}`,`${noteName(note)}\n${note}`);key.type='button';key.dataset.note=String(note);key.title=zones.length?zones.map(z=>`${z.index}: ${basename(z.layers[0]?.sample)}`).join('\n'):'Unmapped';key.addEventListener('click',()=>renderNote(note));bed.append(key);}if(selectedNote===null||selectedNote<keyStart||selectedNote>=keyStart+DATA.keyboard.keys)renderNote(keyStart+Math.floor(DATA.keyboard.keys/2));else renderNote(selectedNote);}
+  function renderKeygroups(){$('drum-surface').classList.add('hidden');$('keygroup-surface').classList.remove('hidden');$('banks').classList.add('hidden');$('key-controls').classList.remove('hidden');$('surface-title').textContent=`${DATA.keyboard.keys}-note keybed viewport`;$('oct-down').onclick=()=>{keyStart=Math.max(DATA.keyboard.minimum,keyStart-12);renderKeybed();};$('oct-up').onclick=()=>{keyStart=Math.min(DATA.keyboard.maximum_start,keyStart+12);renderKeybed();};const list=$('zone-list');list.replaceChildren();DATA.program.zones.forEach(zone=>{const card=el('button','zone-card');card.type='button';card.append(el('strong','',`Zone ${zone.index} · MIDI ${zone.low_note}–${zone.high_note}`));card.append(el('span','',`${zone.layers.length} layer${zone.layers.length===1?'':'s'} · ${basename(zone.layers[0]?.sample)}`));card.addEventListener('click',()=>renderZone(zone,`Zone ${zone.index} · MIDI ${zone.low_note}–${zone.high_note}`));list.append(card);});renderKeybed();}
+  function compareCard(zone,emptyLabel){if(!zone)return el('div','compare-card detail-empty',emptyLabel);const card=el('div','compare-card');card.append(el('strong','',zone.role));card.append(el('span','',`${zone.layers.length} layer${zone.layers.length===1?'':'s'} · ${basename(zone.layers[0]?.sample)}`));return card;}
+  function signed(value){return value>0?`+${value}`:String(value);}
+  function renderComparison(){
+    const panel=$('comparison-panel');
+    if(!compareId){panel.classList.add('hidden');return;}
+    const comparison=BUNDLE.comparisons[deviceId]?.[programId]?.[compareId];
+    if(!comparison){panel.classList.add('hidden');return;}
+    panel.classList.remove('hidden');
+    $('comparison-title').textContent=`${comparison.left_name} ↔ ${comparison.right_name}`;
+    const summary=comparison.summary,summaryBox=$('comparison-summary');
+    summaryBox.replaceChildren();
+    [`Zones ${signed(summary.zone_delta)}`,`Layers ${signed(summary.layer_delta)}`,`Errors ${signed(summary.error_delta)}`,`Warnings ${signed(summary.warning_delta)}`,`${summary.left_only} left only`,`${summary.right_only} right only`].forEach(add=>summaryBox.append(el('span','chip',add)));
+    const grid=$('comparison-grid');grid.replaceChildren();
+    let rows=comparison.locations;
+    if(comparison.kind==='drum'&&currentBank)rows=rows.filter(item=>item.location.startsWith(currentBank));
+    const changed=rows.filter(item=>item.changed).length,unchanged=rows.length-changed;
+    $('comparison-total').textContent=comparison.kind==='drum'&&currentBank?`${changed} changed in Bank ${currentBank} · ${unchanged} unchanged · ${summary.changed_locations} changed overall`:`${changed} changed · ${unchanged} unchanged`;
+    if(!rows.length){grid.append(el('div','detail-empty','No comparable locations in the current bank.'));return;}
+    rows.forEach(item=>{const row=el('div',`compare-row${item.changed?' changed':''}`);row.append(el('div','compare-location',item.location));row.append(compareCard(item.left,'Empty'));row.append(compareCard(item.right,'Empty'));if(item.changed_fields.length)row.append(el('div','compare-fields',`Changed: ${item.changed_fields.join(', ')}`));grid.append(row);});
+  }
+  function renderAll(){DATA=currentView();selectedPad=null;selectedNote=null;currentBank=null;keyStart=DATA.keyboard.default_start;$('detail').replaceChildren(el('div','detail-empty','Select a populated pad or key.'));$('drum-surface').classList.remove('hidden');$('keygroup-surface').classList.add('hidden');$('banks').classList.remove('hidden');$('key-controls').classList.add('hidden');$('surface-title').textContent='Performance surface';renderHeader();renderIssues();if(DATA.program.kind==='drum')renderDrums();else renderKeygroups();renderComparison();}
+  populateControls();renderAll();
   </script>
 </body>
 </html>
@@ -458,7 +687,29 @@ HTML_TEMPLATE = r'''<!doctype html>
 
 
 def render_html(data: dict[str, Any]) -> str:
-    title = html.escape(str(data["program"]["name"] or "Unnamed program"), quote=True)
+    if "views" not in data:
+        device_id = str(data["device"]["id"])
+        data = {
+            "schema_version": 2,
+            "read_only": True,
+            "default_program": "program",
+            "default_device": device_id,
+            "programs": [
+                {
+                    "id": "program",
+                    "name": data["program"]["name"],
+                    "kind": data["program"]["kind"],
+                    "source_path": data["program"]["source_path"],
+                }
+            ],
+            "devices": [{"id": device_id, "name": data["device"]["name"]}],
+            "views": {"program": {device_id: data}},
+            "comparisons": {device_id: {"program": {}}},
+        }
+    first_view = data["views"][data["default_program"]][data["default_device"]]
+    title = html.escape(
+        str(first_view["program"]["name"] or "Unnamed program"), quote=True
+    )
     payload = json.dumps(data, separators=(",", ":"), ensure_ascii=False)
     payload = payload.replace("&", "\\u0026").replace("<", "\\u003C").replace(">", "\\u003E")
     return HTML_TEMPLATE.replace("__TITLE__", title).replace("__DATA__", payload)
@@ -484,36 +735,69 @@ def load_program(
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("source", type=Path)
+    parser.add_argument(
+        "--compare",
+        action="append",
+        default=[],
+        type=Path,
+        metavar="SOURCE",
+        help="additional XPM or manifest to bundle and compare; repeatable",
+    )
     parser.add_argument("--source-type", choices=("auto", "xpm", "manifest"), default="auto")
     parser.add_argument("--source-root", type=Path, help="optional WAV root for manifest validation")
+    parser.add_argument(
+        "--compare-source-root",
+        action="append",
+        default=[],
+        type=Path,
+        metavar="PATH",
+        help="WAV root for the corresponding --compare source; repeatable",
+    )
     parser.add_argument("--roles", type=Path, help="TOML file with explicit [roles] overrides")
-    parser.add_argument("--device", type=Path, required=True)
+    parser.add_argument(
+        "--device",
+        action="append",
+        type=Path,
+        required=True,
+        help="device profile to bundle; repeatable",
+    )
     parser.add_argument("--format", choices=("html", "json"), default="html")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--force", action="store_true", help="replace an existing viewer output")
     args = parser.parse_args()
     source = args.source.expanduser().resolve()
+    compare_sources = [path.expanduser().resolve() for path in args.compare]
     source_root = args.source_root.expanduser().resolve() if args.source_root else None
+    compare_roots = [path.expanduser().resolve() for path in args.compare_source_root]
     roles = args.roles.expanduser().resolve() if args.roles else None
     output = args.output.expanduser().resolve()
-    if output == source:
+    if len(compare_roots) > len(compare_sources):
+        parser.error("--compare-source-root requires a corresponding --compare source")
+    if output in {source, *compare_sources}:
         parser.error("viewer output cannot replace the source program")
     if output.exists() and not args.force:
         parser.error(f"viewer output exists; use --force to replace it: {output}")
     program = load_program(source, args.source_type, source_root, roles)
-    device = load_device(args.device.expanduser().resolve())
-    sample_root = infer_sample_root(program, source_root)
-    data = build_view_data(program, device, sample_root)
+    programs = [(program, infer_sample_root(program, source_root))]
+    for index, compare_source in enumerate(compare_sources):
+        compare_root = compare_roots[index] if index < len(compare_roots) else None
+        compare_program = load_program(compare_source, "auto", compare_root, roles)
+        programs.append(
+            (compare_program, infer_sample_root(compare_program, compare_root))
+        )
+    devices = [load_device(path.expanduser().resolve()) for path in args.device]
+    data = build_view_bundle(programs, devices)
     rendered = json.dumps(data, indent=2) + "\n" if args.format == "json" else render_html(data)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(rendered, encoding="utf-8")
-    counts = data["summary"]["issues"]
+    view_list = [view for device_views in data["views"].values() for view in device_views.values()]
+    error_count = sum(view["summary"]["issues"].get("error", 0) for view in view_list)
     print(f"Wrote: {output}")
     print(
-        f"Program: {program.name} ({program.kind}); zones={len(program.zones)}; "
-        f"issues={sum(counts.values())}"
+        f"Programs: {len(programs)}; devices={len(devices)}; "
+        f"comparisons={len(programs) * max(0, len(programs) - 1) * len(devices)}"
     )
-    return 2 if counts.get("error", 0) else 0
+    return 2 if error_count else 0
 
 
 if __name__ == "__main__":

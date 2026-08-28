@@ -1,10 +1,11 @@
+import json
 import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
 
 from mpc_keygroup_builder import designer, model
-from mpc_keygroup_builder.device import load_device
+from mpc_keygroup_builder.device import DeviceProfile, load_device
 
 
 class ProgramDesignerTests(unittest.TestCase):
@@ -123,7 +124,9 @@ class ProgramDesignerTests(unittest.TestCase):
         rendered = designer.render_html(designer.build_view_data(program, self.device))
         self.assertIn("<!doctype html>", rendered)
         self.assertIn("MPC Program Designer", rendered)
-        self.assertIn("const DATA=", rendered)
+        self.assertIn("const BUNDLE=", rendered)
+        self.assertIn('id="program-select"', rendered)
+        self.assertIn('id="comparison-panel"', rendered)
         self.assertNotIn("Kit </script><script>alert(1)</script>", rendered)
         self.assertNotIn("https://", rendered)
 
@@ -152,6 +155,77 @@ class ProgramDesignerTests(unittest.TestCase):
             self.assertEqual(source.read_bytes(), before)
             self.assertTrue(output.is_file())
             self.assertIn("Read only", output.read_text(encoding="utf-8"))
+
+    def test_bundle_renders_each_program_and_device_with_pairwise_comparisons(self):
+        first = model.ProgramModel(
+            1,
+            "Kit",
+            "drum",
+            (model.Zone(1, "kick.primary", (model.SampleLayer("Kick.wav"),), pad=1),),
+            "fixture",
+        )
+        second = model.ProgramModel(
+            1,
+            "Kit",
+            "drum",
+            (
+                model.Zone(1, "snare.primary", (model.SampleLayer("Snare.wav"),), pad=1),
+                model.Zone(2, "hihat.closed", (model.SampleLayer("Hat.wav"),), pad=2),
+            ),
+            "fixture",
+        )
+        key_61 = DeviceProfile(
+            1, "mpc-key-61", "Akai MPC Key 61", 61, 4, 4, tuple("ABCDEFGH")
+        )
+        bundle = designer.build_view_bundle(
+            [(first, None), (second, None)], [self.device, key_61]
+        )
+        self.assertEqual(bundle["schema_version"], 2)
+        self.assertEqual([item["id"] for item in bundle["programs"]], ["kit", "kit-2"])
+        self.assertEqual(set(bundle["views"]["kit"]), {"mpc-key-37", "mpc-key-61"})
+        comparison = bundle["comparisons"]["mpc-key-37"]["kit"]["kit-2"]
+        self.assertEqual(comparison["summary"]["changed_locations"], 2)
+        self.assertEqual(comparison["summary"]["right_only"], 1)
+        self.assertEqual(comparison["summary"]["zone_delta"], 1)
+        self.assertIn("role", comparison["locations"][0]["changed_fields"])
+
+    def test_cli_bundles_compare_source_and_repeated_devices_as_json(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            first = root / "first.toml"
+            second = root / "second.toml"
+            device = root / "alternate.toml"
+            output = root / "comparison.json"
+            first.write_text('name="First"\n[[pads]]\npad=1\nsample="Kick.wav"\n')
+            second.write_text('name="Second"\n[[pads]]\npad=1\nsample="Snare.wav"\n')
+            device.write_text(
+                'schema_version=1\nid="alternate"\nname="Alternate"\nkeys=25\n'
+                'pad_rows=4\npad_columns=4\nbanks=["A","B"]\n'
+            )
+            before = (first.read_bytes(), second.read_bytes())
+            with patch(
+                "sys.argv",
+                [
+                    "mpc-program-designer",
+                    str(first),
+                    "--compare",
+                    str(second),
+                    "--device",
+                    str(self.root / "devices/mpc-key-37.toml"),
+                    "--device",
+                    str(device),
+                    "--format",
+                    "json",
+                    "--output",
+                    str(output),
+                ],
+            ):
+                self.assertEqual(designer.main(), 0)
+            payload = json.loads(output.read_text())
+            self.assertEqual(payload["schema_version"], 2)
+            self.assertEqual(len(payload["programs"]), 2)
+            self.assertEqual(len(payload["devices"]), 2)
+            self.assertEqual((first.read_bytes(), second.read_bytes()), before)
 
 
 if __name__ == "__main__":

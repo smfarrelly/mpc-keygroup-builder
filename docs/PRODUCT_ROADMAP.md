@@ -176,7 +176,7 @@ Start with a local, read-only viewer and add editing in small usable releases:
    coverage, mute group, and playback behavior for the selection.
 4. [x] Emit self-contained HTML and machine-readable JSON without changing the
    source; accept declarative device profiles at generation time.
-5. [ ] Add in-view source/device switching and side-by-side comparison.
+5. [x] Add in-view source/device switching and side-by-side comparison.
 6. [ ] Add drag/drop rearrangement, locked pads, palette editing, handedness
    conversion, and layout comparison.
 7. [ ] Export a manifest first; export a validated XPM only through the tested
@@ -189,6 +189,12 @@ and compressed Wurli data render successfully. Bank/note switching, selection
 details, sample checks, velocity findings, physical orientation, responsive
 layout, and browser console behavior are tested. Generated viewers contain
 metadata only and remain in ignored local storage.
+
+**Portable comparison slice delivered August 27, 2026:** repeated source and
+device arguments now create one self-contained viewer with toolbar switching,
+bank-aware side-by-side program alignment, changed-field labels, summary
+deltas, and the same deterministic comparisons in JSON. The reusable device
+library now also includes an Akai-specification-backed MPC Key 61 profile.
 
 **Exit gate:** A user can inspect a kit, create a handed layout, preview every
 bank, export it, and load the result on hardware without manually editing XML.

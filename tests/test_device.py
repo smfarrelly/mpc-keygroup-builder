@@ -17,6 +17,13 @@ class DeviceProfileTests(unittest.TestCase):
         self.assertEqual(device.label(17), "B01")
         self.assertEqual(device.label(128), "H16")
 
+    def test_key61_profile_has_sixty_one_keys_and_full_pad_capacity(self):
+        root = Path(__file__).parents[1]
+        device = load_device(root / "devices/mpc-key-61.toml")
+        self.assertEqual(device.keys, 61)
+        self.assertEqual(device.pads_per_bank, 16)
+        self.assertEqual(device.capacity, 128)
+
     def test_rejects_capacity_above_128(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "bad.toml"

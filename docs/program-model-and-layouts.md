@@ -41,8 +41,11 @@ roles are rejected.
 
 ## Declarative layouts and devices
 
-`devices/mpc-key-37.toml` describes the 37 keys, 4-by-4 pad surface, Banks A–H,
-and 128-slot capacity. Layout files are independent of that hardware profile:
+`devices/mpc-key-37.toml` and `devices/mpc-key-61.toml` describe their physical
+keybeds plus the shared 4-by-4 pad surface, Banks A–H, and 128-slot capacity.
+The Key 61 dimensions are based on
+[Akai's published technical specifications](https://www.akaipro.com/mpc-key-61).
+Layout files are independent of those hardware profiles:
 
 - `layouts/classic-mpc.toml`
 - `layouts/right-handed-performance.toml`

@@ -889,6 +889,11 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   playback metadata, and reports sample, velocity, device, loop, and mute-group
   findings. Real layered-drum and Wurli viewers passed interactive browser
   checks without source writes or console errors.
+- Expanded Program Designer bundles to multiple sources and device profiles,
+  with in-view switching and deterministic side-by-side Drum/Keygroup
+  comparisons. Comparison JSON records changed locations and fields plus
+  zone, layer, warning, and error deltas; the bundled UI never accesses or
+  rewrites source files. Added an Akai-specification-backed Key 61 profile.
 
 ## 16. Reference material
 

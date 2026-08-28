@@ -232,7 +232,9 @@ uv run mpc-program-designer "/path/to/program.xpm" \
 The Program Designer switches Drum Banks A–H, renders the physical 4-by-4 pad
 surface, displays layers, colors, roles, MIDI notes, playback and mute groups,
 and reports sample or velocity problems. Keygroups receive a movable 37-note
-range viewer. See [MPC Program Designer](docs/program-designer.md).
+range viewer. Repeat `--compare` and `--device` to bundle multiple sources and
+hardware profiles with in-view switching and side-by-side comparison. See
+[MPC Program Designer](docs/program-designer.md).
 
 ## Metadata catalog
 
