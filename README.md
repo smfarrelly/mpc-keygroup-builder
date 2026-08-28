@@ -62,6 +62,10 @@ Breakdown, Build, and Outro MIDI sequence candidates. Seeded velocity mutation,
 track locks, source IDs, and omitted-event evidence keep the operation
 reproducible and reversible.
 
+`mpc-idea-batch` creates a bounded run of seed alternatives and a transparent
+evidence-diversity inspection order. It never presents that mechanical score
+as musical quality; hardware listening remains the selection gate.
+
 ## License
 
 The source code is available under the [MIT License](LICENSE). Sample libraries,

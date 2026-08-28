@@ -385,6 +385,9 @@ drum pattern survives translation between two pad layouts.
   motif, and suggested mapping to the tested Scratchpad program palette.
 - [x] Each recipe produces MIDI, JSON evidence, and a loading guide without
   serializing or guessing an MPC project file.
+- [x] A bounded `Surprise Me` batch generates reproducible seed alternatives
+  and ranks inspection order by transparent event-diversity evidence, never by
+  a false claim of musical quality.
 
 **Exit gate:** One command or Program Designer action creates a validated,
 recoverable project that reaches first playable sound in under one minute.

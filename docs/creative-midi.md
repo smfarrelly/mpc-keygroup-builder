@@ -106,3 +106,22 @@ track is copied byte-for-event through every section.
 Every derived event keeps a stable source ID and action label. Omitted source
 IDs and the entire base idea remain in JSON, so transformations are auditable,
 reproducible, and reversible rather than destructive edits to an MPC project.
+
+## Seed batches and Surprise Me
+
+Generate a bounded set of alternatives for listening later:
+
+```bash
+uv run mpc-idea-batch recipes/workstation/dusty-scratchpad.toml \
+  --program "/full/path/to/Vinyl SP From Mars 01.xpm" \
+  --seed-start 40 --count 6 --tempo 92 \
+  --output-dir work/idea-batches/dusty-40-45
+```
+
+Each seed receives MIDI, JSON, and loading-guide files. The batch index ranks
+inspection order using only measurable event diversity: represented drum
+roles, unique bass pitches, chord voicings, melody pitches and variations, and
+velocity span. It explicitly does not claim that the highest score is the best
+music. This provides a reproducible `Surprise Me` path while leaving taste to
+the hardware listening session. Batches are capped at 128 candidates and will
+not overwrite an unknown file in an output directory.
