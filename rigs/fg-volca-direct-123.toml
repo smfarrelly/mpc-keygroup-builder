@@ -1,0 +1,96 @@
+schema_version = 1
+name = "FG Volca Direct 1-2-3"
+description = "Minimal three-track MPC project matching the captured Launch Control modes: Keys channel 1, Bass channel 2, and Volca Drum single-channel mode on channel 3."
+acceptance = [
+  "Track 1 plays only Volca Keys on MIDI channel 1.",
+  "Track 2 plays only Volca Bass on MIDI channel 2.",
+  "Track 3 pads A01-A06 play Volca Drum parts 1-6 on MIDI channel 3.",
+  "Launch Control Volca Keys, Bass, Drum 1-3, and Drum 4-6 modes reach their named parameters.",
+  "Both Launch Control Drum pages remain on channel 3 and control the same Volca Drum.",
+  "MPC clock and transport reach all three Volcas without doubled notes.",
+  "A short three-track sequence survives project save and reload.",
+]
+
+[[devices]]
+id = "key37"
+name = "Akai MPC Key 37"
+kind = "host"
+clock = "send"
+
+[[devices]]
+id = "lcxl3"
+name = "Novation Launch Control XL 3"
+kind = "controller"
+clock = "none"
+
+[[devices]]
+id = "volca-keys"
+name = "Korg Volca Keys"
+kind = "synth"
+midi_channel = 1
+midi_port = "MPC MIDI Out"
+clock = "receive"
+
+[[devices]]
+id = "volca-bass"
+name = "Korg Volca Bass"
+kind = "synth"
+midi_channel = 2
+midi_port = "MPC MIDI Out"
+clock = "receive"
+
+[[devices]]
+id = "volca-drum"
+name = "Korg Volca Drum (single-channel mode)"
+kind = "synth"
+midi_channel = 3
+midi_port = "MPC MIDI Out"
+clock = "receive"
+
+[[tracks]]
+index = 1
+name = "VOLCA KEYS"
+role = "keys/chords"
+type = "midi"
+device = "volca-keys"
+midi_channel = 1
+
+[[tracks]]
+index = 2
+name = "VOLCA BASS"
+role = "bass"
+type = "midi"
+device = "volca-bass"
+midi_channel = 2
+
+[[tracks]]
+index = 3
+name = "VOLCA DRUM"
+role = "drums"
+type = "midi"
+device = "volca-drum"
+midi_channel = 3
+
+[[control_groups]]
+controller = "lcxl3"
+controls = "Volca Keys mode"
+count = 1
+semantic = "Volca Keys parameters"
+target = "volca-keys channel 1"
+message = "captured"
+
+[[control_groups]]
+controller = "lcxl3"
+controls = "Volca Bass mode"
+count = 1
+semantic = "Volca Bass parameters"
+target = "volca-bass channel 2"
+message = "captured"
+
+[[control_groups]]
+controller = "lcxl3"
+controls = "Volca Drum page {n}"
+count = 2
+semantic = "parts 1-3 then parts 4-6"
+target = "volca-drum channel 3"
+message = "captured"

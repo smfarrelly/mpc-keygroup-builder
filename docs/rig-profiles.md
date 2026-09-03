@@ -14,6 +14,9 @@ semantics, and hardware acceptance tests in reviewable TOML.
   layout choice, not an MPC track limit.
 - `rigs/fg-volca-jam.toml`: the same strip model with Volca Drum on strip 1,
   Volca Bass on strip 3, and Volca Keys on strip 4.
+- `rigs/fg-volca-direct-123.toml`: minimal three-track hardware test matching
+  the captured Custom Modes—Keys channel 1, Bass channel 2, and Drum
+  single-channel mode on channel 3.
 - `rigs/fg-launch-control-xl3.toml`: Universal Mix semantics for 8 faders,
   three encoder rows, and two button rows.
 
