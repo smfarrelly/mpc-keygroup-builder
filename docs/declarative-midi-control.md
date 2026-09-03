@@ -24,9 +24,11 @@ human- and machine-readable setup artifacts.
 
 Novation Components can download and upload Custom Modes as `.syx`, but the
 official Programmer's Reference does not publish the Custom Mode serialization
-format. The project will not guess it. The first mode must be entered in
-Components from the generated worksheet, then its official `.syx` export can
-be preserved and inspected as a reference.
+format. The project therefore does not write `.syx`. Its read-only capture
+inspector understands the envelope, control slots, labels, encoded channels,
+and controller numbers observed in real XL 3 exports while retaining every
+unproven field as raw bytes. Button channels are clearly marked as an inference
+from the same mode's encoder section.
 
 Akai saves MIDI Learn assignments inside a project, but does not document a
 supported standalone mapping-file or XPJ writer. The generated worksheet makes
@@ -144,6 +146,28 @@ The current comparison proves that the bridge experiment changes three Custom
 Mode outputs, three MPC routes, and topology metadata while changing **zero**
 endpoint/message/channel/number/target assignments. This isolates the physical
 routing question from the musical mapping question.
+
+## Inspect real Components and MPC captures
+
+Keep `.syx`, `.xpj`, ProjectData, and licensed samples in the ignored `work/`
+tree. Inspect one or more Components exports:
+
+```bash
+uv run mpc-launch-control inspect work/hardware-captures/launch-control-xl3/*.syx \
+  --output work/hardware-captures/launch-control-xl3/components.json
+```
+
+Cross-check their captured channel/controller pairs against the MIDI Learn
+assignments saved in an MPC 3 project:
+
+```bash
+uv run mpc-launch-control audit "/media/user/CARD/Projects/Boot.xpj" \
+  work/hardware-captures/launch-control-xl3/*.syx \
+  --output work/hardware-captures/launch-control-xl3/boot-audit.json
+```
+
+An unmatched control is evidence, not automatically a failure: direct Volca
+controls should bypass MPC MIDI Learn. The audit never rewrites either input.
 
 ## Primary sources
 

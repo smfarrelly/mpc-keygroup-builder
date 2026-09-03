@@ -74,6 +74,7 @@ COMMANDS = {
     "mpc-kit-wave": _spec("kit_wave", "Catalog", "Build and audit a multi-recipe kit wave", "docs/catalog.md"),
     "mpc-portable-demo": _spec("portable_demo", "Start here", "Build the redistributable end-to-end fixture", "docs/portable-demo.md"),
     "mpc-midi-control": _spec("midi_control", "MIDI control", "Compile and compare controller maps", "docs/declarative-midi-control.md"),
+    "mpc-launch-control": _spec("launch_control", "MIDI control", "Inspect Launch Control Components captures", "docs/declarative-midi-control.md"),
     "mpc-session-report": _spec("session", "Hardware", "Combine rig, candidate, and capture readiness", "docs/rig-profiles.md"),
     "mpc-plugin-audit": _spec("plugin_audit", "Inspect", "Inventory installed MPC plugin content", "docs/hardware-workflow-tools.md"),
 }

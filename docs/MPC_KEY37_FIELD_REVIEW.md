@@ -241,8 +241,26 @@ not an MPC-authored duplicate sequence. A reusable MPC-master setup should use
 an empty Volca pattern and explicitly record MIDI notes on the MPC track.
 
 Simultaneous three-device isolation, drift, and audio gain remain deferred until
-the CME MIDI Thru5 WC is incorporated. The Launch Control XL 3 has arrived, but
-its mapping is also intentionally deferred.
+the CME MIDI Thru5 WC is incorporated.
+
+## Launch Control and startup template
+
+The September 3 capture materially advances the controller workflow. The newer
+`Boot.xpj` startup template contains six musical tracks—OPx-4, Jura, two Drum
+Programs, and two Keygroups—and 81 project-scoped MIDI Learn assignments. Six
+Novation Components Custom Modes were also preserved: OPx, Jura, Volca Keys,
+Volca Bass, and two modes spanning Volca Drum parts 1–6.
+
+Read-only cross-checking found matching channel/controller pairs for 37 of 41
+enabled OPx controls and 40 of 44 enabled Jura controls. The eight unmatched
+controls are faders 4–7 in both modes; whether that is intentional remains a
+small hardware question. The Volca modes appropriately have no match in MPC
+MIDI Learn because their purpose is direct external-device control.
+
+The capture also exposed configuration drift worth preserving rather than
+hiding: current Components exports use Keys/Bass/Drum channels 1/2/3, while the
+older tested MPC routing used Bass/Keys/Drum channels 1/2/10. The device receive
+channels should be checked before revising the canonical declarative rig.
 
 ## Plugins
 
@@ -285,7 +303,8 @@ Deferral means "not currently worth interrupting development for," not failure.
 - Cold-start timing.
 - A revised Scratchpad Jam copy with an inspected lead phrase.
 - MPC-authored Volca sequence save/reload and simultaneous three-Volca testing.
-- Launch Control XL 3 mapping and persistence.
+- Launch Control parameter-result, channel reconciliation, and power-cycle
+  persistence; the Custom Modes and MPC MIDI Learn state are now captured.
 - Clip Workflow unless Pro Pack is purchased.
 - Mini D and Studio Strings unless purchased.
 

@@ -136,6 +136,9 @@ def summarize(project: XPJProject) -> dict[str, Any]:
             }
         )
     sequences = _sequence_values(data)
+    learn_rows = midi_learn_rows(project)
+    learn_channels = Counter(row["channel"] for row in learn_rows if row["channel"] is not None)
+    learn_tracks = Counter(row["track"] for row in learn_rows if row["track"])
     result.update(
         {
             "header": asdict(project.header) if project.header else None,
@@ -162,9 +165,48 @@ def summarize(project: XPJProject) -> dict[str, Any]:
             "project_sample_count": len(data.get("samples", []))
             if isinstance(data.get("samples"), list)
             else 0,
+            "midi_learn_count": len(learn_rows),
+            "midi_learn_channels": dict(sorted(learn_channels.items())),
+            "midi_learn_tracks": dict(sorted(learn_tracks.items())),
         }
     )
     return result
+
+
+def midi_learn_rows(project: XPJProject) -> list[dict[str, Any]]:
+    """Return stable, read-only rows for project-scoped MIDI Learn controls."""
+    if project.generation != 3:
+        raise ValueError("MIDI Learn inspection requires an MPC 3 project")
+    settings = project.data.get("midiLearnSettings", {})
+    if not isinstance(settings, dict):
+        return []
+    controls = settings.get("controls", [])
+    if not isinstance(controls, list):
+        return []
+    rows: list[dict[str, Any]] = []
+    for index, item in enumerate(controls):
+        if not isinstance(item, dict):
+            continue
+        mapping = item.get("mapping", {})
+        control = item.get("control", {})
+        if not isinstance(mapping, dict) or not isinstance(control, dict):
+            continue
+        targets = control.get("targetData", [])
+        target = targets[0] if isinstance(targets, list) and targets and isinstance(targets[0], dict) else {}
+        rows.append(
+            {
+                "index": index,
+                "channel": mapping.get("channel"),
+                "control_type": mapping.get("controlType"),
+                "number": mapping.get("data1"),
+                "name": control.get("name", ""),
+                "value": control.get("controlValue"),
+                "track": target.get("track"),
+                "parameter": target.get("parameter"),
+                "instrument_index": target.get("instrumentIndex"),
+            }
+        )
+    return rows
 
 
 def normalized(project: XPJProject) -> dict[str, Any]:
@@ -237,6 +279,9 @@ def main(argv: list[str] | None = None) -> int:
     extract_parser = commands.add_parser("extract", help="write normalized MPC 3 JSON")
     extract_parser.add_argument("project", type=Path)
     extract_parser.add_argument("--output", type=Path)
+    learn_parser = commands.add_parser("midi-learn", help="list project-scoped MIDI Learn assignments")
+    learn_parser.add_argument("project", type=Path)
+    learn_parser.add_argument("--output", type=Path)
     compare_parser = commands.add_parser("compare", help="show JSON-pointer structural changes")
     compare_parser.add_argument("left", type=Path)
     compare_parser.add_argument("right", type=Path)
@@ -247,6 +292,8 @@ def main(argv: list[str] | None = None) -> int:
             _write_json(summarize(load(args.project)), args.output)
         elif args.command == "extract":
             _write_json(normalized(load(args.project)), args.output)
+        elif args.command == "midi-learn":
+            _write_json(midi_learn_rows(load(args.project)), args.output)
         else:
             _write_json(compare(load(args.left), load(args.right)), args.output)
     except (OSError, ValueError) as error:

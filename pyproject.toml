@@ -61,6 +61,7 @@ mpc-kit-select = "mpc_keygroup_builder.entrypoints:main"
 mpc-kit-wave = "mpc_keygroup_builder.entrypoints:main"
 mpc-portable-demo = "mpc_keygroup_builder.entrypoints:main"
 mpc-midi-control = "mpc_keygroup_builder.entrypoints:main"
+mpc-launch-control = "mpc_keygroup_builder.entrypoints:main"
 mpc-session-report = "mpc_keygroup_builder.entrypoints:main"
 mpc-plugin-audit = "mpc_keygroup_builder.entrypoints:main"
 

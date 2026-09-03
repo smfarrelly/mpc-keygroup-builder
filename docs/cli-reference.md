@@ -20,11 +20,12 @@ Set `MPC_DEBUG=1` to see the original Python traceback.
 
 - **Start here:** installation diagnosis and the portable demo.
 - **Build:** Keygroups, Drum Programs, program colors, and conversions.
-- **Inspect:** XPM, Ableton, WAV-level, and semantic validation.
+- **Inspect:** XPM, XPJ, Ableton, WAV-level, and semantic validation.
 - **Layout:** deterministic plans, XPM export, verification, and packages.
 - **Creative MIDI:** drums, harmony, melody, workstations, arrangements, and
   bounded idea batches.
-- **MIDI control:** declarative Launch Control XL 3, MPC, and Volca maps.
+- **MIDI control:** declarative maps plus read-only Launch Control capture
+  inspection and MPC MIDI Learn cross-checking.
 - **Catalog:** normalized program inventory and deterministic kit selection.
 - **Hardware:** listening ledgers, Scratchpad gates, rig reports, and captures.
 - **Deploy:** additive, transactional copies to removable storage.

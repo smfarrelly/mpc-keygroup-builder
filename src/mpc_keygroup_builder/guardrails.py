@@ -7,7 +7,7 @@ import subprocess
 from pathlib import Path
 
 
-FORBIDDEN_SUFFIXES = {".wav", ".xpm", ".xpj", ".aif", ".aiff"}
+FORBIDDEN_SUFFIXES = {".wav", ".xpm", ".xpj", ".syx", ".aif", ".aiff"}
 FORBIDDEN_MARKERS = ("[programdata]", "[projectdata]")
 
 

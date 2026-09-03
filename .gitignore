@@ -22,6 +22,8 @@ config.local.*
 *.WAV
 *.xpm
 *.XPM
+*.syx
+*.SYX
 *_[ProgramData]/
 
 # Local build/install staging

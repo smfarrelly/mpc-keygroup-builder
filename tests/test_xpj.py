@@ -32,6 +32,18 @@ class XPJTests(unittest.TestCase):
                     ],
                     "sequences": [{"key": 0, "value": {"name": "Sequence 01", "bpm": 96.0, "lengthBars": 4}}],
                     "samples": [{"name": "Kick"}],
+                    "midiLearnSettings": {
+                        "controls": [
+                            {
+                                "mapping": {"channel": 16, "controlType": 5, "data1": 20},
+                                "control": {
+                                    "name": "Kit (Volume)",
+                                    "controlValue": 0.5,
+                                    "targetData": [{"track": "Kit", "parameter": 7, "instrumentIndex": 257}],
+                                },
+                            }
+                        ]
+                    },
                 },
             )
             project = xpj.load(path)
@@ -40,6 +52,10 @@ class XPJTests(unittest.TestCase):
             self.assertEqual(summary["track_types"], {"Drum": 1, "Keygroup": 1})
             self.assertEqual(summary["sequence_count"], 1)
             self.assertEqual(summary["project_sample_count"], 1)
+            self.assertEqual(summary["midi_learn_count"], 1)
+            self.assertEqual(summary["midi_learn_channels"], {16: 1})
+            self.assertEqual(summary["midi_learn_tracks"], {"Kit": 1})
+            self.assertEqual(xpj.midi_learn_rows(project)[0]["number"], 20)
 
     def test_detects_mpc2_xml_without_treating_it_as_json(self):
         with tempfile.TemporaryDirectory() as temporary:

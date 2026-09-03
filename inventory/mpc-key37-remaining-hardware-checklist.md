@@ -776,11 +776,17 @@ the next protected project at:
 
 ### Launch Control XL 3
 
-No SD file should be loaded until the mapping is created and saved on hardware.
+The September 3 capture confirms six Components Custom Modes and 81 MIDI Learn
+assignments saved in the newer `SD Card / Projects / Boot.xpj` startup
+template. See `inventory/launch-control-capture-2026-09-03.md` for the exact
+channel/control inventory and read-only audit results.
 
 - [ ] Check/update Launch Control XL 3 firmware with Novation Components.
-- [ ] Confirm standalone USB connection to the Key 37.
-- [ ] Verify all intended faders, encoders, and buttons send distinct messages.
+- [x] Confirm standalone USB connection to the Key 37.
+- [x] Save six named Components Custom Modes and capture their control messages.
+- [ ] Confirm faders 4–7 are intentionally unlearned in the Boot template.
+- [ ] Verify every intended control's musical result; capture parsing alone is
+  not a listening or usability pass.
 - [ ] Map faders 1–8 to track volume 1–8.
 - [ ] Map top encoders to tone/brightness.
 - [ ] Map middle encoders to delay/movement.
@@ -788,7 +794,7 @@ No SD file should be loaded until the mapping is created and saved on hardware.
 - [ ] Map upper buttons to track mute.
 - [ ] Try lower buttons as record arm; keep only if safe and useful.
 - [ ] Check for disruptive value jumps when first touching each control.
-- [ ] Save the controller custom mode and MPC project.
+- [x] Save the controller Custom Modes and MPC project.
 - [ ] Power-cycle both devices and confirm persistence.
 - [ ] Clone the Scratchpad project and confirm Universal Mix meanings persist.
 - [ ] Perform a ten-minute jam with minimal touchscreen navigation.

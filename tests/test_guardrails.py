@@ -11,13 +11,15 @@ class GuardrailTests(unittest.TestCase):
             root = Path(directory)
             wav = root / "licensed.wav"
             wav.write_bytes(b"x")
+            syx = root / "controller.syx"
+            syx.write_bytes(b"x")
             capture = root / "Song_[ProjectData]" / "notes.txt"
             capture.parent.mkdir()
             capture.write_text("x")
             large = root / "large.bin"
             large.write_bytes(b"1234")
-            issues = guardrails.scan([wav, capture, large], max_bytes=3)
-            self.assertEqual(len(issues), 3)
+            issues = guardrails.scan([wav, syx, capture, large], max_bytes=3)
+            self.assertEqual(len(issues), 4)
 
     def test_accepts_normal_source_file(self):
         with tempfile.TemporaryDirectory() as directory:

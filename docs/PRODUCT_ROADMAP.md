@@ -479,9 +479,12 @@ control.
 - [x] Compiled control maps now include an ordered hardware checklist and
   editable results ledger. Semantic comparison proves the conservative and
   USB-DIN bridge maps change routing while preserving every control assignment.
-- [x] Unsupported automation boundaries remain honest: Custom Mode `.syx`
-  serialization and XPJ MIDI Learn writing are capture-gated instead of
-  reverse-engineered from guesses.
+- [x] Unsupported automation boundaries remain honest: Custom Mode `.syx` and
+  XPJ writing remain out of scope, while read-only parsers now expose proven
+  fields and retain unproven SysEx fields as raw bytes.
+- [x] Preserve six real Components exports and two MPC 3.9.1.2 startup-template
+  captures locally; cross-check saved OPx/Jura channel-controller pairs against
+  81 MIDI Learn assignments without committing the captures.
 
 ### Release readiness
 
@@ -517,10 +520,10 @@ for release gates:
 - Complete three-device Volca isolation and sync after the CME MIDI Thru5 WC
   arrives.
 - Establish practical audio gain and capture routing.
-- Hardware-enter and export the four declarative Launch Control XL 3 Custom
-  Modes, then preserve their official Components `.syx` files locally.
-- Capture the project-scoped MPC Mix MIDI Learn assignments and choose the
-  lower-button performance target.
+- Reconcile the captured six-mode Keys/Bass/Drum channel plan with the older
+  tested Volca receive channels, then update the canonical declarative rig.
+- Confirm the eight currently unmatched OPx/Jura faders are intentional and
+  choose any remaining lower-button performance targets.
 - Compare the current MPC-pass-through topology with the lower-click Launch
   Control USB-to-DIN bridge topology after its virtual DIN port is confirmed on
   the Key 37.
@@ -532,10 +535,9 @@ for release gates:
    changing the reproducible software evidence.
 2. **Release portability:** add schema documentation and a clean-clone CI smoke
    run for the portable demo, then ask another MPC owner to follow it.
-3. **Project serialization, evidence-gated:** use the detached XPJ inspector
-   branch and MPC-authored baseline/changed captures only when project writing
-   becomes necessary; do not guess a project schema or merge the Mac branch
-   merely because the MIDI workstation foundation is complete.
+3. **Controller capture convergence:** use the now-integrated read-only XPJ and
+   Components inspectors to reconcile actual channels and controls with the
+   declarative rig; keep all project and SysEx writing hardware/vendor-owned.
 
 Program Designer, Keygroup variants, creative MIDI, and arrangement hardware
 acceptance remain intentionally deferred until the Key 37 is available.

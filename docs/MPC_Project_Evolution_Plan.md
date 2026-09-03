@@ -1016,6 +1016,9 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
 - Unknown fields and opaque plugin state remain preserved. Project captures,
   ProjectData, licensed audio, and controller SysEx exports remain local
   evidence rather than repository source.
+- Added read-only Launch Control XL 3 Components capture inspection plus an XPJ
+  MIDI Learn cross-check. Six real Custom Modes parse successfully; the newer
+  Boot template matches 37/41 OPx and 40/44 Jura channel/controller pairs.
 
 ## 16. Reference material
 

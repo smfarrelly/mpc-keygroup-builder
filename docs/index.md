@@ -29,6 +29,7 @@ user does not have to read the project's full history before making something.
 - [Rig profiles](rig-profiles.md)
 - [Hardware workflow tools](hardware-workflow-tools.md)
 - [Key 37 routing capture](key37-routing-capture.md)
+- [XPJ project inspector](xpj-inspector.md)
 
 ## Sources, compatibility, and evidence
 

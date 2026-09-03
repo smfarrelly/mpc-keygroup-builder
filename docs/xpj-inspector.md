@@ -10,6 +10,14 @@ uv run mpc-xpj inspect "/path/to/Key 37 Test.xpj"
 
 The summary includes the five ACVS header values, schema versions, tempo, track names and program types, routing channels, sequence metadata, and sample counts.
 
+It also reports MIDI Learn assignment counts by channel and target track. To
+export the individual learned controls without the rest of the project:
+
+```bash
+uv run mpc-xpj midi-learn "/path/to/Key 37 Test.xpj" \
+  --output work/key-37-midi-learn.json
+```
+
 ## Extract normalized JSON
 
 ```bash

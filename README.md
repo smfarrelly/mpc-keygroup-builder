@@ -43,6 +43,7 @@ is required for the software portion.
 - Inspect, extract, and compare MPC 3 XPJ projects without modifying them.
 - Generate deterministic Drum, Bass, Chords, Melody, and arrangement MIDI.
 - Compile declarative MPC, Launch Control XL 3, and Volca routing plans.
+- Inspect Components SysEx captures and cross-check them against MPC MIDI Learn.
 - Catalog programs and their hardware-listening status.
 - Plan additive, checksum-verified SD deployments.
 - Create a self-contained browser Program Designer for a prepared program set.
