@@ -506,6 +506,10 @@ control.
 - [x] Add a generated offline Plugin Mapping Companion that visualizes all nine
   XL3 pages, guides one-probe-first MIDI Learn, stores progress locally, and
   exports fingerprinted JSON or flat CSV hardware results.
+- [x] Close the controller-planning loop with strict result-import validation,
+  an initialized 178-control ledger, ranked profile seeds, printable mode cards,
+  and a full 15-slot capacity audit that retains unconfirmed slot evidence as
+  warnings.
 - [x] Publish a validated repository AI skill and a checksum-verified personal
   vendor-document cache that keeps copyrighted Korg PDFs out of Git.
 - Publish schemas, device profiles, layouts, recipes, validators, and tests.

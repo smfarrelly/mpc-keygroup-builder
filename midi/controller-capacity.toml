@@ -1,0 +1,64 @@
+schema_version = 1
+name = "FG Launch Control XL 3 Full Capacity Plan"
+control_channel = 16
+external_channels = [1, 2, 3]
+
+[[modes]]
+slot = 1
+name = "OPx-4"
+channel = 9
+role = "plugin-performance"
+source = "captured"
+slot_evidence = "captured mode name"
+capture_name = "1 - OPX"
+control_count = 41
+
+[[modes]]
+slot = 2
+name = "Jura"
+channel = 10
+role = "plugin-performance"
+source = "captured"
+slot_evidence = "captured mode name"
+capture_name = "2 - Jura"
+control_count = 44
+
+[[modes]]
+slot = 3
+name = "Volca Bass"
+channel = 2
+role = "external-device"
+source = "captured"
+slot_evidence = "working six-mode order; confirm in Components"
+capture_name = "Volca Bass"
+control_count = 40
+
+[[modes]]
+slot = 4
+name = "Volca Drum 1-3"
+channel = 3
+role = "external-device"
+source = "captured"
+slot_evidence = "working six-mode order; confirm in Components"
+capture_name = "Volca Drum 1-3"
+control_count = 48
+
+[[modes]]
+slot = 5
+name = "Volca Drum 4-6"
+channel = 3
+role = "external-device"
+source = "captured"
+slot_evidence = "working six-mode order; confirm in Components"
+capture_name = "Volca Drum 4-6"
+control_count = 48
+
+[[modes]]
+slot = 6
+name = "Volca Keys"
+channel = 1
+role = "external-device"
+source = "captured"
+slot_evidence = "working six-mode order; confirm in Components"
+capture_name = "Volca Keys"
+control_count = 39

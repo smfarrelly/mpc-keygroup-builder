@@ -53,6 +53,8 @@ is required for the software portion.
   worksheets with installed-content validation.
 - Generate an offline visual plugin-mapping companion with local progress,
   hardware notes, and portable JSON/CSV results.
+- Validate companion exports into a durable results ledger, generate ranked
+  profile seeds, print mode cards, and audit all controller slots and channels.
 - Catalog programs and their hardware-listening status.
 - Plan additive, checksum-verified SD deployments.
 - Create a self-contained browser Program Designer for a prepared program set.

@@ -147,6 +147,31 @@ Mode outputs, three MPC routes, and topology metadata while changing **zero**
 endpoint/message/channel/number/target assignments. This isolates the physical
 routing question from the musical mapping question.
 
+## Whole-controller capacity plan
+
+`midi/controller-capacity.toml` assembles the six existing captured modes and
+nine declarative plugin profiles into one explicit 15-slot plan. Validate the
+plan and cross-check all six real Components captures with:
+
+```bash
+uv run mpc-controller-capacity midi/controller-capacity.toml \
+  midi/plugins/*.toml \
+  --capture "work/hardware-captures/launch-control-xl3/2026-09-03-components/1 - OPX.syx" \
+  --capture "work/hardware-captures/launch-control-xl3/2026-09-03-components/2 - Jura.syx" \
+  --capture "work/hardware-captures/launch-control-xl3/2026-09-03-components/Volca Bass.syx" \
+  --capture "work/hardware-captures/launch-control-xl3/2026-09-03-components/Volca Drum 1-3.syx" \
+  --capture "work/hardware-captures/launch-control-xl3/2026-09-03-components/Volca Drum 4-6.syx" \
+  --capture "work/hardware-captures/launch-control-xl3/2026-09-03-components/Volca Keys.syx" \
+  --output work/midi-control/controller-capacity
+```
+
+The report checks duplicate slots, invalid channels, plugin-page conflicts with
+Volca channels 1–3 or MPC control channel 16, and expected capture channels. It
+currently reports all 15 slots assigned and channel 8 unreserved. OPx-4 and Jura
+slot numbers are supported by their captured mode names; the working slot order
+for the other four captured modes remains clearly warned until confirmed in
+Components.
+
 For plugin pages, use [`mpc-plugin-params`](plugin-parameters.md) to search the
 downloaded MPC UI metadata and cross-reference it with an existing project's
 MIDI Learn assignments. This produces named, ranked candidates before editing

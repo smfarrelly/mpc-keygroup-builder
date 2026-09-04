@@ -1,0 +1,179 @@
+profile,profile_name,slot,channel,control,cc,plugin,target,ui_parameter,mpc_parameter,evidence,priority,status,notes,observed_at,mapping_fingerprint
+iona-performance,Iona Perform,7,11,top-encoder-1,20,Iona,VCF Cutoff,17,4113,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,top-encoder-2,21,Iona,VCF Resonance,18,4114,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,top-encoder-3,22,Iona,VCF Env Amount,19,4115,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,top-encoder-4,23,Iona,VCF Mod Amount,20,4116,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,top-encoder-5,24,Iona,VCF KBD Amount,21,4117,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,top-encoder-6,25,Iona,Shape,5,4101,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,top-encoder-7,26,Iona,Lfo Speed,7,4103,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,top-encoder-8,27,Iona,VCO Lfo Pitch Modulation,8,4104,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,middle-encoder-1,28,Iona,Portamento Time,4,4100,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,middle-encoder-2,29,Iona,VCO Pulse Width,10,4106,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,middle-encoder-3,30,Iona,Delay Time,453,4549,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,middle-encoder-4,31,Iona,Delay Feedback,456,4552,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,middle-encoder-5,32,Iona,Delay Wet/Dry,462,4558,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,middle-encoder-6,33,Iona,Reverb Pre-Delay,464,4560,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,middle-encoder-7,34,Iona,Reverb Decay,468,4564,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,middle-encoder-8,35,Iona,Reverb Wet/Dry,474,4570,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,bottom-encoder-1,36,Iona,Arp/Seq Speed,49,4145,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,bottom-encoder-2,37,Iona,Arp/Seq Swing,50,4146,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,bottom-encoder-3,38,Iona,Arp Gate,34,4130,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,bottom-encoder-4,39,Iona,Lofi Wet/Dry,440,4536,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,bottom-encoder-5,40,Iona,Decimator,438,4534,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,bottom-encoder-6,41,Iona,Bitcrusher,439,4535,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,bottom-encoder-7,42,Iona,EQ Low Gain,476,4572,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,bottom-encoder-8,43,Iona,EQ High Gain,481,4577,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,fader-1,44,Iona,Saw Level,13,4109,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,fader-2,45,Iona,Pulse Level,12,4108,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,fader-3,46,Iona,Sub Level,15,4111,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,fader-4,47,Iona,Noise Level,16,4112,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,fader-5,48,Iona,Env Attack,24,4120,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,fader-6,49,Iona,Env Decay,25,4121,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,fader-7,50,Iona,Env Sustain,26,4122,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,fader-8,51,Iona,Env Release,27,4123,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,upper-button-1,52,Iona,Lfo Sync,6,4102,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,upper-button-2,53,Iona,Delay On,452,4548,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,upper-button-3,54,Iona,Delay Sync,454,4550,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,upper-button-4,55,Iona,Reverb On,463,4559,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,upper-button-5,56,Iona,Lo-fi On,437,4533,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,upper-button-6,57,Iona,EQ On,475,4571,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,upper-button-7,58,Iona,Arp Hold,35,4131,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+iona-performance,Iona Perform,7,11,upper-button-8,59,Iona,Legato,45,4141,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,top-encoder-1,20,AIR Flavor Pro,Vary,12,4108,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,top-encoder-2,21,AIR Flavor Pro,Drift,14,4110,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,top-encoder-3,22,AIR Flavor Pro,Fast Rate,13,4109,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,top-encoder-4,23,AIR Flavor Pro,Slow Rate,16,4112,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,top-encoder-5,24,AIR Flavor Pro,X-Mod,17,4113,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,top-encoder-6,25,AIR Flavor Pro,Mix,19,4115,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,top-encoder-7,26,AIR Flavor Pro,Stereo,15,4111,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,top-encoder-8,27,AIR Flavor Pro,Rate,20,4116,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,middle-encoder-1,28,AIR Flavor Pro,Vary,22,4118,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,middle-encoder-2,29,AIR Flavor Pro,Model,23,4119,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,middle-encoder-3,30,AIR Flavor Pro,Mix,24,4120,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,middle-encoder-4,31,AIR Flavor Pro,Smooth,27,4123,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,middle-encoder-5,32,AIR Flavor Pro,Vary,29,4125,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,middle-encoder-6,33,AIR Flavor Pro,Bits,30,4126,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,middle-encoder-7,34,AIR Flavor Pro,Sample Rate,31,4127,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,middle-encoder-8,35,AIR Flavor Pro,Glitch,32,4128,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,bottom-encoder-1,36,AIR Flavor Pro,Vary,40,4136,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,bottom-encoder-2,37,AIR Flavor Pro,Crackles,41,4137,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,bottom-encoder-3,38,AIR Flavor Pro,Pops,44,4140,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,bottom-encoder-4,39,AIR Flavor Pro,Noise,46,4142,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,bottom-encoder-5,40,AIR Flavor Pro,Tone,47,4143,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,bottom-encoder-6,41,AIR Flavor Pro,Release,51,4147,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,bottom-encoder-7,42,AIR Flavor Pro,Dropouts,60,4156,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,bottom-encoder-8,43,AIR Flavor Pro,Profile,63,4159,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,fader-1,44,AIR Flavor Pro,Global Depth,6,4102,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,fader-2,45,AIR Flavor Pro,Global Gain,7,4103,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,fader-3,46,AIR Flavor Pro,Pitch Depth,11,4107,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,fader-4,47,AIR Flavor Pro,Distortion Depth,21,4117,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,fader-5,48,AIR Flavor Pro,Digital Depth,28,4124,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,fader-6,49,AIR Flavor Pro,Vinyl Depth,39,4135,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,fader-7,50,AIR Flavor Pro,Volume Depth,52,4148,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,fader-8,51,AIR Flavor Pro,Timbre Depth,61,4157,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,upper-button-1,52,AIR Flavor Pro,Pitch Mods On,0,4096,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,upper-button-2,53,AIR Flavor Pro,Distortion Mods On,1,4097,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,upper-button-3,54,AIR Flavor Pro,Digital Mods On,2,4098,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,upper-button-4,55,AIR Flavor Pro,Vinyl Noise On,3,4099,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,upper-button-5,56,AIR Flavor Pro,Volume Mods On,4,4100,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+flavor-pro-performance,Flavor Perform,8,12,upper-button-6,57,AIR Flavor Pro,Timbre Mods On,5,4101,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,top-encoder-1,20,Trigger FX,Half Speed Speed,3,4099,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,top-encoder-2,21,Trigger FX,Half Speed Mix,4,4100,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,top-encoder-3,22,Trigger FX,Beat Repeat Division,75,4171,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,top-encoder-4,23,Trigger FX,Beat Repeat Reverse,76,4172,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,top-encoder-5,24,Trigger FX,Beat Repeat Resonance,77,4173,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,top-encoder-6,25,Trigger FX,Delay Time,87,4183,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,top-encoder-7,26,Trigger FX,Delay Feedback,88,4184,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,top-encoder-8,27,Trigger FX,Delay Mode,89,4185,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,middle-encoder-1,28,Trigger FX,LP Filter Resonance,33,4129,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,middle-encoder-2,29,Trigger FX,LP Filter Speed,34,4130,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,middle-encoder-3,30,Trigger FX,LP Filter Range,35,4131,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,middle-encoder-4,31,Trigger FX,HP Filter Resonance,39,4135,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,middle-encoder-5,32,Trigger FX,HP Filter Speed,40,4136,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,middle-encoder-6,33,Trigger FX,HP Filter Range,41,4137,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,middle-encoder-7,34,Trigger FX,BP Filter Resonance,45,4141,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,middle-encoder-8,35,Trigger FX,BP Filter Speed,46,4142,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,bottom-encoder-1,36,Trigger FX,Chorus Rate,9,4105,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,bottom-encoder-2,37,Trigger FX,Chorus Depth,10,4106,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,bottom-encoder-3,38,Trigger FX,Flanger Rate,15,4111,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,bottom-encoder-4,39,Trigger FX,Flanger Depth,16,4112,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,bottom-encoder-5,40,Trigger FX,Phaser Speed,22,4118,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,bottom-encoder-6,41,Trigger FX,Phaser Range,23,4119,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,bottom-encoder-7,42,Trigger FX,Comb Filter Speed,27,4123,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,bottom-encoder-8,43,Trigger FX,Ring Mod Max Freq,51,4147,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,fader-1,44,Trigger FX,LoFi Bitcrush,57,4153,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,fader-2,45,Trigger FX,LoFi Decimator,58,4154,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,fader-3,46,Trigger FX,Granulator Density,69,4165,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,fader-4,47,Trigger FX,Granulator Feedback,70,4166,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,fader-5,48,Trigger FX,Granulator Length,71,4167,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,fader-6,49,Trigger FX,Reverb Pre-Delay,93,4189,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,fader-7,50,Trigger FX,Reverb Decay,94,4190,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+trigger-fx-performance,Trigger FX,9,13,fader-8,51,Trigger FX,Reverb Diffusion,95,4191,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,top-encoder-1,20,AIR Multitap Delay,Delay,1,4097,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,top-encoder-2,21,AIR Multitap Delay,Feedback,2,4098,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,top-encoder-3,22,AIR Multitap Delay,Mix,7,4103,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,top-encoder-4,23,AIR Multitap Delay,Low Cut,5,4101,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,top-encoder-5,24,AIR Multitap Delay,High Cut,6,4102,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,top-encoder-6,25,AIR Multitap Delay,From,3,4099,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,top-encoder-7,26,AIR Multitap Delay,To,4,4100,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,middle-encoder-1,28,AIR Multitap Delay,Tap 1 Delay,9,4105,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,middle-encoder-2,29,AIR Multitap Delay,Tap 2 Delay,13,4109,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,middle-encoder-3,30,AIR Multitap Delay,Tap 3 Delay,17,4113,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,middle-encoder-4,31,AIR Multitap Delay,Tap 4 Delay,21,4117,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,middle-encoder-5,32,AIR Multitap Delay,Tap 5 Delay,25,4121,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,bottom-encoder-1,36,AIR Multitap Delay,Tap 1 Pan,11,4107,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,bottom-encoder-2,37,AIR Multitap Delay,Tap 2 Pan,15,4111,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,bottom-encoder-3,38,AIR Multitap Delay,Tap 3 Pan,19,4115,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,bottom-encoder-4,39,AIR Multitap Delay,Tap 4 Pan,23,4119,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,bottom-encoder-5,40,AIR Multitap Delay,Tap 5 Pan,27,4123,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,fader-1,44,AIR Multitap Delay,Tap 1 Level,10,4106,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,fader-2,45,AIR Multitap Delay,Tap 2 Level,14,4110,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,fader-3,46,AIR Multitap Delay,Tap 3 Level,18,4114,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,fader-4,47,AIR Multitap Delay,Tap 4 Level,22,4118,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,fader-5,48,AIR Multitap Delay,Tap 5 Level,26,4122,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,upper-button-1,52,AIR Multitap Delay,Tap 1 On,8,4104,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,upper-button-2,53,AIR Multitap Delay,Tap 2 On,12,4108,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,upper-button-3,54,AIR Multitap Delay,Tap 3 On,16,4112,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,upper-button-4,55,AIR Multitap Delay,Tap 4 On,20,4116,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,upper-button-5,56,AIR Multitap Delay,Tap 5 On,24,4120,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+multitap-delay-performance,Multitap Delay,10,14,upper-button-8,59,AIR Multitap Delay,Sync,0,4096,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+vintage-filter-performance,Vintage Filter,11,15,top-encoder-1,20,AIR Vintage Filter,Cutoff,1,4097,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+vintage-filter-performance,Vintage Filter,11,15,top-encoder-2,21,AIR Vintage Filter,Resonance,2,4098,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+vintage-filter-performance,Vintage Filter,11,15,top-encoder-3,22,AIR Vintage Filter,Fat,3,4099,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+vintage-filter-performance,Vintage Filter,11,15,top-encoder-4,23,AIR Vintage Filter,Output,10,4106,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+vintage-filter-performance,Vintage Filter,11,15,middle-encoder-1,28,AIR Vintage Filter,Depth,4,4100,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+vintage-filter-performance,Vintage Filter,11,15,middle-encoder-2,29,AIR Vintage Filter,Attack,5,4101,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+vintage-filter-performance,Vintage Filter,11,15,middle-encoder-3,30,AIR Vintage Filter,Release,6,4102,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+vintage-filter-performance,Vintage Filter,11,15,bottom-encoder-1,36,AIR Vintage Filter,Depth,7,4103,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+vintage-filter-performance,Vintage Filter,11,15,bottom-encoder-2,37,AIR Vintage Filter,Rate,8,4104,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+vintage-filter-performance,Vintage Filter,11,15,upper-button-1,52,AIR Vintage Filter,Filter Mode BP,0,4096,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+vintage-filter-performance,Vintage Filter,11,15,upper-button-2,53,AIR Vintage Filter,Sync,9,4105,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+air-chorus-performance,AIR Chorus,12,4,top-encoder-1,20,AIR Chorus,Rate,0,4096,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+air-chorus-performance,AIR Chorus,12,4,top-encoder-2,21,AIR Chorus,Depth,1,4097,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+air-chorus-performance,AIR Chorus,12,4,top-encoder-3,22,AIR Chorus,Delay,2,4098,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+air-chorus-performance,AIR Chorus,12,4,top-encoder-4,23,AIR Chorus,Feedback,3,4099,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+air-chorus-performance,AIR Chorus,12,4,top-encoder-5,24,AIR Chorus,Offset,5,4101,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+air-chorus-performance,AIR Chorus,12,4,top-encoder-6,25,AIR Chorus,Mix,6,4102,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+air-chorus-performance,AIR Chorus,12,4,upper-button-1,52,AIR Chorus,LFO Wave Sine,4,4100,hypothesis:+4096,secondary,pending,,,cb4680e2713564c4
+air-expander-performance,AIR Expander,13,5,top-encoder-1,20,AIR Expander,Threshold,0,4096,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+air-expander-performance,AIR Expander,13,5,top-encoder-2,21,AIR Expander,Ratio,1,4097,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+air-expander-performance,AIR Expander,13,5,top-encoder-3,22,AIR Expander,Range,2,4098,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+air-expander-performance,AIR Expander,13,5,top-encoder-4,23,AIR Expander,Attack,3,4099,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+air-expander-performance,AIR Expander,13,5,top-encoder-5,24,AIR Expander,Release,4,4100,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+air-expander-performance,AIR Expander,13,5,top-encoder-6,25,AIR Expander,Output,5,4101,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+color-compressor-performance,Color Comp,14,6,top-encoder-1,20,Color Compressor,Attack,0,4096,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+color-compressor-performance,Color Comp,14,6,top-encoder-2,21,Color Compressor,Release,1,4097,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+color-compressor-performance,Color Comp,14,6,top-encoder-3,22,Color Compressor,Amount,2,4098,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+color-compressor-performance,Color Comp,14,6,top-encoder-4,23,Color Compressor,In Boost,3,4099,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+color-compressor-performance,Color Comp,14,6,upper-button-1,52,Color Compressor,Color,4,4100,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+color-compressor-performance,Color Comp,14,6,upper-button-2,53,Color Compressor,Bypass,5,4101,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+analog-wear-rack-performance,Analog Wear Rack,15,7,top-encoder-1,20,Tape Emulator,Wow,0,4096,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+analog-wear-rack-performance,Analog Wear Rack,15,7,top-encoder-2,21,Tape Emulator,Noise,1,4097,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+analog-wear-rack-performance,Analog Wear Rack,15,7,top-encoder-3,22,Tape Emulator,Pitch,2,4098,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+analog-wear-rack-performance,Analog Wear Rack,15,7,middle-encoder-1,28,Vintage,Dry/Wet,1,4097,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+analog-wear-rack-performance,Analog Wear Rack,15,7,middle-encoder-2,29,Vintage,Decimator,2,4098,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+analog-wear-rack-performance,Analog Wear Rack,15,7,middle-encoder-3,30,Vintage,Bit Reduce,3,4099,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+analog-wear-rack-performance,Analog Wear Rack,15,7,bottom-encoder-1,36,Vinyl Emulator,Tone,0,4096,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+analog-wear-rack-performance,Analog Wear Rack,15,7,bottom-encoder-2,37,Vinyl Emulator,Crackle,1,4097,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+analog-wear-rack-performance,Analog Wear Rack,15,7,bottom-encoder-3,38,Vinyl Emulator,Pitch,2,4098,hypothesis:+4096,core,pending,,,cb4680e2713564c4
+analog-wear-rack-performance,Analog Wear Rack,15,7,upper-button-1,52,Vintage,MPC 60,0,4096,hypothesis:+4096,core,pending,,,cb4680e2713564c4

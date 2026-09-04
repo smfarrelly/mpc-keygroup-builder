@@ -31,6 +31,8 @@ inventing MPC schemas or treating generated output as hardware-tested.
   `docs/drum-ideas.md`.
 - For MPC, Launch Control XL 3, or Volca routing, use
   `docs/declarative-midi-control.md` and `docs/rig-profiles.md`.
+- For plugin parameter discovery, performance-page seeds, controller capacity,
+  the offline companion, and result imports, use `docs/plugin-mapping.md`.
 - For SD copies and hardware evidence, use `docs/hardware-workflow-tools.md`
   and `docs/key37-routing-capture.md`.
 

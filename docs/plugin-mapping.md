@@ -131,3 +131,57 @@ linked from `site/index.html`. Local progress is separated by a deterministic
 mapping fingerprint; importing results from a different revision is rejected.
 The page performs no network requests and cannot modify the MPC, SD card,
 Components modes, XPJ files, or SysEx captures.
+
+Use **Print mode cards** to produce one compact reference sheet per Custom Mode.
+The print view includes physical control positions, target plugins and
+parameters, CC numbers, the page channel, and a handwritten result area.
+
+## Durable results ledger
+
+Initialize a complete pending ledger from the same validated mapping set:
+
+```bash
+uv run mpc-plugin-results init midi/plugins/*.toml \
+  --synth-root "/media/user/CARD/Synths" \
+  --project "/media/user/CARD/Projects/Boot.xpj" \
+  --ledger inventory/plugin-control-status.csv \
+  --report inventory/plugin-control-status.md
+```
+
+After testing, export JSON from the companion and import it with:
+
+```bash
+uv run mpc-plugin-results import mpc-plugin-mapping-results.json \
+  midi/plugins/*.toml \
+  --synth-root "/media/user/CARD/Synths" \
+  --project "/media/user/CARD/Projects/Boot.xpj" \
+  --ledger inventory/plugin-control-status.csv \
+  --report inventory/plugin-control-status.md \
+  --force
+```
+
+The importer recomputes the mapping fingerprint and validates every page,
+control, plugin, target, status, and note before atomically replacing the named
+ledger. Missing, duplicated, unknown, tampered, or stale results are refused.
+`--force` applies only to the named ledger and report outputs.
+
+## Generate a new profile seed
+
+When new readable plugin content appears, generate a review-required draft
+instead of beginning with an empty controller page:
+
+```bash
+uv run mpc-plugin-seed "New Plugin" \
+  --synth-root "/media/user/CARD/Synths" \
+  --slot 15 --channel 7 --limit 40 \
+  --output new-plugin-performance.toml
+
+uv run mpc-plugin-map check new-plugin-performance.toml \
+  --synth-root "/media/user/CARD/Synths"
+```
+
+The generator ranks useful and Q-Link-visible controls, separates buttons from
+continuous controls, infers broad musical roles, and groups tone, motion,
+texture, envelope, source, and global controls consistently. Its output is
+explicitly a draft: review labels, roles, layout, slot/channel replacement, and
+musical value before hardware use.

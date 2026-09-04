@@ -42,5 +42,12 @@ visual XL3 surface, keeps progress and notes locally in the browser, and exports
 JSON or CSV results. Start with the Vintage Filter cutoff probe if you want the
 shortest possible end-to-end check.
 
+The durable pending ledger is `inventory/plugin-control-status.csv`. After a
+session, export JSON from the companion and import it with
+`mpc-plugin-results`; the importer refuses stale fingerprints and mismatched
+targets before changing that ledger. The full controller capacity report is
+generated from `midi/controller-capacity.toml` and currently leaves only MIDI
+channel 8 unreserved.
+
 Historical plans and test detail remain in `docs/` and `inventory/`; they are
 reference material, not prerequisites for resuming work.

@@ -1,3 +1,5 @@
+import csv
+import io
 import json
 import tempfile
 import unittest
@@ -76,6 +78,8 @@ priority = "secondary"
             self.assertIn("Test Synth", rendered)
             self.assertIn("localStorage", rendered)
             self.assertIn("Export CSV", rendered)
+            self.assertIn("Print mode cards", rendered)
+            self.assertIn("@media print", rendered)
             self.assertIn("mpc-plugin-mapping-results", rendered)
             self.assertNotIn("https://", rendered)
             self.assertNotIn(str(root), rendered)
@@ -96,6 +100,16 @@ priority = "secondary"
             self.assertEqual(first["pages"][0]["probe"], "top-encoder-1")
             self.assertEqual(first["pages"][0]["controls"][0]["mpc_parameter"], 4098)
             self.assertEqual(len(first["fingerprint"]), 16)
+
+    def test_committed_companion_matches_pending_ledger_fingerprint(self):
+        root = Path(__file__).parents[1]
+        html = (root / "site/plugin-mapping-companion.html").read_text(encoding="utf-8")
+        payload = html.split("const DATA=", 1)[1].split(",STATUSES=", 1)[0]
+        companion = json.loads(payload)
+        ledger_text = (root / "inventory/plugin-control-status.csv").read_text(encoding="utf-8")
+        rows = list(csv.DictReader(io.StringIO(ledger_text)))
+        self.assertEqual({row["mapping_fingerprint"] for row in rows}, {companion["fingerprint"]})
+        self.assertEqual(len(rows), sum(len(page["controls"]) for page in companion["pages"]))
 
 
 if __name__ == "__main__":

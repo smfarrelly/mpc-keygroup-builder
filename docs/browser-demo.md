@@ -20,7 +20,8 @@ The included Plugin Mapping Companion can:
   assigned control;
 - guide a create-mode, one-probe, and save/reload workflow;
 - retain pass/warn/fail results and notes in local browser storage; and
-- export or import matching JSON results and export a flat CSV ledger.
+- export or import matching JSON results, export a flat CSV ledger, and print
+  all nine mode-reference cards.
 
 It cannot:
 

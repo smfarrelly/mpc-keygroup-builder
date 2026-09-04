@@ -26,6 +26,13 @@ hardware pass.
 result. `simulation_scope=testing` identifies isolated fixtures whose failures
 do not block the production deployment gate. See `docs/testing-framework.md`.
 
+`plugin-control-status.csv` is the separate 178-control Launch Control plugin
+ledger. It is initialized and updated only through `mpc-plugin-results`, which
+validates a Plugin Mapping Companion export against the current mapping
+fingerprint and exact plugin targets before replacing the CSV. Its adjacent
+Markdown report is a concise page-level view; all rows begin as `pending` and
+are not hardware claims.
+
 ## Applying a hardware session
 
 Copy `inventory/hardware-results.example.toml` into ignored `work/`, add one

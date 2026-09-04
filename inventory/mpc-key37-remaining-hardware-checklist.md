@@ -808,6 +808,8 @@ in browser-local storage until exported as fingerprinted JSON or flat CSV.
   Color Compressor Amount, and Analog Wear Tape Wow.
 - [ ] Export the companion JSON after the probe pass so results can be matched
   to this exact profile revision.
+- [ ] Import that JSON with `mpc-plugin-results`; do not hand-edit or promote
+  the initialized `inventory/plugin-control-status.csv` ledger.
 
 ## 9. Optional routing research; core workflow already passes
 
