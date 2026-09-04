@@ -393,6 +393,9 @@ drum pattern survives translation between two pad layouts.
 - [x] A bounded `Surprise Me` batch generates reproducible seed alternatives
   and ranks inspection order by transparent event-diversity evidence, never by
   a false claim of musical quality.
+- [x] A transactional multi-family wave audits dependencies, rejects structural
+  duplicates, expands every candidate into five sections, ranks seven explicit
+  observations, and emits a self-contained offline comparison and shortlist UI.
 
 **Exit gate:** One command or Program Designer action creates a validated,
 recoverable project that reaches first playable sound in under one minute.

@@ -42,6 +42,8 @@ jobs:
           /tmp/mpc-installed/bin/mpc-schema init workstation --family ambient --output /tmp/mpc-recipe-starter
           /tmp/mpc-installed/bin/mpc-recipe-audit /tmp/mpc-recipe-starter --output /tmp/mpc-installed-recipe-audit
           /tmp/mpc-installed/bin/mpc-tools new controller-page --name "CI Controller" --output /tmp/mpc-controller-starter
+          /tmp/mpc-installed/bin/mpc-workstation-wave /tmp/mpc-recipe-starter --families ambient --seeds-per-family 1 --output /tmp/mpc-wave-smoke
+          /tmp/mpc-installed/bin/mpc-creative-review /tmp/mpc-wave-smoke/wave.json --output /tmp/mpc-wave-review.html
           /tmp/mpc-installed/bin/mpc-tools demo --output /tmp/mpc-portable-smoke
           /tmp/mpc-installed/bin/mpc-showcase --output /tmp/mpc-showcase-smoke
           test -f /tmp/mpc-portable-smoke/HARDWARE_CHECKLIST.md

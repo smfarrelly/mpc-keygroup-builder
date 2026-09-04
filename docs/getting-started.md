@@ -75,6 +75,16 @@ To explore six complete musical directions instead of one compact fixture:
 mpc-showcase --output my-mpc-showcase
 ```
 
+To generate several reproducible candidates per family and review them in one
+offline browser page:
+
+```bash
+mpc-workstation-wave recipes --families all --seeds-per-family 4 --output my-creative-wave
+```
+
+See [Creative batch and review](creative-wave.md) for the scoring boundary,
+licensed-program option, shortlist export, and MPC transfer layout.
+
 ## Start your own workflow
 
 Create a new folder with a focused README and safe starter files:

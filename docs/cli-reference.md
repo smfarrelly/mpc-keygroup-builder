@@ -23,8 +23,8 @@ Set `MPC_DEBUG=1` to see the original Python traceback.
 - **Build:** Keygroups, Drum Programs, program colors, and conversions.
 - **Inspect:** XPM, XPJ, Ableton, WAV-level, and semantic validation.
 - **Layout:** deterministic plans, XPM export, verification, and packages.
-- **Creative MIDI:** drums, harmony, melody, workstations, arrangements, and
-  bounded idea batches.
+- **Creative MIDI:** drums, harmony, melody, workstations, arrangements,
+  bounded idea batches, and multi-family review waves.
 - **MIDI control:** declarative maps, role-based plugin page compilation,
   read-only Launch Control capture inspection, plugin-parameter search, and MPC
   MIDI Learn cross-checking.
@@ -68,6 +68,7 @@ mpc-tools doctor
 mpc-tools new workstation --name "My Scratchpad" --output my-scratchpad
 mpc-tools demo --output my-mpc-demo
 mpc-showcase --output my-mpc-showcase
+mpc-workstation-wave recipes --families all --seeds-per-family 4 --output my-wave
 mpc-tools web-demo --output program-designer-demo.html
 mpc-tools help mpc-drum-build
 mpc-schema list

@@ -73,6 +73,8 @@ mpc-controller-capacity = "mpc_keygroup_builder.entrypoints:main"
 mpc-schema = "mpc_keygroup_builder.entrypoints:main"
 mpc-showcase = "mpc_keygroup_builder.entrypoints:main"
 mpc-recipe-audit = "mpc_keygroup_builder.entrypoints:main"
+mpc-workstation-wave = "mpc_keygroup_builder.entrypoints:main"
+mpc-creative-review = "mpc_keygroup_builder.entrypoints:main"
 
 [build-system]
 requires = ["uv_build>=0.12.5,<0.13.0"]

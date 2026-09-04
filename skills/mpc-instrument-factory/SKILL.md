@@ -30,7 +30,8 @@ inventing MPC schemas or treating generated output as hardware-tested.
 - For generative sequences, use `docs/creative-midi.md` and
   `docs/drum-ideas.md`. Use `docs/composition-showcase.md` for the
   redistributable six-composition proof, and run `mpc-recipe-audit` before
-  generating a library-wide batch.
+  generating a library-wide batch. Use `docs/creative-wave.md` and
+  `mpc-workstation-wave` for multi-family generation and offline shortlisting.
 - For declarative formats, semantic validation, or editable recipe starters,
   use `docs/schemas.md`, `mpc-schema`, and `mpc-tools new`.
 - For MPC, Launch Control XL 3, or Volca routing, use

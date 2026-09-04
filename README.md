@@ -47,6 +47,8 @@ is required for the software portion.
 - Inspect XPM programs without modifying them.
 - Inspect, extract, and compare MPC 3 XPJ projects without modifying them.
 - Generate deterministic Drum, Bass, Chords, Melody, and arrangement MIDI.
+- Generate multi-family candidate waves with transparent scoring, duplicate
+  detection, an offline visual review companion, and shortlist export.
 - Build a redistributable six-composition showcase with deterministic
   evidence, editable recipes, and synthetic CC0 Drum audio.
 - Compile declarative MPC, Launch Control XL 3, and Volca routing plans.
@@ -129,6 +131,7 @@ for the exact boundary.
 - [Portable workflow demo](docs/portable-demo.md)
 - [Six-composition showcase](docs/composition-showcase.md)
 - [Creative MIDI](docs/creative-midi.md)
+- [Creative batch and review](docs/creative-wave.md)
 - [Declarative MIDI control](docs/declarative-midi-control.md)
 - [Plugin parameter catalog](docs/plugin-parameters.md)
 - [Declarative plugin performance pages](docs/plugin-mapping.md)

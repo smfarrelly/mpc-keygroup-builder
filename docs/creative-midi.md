@@ -5,6 +5,10 @@ requiring an MPC project file or licensed audio. Every run writes a Standard
 MIDI file and a JSON evidence file. Reusing the same recipe, seed, tempo, and
 tool version recreates the same events.
 
+For a multi-family candidate wave, offline visual comparison, shortlist export,
+and one consolidated MPC checklist, continue to
+[Creative batch and review](creative-wave.md).
+
 ## Audit the complete recipe library
 
 Validate every recipe and its cross-file relationships before generating a

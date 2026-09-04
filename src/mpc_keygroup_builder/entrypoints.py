@@ -86,6 +86,8 @@ COMMANDS = {
     "mpc-schema": _spec("schema", "Reference", "Discover schemas and validate declarative files", "docs/schemas.md"),
     "mpc-showcase": _spec("showcase", "Start here", "Build six reproducible composition evidence bundles", "docs/composition-showcase.md"),
     "mpc-recipe-audit": _spec("recipe_audit", "Creative MIDI", "Audit recipe dependencies, compatibility, IDs, and channels", "docs/creative-midi.md"),
+    "mpc-workstation-wave": _spec("workstation_wave", "Creative MIDI", "Generate and rank a multi-family workstation wave", "docs/creative-wave.md"),
+    "mpc-creative-review": _spec("creative_review", "Browser", "Render an offline creative-wave review companion", "docs/creative-wave.md"),
 }
 
 
