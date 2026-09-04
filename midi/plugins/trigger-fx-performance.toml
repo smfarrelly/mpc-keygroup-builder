@@ -1,0 +1,236 @@
+schema_version = 1
+id = "trigger-fx-performance"
+plugin = "Trigger FX"
+name = "Trigger FX"
+description = "Performance-first effects page covering time, modulation, filters, granulation, Lo-Fi, and space."
+slot = 9
+channel = 13
+probe = "top-encoder-1"
+
+[[controls]]
+control = "top-encoder-1"
+ui_parameter = 3
+name = "Half Speed Speed"
+label = "Half Speed"
+role = "time"
+priority = "core"
+[[controls]]
+control = "top-encoder-2"
+ui_parameter = 4
+name = "Half Speed Mix"
+label = "Half Mix"
+role = "time"
+priority = "core"
+[[controls]]
+control = "top-encoder-3"
+ui_parameter = 75
+name = "Beat Repeat Division"
+label = "Repeat Div"
+role = "time"
+priority = "core"
+[[controls]]
+control = "top-encoder-4"
+ui_parameter = 76
+name = "Beat Repeat Reverse"
+label = "Repeat Rev"
+role = "time"
+priority = "core"
+[[controls]]
+control = "top-encoder-5"
+ui_parameter = 77
+name = "Beat Repeat Resonance"
+label = "Repeat Reso"
+role = "time"
+priority = "secondary"
+[[controls]]
+control = "top-encoder-6"
+ui_parameter = 87
+name = "Delay Time"
+label = "Delay Time"
+role = "space"
+priority = "core"
+[[controls]]
+control = "top-encoder-7"
+ui_parameter = 88
+name = "Delay Feedback"
+label = "Delay Fdbk"
+role = "space"
+priority = "core"
+[[controls]]
+control = "top-encoder-8"
+ui_parameter = 89
+name = "Delay Mode"
+label = "Delay Mode"
+role = "space"
+priority = "secondary"
+
+[[controls]]
+control = "middle-encoder-1"
+ui_parameter = 33
+name = "LP Filter Resonance"
+label = "LP Reso"
+role = "filter"
+priority = "core"
+[[controls]]
+control = "middle-encoder-2"
+ui_parameter = 34
+name = "LP Filter Speed"
+label = "LP Speed"
+role = "filter"
+priority = "core"
+[[controls]]
+control = "middle-encoder-3"
+ui_parameter = 35
+name = "LP Filter Range"
+label = "LP Range"
+role = "filter"
+priority = "secondary"
+[[controls]]
+control = "middle-encoder-4"
+ui_parameter = 39
+name = "HP Filter Resonance"
+label = "HP Reso"
+role = "filter"
+priority = "core"
+[[controls]]
+control = "middle-encoder-5"
+ui_parameter = 40
+name = "HP Filter Speed"
+label = "HP Speed"
+role = "filter"
+priority = "core"
+[[controls]]
+control = "middle-encoder-6"
+ui_parameter = 41
+name = "HP Filter Range"
+label = "HP Range"
+role = "filter"
+priority = "secondary"
+[[controls]]
+control = "middle-encoder-7"
+ui_parameter = 45
+name = "BP Filter Resonance"
+label = "BP Reso"
+role = "filter"
+priority = "core"
+[[controls]]
+control = "middle-encoder-8"
+ui_parameter = 46
+name = "BP Filter Speed"
+label = "BP Speed"
+role = "filter"
+priority = "secondary"
+
+[[controls]]
+control = "bottom-encoder-1"
+ui_parameter = 9
+name = "Chorus Rate"
+label = "Chorus Rate"
+role = "modulation"
+priority = "secondary"
+[[controls]]
+control = "bottom-encoder-2"
+ui_parameter = 10
+name = "Chorus Depth"
+label = "Chorus Depth"
+role = "modulation"
+priority = "secondary"
+[[controls]]
+control = "bottom-encoder-3"
+ui_parameter = 15
+name = "Flanger Rate"
+label = "Flanger Rate"
+role = "modulation"
+priority = "secondary"
+[[controls]]
+control = "bottom-encoder-4"
+ui_parameter = 16
+name = "Flanger Depth"
+label = "Flanger Depth"
+role = "modulation"
+priority = "secondary"
+[[controls]]
+control = "bottom-encoder-5"
+ui_parameter = 22
+name = "Phaser Speed"
+label = "Phaser Speed"
+role = "modulation"
+priority = "secondary"
+[[controls]]
+control = "bottom-encoder-6"
+ui_parameter = 23
+name = "Phaser Range"
+label = "Phaser Range"
+role = "modulation"
+priority = "secondary"
+[[controls]]
+control = "bottom-encoder-7"
+ui_parameter = 27
+name = "Comb Filter Speed"
+label = "Comb Speed"
+role = "modulation"
+priority = "secondary"
+[[controls]]
+control = "bottom-encoder-8"
+ui_parameter = 51
+name = "Ring Mod Max Freq"
+label = "Ring Max"
+role = "modulation"
+priority = "secondary"
+
+[[controls]]
+control = "fader-1"
+ui_parameter = 57
+name = "LoFi Bitcrush"
+label = "Bitcrush"
+role = "character"
+priority = "core"
+[[controls]]
+control = "fader-2"
+ui_parameter = 58
+name = "LoFi Decimator"
+label = "Decimator"
+role = "character"
+priority = "core"
+[[controls]]
+control = "fader-3"
+ui_parameter = 69
+name = "Granulator Density"
+label = "Grain Density"
+role = "granular"
+priority = "core"
+[[controls]]
+control = "fader-4"
+ui_parameter = 70
+name = "Granulator Feedback"
+label = "Grain Fdbk"
+role = "granular"
+priority = "core"
+[[controls]]
+control = "fader-5"
+ui_parameter = 71
+name = "Granulator Length"
+label = "Grain Length"
+role = "granular"
+priority = "core"
+[[controls]]
+control = "fader-6"
+ui_parameter = 93
+name = "Reverb Pre-Delay"
+label = "Verb Pre"
+role = "space"
+priority = "secondary"
+[[controls]]
+control = "fader-7"
+ui_parameter = 94
+name = "Reverb Decay"
+label = "Verb Decay"
+role = "space"
+priority = "core"
+[[controls]]
+control = "fader-8"
+ui_parameter = 95
+name = "Reverb Diffusion"
+label = "Verb Diffuse"
+role = "space"
+priority = "secondary"

@@ -1,0 +1,279 @@
+schema_version = 1
+id = "flavor-pro-performance"
+plugin = "AIR Flavor Pro"
+name = "Flavor Perform"
+description = "Six character engines organized as pitch, distortion, digital, vinyl, volume, and timbre gestures."
+slot = 8
+channel = 12
+probe = "fader-1"
+
+[[controls]]
+control = "fader-1"
+ui_parameter = 6
+name = "Global Depth"
+label = "Global Depth"
+role = "global"
+priority = "core"
+[[controls]]
+control = "fader-2"
+ui_parameter = 7
+name = "Global Gain"
+label = "Global Gain"
+role = "global"
+priority = "core"
+[[controls]]
+control = "fader-3"
+ui_parameter = 11
+name = "Pitch Depth"
+label = "Pitch Depth"
+role = "pitch"
+priority = "core"
+[[controls]]
+control = "fader-4"
+ui_parameter = 21
+name = "Distortion Depth"
+label = "Dist Depth"
+role = "distortion"
+priority = "core"
+[[controls]]
+control = "fader-5"
+ui_parameter = 28
+name = "Digital Depth"
+label = "Digital Depth"
+role = "digital"
+priority = "core"
+[[controls]]
+control = "fader-6"
+ui_parameter = 39
+name = "Vinyl Depth"
+label = "Vinyl Depth"
+role = "vinyl"
+priority = "core"
+[[controls]]
+control = "fader-7"
+ui_parameter = 52
+name = "Volume Depth"
+label = "Volume Depth"
+role = "volume"
+priority = "core"
+[[controls]]
+control = "fader-8"
+ui_parameter = 61
+name = "Timbre Depth"
+label = "Timbre Depth"
+role = "timbre"
+priority = "core"
+
+[[controls]]
+control = "top-encoder-1"
+ui_parameter = 12
+name = "Vary"
+label = "Pitch Vary"
+role = "pitch"
+priority = "secondary"
+[[controls]]
+control = "top-encoder-2"
+ui_parameter = 14
+name = "Drift"
+label = "Drift"
+role = "pitch"
+priority = "core"
+[[controls]]
+control = "top-encoder-3"
+ui_parameter = 13
+name = "Fast Rate"
+label = "Fast Rate"
+role = "pitch"
+priority = "secondary"
+[[controls]]
+control = "top-encoder-4"
+ui_parameter = 16
+name = "Slow Rate"
+label = "Slow Rate"
+role = "pitch"
+priority = "secondary"
+[[controls]]
+control = "top-encoder-5"
+ui_parameter = 17
+name = "X-Mod"
+label = "Cross Mod"
+role = "pitch"
+priority = "secondary"
+[[controls]]
+control = "top-encoder-6"
+ui_parameter = 19
+name = "Mix"
+label = "Pitch Mix"
+role = "pitch"
+priority = "core"
+[[controls]]
+control = "top-encoder-7"
+ui_parameter = 15
+name = "Stereo"
+label = "Pitch Stereo"
+role = "pitch"
+priority = "secondary"
+[[controls]]
+control = "top-encoder-8"
+ui_parameter = 20
+name = "Rate"
+label = "Pitch Rate"
+role = "pitch"
+priority = "core"
+
+[[controls]]
+control = "middle-encoder-1"
+ui_parameter = 22
+name = "Vary"
+label = "Dist Vary"
+role = "distortion"
+priority = "secondary"
+[[controls]]
+control = "middle-encoder-2"
+ui_parameter = 23
+name = "Model"
+label = "Dist Model"
+role = "distortion"
+priority = "core"
+[[controls]]
+control = "middle-encoder-3"
+ui_parameter = 24
+name = "Mix"
+label = "Dist Mix"
+role = "distortion"
+priority = "core"
+[[controls]]
+control = "middle-encoder-4"
+ui_parameter = 27
+name = "Smooth"
+label = "Dist Smooth"
+role = "distortion"
+priority = "secondary"
+[[controls]]
+control = "middle-encoder-5"
+ui_parameter = 29
+name = "Vary"
+label = "Digital Vary"
+role = "digital"
+priority = "secondary"
+[[controls]]
+control = "middle-encoder-6"
+ui_parameter = 30
+name = "Bits"
+label = "Bits"
+role = "digital"
+priority = "core"
+[[controls]]
+control = "middle-encoder-7"
+ui_parameter = 31
+name = "Sample Rate"
+label = "Sample Rate"
+role = "digital"
+priority = "core"
+[[controls]]
+control = "middle-encoder-8"
+ui_parameter = 32
+name = "Glitch"
+label = "Glitch"
+role = "digital"
+priority = "core"
+
+[[controls]]
+control = "bottom-encoder-1"
+ui_parameter = 40
+name = "Vary"
+label = "Vinyl Vary"
+role = "vinyl"
+priority = "secondary"
+[[controls]]
+control = "bottom-encoder-2"
+ui_parameter = 41
+name = "Crackles"
+label = "Crackles"
+role = "vinyl"
+priority = "core"
+[[controls]]
+control = "bottom-encoder-3"
+ui_parameter = 44
+name = "Pops"
+label = "Pops"
+role = "vinyl"
+priority = "secondary"
+[[controls]]
+control = "bottom-encoder-4"
+ui_parameter = 46
+name = "Noise"
+label = "Noise"
+role = "vinyl"
+priority = "core"
+[[controls]]
+control = "bottom-encoder-5"
+ui_parameter = 47
+name = "Tone"
+label = "Vinyl Tone"
+role = "vinyl"
+priority = "core"
+[[controls]]
+control = "bottom-encoder-6"
+ui_parameter = 51
+name = "Release"
+label = "Vinyl Release"
+role = "vinyl"
+priority = "secondary"
+[[controls]]
+control = "bottom-encoder-7"
+ui_parameter = 60
+name = "Dropouts"
+label = "Dropouts"
+role = "volume"
+priority = "core"
+[[controls]]
+control = "bottom-encoder-8"
+ui_parameter = 63
+name = "Profile"
+label = "Timbre Profile"
+role = "timbre"
+priority = "core"
+
+[[controls]]
+control = "upper-button-1"
+ui_parameter = 0
+name = "Pitch Mods On"
+label = "Pitch On"
+role = "pitch"
+priority = "core"
+[[controls]]
+control = "upper-button-2"
+ui_parameter = 1
+name = "Distortion Mods On"
+label = "Dist On"
+role = "distortion"
+priority = "core"
+[[controls]]
+control = "upper-button-3"
+ui_parameter = 2
+name = "Digital Mods On"
+label = "Digital On"
+role = "digital"
+priority = "core"
+[[controls]]
+control = "upper-button-4"
+ui_parameter = 3
+name = "Vinyl Noise On"
+label = "Vinyl On"
+role = "vinyl"
+priority = "core"
+[[controls]]
+control = "upper-button-5"
+ui_parameter = 4
+name = "Volume Mods On"
+label = "Volume On"
+role = "volume"
+priority = "core"
+[[controls]]
+control = "upper-button-6"
+ui_parameter = 5
+name = "Timbre Mods On"
+label = "Timbre On"
+role = "timbre"
+priority = "core"

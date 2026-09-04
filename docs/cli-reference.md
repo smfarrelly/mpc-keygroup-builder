@@ -25,8 +25,9 @@ Set `MPC_DEBUG=1` to see the original Python traceback.
 - **Layout:** deterministic plans, XPM export, verification, and packages.
 - **Creative MIDI:** drums, harmony, melody, workstations, arrangements, and
   bounded idea batches.
-- **MIDI control:** declarative maps plus read-only Launch Control capture
-  inspection, plugin-parameter search, and MPC MIDI Learn cross-checking.
+- **MIDI control:** declarative maps, role-based plugin page compilation,
+  read-only Launch Control capture inspection, plugin-parameter search, and MPC
+  MIDI Learn cross-checking.
 - **Catalog:** normalized program inventory and deterministic kit selection.
 - **Hardware:** listening ledgers, Scratchpad gates, rig reports, and captures.
 - **Deploy:** additive, transactional copies to removable storage.

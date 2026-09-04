@@ -71,3 +71,17 @@ Jura remains different: its content is internal-only and unavailable to this
 filesystem scan, but `Boot.xpj` preserves 36 named, verified Jura MIDI Learn
 assignments. A complete Jura catalog requires either its readable plugin
 content or additional MPC-authored capture evidence.
+
+## Declarative performance-page batch — September 4, 2026
+
+Five reusable profiles now turn the broad catalog into 149 selected performance
+assignments: Iona (40), AIR Flavor Pro (38), Trigger FX (32), AIR Multitap Delay
+(28), and AIR Vintage Filter (11). All five profiles validate without errors or
+warnings against the current SD content.
+
+The pages reserve Custom Mode slots 7–11 and MIDI channels 11–15. This leaves
+captured OPx-4/Jura pages and the Volca/control channels untouched. The compiler
+emits both Components-entry and MPC MIDI Learn worksheets, an ordered one-probe-
+first hardware checklist, and a control-level comparison with existing OPx-4
+and Jura Components captures. These remain software-ready, hardware-pending
+until an MPC-authored project confirms each plugin's first proposed target.

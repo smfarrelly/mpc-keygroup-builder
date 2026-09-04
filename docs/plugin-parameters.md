@@ -50,3 +50,8 @@ complete MPC project capture is available to the computer.
 Use JSON for another tool, CSV for a controller worksheet, or Markdown for a
 review document. `--query` accepts space-separated terms and `--limit 0` emits
 all matching controls.
+
+After discovery, use [`mpc-plugin-map`](plugin-mapping.md) to validate curated
+role-based profiles and compile predictable Launch Control Components and MPC
+MIDI Learn worksheets. Catalog discovery remains broad; a performance profile
+is intentionally selective.

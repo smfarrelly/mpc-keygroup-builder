@@ -49,6 +49,8 @@ is required for the software portion.
 - Compile declarative MPC, Launch Control XL 3, and Volca routing plans.
 - Inspect Components SysEx captures and cross-check them against MPC MIDI Learn.
 - Search downloaded plugin controls and rank useful controller targets.
+- Compile role-based plugin performance pages into Components and MIDI Learn
+  worksheets with installed-content validation.
 - Catalog programs and their hardware-listening status.
 - Plan additive, checksum-verified SD deployments.
 - Create a self-contained browser Program Designer for a prepared program set.
@@ -115,6 +117,7 @@ for the exact boundary.
 - [Creative MIDI](docs/creative-midi.md)
 - [Declarative MIDI control](docs/declarative-midi-control.md)
 - [Plugin parameter catalog](docs/plugin-parameters.md)
+- [Declarative plugin performance pages](docs/plugin-mapping.md)
 - [XPJ project inspector](docs/xpj-inspector.md)
 - [Hardware workflow tools](docs/hardware-workflow-tools.md)
 - [MPC Key 37 field review](docs/MPC_KEY37_FIELD_REVIEW.md)

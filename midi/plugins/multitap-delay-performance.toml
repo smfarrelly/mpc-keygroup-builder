@@ -1,0 +1,209 @@
+schema_version = 1
+id = "multitap-delay-performance"
+plugin = "AIR Multitap Delay"
+name = "Multitap Delay"
+description = "Five-tap delay layout with master timing, tone, feedback, tap levels, pans, and toggles."
+slot = 10
+channel = 14
+probe = "top-encoder-1"
+
+[[controls]]
+control = "top-encoder-1"
+ui_parameter = 1
+name = "Delay"
+label = "Delay"
+role = "global"
+priority = "core"
+[[controls]]
+control = "top-encoder-2"
+ui_parameter = 2
+name = "Feedback"
+label = "Feedback"
+role = "global"
+priority = "core"
+[[controls]]
+control = "top-encoder-3"
+ui_parameter = 7
+name = "Mix"
+label = "Mix"
+role = "global"
+priority = "core"
+[[controls]]
+control = "top-encoder-4"
+ui_parameter = 5
+name = "Low Cut"
+label = "Low Cut"
+role = "tone"
+priority = "core"
+[[controls]]
+control = "top-encoder-5"
+ui_parameter = 6
+name = "High Cut"
+label = "High Cut"
+role = "tone"
+priority = "core"
+[[controls]]
+control = "top-encoder-6"
+ui_parameter = 3
+name = "From"
+label = "From"
+role = "routing"
+priority = "secondary"
+[[controls]]
+control = "top-encoder-7"
+ui_parameter = 4
+name = "To"
+label = "To"
+role = "routing"
+priority = "secondary"
+
+[[controls]]
+control = "middle-encoder-1"
+ui_parameter = 9
+name = "Tap 1 Delay"
+label = "Tap1 Delay"
+role = "time"
+priority = "core"
+[[controls]]
+control = "middle-encoder-2"
+ui_parameter = 13
+name = "Tap 2 Delay"
+label = "Tap2 Delay"
+role = "time"
+priority = "core"
+[[controls]]
+control = "middle-encoder-3"
+ui_parameter = 17
+name = "Tap 3 Delay"
+label = "Tap3 Delay"
+role = "time"
+priority = "core"
+[[controls]]
+control = "middle-encoder-4"
+ui_parameter = 21
+name = "Tap 4 Delay"
+label = "Tap4 Delay"
+role = "time"
+priority = "core"
+[[controls]]
+control = "middle-encoder-5"
+ui_parameter = 25
+name = "Tap 5 Delay"
+label = "Tap5 Delay"
+role = "time"
+priority = "core"
+
+[[controls]]
+control = "bottom-encoder-1"
+ui_parameter = 11
+name = "Tap 1 Pan"
+label = "Tap1 Pan"
+role = "space"
+priority = "secondary"
+[[controls]]
+control = "bottom-encoder-2"
+ui_parameter = 15
+name = "Tap 2 Pan"
+label = "Tap2 Pan"
+role = "space"
+priority = "secondary"
+[[controls]]
+control = "bottom-encoder-3"
+ui_parameter = 19
+name = "Tap 3 Pan"
+label = "Tap3 Pan"
+role = "space"
+priority = "secondary"
+[[controls]]
+control = "bottom-encoder-4"
+ui_parameter = 23
+name = "Tap 4 Pan"
+label = "Tap4 Pan"
+role = "space"
+priority = "secondary"
+[[controls]]
+control = "bottom-encoder-5"
+ui_parameter = 27
+name = "Tap 5 Pan"
+label = "Tap5 Pan"
+role = "space"
+priority = "secondary"
+
+[[controls]]
+control = "fader-1"
+ui_parameter = 10
+name = "Tap 1 Level"
+label = "Tap1 Level"
+role = "level"
+priority = "core"
+[[controls]]
+control = "fader-2"
+ui_parameter = 14
+name = "Tap 2 Level"
+label = "Tap2 Level"
+role = "level"
+priority = "core"
+[[controls]]
+control = "fader-3"
+ui_parameter = 18
+name = "Tap 3 Level"
+label = "Tap3 Level"
+role = "level"
+priority = "core"
+[[controls]]
+control = "fader-4"
+ui_parameter = 22
+name = "Tap 4 Level"
+label = "Tap4 Level"
+role = "level"
+priority = "core"
+[[controls]]
+control = "fader-5"
+ui_parameter = 26
+name = "Tap 5 Level"
+label = "Tap5 Level"
+role = "level"
+priority = "core"
+
+[[controls]]
+control = "upper-button-1"
+ui_parameter = 8
+name = "Tap 1 On"
+label = "Tap1 On"
+role = "enable"
+priority = "core"
+[[controls]]
+control = "upper-button-2"
+ui_parameter = 12
+name = "Tap 2 On"
+label = "Tap2 On"
+role = "enable"
+priority = "core"
+[[controls]]
+control = "upper-button-3"
+ui_parameter = 16
+name = "Tap 3 On"
+label = "Tap3 On"
+role = "enable"
+priority = "core"
+[[controls]]
+control = "upper-button-4"
+ui_parameter = 20
+name = "Tap 4 On"
+label = "Tap4 On"
+role = "enable"
+priority = "core"
+[[controls]]
+control = "upper-button-5"
+ui_parameter = 24
+name = "Tap 5 On"
+label = "Tap5 On"
+role = "enable"
+priority = "core"
+[[controls]]
+control = "upper-button-8"
+ui_parameter = 0
+name = "Sync"
+label = "Sync"
+role = "global"
+priority = "core"

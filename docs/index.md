@@ -31,6 +31,7 @@ user does not have to read the project's full history before making something.
 - [Key 37 routing capture](key37-routing-capture.md)
 - [XPJ project inspector](xpj-inspector.md)
 - [Plugin parameter catalog](plugin-parameters.md)
+- [Declarative plugin performance pages](plugin-mapping.md)
 
 ## Sources, compatibility, and evidence
 

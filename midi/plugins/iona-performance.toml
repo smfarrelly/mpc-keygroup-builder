@@ -1,0 +1,293 @@
+schema_version = 1
+id = "iona-performance"
+plugin = "Iona"
+name = "Iona Perform"
+description = "Source mix, filter, envelope, movement, space, and sequencer controls for live sound shaping."
+slot = 7
+channel = 11
+probe = "top-encoder-1"
+
+[[controls]]
+control = "fader-1"
+ui_parameter = 13
+name = "Saw Level"
+label = "Saw"
+role = "source"
+priority = "core"
+[[controls]]
+control = "fader-2"
+ui_parameter = 12
+name = "Pulse Level"
+label = "Pulse"
+role = "source"
+priority = "core"
+[[controls]]
+control = "fader-3"
+ui_parameter = 15
+name = "Sub Level"
+label = "Sub"
+role = "source"
+priority = "core"
+[[controls]]
+control = "fader-4"
+ui_parameter = 16
+name = "Noise Level"
+label = "Noise"
+role = "source"
+priority = "secondary"
+[[controls]]
+control = "fader-5"
+ui_parameter = 24
+name = "Env Attack"
+label = "Attack"
+role = "envelope"
+priority = "core"
+[[controls]]
+control = "fader-6"
+ui_parameter = 25
+name = "Env Decay"
+label = "Decay"
+role = "envelope"
+priority = "core"
+[[controls]]
+control = "fader-7"
+ui_parameter = 26
+name = "Env Sustain"
+label = "Sustain"
+role = "envelope"
+priority = "core"
+[[controls]]
+control = "fader-8"
+ui_parameter = 27
+name = "Env Release"
+label = "Release"
+role = "envelope"
+priority = "core"
+
+[[controls]]
+control = "top-encoder-1"
+ui_parameter = 17
+name = "VCF Cutoff"
+label = "Cutoff"
+role = "tone"
+priority = "core"
+[[controls]]
+control = "top-encoder-2"
+ui_parameter = 18
+name = "VCF Resonance"
+label = "Resonance"
+role = "tone"
+priority = "core"
+[[controls]]
+control = "top-encoder-3"
+ui_parameter = 19
+name = "VCF Env Amount"
+label = "Filter Env"
+role = "tone"
+priority = "core"
+[[controls]]
+control = "top-encoder-4"
+ui_parameter = 20
+name = "VCF Mod Amount"
+label = "Filter Mod"
+role = "movement"
+priority = "core"
+[[controls]]
+control = "top-encoder-5"
+ui_parameter = 21
+name = "VCF KBD Amount"
+label = "Filter Kbd"
+role = "tone"
+priority = "secondary"
+[[controls]]
+control = "top-encoder-6"
+ui_parameter = 5
+name = "Shape"
+label = "Shape"
+role = "tone"
+priority = "core"
+[[controls]]
+control = "top-encoder-7"
+ui_parameter = 7
+name = "Lfo Speed"
+label = "LFO Speed"
+role = "movement"
+priority = "core"
+[[controls]]
+control = "top-encoder-8"
+ui_parameter = 8
+name = "VCO Lfo Pitch Modulation"
+label = "Pitch LFO"
+role = "movement"
+priority = "secondary"
+
+[[controls]]
+control = "middle-encoder-1"
+ui_parameter = 4
+name = "Portamento Time"
+label = "Glide Time"
+role = "performance"
+priority = "core"
+[[controls]]
+control = "middle-encoder-2"
+ui_parameter = 10
+name = "VCO Pulse Width"
+label = "Pulse Width"
+role = "tone"
+priority = "secondary"
+[[controls]]
+control = "middle-encoder-3"
+ui_parameter = 453
+name = "Delay Time"
+label = "Delay Time"
+role = "space"
+priority = "core"
+[[controls]]
+control = "middle-encoder-4"
+ui_parameter = 456
+name = "Delay Feedback"
+label = "Delay Fdbk"
+role = "space"
+priority = "core"
+[[controls]]
+control = "middle-encoder-5"
+ui_parameter = 462
+name = "Delay Wet/Dry"
+label = "Delay Mix"
+role = "space"
+priority = "core"
+[[controls]]
+control = "middle-encoder-6"
+ui_parameter = 464
+name = "Reverb Pre-Delay"
+label = "Pre Delay"
+role = "space"
+priority = "secondary"
+[[controls]]
+control = "middle-encoder-7"
+ui_parameter = 468
+name = "Reverb Decay"
+label = "Verb Decay"
+role = "space"
+priority = "core"
+[[controls]]
+control = "middle-encoder-8"
+ui_parameter = 474
+name = "Reverb Wet/Dry"
+label = "Reverb Mix"
+role = "space"
+priority = "core"
+
+[[controls]]
+control = "bottom-encoder-1"
+ui_parameter = 49
+name = "Arp/Seq Speed"
+label = "Arp Speed"
+role = "sequence"
+priority = "core"
+[[controls]]
+control = "bottom-encoder-2"
+ui_parameter = 50
+name = "Arp/Seq Swing"
+label = "Arp Swing"
+role = "sequence"
+priority = "secondary"
+[[controls]]
+control = "bottom-encoder-3"
+ui_parameter = 34
+name = "Arp Gate"
+label = "Arp Gate"
+role = "sequence"
+priority = "secondary"
+[[controls]]
+control = "bottom-encoder-4"
+ui_parameter = 440
+name = "Lofi Wet/Dry"
+label = "LoFi Mix"
+role = "character"
+priority = "core"
+[[controls]]
+control = "bottom-encoder-5"
+ui_parameter = 438
+name = "Decimator"
+label = "Decimator"
+role = "character"
+priority = "secondary"
+[[controls]]
+control = "bottom-encoder-6"
+ui_parameter = 439
+name = "Bitcrusher"
+label = "Bitcrusher"
+role = "character"
+priority = "secondary"
+[[controls]]
+control = "bottom-encoder-7"
+ui_parameter = 476
+name = "EQ Low Gain"
+label = "Low Gain"
+role = "tone"
+priority = "secondary"
+[[controls]]
+control = "bottom-encoder-8"
+ui_parameter = 481
+name = "EQ High Gain"
+label = "High Gain"
+role = "tone"
+priority = "secondary"
+
+[[controls]]
+control = "upper-button-1"
+ui_parameter = 6
+name = "Lfo Sync"
+label = "LFO Sync"
+role = "movement"
+priority = "secondary"
+[[controls]]
+control = "upper-button-2"
+ui_parameter = 452
+name = "Delay On"
+label = "Delay On"
+role = "space"
+priority = "core"
+[[controls]]
+control = "upper-button-3"
+ui_parameter = 454
+name = "Delay Sync"
+label = "Delay Sync"
+role = "space"
+priority = "secondary"
+[[controls]]
+control = "upper-button-4"
+ui_parameter = 463
+name = "Reverb On"
+label = "Reverb On"
+role = "space"
+priority = "core"
+[[controls]]
+control = "upper-button-5"
+ui_parameter = 437
+name = "Lo-fi On"
+label = "LoFi On"
+role = "character"
+priority = "core"
+[[controls]]
+control = "upper-button-6"
+ui_parameter = 475
+name = "EQ On"
+label = "EQ On"
+role = "tone"
+priority = "secondary"
+[[controls]]
+control = "upper-button-7"
+ui_parameter = 35
+name = "Arp Hold"
+label = "Arp Hold"
+role = "sequence"
+priority = "core"
+[[controls]]
+control = "upper-button-8"
+ui_parameter = 45
+name = "Legato"
+label = "Legato"
+role = "performance"
+priority = "core"

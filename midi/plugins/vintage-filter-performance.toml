@@ -1,0 +1,86 @@
+schema_version = 1
+id = "vintage-filter-performance"
+plugin = "AIR Vintage Filter"
+name = "Vintage Filter"
+description = "Compact filter page for cutoff sweeps, resonance, drive, envelope and LFO motion."
+slot = 11
+channel = 15
+probe = "top-encoder-1"
+
+[[controls]]
+control = "top-encoder-1"
+ui_parameter = 1
+name = "Cutoff"
+label = "Cutoff"
+role = "tone"
+priority = "core"
+[[controls]]
+control = "top-encoder-2"
+ui_parameter = 2
+name = "Resonance"
+label = "Resonance"
+role = "tone"
+priority = "core"
+[[controls]]
+control = "top-encoder-3"
+ui_parameter = 3
+name = "Fat"
+label = "Fat"
+role = "character"
+priority = "core"
+[[controls]]
+control = "top-encoder-4"
+ui_parameter = 10
+name = "Output"
+label = "Output"
+role = "level"
+priority = "core"
+[[controls]]
+control = "middle-encoder-1"
+ui_parameter = 4
+name = "Depth"
+label = "Env Depth"
+role = "envelope"
+priority = "core"
+[[controls]]
+control = "middle-encoder-2"
+ui_parameter = 5
+name = "Attack"
+label = "Attack"
+role = "envelope"
+priority = "core"
+[[controls]]
+control = "middle-encoder-3"
+ui_parameter = 6
+name = "Release"
+label = "Release"
+role = "envelope"
+priority = "core"
+[[controls]]
+control = "bottom-encoder-1"
+ui_parameter = 7
+name = "Depth"
+label = "LFO Depth"
+role = "movement"
+priority = "core"
+[[controls]]
+control = "bottom-encoder-2"
+ui_parameter = 8
+name = "Rate"
+label = "LFO Rate"
+role = "movement"
+priority = "core"
+[[controls]]
+control = "upper-button-1"
+ui_parameter = 0
+name = "Filter Mode BP"
+label = "Filter Mode"
+role = "tone"
+priority = "secondary"
+[[controls]]
+control = "upper-button-2"
+ui_parameter = 9
+name = "Sync"
+label = "LFO Sync"
+role = "movement"
+priority = "secondary"

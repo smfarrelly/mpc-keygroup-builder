@@ -150,7 +150,9 @@ routing question from the musical mapping question.
 For plugin pages, use [`mpc-plugin-params`](plugin-parameters.md) to search the
 downloaded MPC UI metadata and cross-reference it with an existing project's
 MIDI Learn assignments. This produces named, ranked candidates before editing
-the declarative controller map.
+the declarative controller map. The follow-on
+[`mpc-plugin-map`](plugin-mapping.md) workflow now supplies five curated,
+installed-content-validated pages plus Components and MIDI Learn worksheets.
 
 ## Inspect real Components and MPC captures
 
