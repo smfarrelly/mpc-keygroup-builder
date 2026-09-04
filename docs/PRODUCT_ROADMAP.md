@@ -512,7 +512,9 @@ control.
   warnings.
 - [x] Publish a validated repository AI skill and a checksum-verified personal
   vendor-document cache that keeps copyrighted Korg PDFs out of Git.
-- Publish schemas, device profiles, layouts, recipes, validators, and tests.
+- [x] Publish packaged JSON Schemas for the core declarative formats, expose
+  native semantic validation through one CLI, validate maintained examples,
+  and exercise an installed wheel from outside the checkout in CI.
 - Prove the workflow through at least three completed compositions.
 - Confirm another MPC owner can generate, validate, preview, install, and play
   a program by following the documentation.
@@ -546,8 +548,9 @@ for release gates:
 1. **Hardware acceptance backlog:** test the five cross-library Drum candidates
    and the portable fixture, then record comparative musical roles without
    changing the reproducible software evidence.
-2. **Release portability:** add schema documentation and a clean-clone CI smoke
-   run for the portable demo, then ask another MPC owner to follow it.
+2. **Release portability:** schema documentation, native batch validation, and
+   the installed-wheel portable-demo CI smoke are complete. The remaining gate
+   is an independent walkthrough by another MPC owner.
 3. **Controller capture convergence:** use the now-integrated read-only XPJ and
    Components inspectors to reconcile actual channels and controls with the
    declarative rig; keep all project and SysEx writing hardware/vendor-owned.

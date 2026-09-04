@@ -7,8 +7,9 @@ user does not have to read the project's full history before making something.
 
 1. [Getting started](getting-started.md) — install or try the browser demo.
 2. [CLI reference](cli-reference.md) — discover commands and conventions.
-3. [Troubleshooting](troubleshooting.md) — recover from common failures.
-4. [Portable workflow demo](portable-demo.md) — exercise a complete workflow
+3. [Declarative schemas](schemas.md) — integrate or validate reusable files.
+4. [Troubleshooting](troubleshooting.md) — recover from common failures.
+5. [Portable workflow demo](portable-demo.md) — exercise a complete workflow
    without commercial samples.
 
 ## Build and organize instruments
@@ -40,6 +41,7 @@ user does not have to read the project's full history before making something.
 - [Ableton source inspector](ableton-source-inspector.md)
 - [MPC ecosystem survey](mpc-ecosystem-survey.md)
 - [Testing framework](testing-framework.md)
+- [Declarative schemas](schemas.md)
 - [MPC Key 37 field review](MPC_KEY37_FIELD_REVIEW.md)
 
 ## Direction and history

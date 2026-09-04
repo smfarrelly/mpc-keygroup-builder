@@ -127,6 +127,7 @@ for the exact boundary.
 - [MPC Key 37 field review](docs/MPC_KEY37_FIELD_REVIEW.md)
 - [Sample sources and licensing](docs/sample-sources.md)
 - [Vendor document cache](docs/vendor-documents.md)
+- [Declarative schemas and validators](docs/schemas.md)
 - [Product roadmap](docs/PRODUCT_ROADMAP.md)
 
 ## AI-assisted development

@@ -33,7 +33,8 @@ Set `MPC_DEBUG=1` to see the original Python traceback.
 - **Deploy:** additive, transactional copies to removable storage.
 - **Browser:** self-contained Program Designer pages, plugin-mapping companions,
   and the synthetic demo.
-- **Reference:** licensed personal-copy document caching and verification.
+- **Reference:** licensed personal-copy document caching, packaged schemas, and
+  semantic validation.
 
 `mpc-tools commands --json` is the machine-readable catalog. It includes the
 focused documentation file for every command.
@@ -67,6 +68,7 @@ mpc-tools doctor
 mpc-tools demo --output my-mpc-demo
 mpc-tools web-demo --output program-designer-demo.html
 mpc-tools help mpc-drum-build
+mpc-schema list
 ```
 
 See [Troubleshooting](troubleshooting.md) for common recovery steps and the

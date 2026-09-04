@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/smfarrelly/mpc-keygroup-builder/blob/main/src/mpc_keygroup_builder/data/schemas/rig-profile.schema.json",
+  "title": "MPC rig profile",
+  "type": "object",
+  "required": ["schema_version", "name", "tracks"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "name": {"type": "string", "minLength": 1},
+    "description": {"type": "string"},
+    "acceptance": {"type": "array", "items": {"type": "string"}},
+    "devices": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "kind"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "name": {"type": "string", "minLength": 1},
+          "kind": {"type": "string", "minLength": 1},
+          "midi_channel": {"type": "integer", "minimum": 1, "maximum": 16},
+          "clock": {"enum": ["internal", "send", "receive", "none"]}
+        },
+        "additionalProperties": true
+      }
+    },
+    "tracks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["index", "name", "role", "type"],
+        "properties": {
+          "index": {"type": "integer", "minimum": 1, "maximum": 128},
+          "name": {"type": "string", "minLength": 1},
+          "role": {"type": "string", "minLength": 1},
+          "type": {"enum": ["drum", "keygroup", "plugin", "midi", "audio", "clip"]},
+          "midi_channel": {"type": "integer", "minimum": 1, "maximum": 16}
+        },
+        "additionalProperties": true
+      }
+    },
+    "control_groups": {"type": "array", "items": {"type": "object"}}
+  },
+  "additionalProperties": true
+}

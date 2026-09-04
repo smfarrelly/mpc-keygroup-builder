@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/smfarrelly/mpc-keygroup-builder/blob/main/src/mpc_keygroup_builder/data/schemas/midi-control-map.schema.json",
+  "title": "Launch Control and MPC MIDI control map",
+  "type": "object",
+  "required": ["schema_version", "name"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "name": {"type": "string", "minLength": 1},
+    "description": {"type": "string"},
+    "extends": {"type": "string", "minLength": 1},
+    "device_definitions": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "sources": {"type": "array", "items": {"type": "string"}},
+    "topology": {"type": "object"},
+    "modes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "slot", "target", "channel", "controls"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "name": {"type": "string"},
+          "slot": {"type": "integer", "minimum": 1, "maximum": 15},
+          "target": {"type": "string", "minLength": 1},
+          "output": {"enum": ["usb", "din-1", "din-2", "all"]},
+          "channel": {"type": "integer", "minimum": 1, "maximum": 16},
+          "controls": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["control", "number"],
+              "properties": {
+                "control": {"$ref": "#/$defs/endpoint"},
+                "message": {"enum": ["cc", "note", "program-change", "nrpn"]},
+                "number": {"type": "integer", "minimum": 0, "maximum": 127},
+                "channel": {"type": "integer", "minimum": 1, "maximum": 16},
+                "target": {"type": "string"},
+                "label": {"type": "string", "maxLength": 16},
+                "behavior": {"type": "string"},
+                "color": {"type": "string"}
+              },
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "mode_overrides": {"type": "array", "items": {"type": "object"}}
+  },
+  "anyOf": [{"required": ["modes"]}, {"required": ["extends"]}],
+  "$defs": {
+    "endpoint": {
+      "type": "string",
+      "pattern": "^(fader|top-encoder|middle-encoder|bottom-encoder|upper-button|lower-button)-[1-8]$"
+    }
+  },
+  "additionalProperties": true
+}

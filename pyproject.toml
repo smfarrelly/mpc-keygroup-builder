@@ -70,6 +70,7 @@ mpc-plugin-companion = "mpc_keygroup_builder.entrypoints:main"
 mpc-plugin-results = "mpc_keygroup_builder.entrypoints:main"
 mpc-plugin-seed = "mpc_keygroup_builder.entrypoints:main"
 mpc-controller-capacity = "mpc_keygroup_builder.entrypoints:main"
+mpc-schema = "mpc_keygroup_builder.entrypoints:main"
 
 [build-system]
 requires = ["uv_build>=0.12.5,<0.13.0"]

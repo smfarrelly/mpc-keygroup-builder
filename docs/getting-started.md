@@ -55,6 +55,7 @@ List the workflow-oriented commands:
 ```bash
 mpc-tools commands
 mpc-tools help mpc-keygroup
+mpc-schema list
 ```
 
 Then build the portable demo in a new directory:

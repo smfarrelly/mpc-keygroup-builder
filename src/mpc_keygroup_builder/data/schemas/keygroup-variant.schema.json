@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/smfarrelly/mpc-keygroup-builder/blob/main/src/mpc_keygroup_builder/data/schemas/keygroup-variant.schema.json",
+  "title": "MPC Keygroup expressive variant",
+  "type": "object",
+  "required": ["schema_version", "id", "name", "parameters"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "id": {"type": "string", "minLength": 1},
+    "name": {"type": "string", "minLength": 1},
+    "description": {"type": "string"},
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "transpose": {"type": "integer", "minimum": -24, "maximum": 24},
+        "amp_attack": {"type": "number", "minimum": 0, "maximum": 1},
+        "amp_decay": {"type": "number", "minimum": -1, "maximum": 1},
+        "amp_sustain": {"type": "number", "minimum": -1, "maximum": 1},
+        "amp_release": {"type": "number", "minimum": -1, "maximum": 1},
+        "filter_attack": {"type": "number", "minimum": -1, "maximum": 1},
+        "filter_decay": {"type": "number", "minimum": -1, "maximum": 1},
+        "filter_sustain": {"type": "number", "minimum": -1, "maximum": 1},
+        "filter_release": {"type": "number", "minimum": -1, "maximum": 1},
+        "filter_cutoff": {"type": "number", "minimum": 0, "maximum": 1},
+        "filter_resonance": {"type": "number", "minimum": 0, "maximum": 1},
+        "filter_envelope_amount": {"type": "number", "minimum": -1, "maximum": 1}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

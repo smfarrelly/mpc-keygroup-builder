@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/smfarrelly/mpc-keygroup-builder/blob/main/src/mpc_keygroup_builder/data/schemas/layout-preset.schema.json",
+  "title": "MPC semantic layout preset",
+  "type": "object",
+  "required": ["schema_version", "id", "name", "strategy"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "id": {"type": "string", "minLength": 1, "pattern": "^[^/\\\\]+$"},
+    "name": {"type": "string", "minLength": 1},
+    "strategy": {"enum": ["role-first", "sequential"]},
+    "role_order": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "fill_remaining": {"type": "boolean"},
+    "program_suffix": {"type": "string"}
+  },
+  "additionalProperties": true
+}

@@ -83,6 +83,7 @@ COMMANDS = {
     "mpc-plugin-results": _spec("plugin_results", "Hardware", "Validate companion exports and write a durable ledger", "docs/plugin-mapping.md"),
     "mpc-plugin-seed": _spec("plugin_seed", "MIDI control", "Generate a ranked plugin performance-profile draft", "docs/plugin-mapping.md"),
     "mpc-controller-capacity": _spec("controller_capacity", "MIDI control", "Validate the complete Custom Mode and channel plan", "docs/declarative-midi-control.md"),
+    "mpc-schema": _spec("schema", "Reference", "Discover schemas and validate declarative files", "docs/schemas.md"),
 }
 
 
