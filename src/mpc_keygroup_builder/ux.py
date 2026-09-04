@@ -8,12 +8,95 @@ import os
 import shutil
 import sys
 import tempfile
+import tomllib
 from collections import defaultdict
 from pathlib import Path
 
 from .entrypoints import COMMANDS, invoke, version
 from .portable_demo import build_demo
 from .web_demo import build_web_demo
+
+
+def _find_checkpoint(explicit: Path | None) -> Path:
+    candidates = [explicit] if explicit else [
+        Path.cwd() / "inventory" / "session-checkpoint.toml",
+        Path.cwd() / "session-checkpoint.toml",
+    ]
+    for path in candidates:
+        if path is not None and path.expanduser().is_file():
+            return path.expanduser().resolve()
+    raise FileNotFoundError(
+        "session checkpoint not found; run from the project checkout or pass --checkpoint"
+    )
+
+
+def _find_sd_root(explicit: Path | None, baseline_relative: str) -> Path | None:
+    if explicit is not None:
+        root = explicit.expanduser().resolve()
+        if not root.is_dir():
+            raise NotADirectoryError(root)
+        return root
+    media = Path("/media") / os.environ.get("USER", "")
+    if not media.is_dir():
+        return None
+    return next(
+        (
+            path.resolve()
+            for path in media.iterdir()
+            if path.is_dir() and (path / baseline_relative).is_file()
+        ),
+        None,
+    )
+
+
+def _resume(checkpoint_path: Path | None, sd_root: Path | None, as_json: bool) -> int:
+    checkpoint_file = _find_checkpoint(checkpoint_path)
+    checkpoint = tomllib.loads(checkpoint_file.read_text(encoding="utf-8"))
+    required = ("title", "baseline_relative", "working_relative", "target_relative", "next_action")
+    missing = [name for name in required if not checkpoint.get(name)]
+    if missing:
+        raise ValueError(f"checkpoint lacks required fields: {', '.join(missing)}")
+    root = _find_sd_root(sd_root, checkpoint["baseline_relative"])
+    paths = {}
+    for role in ("baseline", "working", "target"):
+        relative = checkpoint[f"{role}_relative"]
+        absolute = root / relative if root else None
+        paths[role] = {
+            "relative": relative,
+            "path": str(absolute) if absolute else None,
+            "exists": bool(absolute and absolute.is_file()),
+        }
+    read_only = bool(root and os.statvfs(root).f_flag & getattr(os, "ST_RDONLY", 1))
+    report = {
+        "schema_version": 1,
+        "checkpoint": str(checkpoint_file),
+        "updated": checkpoint.get("updated"),
+        "title": checkpoint["title"],
+        "sd_root": str(root) if root else None,
+        "sd_status": "read-only" if read_only else "read-write" if root else "not-found",
+        "projects": paths,
+        "routes": checkpoint.get("routes", []),
+        "next_action": checkpoint["next_action"],
+        "notes": checkpoint.get("notes", ""),
+    }
+    if as_json:
+        print(json.dumps(report, indent=2))
+        return 0
+    print(f"RESUME: {report['title']}")
+    print(f"Checkpoint: {checkpoint_file} ({report['updated'] or 'date unknown'})")
+    print(f"SD: {report['sd_status']} — {root or 'no matching mounted card found'}")
+    for role in ("baseline", "working", "target"):
+        item = paths[role]
+        state = "FOUND" if item["exists"] else "MISSING"
+        print(f"{role.title():<8} {state:<7} {item['path'] or item['relative']}")
+    routes = "; ".join(
+        f"T{row['track']} {row['name']} ch{row['channel']}" for row in report["routes"]
+    )
+    print(f"Routes: {routes}")
+    print(f"NEXT: {report['next_action']}")
+    if report["notes"]:
+        print(f"NOTE: {report['notes']}")
+    return 0
 
 
 def _commands(category: str | None, as_json: bool) -> int:
@@ -90,6 +173,20 @@ def main() -> int:
     help_parser.add_argument("tool", choices=sorted(name for name in COMMANDS if name != "mpc-tools"))
     doctor = subparsers.add_parser("doctor", help="check the installation and current directory")
     doctor.add_argument("--json", action="store_true", help="emit machine-readable JSON")
+    resume = subparsers.add_parser(
+        "resume", help="show the current project checkpoint and exact next action"
+    )
+    resume.add_argument(
+        "--checkpoint",
+        type=Path,
+        help="checkpoint TOML; defaults to inventory/session-checkpoint.toml",
+    )
+    resume.add_argument(
+        "--sd-root",
+        type=Path,
+        help="mounted MPC SD-card root; otherwise detect under /media",
+    )
+    resume.add_argument("--json", action="store_true", help="emit machine-readable JSON")
     demo = subparsers.add_parser("demo", help="build the complete redistributable workflow fixture")
     demo.add_argument("--output", type=Path, required=True, help="new directory for the generated demo")
     browser = subparsers.add_parser("web-demo", help="write a standalone browser-only Program Designer demo")
@@ -105,6 +202,8 @@ def main() -> int:
             return int(error.code or 0)
     if args.command == "doctor":
         return _doctor(args.json)
+    if args.command == "resume":
+        return _resume(args.checkpoint, args.sd_root, args.json)
     if args.command == "demo":
         report = build_demo(args.output.expanduser(), None)
         print(f"PASS: {report['cross_kit_program']}")

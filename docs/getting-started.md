@@ -68,6 +68,20 @@ mathematical fixtures intended to verify the workflow, not production sounds.
 You can complete all software checks without an MPC and defer the hardware
 rows.
 
+## Return after time away
+
+In a project checkout, run:
+
+```bash
+mpc-tools resume
+```
+
+If the SD card is mounted somewhere unusual, add `--sd-root /absolute/path`.
+The command reads `inventory/session-checkpoint.toml` and prints the current
+objective, exact baseline/working/target project paths, mounted-card status,
+routing summary, and one next action. Update the small checkpoint when the
+working objective changes; detailed roadmaps remain reference material.
+
 ## Build with your own samples
 
 For a pitched instrument, collect WAV files whose names contain note labels

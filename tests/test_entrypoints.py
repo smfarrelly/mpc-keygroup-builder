@@ -67,6 +67,26 @@ class EntrypointTests(unittest.TestCase):
         with contextlib.redirect_stdout(io.StringIO()):
             self.assertEqual(ux._doctor(False), 0)
 
+    def test_resume_reports_exact_paths_and_next_action(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            sd = root / "CARD"
+            (sd / "Projects" / "Volca").mkdir(parents=True)
+            (sd / "Projects" / "Boot.xpj").write_bytes(b"baseline")
+            checkpoint = root / "checkpoint.toml"
+            checkpoint.write_text(
+                'title = "Test rig"\nbaseline_relative = "Projects/Boot.xpj"\n'
+                'working_relative = "Projects/Volca/Base.xpj"\ntarget_relative = "Projects/Done.xpj"\n'
+                'next_action = "Create the target."\n[[routes]]\ntrack = 1\nname = "KEYS"\nchannel = 1\n'
+            )
+            output = io.StringIO()
+            with contextlib.redirect_stdout(output):
+                self.assertEqual(ux._resume(checkpoint, sd, False), 0)
+            rendered = output.getvalue()
+            self.assertIn("Baseline FOUND", rendered)
+            self.assertIn(str(sd / "Projects" / "Done.xpj"), rendered)
+            self.assertIn("NEXT: Create the target.", rendered)
+
 
 if __name__ == "__main__":
     unittest.main()

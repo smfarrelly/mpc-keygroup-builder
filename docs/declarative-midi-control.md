@@ -147,6 +147,11 @@ Mode outputs, three MPC routes, and topology metadata while changing **zero**
 endpoint/message/channel/number/target assignments. This isolates the physical
 routing question from the musical mapping question.
 
+For plugin pages, use [`mpc-plugin-params`](plugin-parameters.md) to search the
+downloaded MPC UI metadata and cross-reference it with an existing project's
+MIDI Learn assignments. This produces named, ranked candidates before editing
+the declarative controller map.
+
 ## Inspect real Components and MPC captures
 
 Keep `.syx`, `.xpj`, ProjectData, and licensed samples in the ignored `work/`

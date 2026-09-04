@@ -31,6 +31,10 @@ mpc-tools doctor
 mpc-tools demo --output my-mpc-demo
 ```
 
+When returning to this repository after time away, open
+[`RESUME_HERE.md`](RESUME_HERE.md) or run `mpc-tools resume` for the current
+checkpoint, mounted-card status, exact project paths, and one next action.
+
 The demo synthesizes its own redistributable WAV files, creates Drum Programs
 and creative MIDI, and gives you a hardware checklist. No sample library or MPC
 is required for the software portion.
@@ -44,6 +48,7 @@ is required for the software portion.
 - Generate deterministic Drum, Bass, Chords, Melody, and arrangement MIDI.
 - Compile declarative MPC, Launch Control XL 3, and Volca routing plans.
 - Inspect Components SysEx captures and cross-check them against MPC MIDI Learn.
+- Search downloaded plugin controls and rank useful controller targets.
 - Catalog programs and their hardware-listening status.
 - Plan additive, checksum-verified SD deployments.
 - Create a self-contained browser Program Designer for a prepared program set.
@@ -109,6 +114,7 @@ for the exact boundary.
 - [Portable workflow demo](docs/portable-demo.md)
 - [Creative MIDI](docs/creative-midi.md)
 - [Declarative MIDI control](docs/declarative-midi-control.md)
+- [Plugin parameter catalog](docs/plugin-parameters.md)
 - [XPJ project inspector](docs/xpj-inspector.md)
 - [Hardware workflow tools](docs/hardware-workflow-tools.md)
 - [MPC Key 37 field review](docs/MPC_KEY37_FIELD_REVIEW.md)

@@ -52,3 +52,22 @@ For Iona, OPx-4, and AIR Flavor Pro:
 4. Save a small disposable project, power-cycle, reload, and confirm the plugin,
    preset, and edited parameter return.
 5. Record whether it earns a reusable Scratchpad role.
+
+## Parameter metadata audit — September 3, 2026
+
+The SD content contains readable `Plugin Skins/*.json` UI metadata for 12
+plugin/effect directories. The read-only `mpc-plugin-params` scanner finds 401
+meaningful visible controls across those directories. OPx-4 contributes 145
+controls and 672 presets. Cross-referencing `Boot.xpj` verifies 33 OPx-4
+control-to-MPC-parameter IDs and their learned channel/CC pairs.
+
+This exposes a materially better performance shortlist than the MPC's long
+undifferentiated target list. In particular, OPx-4 Filter Cutoff 1/2, Filter
+Resonance 1/2, and Filter Drive 1/2 are present in the UI metadata and have
+Q-Link locations, but are not part of the 33 currently learned OPx-4 controls.
+They are strong candidates for a focused tone page.
+
+Jura remains different: its content is internal-only and unavailable to this
+filesystem scan, but `Boot.xpj` preserves 36 named, verified Jura MIDI Learn
+assignments. A complete Jura catalog requires either its readable plugin
+content or additional MPC-authored capture evidence.

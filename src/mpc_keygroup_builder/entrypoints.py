@@ -77,6 +77,7 @@ COMMANDS = {
     "mpc-launch-control": _spec("launch_control", "MIDI control", "Inspect Launch Control Components captures", "docs/declarative-midi-control.md"),
     "mpc-session-report": _spec("session", "Hardware", "Combine rig, candidate, and capture readiness", "docs/rig-profiles.md"),
     "mpc-plugin-audit": _spec("plugin_audit", "Inspect", "Inventory installed MPC plugin content", "docs/hardware-workflow-tools.md"),
+    "mpc-plugin-params": _spec("plugin_params", "MIDI control", "Search plugin controls and verified MIDI Learn mappings", "docs/plugin-parameters.md"),
 }
 
 

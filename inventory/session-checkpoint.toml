@@ -1,0 +1,23 @@
+schema_version = 1
+updated = "2026-09-03"
+title = "Launch Control XL 3 + MPC + Volca direct rig"
+baseline_relative = "Projects/Boot.xpj"
+working_relative = "Projects/Volca/Base.xpj"
+target_relative = "Projects/FG Volca Direct 123.xpj"
+next_action = "Open Projects/Volca/Base.xpj, confirm or rename its three MIDI tracks, set Keys to channel 1, Bass to channel 2, Drum to channel 3, then Save As Projects/FG Volca Direct 123.xpj."
+notes = "Both Launch Control Drum pages transmit on channel 3; they select controls for parts 1-3 and 4-6, not MIDI channels 3 and 4. Configure Volca Drum for single-channel channel 3."
+
+[[routes]]
+track = 1
+name = "VOLCA KEYS"
+channel = 1
+
+[[routes]]
+track = 2
+name = "VOLCA BASS"
+channel = 2
+
+[[routes]]
+track = 3
+name = "VOLCA DRUM"
+channel = 3

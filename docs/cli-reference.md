@@ -8,6 +8,7 @@ mpc-tools commands
 mpc-tools commands --category "Creative MIDI"
 mpc-tools help mpc-drum-build
 mpc-tools doctor
+mpc-tools resume
 mpc-tools --version
 ```
 
@@ -25,7 +26,7 @@ Set `MPC_DEBUG=1` to see the original Python traceback.
 - **Creative MIDI:** drums, harmony, melody, workstations, arrangements, and
   bounded idea batches.
 - **MIDI control:** declarative maps plus read-only Launch Control capture
-  inspection and MPC MIDI Learn cross-checking.
+  inspection, plugin-parameter search, and MPC MIDI Learn cross-checking.
 - **Catalog:** normalized program inventory and deterministic kit selection.
 - **Hardware:** listening ledgers, Scratchpad gates, rig reports, and captures.
 - **Deploy:** additive, transactional copies to removable storage.
