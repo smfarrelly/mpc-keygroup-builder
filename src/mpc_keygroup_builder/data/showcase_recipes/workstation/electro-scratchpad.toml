@@ -1,0 +1,12 @@
+schema_version = 1
+id = "electro-scratchpad"
+name = "Electro Scratchpad"
+drums = "../drums/electro-grid.toml"
+harmony = "../harmony/electro-minor.toml"
+melody = "../melody/electro-hook.toml"
+
+[programs]
+drums = "Vinyl Drum Machines From Mars 1"
+bass = "Echo Square"
+chords = "OB Warm Keys"
+melody = "Dark FM"

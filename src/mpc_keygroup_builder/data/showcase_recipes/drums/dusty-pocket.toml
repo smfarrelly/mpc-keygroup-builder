@@ -1,0 +1,34 @@
+schema_version = 1
+id = "dusty-pocket"
+name = "Dusty Pocket"
+bars = 2
+steps_per_bar = 16
+swing = 0.57
+gate = 0.45
+channel = 10
+
+[[events]]
+role = "kick"
+steps = [0, 7, 10, 16, 23, 26]
+velocity = 112
+humanize_velocity = 5
+
+[[events]]
+role = "snare"
+steps = [4, 12, 20, 28]
+velocity = 108
+humanize_velocity = 4
+selection = "cycle"
+
+[[events]]
+role = "hihat.closed"
+steps = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30]
+velocity = 78
+probability = 0.88
+humanize_velocity = 12
+
+[[events]]
+role = "hihat.open"
+steps = [15, 31]
+velocity = 90
+probability = 0.7

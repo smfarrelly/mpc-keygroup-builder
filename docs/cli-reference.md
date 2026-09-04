@@ -66,6 +66,7 @@ audio.
 ```bash
 mpc-tools doctor
 mpc-tools demo --output my-mpc-demo
+mpc-showcase --output my-mpc-showcase
 mpc-tools web-demo --output program-designer-demo.html
 mpc-tools help mpc-drum-build
 mpc-schema list

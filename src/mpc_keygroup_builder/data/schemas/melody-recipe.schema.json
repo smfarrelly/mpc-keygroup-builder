@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/smfarrelly/mpc-keygroup-builder/blob/main/src/mpc_keygroup_builder/data/schemas/melody-recipe.schema.json",
+  "title": "Motif Melody recipe",
+  "type": "object",
+  "required": ["schema_version", "id", "name", "key", "scale", "bars", "motif_steps", "rhythm", "contour", "note_range"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "id": {"type": "string", "minLength": 1},
+    "name": {"type": "string", "minLength": 1},
+    "key": {"type": "string", "pattern": "^[A-Ga-g](#|b)?$"},
+    "scale": {"enum": ["major", "minor", "dorian", "mixolydian"]},
+    "bars": {"type": "integer", "minimum": 1, "maximum": 64},
+    "beats_per_bar": {"type": "integer", "minimum": 2, "maximum": 8},
+    "steps_per_beat": {"enum": [1, 2, 4]},
+    "motif_steps": {"type": "integer", "minimum": 1},
+    "rhythm": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "integer", "minimum": 0}},
+    "contour": {"type": "array", "minItems": 1, "items": {"type": "integer", "minimum": -14, "maximum": 14}},
+    "start_degree": {"type": "integer", "minimum": 1, "maximum": 7},
+    "note_range": {"type": "array", "prefixItems": [{"type": "integer", "minimum": 0, "maximum": 127}, {"type": "integer", "minimum": 0, "maximum": 127}], "minItems": 2, "maxItems": 2},
+    "variation": {"type": "number", "minimum": 0, "maximum": 1},
+    "rest_probability": {"type": "number", "minimum": 0, "maximum": 1},
+    "octave_probability": {"type": "number", "minimum": 0, "maximum": 1},
+    "velocity": {"type": "integer", "minimum": 1, "maximum": 127},
+    "humanize_velocity": {"type": "integer", "minimum": 0, "maximum": 32},
+    "gate": {"type": "number", "exclusiveMinimum": 0, "maximum": 1},
+    "channel": {"type": "integer", "minimum": 1, "maximum": 16}
+  },
+  "additionalProperties": false
+}

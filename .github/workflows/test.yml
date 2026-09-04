@@ -18,6 +18,11 @@ jobs:
         run: |
           mpc-schema validate device-profile devices/*.toml
           mpc-schema validate drum-manifest inventory/fg-vinyl-layered-kit.toml
+          mpc-schema validate drum-recipe recipes/drums/*.toml
+          mpc-schema validate harmony-recipe recipes/harmony/*.toml
+          mpc-schema validate melody-recipe recipes/melody/*.toml
+          mpc-schema validate workstation-recipe recipes/workstation/*.toml
+          mpc-schema validate kit-recipe recipes/kits/*.toml
           mpc-schema validate layout-preset layouts/*.toml
           mpc-schema validate keygroup-variant variants/keygroups/*.toml
           mpc-schema validate midi-device midi/devices/*.toml
@@ -33,6 +38,9 @@ jobs:
           cd /tmp
           /tmp/mpc-installed/bin/mpc-tools doctor
           /tmp/mpc-installed/bin/mpc-schema show plugin-profile --output /tmp/plugin-profile.schema.json
+          /tmp/mpc-installed/bin/mpc-schema init workstation --family ambient --output /tmp/mpc-recipe-starter
           /tmp/mpc-installed/bin/mpc-tools demo --output /tmp/mpc-portable-smoke
+          /tmp/mpc-installed/bin/mpc-showcase --output /tmp/mpc-showcase-smoke
           test -f /tmp/mpc-portable-smoke/HARDWARE_CHECKLIST.md
+          test -f /tmp/mpc-showcase-smoke/Compositions/electro/Sequences/outro.mid
       - run: mpc-repository-guard

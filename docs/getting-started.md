@@ -69,6 +69,12 @@ mathematical fixtures intended to verify the workflow, not production sounds.
 You can complete all software checks without an MPC and defer the hardware
 rows.
 
+To explore three complete musical directions instead of one compact fixture:
+
+```bash
+mpc-showcase --output my-mpc-showcase
+```
+
 ## Return after time away
 
 In a project checkout, run:

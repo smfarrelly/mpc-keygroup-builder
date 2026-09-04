@@ -46,6 +46,8 @@ is required for the software portion.
 - Inspect XPM programs without modifying them.
 - Inspect, extract, and compare MPC 3 XPJ projects without modifying them.
 - Generate deterministic Drum, Bass, Chords, Melody, and arrangement MIDI.
+- Build a redistributable three-composition showcase with deterministic
+  evidence, editable recipes, and synthetic CC0 Drum audio.
 - Compile declarative MPC, Launch Control XL 3, and Volca routing plans.
 - Inspect Components SysEx captures and cross-check them against MPC MIDI Learn.
 - Search downloaded plugin controls and rank useful controller targets.
@@ -60,6 +62,8 @@ is required for the software portion.
 - Create a self-contained browser Program Designer for a prepared program set.
 - Capture hardware observations without treating software validation as a
   listening pass.
+- Discover packaged schemas, validate declarative files, and initialize a
+  complete editable workstation recipe family.
 
 The project deliberately does **not** synthesize undocumented MPC project
 schemas, overwrite source programs, commit licensed WAV/XPM/XPJ content, or
@@ -118,6 +122,7 @@ for the exact boundary.
 - [Program model and semantic layouts](docs/program-model-and-layouts.md)
 - [Program Designer](docs/program-designer.md)
 - [Portable workflow demo](docs/portable-demo.md)
+- [Three-composition showcase](docs/composition-showcase.md)
 - [Creative MIDI](docs/creative-midi.md)
 - [Declarative MIDI control](docs/declarative-midi-control.md)
 - [Plugin parameter catalog](docs/plugin-parameters.md)

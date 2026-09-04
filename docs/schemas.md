@@ -37,11 +37,29 @@ mpc-schema validate controller-capacity midi/controller-capacity.toml
 Each input receives a separate `PASS` or `FAIL`, so one bad file does not hide
 later results. Add `--json` for automation. A failing batch exits with status 2.
 
+Create a complete editable workstation recipe family without finding or
+copying dependent files manually:
+
+```bash
+mpc-schema init workstation --family dusty --output my-dusty-recipes
+mpc-schema init workstation --family ambient --output my-ambient-recipes
+mpc-schema init workstation --family electro --output my-electro-recipes
+```
+
+The destination must be new. Each starter contains mutually compatible Drum,
+harmony, Melody, and workstation TOML files and is semantically validated before
+its staging directory is promoted.
+
 ## Published formats
 
 - `device-profile` — MPC key count, physical pad matrix, and bank capacity.
 - `layout-preset` — semantic or sequential pad-placement strategy.
 - `drum-manifest` — pads, samples, velocity layers, inheritance, and mute groups.
+- `drum-recipe` — role-addressed, seeded Drum patterns.
+- `harmony-recipe` — chord progressions and range-constrained Bass patterns.
+- `melody-recipe` — scale-safe repeating and varied motifs.
+- `workstation-recipe` — compatible four-part recipe and program assignments.
+- `kit-recipe` — semantic cross-library sample-selection criteria.
 - `keygroup-variant` — allowlisted expressive changes to preserved Keygroups.
 - `midi-device` — external-device MIDI channel, CC parameters, and trigger notes.
 - `midi-control-map` — controller modes, endpoints, messages, routes, and targets.

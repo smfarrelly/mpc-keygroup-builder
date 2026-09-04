@@ -13,7 +13,7 @@ class SchemaTests(unittest.TestCase):
         self.root = Path(__file__).resolve().parents[1]
 
     def test_every_schema_resource_is_json_schema_with_existing_examples(self):
-        self.assertEqual(len(schema.SCHEMAS), 9)
+        self.assertEqual(len(schema.SCHEMAS), 14)
         for name, spec in schema.SCHEMAS.items():
             with self.subTest(schema=name):
                 document = schema.schema_document(name)
@@ -47,7 +47,7 @@ class SchemaTests(unittest.TestCase):
         output = io.StringIO()
         with contextlib.redirect_stdout(output):
             self.assertEqual(schema.main(["list", "--json"]), 0)
-        self.assertEqual(len(json.loads(output.getvalue())["schemas"]), 9)
+        self.assertEqual(len(json.loads(output.getvalue())["schemas"]), 14)
 
         output = io.StringIO()
         with contextlib.redirect_stdout(output):
@@ -65,6 +65,25 @@ class SchemaTests(unittest.TestCase):
                 ),
                 0,
             )
+
+    def test_init_creates_a_complete_valid_workstation_family(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "starter"
+            with contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(
+                    schema.main(
+                        ["init", "workstation", "--family", "ambient", "--output", str(output)]
+                    ),
+                    0,
+                )
+            workstation = output / "workstation/ambient-scratchpad.toml"
+            self.assertEqual(
+                schema.validate_files("workstation-recipe", [workstation])[0]["status"],
+                "pass",
+            )
+            self.assertTrue((output / "README.md").is_file())
+            with self.assertRaises(FileExistsError):
+                schema.initialize_workstation(output, "ambient")
 
 
 if __name__ == "__main__":

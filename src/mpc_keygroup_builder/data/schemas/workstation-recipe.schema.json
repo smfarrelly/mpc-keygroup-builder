@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/smfarrelly/mpc-keygroup-builder/blob/main/src/mpc_keygroup_builder/data/schemas/workstation-recipe.schema.json",
+  "title": "Four-part creative workstation recipe",
+  "type": "object",
+  "required": ["schema_version", "id", "name", "drums", "harmony", "melody", "programs"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "id": {"type": "string", "minLength": 1},
+    "name": {"type": "string", "minLength": 1},
+    "drums": {"type": "string", "minLength": 1},
+    "harmony": {"type": "string", "minLength": 1},
+    "melody": {"type": "string", "minLength": 1},
+    "programs": {
+      "type": "object",
+      "required": ["drums", "bass", "chords", "melody"],
+      "properties": {
+        "drums": {"type": "string", "minLength": 1},
+        "bass": {"type": "string", "minLength": 1},
+        "chords": {"type": "string", "minLength": 1},
+        "melody": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
