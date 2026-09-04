@@ -36,5 +36,11 @@ Multitap Delay, Vintage Filter, Chorus, Expander, Color Compressor, and a
 three-effect Analog Wear Rack. This work does not depend on the Volca MIDI
 splitter.
 
+For the no-CLI hardware session, open
+`site/plugin-mapping-companion.html`. It presents the same exact mappings as a
+visual XL3 surface, keeps progress and notes locally in the browser, and exports
+JSON or CSV results. Start with the Vintage Filter cutoff probe if you want the
+shortest possible end-to-end check.
+
 Historical plans and test detail remain in `docs/` and `inventory/`; they are
 reference material, not prerequisites for resuming work.

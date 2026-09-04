@@ -79,6 +79,7 @@ COMMANDS = {
     "mpc-plugin-audit": _spec("plugin_audit", "Inspect", "Inventory installed MPC plugin content", "docs/hardware-workflow-tools.md"),
     "mpc-plugin-params": _spec("plugin_params", "MIDI control", "Search plugin controls and verified MIDI Learn mappings", "docs/plugin-parameters.md"),
     "mpc-plugin-map": _spec("plugin_map", "MIDI control", "Compile role-based Launch Control plugin pages", "docs/plugin-mapping.md"),
+    "mpc-plugin-companion": _spec("plugin_companion", "Browser", "Generate an offline plugin-mapping companion", "docs/plugin-mapping.md"),
 }
 
 

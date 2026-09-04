@@ -111,3 +111,23 @@ For a focused compact-effects packet, compile the four matching profile paths
 instead of the wildcard. For one complete current packet, compile all nine with
 `midi/plugins/*.toml`; profiles are ordered by slot regardless of shell path
 order.
+
+## Browser companion
+
+`mpc-plugin-companion` packages the validated profiles as one offline HTML
+workflow. It draws the controller by physical row, highlights core controls,
+opens each exact MIDI Learn target, remembers results and notes locally, and
+exports JSON or CSV without needing a server:
+
+```bash
+uv run mpc-plugin-companion midi/plugins/*.toml \
+  --synth-root "/media/user/CARD/Synths" \
+  --project "/media/user/CARD/Projects/Boot.xpj" \
+  --output plugin-mapping-companion.html
+```
+
+Open the generated file in any current browser. The committed offline copy is
+linked from `site/index.html`. Local progress is separated by a deterministic
+mapping fingerprint; importing results from a different revision is rejected.
+The page performs no network requests and cannot modify the MPC, SD card,
+Components modes, XPJ files, or SysEx captures.

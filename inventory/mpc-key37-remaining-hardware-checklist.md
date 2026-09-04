@@ -781,6 +781,10 @@ assignments saved in the newer `SD Card / Projects / Boot.xpj` startup
 template. See `inventory/launch-control-capture-2026-09-03.md` for the exact
 channel/control inventory and read-only audit results.
 
+The offline `site/plugin-mapping-companion.html` now provides the recommended
+control-by-control interface for the plugin portion of this test. Results stay
+in browser-local storage until exported as fingerprinted JSON or flat CSV.
+
 - [ ] Check/update Launch Control XL 3 firmware with Novation Components.
 - [x] Confirm standalone USB connection to the Key 37.
 - [x] Save six named Components Custom Modes and capture their control messages.
@@ -798,6 +802,12 @@ channel/control inventory and read-only audit results.
 - [ ] Power-cycle both devices and confirm persistence.
 - [ ] Clone the Scratchpad project and confirm Universal Mix meanings persist.
 - [ ] Perform a ten-minute jam with minimal touchscreen navigation.
+- [ ] Run the nine one-control plugin probes in the companion before learning
+  any complete page: Iona Cutoff, Flavor Global Depth, Trigger FX Half Speed,
+  Multitap Delay, Vintage Filter Cutoff, Chorus Rate, Expander Threshold,
+  Color Compressor Amount, and Analog Wear Tape Wow.
+- [ ] Export the companion JSON after the probe pass so results can be matched
+  to this exact profile revision.
 
 ## 9. Optional routing research; core workflow already passes
 

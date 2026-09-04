@@ -51,6 +51,8 @@ is required for the software portion.
 - Search downloaded plugin controls and rank useful controller targets.
 - Compile role-based plugin performance pages into Components and MIDI Learn
   worksheets with installed-content validation.
+- Generate an offline visual plugin-mapping companion with local progress,
+  hardware notes, and portable JSON/CSV results.
 - Catalog programs and their hardware-listening status.
 - Plan additive, checksum-verified SD deployments.
 - Create a self-contained browser Program Designer for a prepared program set.

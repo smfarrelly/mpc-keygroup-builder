@@ -503,6 +503,9 @@ control.
   troubleshooting, and a clean installed-tool smoke test outside the checkout.
 - [x] Add a no-install offline landing page and synthetic Program Designer demo
   with an explicit boundary around XPM import/export, audio, and SD access.
+- [x] Add a generated offline Plugin Mapping Companion that visualizes all nine
+  XL3 pages, guides one-probe-first MIDI Learn, stores progress locally, and
+  exports fingerprinted JSON or flat CSV hardware results.
 - [x] Publish a validated repository AI skill and a checksum-verified personal
   vendor-document cache that keeps copyrighted Korg PDFs out of Git.
 - Publish schemas, device profiles, layouts, recipes, validators, and tests.

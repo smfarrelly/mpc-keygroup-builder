@@ -31,7 +31,8 @@ Set `MPC_DEBUG=1` to see the original Python traceback.
 - **Catalog:** normalized program inventory and deterministic kit selection.
 - **Hardware:** listening ledgers, Scratchpad gates, rig reports, and captures.
 - **Deploy:** additive, transactional copies to removable storage.
-- **Browser:** self-contained Program Designer pages and the synthetic demo.
+- **Browser:** self-contained Program Designer pages, plugin-mapping companions,
+  and the synthetic demo.
 - **Reference:** licensed personal-copy document caching and verification.
 
 `mpc-tools commands --json` is the machine-readable catalog. It includes the
