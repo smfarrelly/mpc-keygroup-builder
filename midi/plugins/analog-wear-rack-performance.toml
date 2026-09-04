@@ -1,0 +1,99 @@
+schema_version = 1
+id = "analog-wear-rack-performance"
+plugins = ["Tape Emulator", "Vintage", "Vinyl Emulator"]
+name = "Analog Wear Rack"
+description = "One compact page for a three-insert tape, sampler-color, and vinyl-character chain."
+slot = 15
+channel = 7
+probe = "top-encoder-1"
+
+[[controls]]
+control = "top-encoder-1"
+plugin = "Tape Emulator"
+ui_parameter = 0
+name = "Wow"
+label = "Tape Wow"
+role = "movement"
+priority = "core"
+
+[[controls]]
+control = "top-encoder-2"
+plugin = "Tape Emulator"
+ui_parameter = 1
+name = "Noise"
+label = "Tape Noise"
+role = "texture"
+priority = "core"
+
+[[controls]]
+control = "top-encoder-3"
+plugin = "Tape Emulator"
+ui_parameter = 2
+name = "Pitch"
+label = "Tape Pitch"
+role = "movement"
+priority = "core"
+
+[[controls]]
+control = "middle-encoder-1"
+plugin = "Vintage"
+ui_parameter = 1
+name = "Dry/Wet"
+label = "Vintage Mix"
+role = "global"
+priority = "core"
+
+[[controls]]
+control = "middle-encoder-2"
+plugin = "Vintage"
+ui_parameter = 2
+name = "Decimator"
+label = "Decimator"
+role = "texture"
+priority = "core"
+
+[[controls]]
+control = "middle-encoder-3"
+plugin = "Vintage"
+ui_parameter = 3
+name = "Bit Reduce"
+label = "Bit Reduce"
+role = "texture"
+priority = "core"
+
+[[controls]]
+control = "bottom-encoder-1"
+plugin = "Vinyl Emulator"
+ui_parameter = 0
+name = "Tone"
+label = "Vinyl Tone"
+role = "tone"
+priority = "core"
+
+[[controls]]
+control = "bottom-encoder-2"
+plugin = "Vinyl Emulator"
+ui_parameter = 1
+name = "Crackle"
+label = "Crackle"
+role = "texture"
+priority = "core"
+
+[[controls]]
+control = "bottom-encoder-3"
+plugin = "Vinyl Emulator"
+ui_parameter = 2
+name = "Pitch"
+label = "Vinyl Pitch"
+role = "movement"
+priority = "core"
+
+[[controls]]
+control = "upper-button-1"
+plugin = "Vintage"
+ui_parameter = 0
+name = "MPC 60"
+label = "MPC 60"
+role = "character"
+priority = "core"
+behavior = "toggle"

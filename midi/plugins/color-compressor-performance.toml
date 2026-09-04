@@ -1,0 +1,57 @@
+schema_version = 1
+id = "color-compressor-performance"
+plugin = "Color Compressor"
+name = "Color Comp"
+description = "Compact compressor page for timing, amount, input drive, color, and bypass."
+slot = 14
+channel = 6
+probe = "top-encoder-3"
+
+[[controls]]
+control = "top-encoder-1"
+ui_parameter = 0
+name = "Attack"
+label = "Attack"
+role = "envelope"
+priority = "core"
+
+[[controls]]
+control = "top-encoder-2"
+ui_parameter = 1
+name = "Release"
+label = "Release"
+role = "envelope"
+priority = "core"
+
+[[controls]]
+control = "top-encoder-3"
+ui_parameter = 2
+name = "Amount"
+label = "Amount"
+role = "dynamics"
+priority = "core"
+
+[[controls]]
+control = "top-encoder-4"
+ui_parameter = 3
+name = "In Boost"
+label = "In Boost"
+role = "drive"
+priority = "core"
+
+[[controls]]
+control = "upper-button-1"
+ui_parameter = 4
+name = "Color"
+label = "Color"
+role = "character"
+priority = "core"
+behavior = "toggle"
+[[controls]]
+control = "upper-button-2"
+ui_parameter = 5
+name = "Bypass"
+label = "Bypass"
+role = "global"
+priority = "core"
+behavior = "toggle"

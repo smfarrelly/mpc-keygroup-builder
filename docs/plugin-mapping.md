@@ -29,6 +29,26 @@ on channel 9 or Jura mode in slot 2 on channel 10. Channels 1–3 remain availab
 to the current Volca routing plan, and channel 16 remains the control/mixer
 channel.
 
+## Compact-effects batch
+
+- `midi/plugins/air-chorus-performance.toml`: slot 12, channel 4, all seven
+  Chorus controls.
+- `midi/plugins/air-expander-performance.toml`: slot 13, channel 5, all six
+  Expander controls.
+- `midi/plugins/color-compressor-performance.toml`: slot 14, channel 6, all six
+  Color Compressor controls.
+- `midi/plugins/analog-wear-rack-performance.toml`: slot 15, channel 7, one
+  coordinated page for Tape Emulator, Vintage, and Vinyl Emulator.
+
+The rack profile demonstrates the plural `plugins` form: every control names
+its target plugin explicitly, and compilation validates it against that
+plugin's own UI metadata. This supports a useful insert chain without pretending
+the three effects are one plugin. Channel 8 remains unreserved.
+
+Together, the nine generated pages contain 178 role-selected assignments and
+cover every plugin/effect with readable SD metadata except OPx-4, whose real
+Components capture already exists.
+
 ## Validate before touching hardware
 
 Use the SD card's readable plugin content and, when available, an MPC-authored
@@ -51,10 +71,10 @@ uv run mpc-plugin-map compile midi/plugins/*.toml \
   --project "/media/user/CARD/Projects/Boot.xpj" \
   --capture "work/hardware-captures/launch-control-xl3/1 - OPX.syx" \
   --capture "work/hardware-captures/launch-control-xl3/2 - Jura.syx" \
-  --output work/midi-control/plugin-performance-wave-01
+  --output work/midi-control/plugin-performance-all
 ```
 
-The output contains one folder per plugin, combined Components and MPC Learn
+The output contains one folder per profile, combined Components and MPC Learn
 CSVs, a control-layout review for each page, an ordered hardware checklist, a
 machine-readable manifest, and both summary- and control-level comparisons with
 the supplied real Components captures. Existing `.syx` and `.xpj` inputs are
@@ -86,3 +106,8 @@ the MPC's saved parameter ID. The catalog labels a `+4096` relationship as a
 hypothesis until a same-plugin MPC-authored XPJ confirms it. The Learn workflow
 remains the supported write path; this project does not synthesize XPJ or
 Components SysEx files.
+
+For a focused compact-effects packet, compile the four matching profile paths
+instead of the wildcard. For one complete current packet, compile all nine with
+`midi/plugins/*.toml`; profiles are ordered by slot regardless of shell path
+order.

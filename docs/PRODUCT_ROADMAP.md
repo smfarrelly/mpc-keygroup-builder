@@ -485,8 +485,8 @@ control.
 - [x] Preserve six real Components exports and two MPC 3.9.1.2 startup-template
   captures locally; cross-check saved OPx/Jura channel-controller pairs against
   81 MIDI Learn assignments without committing the captures.
-- [x] Discover 401 named controls from readable plugin content and compile 149
-  role-selected controls into five additive performance pages with validation,
+- [x] Discover 401 named controls from readable plugin content and compile 178
+  role-selected controls into nine additive performance pages with validation,
   Components worksheets, MPC Learn worksheets, capture comparison, and a
   minimal hardware-verification checklist.
 
@@ -528,7 +528,7 @@ for release gates:
   tested Volca receive channels, then update the canonical declarative rig.
 - Confirm the eight currently unmatched OPx/Jura faders are intentional and
   choose any remaining lower-button performance targets.
-- Verify one core-control probe for each of the five software-complete plugin
+- Verify one core-control probe for each of the nine software-complete plugin
   pages, then learn only the pages that prove musically useful.
 - Compare the current MPC-pass-through topology with the lower-click Launch
   Control USB-to-DIN bridge topology after its virtual DIN port is confirmed on

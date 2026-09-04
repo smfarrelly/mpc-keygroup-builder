@@ -1,0 +1,65 @@
+schema_version = 1
+id = "air-chorus-performance"
+plugin = "AIR Chorus"
+name = "AIR Chorus"
+description = "Compact chorus page covering movement, stereo offset, feedback, tone shape, and blend."
+slot = 12
+channel = 4
+probe = "top-encoder-1"
+
+[[controls]]
+control = "top-encoder-1"
+ui_parameter = 0
+name = "Rate"
+label = "Rate"
+role = "movement"
+priority = "core"
+
+[[controls]]
+control = "top-encoder-2"
+ui_parameter = 1
+name = "Depth"
+label = "Depth"
+role = "movement"
+priority = "core"
+
+[[controls]]
+control = "top-encoder-3"
+ui_parameter = 2
+name = "Delay"
+label = "Delay"
+role = "tone"
+priority = "core"
+
+[[controls]]
+control = "top-encoder-4"
+ui_parameter = 3
+name = "Feedback"
+label = "Feedback"
+role = "character"
+priority = "core"
+
+[[controls]]
+control = "top-encoder-5"
+ui_parameter = 5
+name = "Offset"
+label = "Offset"
+role = "stereo"
+priority = "secondary"
+
+[[controls]]
+control = "top-encoder-6"
+ui_parameter = 6
+name = "Mix"
+label = "Mix"
+role = "global"
+priority = "core"
+
+[[controls]]
+control = "upper-button-1"
+ui_parameter = 4
+name = "LFO Wave Sine"
+label = "LFO Wave"
+role = "movement"
+priority = "secondary"
+behavior = "toggle"

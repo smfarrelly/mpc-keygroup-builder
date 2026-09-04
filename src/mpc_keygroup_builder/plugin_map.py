@@ -52,9 +52,21 @@ def load_profile(path: Path) -> dict[str, Any]:
     document = _load_toml(path)
     if document.get("schema_version") != 1:
         raise ValueError(f"{path}: plugin profile requires schema_version=1")
-    for field in ("id", "plugin", "name", "description"):
+    for field in ("id", "name", "description"):
         if not isinstance(document.get(field), str) or not document[field]:
             raise ValueError(f"{path}: profile requires {field}")
+    plugin = document.get("plugin")
+    plugins = document.get("plugins")
+    has_plugin = isinstance(plugin, str) and bool(plugin)
+    has_plugins = (
+        isinstance(plugins, list)
+        and bool(plugins)
+        and all(isinstance(item, str) and item for item in plugins)
+    )
+    if has_plugin == has_plugins:
+        raise ValueError(f"{path}: profile requires exactly one of plugin or plugins")
+    if has_plugins and len(plugins) != len(set(plugins)):
+        raise ValueError(f"{path}: plugins must not contain duplicates")
     channel = document.get("channel")
     slot = document.get("slot")
     if not isinstance(channel, int) or not 1 <= channel <= 16:
@@ -71,6 +83,10 @@ def load_profile(path: Path) -> dict[str, Any]:
     return document
 
 
+def profile_plugins(profile: dict[str, Any]) -> list[str]:
+    return [profile["plugin"]] if "plugin" in profile else list(profile["plugins"])
+
+
 def _plugin_index(catalog: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return {_normalized(item["plugin"]): item for item in catalog["plugins"]}
 
@@ -81,11 +97,17 @@ def validate_profile(
 ) -> dict[str, Any]:
     errors: list[str] = []
     warnings: list[str] = []
-    plugin = _plugin_index(catalog).get(_normalized(profile["plugin"]))
-    if plugin is None:
-        errors.append(f"plugin content not found: {profile['plugin']}")
-        return {"errors": errors, "warnings": warnings, "controls": []}
-    discovered = {item["ui_parameter"]: item for item in plugin["controls"]}
+    catalog_plugins = _plugin_index(catalog)
+    declared_plugins = profile_plugins(profile)
+    discovered_by_plugin: dict[str, dict[int, dict[str, Any]]] = {}
+    for name in declared_plugins:
+        plugin = catalog_plugins.get(_normalized(name))
+        if plugin is None:
+            errors.append(f"plugin content not found: {name}")
+        else:
+            discovered_by_plugin[name] = {
+                item["ui_parameter"]: item for item in plugin["controls"]
+            }
     endpoints: set[str] = set()
     messages: set[tuple[int, int]] = set()
     rows = []
@@ -97,13 +119,20 @@ def validate_profile(
         if endpoint in endpoints:
             errors.append(f"duplicate endpoint: {endpoint}")
         endpoints.add(endpoint)
+        plugin_name = item.get("plugin", profile.get("plugin"))
+        if plugin_name not in declared_plugins:
+            errors.append(f"{endpoint}: undeclared plugin {plugin_name!r}")
+            continue
+        discovered = discovered_by_plugin.get(plugin_name)
+        if discovered is None:
+            continue
         ui_parameter = item.get("ui_parameter")
         if not isinstance(ui_parameter, int) or ui_parameter < 0:
             errors.append(f"{endpoint}: ui_parameter must be a nonnegative integer")
             continue
         source = discovered.get(ui_parameter)
         if source is None:
-            errors.append(f"{endpoint}: UI parameter {ui_parameter} not found in {profile['plugin']}")
+            errors.append(f"{endpoint}: UI parameter {ui_parameter} not found in {plugin_name}")
             continue
         expected_name = item.get("name")
         source_names = [source["name"], *source.get("aliases", [])]
@@ -128,7 +157,7 @@ def validate_profile(
             warnings.append(f"{endpoint}: {source['name']} is described as a button")
         rows.append(
             {
-                "plugin": profile["plugin"],
+                "plugin": plugin_name,
                 "mode": profile["name"],
                 "slot": profile["slot"],
                 "channel": profile["channel"],
@@ -235,6 +264,7 @@ def _learn_rows(result: dict[str, Any]) -> list[dict[str, Any]]:
 
 def render_layout(result: dict[str, Any]) -> str:
     profile = result["profile"]
+    plugins = profile_plugins(profile)
     lines = [
         f"# {profile['name']}",
         "",
@@ -250,8 +280,9 @@ def render_layout(result: dict[str, Any]) -> str:
         lines.extend((f"## {group.replace('-', ' ').title()}s", ""))
         for row in sorted(rows, key=lambda item: int(item["control"].rsplit("-", 1)[1])):
             qlink = f"; Q-Link: {', '.join(row['q_links'])}" if row["q_links"] else ""
+            plugin = f"{row['plugin']}: " if len(plugins) > 1 else ""
             lines.append(
-                f"- **{row['control']}** — {row['label']} → {row['name']} "
+                f"- **{row['control']}** — {row['label']} → {plugin}{row['name']} "
                 f"(ch {row['channel']}, CC {row['cc']}, MPC {row['mpc_parameter']}, "
                 f"{row['evidence']}, {row['role']}/{row['priority']}{qlink})"
             )
@@ -353,21 +384,34 @@ def render_hardware_checklist(results: list[dict[str, Any]]) -> str:
     ]
     for result in results:
         profile = result["profile"]
+        plugins = profile_plugins(profile)
         core = [row for row in result["controls"] if row["priority"] == "core"]
         probe = next(
             (row for row in result["controls"] if row["control"] == profile.get("probe")),
             core[0] if core else result["controls"][0],
         )
+        load_step = (
+            f"- [ ] Load **{plugins[0]}** on a dedicated MPC track."
+            if len(plugins) == 1
+            else f"- [ ] On one test audio track, load this insert chain in order: "
+            + ", ".join(f"**{item}**" for item in plugins)
+            + "."
+        )
+        evidence_step = (
+            "- [ ] Inspect the XPJ; promote the plugin's +4096 parameter relationship only if the probe agrees."
+            if len(plugins) == 1
+            else "- [ ] Inspect the XPJ; promote only the probed effect's +4096 parameter relationship."
+        )
         lines.extend(
             (
                 f"## {profile['name']}",
                 "",
-                f"- [ ] Load **{profile['plugin']}** on a dedicated MPC track.",
+                load_step,
                 f"- [ ] Create Components mode slot {profile['slot']} on channel {profile['channel']} from its worksheet.",
-                f"- [ ] Probe: learn **{probe['label']}** from {probe['control']} (CC {probe['cc']}) to **{probe['name']}**.",
+                f"- [ ] Probe: learn **{probe['label']}** from {probe['control']} (CC {probe['cc']}) to **{probe['plugin']} → {probe['name']}**.",
                 "- [ ] Confirm minimum, midpoint, maximum, pickup behavior, and no unrelated movement.",
                 "- [ ] Save/reload a small XPJ and verify the assignment persists.",
-                "- [ ] Inspect the XPJ; promote the plugin's +4096 parameter relationship only if the probe agrees.",
+                evidence_step,
                 f"- [ ] Learn and smoke-test the remaining {len(result['controls']) - 1} controls after the probe passes.",
                 "",
             )
@@ -416,7 +460,7 @@ def compile_batch(
             summary_rows.append(
                 {
                     "profile": profile["id"],
-                    "plugin": profile["plugin"],
+                    "plugin": "; ".join(profile_plugins(profile)),
                     "slot": profile["slot"],
                     "channel": profile["channel"],
                     "controls": len(result["controls"]),

@@ -1,0 +1,55 @@
+schema_version = 1
+id = "air-expander-performance"
+plugin = "AIR Expander"
+name = "AIR Expander"
+description = "Compact dynamics page for threshold, ratio, range, timing, and output trim."
+slot = 13
+channel = 5
+probe = "top-encoder-1"
+
+[[controls]]
+control = "top-encoder-1"
+ui_parameter = 0
+name = "Threshold"
+label = "Threshold"
+role = "dynamics"
+priority = "core"
+[[controls]]
+control = "top-encoder-2"
+ui_parameter = 1
+name = "Ratio"
+label = "Ratio"
+role = "dynamics"
+priority = "core"
+
+[[controls]]
+control = "top-encoder-3"
+ui_parameter = 2
+name = "Range"
+label = "Range"
+role = "dynamics"
+priority = "core"
+
+[[controls]]
+control = "top-encoder-4"
+ui_parameter = 3
+name = "Attack"
+label = "Attack"
+role = "envelope"
+priority = "core"
+
+[[controls]]
+control = "top-encoder-5"
+ui_parameter = 4
+name = "Release"
+label = "Release"
+role = "envelope"
+priority = "core"
+
+[[controls]]
+control = "top-encoder-6"
+ui_parameter = 5
+name = "Output"
+label = "Output"
+role = "global"
+priority = "core"

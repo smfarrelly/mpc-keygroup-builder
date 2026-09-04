@@ -85,3 +85,11 @@ emits both Components-entry and MPC MIDI Learn worksheets, an ordered one-probe-
 first hardware checklist, and a control-level comparison with existing OPx-4
 and Jura Components captures. These remain software-ready, hardware-pending
 until an MPC-authored project confirms each plugin's first proposed target.
+
+A second compact-effects batch adds 29 assignments across AIR Chorus, AIR
+Expander, Color Compressor, Tape Emulator, Vintage, and Vinyl Emulator. The
+last three share a deliberately validated multi-plugin page for a three-insert
+analog-wear chain. Across both batches, nine profiles now contain 178 selected
+assignments and cover every SD-visible plugin except OPx-4, which already has a
+real captured controller page. The complete proposed layout uses slots 7–15;
+channel 8 remains free.

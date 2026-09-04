@@ -20,20 +20,21 @@ tracks:
 Both Launch Control Drum pages use channel 3. They divide the controls into
 parts 1–3 and 4–6; they are not separate MIDI channels.
 
-For plugin mapping, the first five-page performance batch is software-complete.
-Regenerate its worksheets from the SD content and saved startup project with:
+For plugin mapping, all nine performance pages are software-complete. Regenerate
+the combined worksheets from the SD content and saved startup project with:
 
 ```bash
 uv run mpc-plugin-map compile midi/plugins/*.toml \
   --synth-root "/media/steve-farrelly/3561-6538/Synths" \
   --project "/media/steve-farrelly/3561-6538/Projects/Boot.xpj" \
-  --output work/midi-control/plugin-performance-wave-01
+  --output work/midi-control/plugin-performance-all
 ```
 
-The generated `HARDWARE_CHECKLIST.md` starts with one probe per plugin before
-asking for a full Learn pass. Slots 7–11 and channels 11–15 are reserved for
-Iona, Flavor Pro, Trigger FX, Multitap Delay, and Vintage Filter. This work does
-not depend on the Volca MIDI splitter.
+The generated `HARDWARE_CHECKLIST.md` starts with one probe per page before
+asking for a full Learn pass. Slots 7–15 cover Iona, Flavor Pro, Trigger FX,
+Multitap Delay, Vintage Filter, Chorus, Expander, Color Compressor, and a
+three-effect Analog Wear Rack. This work does not depend on the Volca MIDI
+splitter.
 
 Historical plans and test detail remain in `docs/` and `inventory/`; they are
 reference material, not prerequisites for resuming work.

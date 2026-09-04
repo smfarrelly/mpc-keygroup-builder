@@ -113,12 +113,75 @@ priority = "secondary"
                     output,
                 )
 
+    def test_multi_plugin_profile_validates_each_declared_target(self):
+        profile = {
+            "id": "rack",
+            "plugins": ["Effect A", "Effect B"],
+            "name": "Rack",
+            "description": "Two effects.",
+            "slot": 15,
+            "channel": 7,
+            "probe": "top-encoder-1",
+            "controls": [
+                {
+                    "control": "top-encoder-1",
+                    "plugin": "Effect A",
+                    "ui_parameter": 0,
+                    "name": "Drive",
+                    "priority": "core",
+                },
+                {
+                    "control": "middle-encoder-1",
+                    "plugin": "Effect B",
+                    "ui_parameter": 1,
+                    "name": "Mix",
+                    "priority": "core",
+                },
+            ],
+        }
+        catalog = {
+            "plugins": [
+                {
+                    "plugin": "Effect A",
+                    "controls": [
+                        {
+                            "ui_parameter": 0,
+                            "mpc_parameter": 4096,
+                            "mpc_parameter_basis": "hypothesis:+4096",
+                            "name": "Drive",
+                            "aliases": [],
+                            "control_type": "Knob",
+                            "q_links": [],
+                        }
+                    ],
+                },
+                {
+                    "plugin": "Effect B",
+                    "controls": [
+                        {
+                            "ui_parameter": 1,
+                            "mpc_parameter": 4097,
+                            "mpc_parameter_basis": "hypothesis:+4096",
+                            "name": "Mix",
+                            "aliases": [],
+                            "control_type": "Knob",
+                            "q_links": [],
+                        }
+                    ],
+                },
+            ]
+        }
+        result = plugin_map.validate_profile(profile, catalog)
+        self.assertEqual(result["errors"], [])
+        self.assertEqual([item["plugin"] for item in result["controls"]], ["Effect A", "Effect B"])
+        self.assertIn("Effect A: Drive", plugin_map.render_layout({"profile": profile, **result}))
+
     def test_repository_profiles_reserve_distinct_slots_and_channels(self):
         root = Path(__file__).parents[1]
         profiles = [plugin_map.load_profile(path) for path in sorted((root / "midi/plugins").glob("*.toml"))]
-        self.assertEqual(len(profiles), 5)
-        self.assertEqual(len({item["slot"] for item in profiles}), 5)
-        self.assertEqual(len({item["channel"] for item in profiles}), 5)
+        self.assertEqual(len(profiles), 9)
+        self.assertEqual(len({item["slot"] for item in profiles}), 9)
+        self.assertEqual(len({item["channel"] for item in profiles}), 9)
 
 
 if __name__ == "__main__":
