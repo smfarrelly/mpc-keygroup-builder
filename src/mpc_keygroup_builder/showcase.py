@@ -1,4 +1,4 @@
-"""Build three deterministic, redistributable MPC composition evidence bundles."""
+"""Build six deterministic, redistributable MPC composition evidence bundles."""
 
 from __future__ import annotations
 
@@ -32,6 +32,18 @@ RECIPE_FILES = (
     "harmony/electro-minor.toml",
     "melody/electro-hook.toml",
     "workstation/electro-scratchpad.toml",
+    "drums/funk-machine.toml",
+    "harmony/funk-minor.toml",
+    "melody/funk-call.toml",
+    "workstation/funk-scratchpad.toml",
+    "drums/house-foundation.toml",
+    "harmony/house-minor.toml",
+    "melody/house-spark.toml",
+    "workstation/house-scratchpad.toml",
+    "drums/texture-collage.toml",
+    "harmony/strange-mixolydian.toml",
+    "melody/odd-signal.toml",
+    "workstation/weird-scratchpad.toml",
 )
 
 
@@ -51,6 +63,9 @@ COMPOSITIONS = (
     CompositionSpec("dusty", "workstation/dusty-scratchpad.toml", 37, 1037, 92.0, 1.0, 0.20, {}),
     CompositionSpec("ambient", "workstation/ambient-scratchpad.toml", 83, 1083, 78.0, 0.82, 0.28, {"fx": "cymbal"}),
     CompositionSpec("electro", "workstation/electro-scratchpad.toml", 149, 1149, 118.0, 1.0, 0.18, {}),
+    CompositionSpec("funk", "workstation/funk-scratchpad.toml", 211, 1211, 104.0, 1.0, 0.22, {}),
+    CompositionSpec("house", "workstation/house-scratchpad.toml", 277, 1277, 124.0, 1.0, 0.16, {}),
+    CompositionSpec("weird", "workstation/weird-scratchpad.toml", 331, 1331, 86.0, 0.90, 0.35, {"fx": "cymbal"}),
 )
 
 
@@ -163,16 +178,16 @@ def _write_composition(
 
 def _readme(compositions: list[dict]) -> str:
     lines = [
-        "# MPC three-composition showcase",
+        "# MPC six-composition showcase",
         "",
         "Software generation and deterministic reproduction: **PASS**  ",
         "MPC import, sound selection, listening, and musical completion: **DEFERRED**",
         "",
-        "This redistributable bundle demonstrates three contrasting four-part ideas",
+        "This redistributable bundle demonstrates six contrasting four-part ideas",
         "using generated CC0 Drum audio. Each idea includes a complete MIDI file,",
         "five traceable arrangement sections, editable recipes, and JSON evidence.",
-        "For the ambient fixture, one cymbal pad is addressed semantically as an FX",
-        "hit; the alias is recorded explicitly in `showcase.json`.",
+        "For fixtures that address a cymbal semantically as an FX hit, the alias is",
+        "recorded explicitly in `showcase.json`.",
         "",
         "## Compositions",
         "",
@@ -197,7 +212,7 @@ def _readme(compositions: list[dict]) -> str:
 
 def _hardware_checklist(compositions: list[dict]) -> str:
     lines = [
-        "# Three-composition showcase — MPC checklist",
+        "# Six-composition showcase — MPC checklist",
         "",
         "The bundle is software-verified. Every box below remains hardware-pending.",
         "",
@@ -230,11 +245,40 @@ def _hardware_checklist(compositions: list[dict]) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
-def build_showcase(output: Path, recipe_root: Path | None = None) -> dict:
+def build_showcase(
+    output: Path,
+    recipe_root: Path | None = None,
+    families: tuple[str, ...] | None = None,
+    seed_overrides: dict[str, int] | None = None,
+) -> dict:
     output = output.expanduser().resolve()
     recipe_root = recipe_root.expanduser().resolve() if recipe_root else None
     if output.exists():
         raise FileExistsError(f"showcase output already exists: {output}")
+    available = {spec.id: spec for spec in COMPOSITIONS}
+    selected_ids = list(available) if families is None else list(families)
+    if not selected_ids or len(selected_ids) != len(set(selected_ids)):
+        raise ValueError("showcase families must be non-empty and unique")
+    unknown = sorted(set(selected_ids) - set(available))
+    if unknown:
+        raise ValueError(f"unknown showcase family: {', '.join(unknown)}")
+    overrides = seed_overrides or {}
+    if any(isinstance(seed, bool) or not isinstance(seed, int) for seed in overrides.values()):
+        raise ValueError("showcase seed overrides must be integers")
+    unknown_overrides = sorted(set(overrides) - set(selected_ids))
+    if unknown_overrides:
+        raise ValueError(
+            "seed override requires the family to be selected: " + ", ".join(unknown_overrides)
+        )
+    specs = [
+        replace(
+            available[family],
+            seed=overrides.get(family, available[family].seed),
+            arrangement_seed=overrides.get(family, available[family].seed) + 1000,
+        )
+        if family in overrides else available[family]
+        for family in selected_ids
+    ]
     output.parent.mkdir(parents=True, exist_ok=True)
     staging = Path(tempfile.mkdtemp(prefix=f".{output.name}.staging-", dir=output.parent))
     try:
@@ -249,11 +293,11 @@ def build_showcase(output: Path, recipe_root: Path | None = None) -> dict:
         program = from_xpm(program_path)
         compositions = [
             _write_composition(staging, recipes, program_path, program, spec)
-            for spec in COMPOSITIONS
+            for spec in specs
         ]
         report = {
             "schema_version": 1,
-            "kind": "mpc-three-composition-showcase",
+            "kind": "mpc-composition-showcase",
             "license": "CC0-1.0 generated audio; repository source remains MIT",
             "software_status": "pass",
             "hardware_status": "deferred",
@@ -294,8 +338,30 @@ def main(argv: list[str] | None = None) -> int:
         "--recipe-root", type=Path,
         help="optional recipes directory; installed defaults are included",
     )
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument(
+        "--family", action="append", choices=[spec.id for spec in COMPOSITIONS],
+        help="build one family; repeat to select several (default: all)",
+    )
+    selection.add_argument("--all", action="store_true", help="build all six families")
+    parser.add_argument(
+        "--seed", action="append", default=[], metavar="FAMILY=INTEGER",
+        help="override a selected family's idea seed; arrangement seed follows at +1000",
+    )
     args = parser.parse_args(argv or sys.argv[1:])
-    report = build_showcase(args.output, args.recipe_root)
+    overrides = {}
+    for value in args.seed:
+        family, separator, seed = value.partition("=")
+        if not separator or family not in {spec.id for spec in COMPOSITIONS}:
+            raise ValueError(f"seed must use FAMILY=INTEGER: {value!r}")
+        if family in overrides:
+            raise ValueError(f"duplicate seed override: {family}")
+        try:
+            overrides[family] = int(seed)
+        except ValueError as error:
+            raise ValueError(f"seed must use FAMILY=INTEGER: {value!r}") from error
+    families = tuple(args.family) if args.family else None
+    report = build_showcase(args.output, args.recipe_root, families, overrides)
     print(f"Built {report['composition_count']} compositions -> {args.output.expanduser().resolve()}")
     print("Software status: pass; MPC hardware status: deferred")
     return 0

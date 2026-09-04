@@ -1,0 +1,32 @@
+schema_version = 1
+id = "house-foundation"
+name = "House Foundation"
+bars = 2
+steps_per_bar = 16
+swing = 0.54
+gate = 0.42
+channel = 10
+
+[[events]]
+role = "kick"
+steps = [0, 4, 8, 12, 16, 20, 24, 28]
+velocity = 116
+humanize_velocity = 3
+
+[[events]]
+role = "clap"
+steps = [4, 12, 20, 28]
+velocity = 105
+selection = "cycle"
+
+[[events]]
+role = "hihat.closed"
+steps = [2, 6, 10, 14, 18, 22, 26, 30]
+velocity = 84
+humanize_velocity = 7
+
+[[events]]
+role = "hihat.open"
+steps = [6, 14, 22, 30]
+velocity = 93
+probability = 0.78

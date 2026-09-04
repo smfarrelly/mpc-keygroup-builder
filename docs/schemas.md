@@ -44,6 +44,9 @@ copying dependent files manually:
 mpc-schema init workstation --family dusty --output my-dusty-recipes
 mpc-schema init workstation --family ambient --output my-ambient-recipes
 mpc-schema init workstation --family electro --output my-electro-recipes
+mpc-schema init workstation --family funk --output my-funk-recipes
+mpc-schema init workstation --family house --output my-house-recipes
+mpc-schema init workstation --family weird --output my-weird-recipes
 ```
 
 The destination must be new. Each starter contains mutually compatible Drum,

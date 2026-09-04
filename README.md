@@ -28,6 +28,7 @@ After installation, this is the quickest confidence check:
 
 ```bash
 mpc-tools doctor
+mpc-tools new workstation --name "My Scratchpad" --output my-scratchpad
 mpc-tools demo --output my-mpc-demo
 ```
 
@@ -46,7 +47,7 @@ is required for the software portion.
 - Inspect XPM programs without modifying them.
 - Inspect, extract, and compare MPC 3 XPJ projects without modifying them.
 - Generate deterministic Drum, Bass, Chords, Melody, and arrangement MIDI.
-- Build a redistributable three-composition showcase with deterministic
+- Build a redistributable six-composition showcase with deterministic
   evidence, editable recipes, and synthetic CC0 Drum audio.
 - Compile declarative MPC, Launch Control XL 3, and Volca routing plans.
 - Inspect Components SysEx captures and cross-check them against MPC MIDI Learn.
@@ -64,6 +65,10 @@ is required for the software portion.
   listening pass.
 - Discover packaged schemas, validate declarative files, and initialize a
   complete editable workstation recipe family.
+- Audit an entire creative-recipe tree for broken dependencies, conflicting
+  channels, duplicate IDs, cycles, and orphaned components.
+- Scaffold safe workstation, Drum Program, Keygroup, and controller-page
+  workspaces with explicit software and hardware evidence boundaries.
 
 The project deliberately does **not** synthesize undocumented MPC project
 schemas, overwrite source programs, commit licensed WAV/XPM/XPJ content, or
@@ -122,7 +127,7 @@ for the exact boundary.
 - [Program model and semantic layouts](docs/program-model-and-layouts.md)
 - [Program Designer](docs/program-designer.md)
 - [Portable workflow demo](docs/portable-demo.md)
-- [Three-composition showcase](docs/composition-showcase.md)
+- [Six-composition showcase](docs/composition-showcase.md)
 - [Creative MIDI](docs/creative-midi.md)
 - [Declarative MIDI control](docs/declarative-midi-control.md)
 - [Plugin parameter catalog](docs/plugin-parameters.md)

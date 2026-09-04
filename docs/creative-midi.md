@@ -5,6 +5,22 @@ requiring an MPC project file or licensed audio. Every run writes a Standard
 MIDI file and a JSON evidence file. Reusing the same recipe, seed, tempo, and
 tool version recreates the same events.
 
+## Audit the complete recipe library
+
+Validate every recipe and its cross-file relationships before generating a
+batch:
+
+```bash
+mpc-recipe-audit recipes --output work/recipe-audit
+```
+
+The audit checks individual fields, duplicate IDs, missing or escaping
+dependencies, dependency cycles, harmony/Melody key and meter compatibility,
+workstation MIDI-channel collisions, and component recipes not referenced by a
+workstation. It writes a searchable JSON catalog, flat CSV, Markdown family
+summary, and a specific next action for every issue. A report containing errors
+exits with status 2 after preserving the evidence bundle.
+
 ## Chords and bass
 
 Generate two named MIDI tracks plus a conductor track:

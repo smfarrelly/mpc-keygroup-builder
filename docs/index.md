@@ -11,7 +11,7 @@ user does not have to read the project's full history before making something.
 4. [Troubleshooting](troubleshooting.md) — recover from common failures.
 5. [Portable workflow demo](portable-demo.md) — exercise a complete workflow
    without commercial samples.
-6. [Three-composition showcase](composition-showcase.md) — generate contrasting
+6. [Six-composition showcase](composition-showcase.md) — generate contrasting
    ideas and arrangement evidence without commercial samples.
 
 ## Build and organize instruments

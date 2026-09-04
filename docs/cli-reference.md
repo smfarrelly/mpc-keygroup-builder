@@ -65,6 +65,7 @@ audio.
 
 ```bash
 mpc-tools doctor
+mpc-tools new workstation --name "My Scratchpad" --output my-scratchpad
 mpc-tools demo --output my-mpc-demo
 mpc-showcase --output my-mpc-showcase
 mpc-tools web-demo --output program-designer-demo.html

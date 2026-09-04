@@ -510,16 +510,19 @@ control.
   an initialized 178-control ledger, ranked profile seeds, printable mode cards,
   and a full 15-slot capacity audit that retains unconfirmed slot evidence as
   warnings.
-- [x] Add a redistributable three-composition software showcase: dusty, ambient,
-  and electro each produce four-part MIDI, five traceable arrangement sections,
-  editable packaged recipes, deterministic checksums, and explicit deferred
-  hardware/listening status.
+- [x] Add a redistributable six-composition software showcase: dusty, ambient,
+  electro, funk, house, and weird each produce four-part MIDI, five traceable
+  arrangement sections, editable packaged recipes, deterministic checksums,
+  family/seed selection, and explicit deferred hardware/listening status.
 - [x] Publish a validated repository AI skill and a checksum-verified personal
   vendor-document cache that keeps copyrighted Korg PDFs out of Git.
 - [x] Publish packaged JSON Schemas for the core declarative formats, expose
   native semantic validation through one CLI, validate maintained examples,
   and exercise an installed wheel from outside the checkout in CI.
-- Software proof now covers three reproducible composition candidates. Promote
+- [x] Add a dependency-aware recipe auditor with JSON, CSV, and Markdown
+  catalogs, plus safe guided starters for workstation, Drum Program, Keygroup,
+  and controller-page workspaces.
+- Software proof now covers six reproducible composition candidates. Promote
   them to completed compositions only after human arrangement and listening.
 - Confirm another MPC owner can generate, validate, preview, install, and play
   a program by following the documentation.

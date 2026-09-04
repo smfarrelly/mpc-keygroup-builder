@@ -1,0 +1,12 @@
+schema_version = 1
+id = "funk-scratchpad"
+name = "80s Funk Scratchpad"
+drums = "../drums/funk-machine.toml"
+harmony = "../harmony/funk-minor.toml"
+melody = "../melody/funk-call.toml"
+
+[programs]
+drums = "Vinyl Drum Machines From Mars 1"
+bass = "Juno Sub Smooth"
+chords = "OB Warm Keys"
+melody = "Dark FM"

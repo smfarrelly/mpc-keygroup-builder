@@ -9,16 +9,16 @@ from mpc_keygroup_builder.showcase import RECIPE_FILES, build_showcase
 
 
 class ShowcaseTests(unittest.TestCase):
-    def test_builds_three_complete_compositions_with_deferred_hardware_status(self):
+    def test_builds_six_complete_compositions_with_deferred_hardware_status(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "showcase"
             report = build_showcase(output)
             self.assertEqual(report["software_status"], "pass")
             self.assertEqual(report["hardware_status"], "deferred")
             self.assertEqual([item["id"] for item in report["compositions"]], [
-                "dusty", "ambient", "electro"
+                "dusty", "ambient", "electro", "funk", "house", "weird"
             ])
-            self.assertEqual(len({item["digest"] for item in report["compositions"]}), 3)
+            self.assertEqual(len({item["digest"] for item in report["compositions"]}), 6)
             self.assertTrue((output / "Instrument/FG Portable Cross Kit.xpm").is_file())
             for item in report["compositions"]:
                 root = output / "Compositions" / item["id"]
@@ -31,7 +31,7 @@ class ShowcaseTests(unittest.TestCase):
                 self.assertTrue(events)
                 self.assertEqual({event.channel for event in events}, {1, 2, 3, 10})
             checklist = (output / "HARDWARE_CHECKLIST.md").read_text(encoding="utf-8")
-            self.assertEqual(checklist.count("Verdict: [ ] pass"), 3)
+            self.assertEqual(checklist.count("Verdict: [ ] pass"), 6)
             self.assertIn("hardware-pending", checklist)
             with self.assertRaises(FileExistsError):
                 build_showcase(output)
@@ -54,6 +54,31 @@ class ShowcaseTests(unittest.TestCase):
             )
             self.assertNotIn(str(first), rendered)
             self.assertNotIn(".staging-", rendered)
+
+    def test_family_selection_and_seed_override_are_explicit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "selected"
+            report = build_showcase(
+                output,
+                families=("house", "weird"),
+                seed_overrides={"house": 999},
+            )
+            self.assertEqual([item["id"] for item in report["compositions"]], ["house", "weird"])
+            self.assertEqual(report["compositions"][0]["seed"], 999)
+            self.assertEqual(report["compositions"][0]["arrangement_seed"], 1999)
+            self.assertEqual(report["compositions"][1]["seed"], 331)
+            with self.assertRaisesRegex(ValueError, "requires the family"):
+                build_showcase(
+                    Path(directory) / "invalid",
+                    families=("dusty",),
+                    seed_overrides={"house": 5},
+                )
+            with self.assertRaisesRegex(ValueError, "seed overrides must be integers"):
+                build_showcase(
+                    Path(directory) / "bad-seed",
+                    families=("house",),
+                    seed_overrides={"house": True},
+                )
 
     def test_packaged_showcase_recipes_match_repository_sources(self):
         repository = Path(__file__).resolve().parents[1] / "recipes"

@@ -30,6 +30,7 @@ jobs:
           mpc-schema validate plugin-profile midi/plugins/*.toml
           mpc-schema validate rig-profile rigs/*.toml
           mpc-schema validate controller-capacity midi/controller-capacity.toml
+          mpc-recipe-audit recipes --output /tmp/mpc-recipe-audit
       - name: Smoke-test the installed wheel outside the checkout
         run: |
           python -m pip wheel . --no-deps --wheel-dir /tmp/mpc-wheel
@@ -39,6 +40,8 @@ jobs:
           /tmp/mpc-installed/bin/mpc-tools doctor
           /tmp/mpc-installed/bin/mpc-schema show plugin-profile --output /tmp/plugin-profile.schema.json
           /tmp/mpc-installed/bin/mpc-schema init workstation --family ambient --output /tmp/mpc-recipe-starter
+          /tmp/mpc-installed/bin/mpc-recipe-audit /tmp/mpc-recipe-starter --output /tmp/mpc-installed-recipe-audit
+          /tmp/mpc-installed/bin/mpc-tools new controller-page --name "CI Controller" --output /tmp/mpc-controller-starter
           /tmp/mpc-installed/bin/mpc-tools demo --output /tmp/mpc-portable-smoke
           /tmp/mpc-installed/bin/mpc-showcase --output /tmp/mpc-showcase-smoke
           test -f /tmp/mpc-portable-smoke/HARDWARE_CHECKLIST.md

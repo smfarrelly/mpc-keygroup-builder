@@ -1,13 +1,23 @@
-# Three-composition showcase
+# Six-composition showcase
 
 `mpc-showcase` builds a redistributable proof of the creative workflow without
 requiring commercial samples, an MPC, or a repository checkout. It generates
-three contrasting four-part ideas—dusty, ambient, and electro—from fixed seeds.
+six contrasting four-part ideas—dusty, ambient, electro, funk, house, and
+weird—from fixed seeds.
 Each composition contains Drums, Bass, Chords, and Melody plus Main, Main B,
 Breakdown, Build, and Outro sequence candidates.
 
 ```bash
 mpc-showcase --output my-mpc-showcase
+```
+
+Build a subset or override one family seed without changing the maintained
+defaults:
+
+```bash
+mpc-showcase --family house --family weird --seed house=999 \
+  --output house-and-weird
+mpc-showcase --all --output all-six
 ```
 
 Open `my-mpc-showcase/README.md` first. The bundle contains:

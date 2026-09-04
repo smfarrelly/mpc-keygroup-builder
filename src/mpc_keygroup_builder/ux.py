@@ -14,6 +14,7 @@ from pathlib import Path
 
 from .entrypoints import COMMANDS, invoke, version
 from .portable_demo import build_demo
+from .scaffold import KINDS, create as create_scaffold
 from .web_demo import build_web_demo
 
 
@@ -192,6 +193,15 @@ def main() -> int:
     browser = subparsers.add_parser("web-demo", help="write a standalone browser-only Program Designer demo")
     browser.add_argument("--output", type=Path, required=True, help="HTML file to create")
     browser.add_argument("--force", action="store_true", help="replace an existing demo HTML file")
+    new = subparsers.add_parser("new", help="create a safe starter for a common MPC workflow")
+    new.add_argument("kind", choices=KINDS)
+    new.add_argument("--name", required=True, help="human-readable instrument or setup name")
+    new.add_argument("--output", type=Path, required=True, help="new starter directory")
+    new.add_argument(
+        "--family",
+        choices=("dusty", "ambient", "electro", "funk", "house", "weird"),
+        help="workstation recipe family (default for workstations: dusty)",
+    )
     args = parser.parse_args()
     if args.command == "commands":
         return _commands(args.category, args.json)
@@ -208,6 +218,13 @@ def main() -> int:
         report = build_demo(args.output.expanduser(), None)
         print(f"PASS: {report['cross_kit_program']}")
         print(f"Next: open {args.output.resolve() / 'HARDWARE_CHECKLIST.md'}")
+        return 0
+    if args.command == "new":
+        if args.kind != "workstation" and args.family is not None:
+            parser.error("--family applies only to workstation starters")
+        output = create_scaffold(args.kind, args.name, args.output, args.family or "dusty")
+        print(f"Created {args.kind} starter: {output}")
+        print(f"Next: open {output / 'README.md'}")
         return 0
     output = args.output.expanduser().resolve()
     build_web_demo(output, force=args.force)

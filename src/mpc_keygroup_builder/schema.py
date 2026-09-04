@@ -167,6 +167,18 @@ STARTER_FAMILIES = {
         "drums/electro-grid.toml", "harmony/electro-minor.toml",
         "melody/electro-hook.toml", "workstation/electro-scratchpad.toml",
     ),
+    "funk": (
+        "drums/funk-machine.toml", "harmony/funk-minor.toml",
+        "melody/funk-call.toml", "workstation/funk-scratchpad.toml",
+    ),
+    "house": (
+        "drums/house-foundation.toml", "harmony/house-minor.toml",
+        "melody/house-spark.toml", "workstation/house-scratchpad.toml",
+    ),
+    "weird": (
+        "drums/texture-collage.toml", "harmony/strange-mixolydian.toml",
+        "melody/odd-signal.toml", "workstation/weird-scratchpad.toml",
+    ),
 }
 
 

@@ -69,11 +69,28 @@ mathematical fixtures intended to verify the workflow, not production sounds.
 You can complete all software checks without an MPC and defer the hardware
 rows.
 
-To explore three complete musical directions instead of one compact fixture:
+To explore six complete musical directions instead of one compact fixture:
 
 ```bash
 mpc-showcase --output my-mpc-showcase
 ```
+
+## Start your own workflow
+
+Create a new folder with a focused README and safe starter files:
+
+```bash
+mpc-tools new workstation --name "My Scratchpad" --family funk --output my-scratchpad
+mpc-tools new drum --name "My Drum Kit" --output my-drum-kit
+mpc-tools new keygroup --name "My Keys" --output my-keys
+mpc-tools new controller-page --name "My Plugin" --output my-plugin-page
+```
+
+Workstation and Drum manifests pass their available software validation at
+creation. Keygroups still require pitched WAVs plus an MPC-authored template.
+Controller pages contain an explicit placeholder that must be replaced with
+installed-plugin parameter evidence. Every starter records this boundary in
+`scaffold.json` and refuses to overwrite an existing destination.
 
 ## Return after time away
 

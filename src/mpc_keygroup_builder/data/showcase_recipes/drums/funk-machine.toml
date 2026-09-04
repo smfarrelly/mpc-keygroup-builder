@@ -1,0 +1,38 @@
+schema_version = 1
+id = "funk-machine"
+name = "Funk Machine"
+bars = 2
+steps_per_bar = 16
+swing = 0.56
+gate = 0.38
+channel = 10
+
+[[events]]
+role = "kick"
+steps = [0, 3, 7, 10, 16, 19, 22, 27]
+velocity = 114
+humanize_velocity = 5
+
+[[events]]
+role = "snare"
+steps = [4, 12, 20, 28]
+velocity = 112
+selection = "cycle"
+
+[[events]]
+role = "clap"
+steps = [12, 28]
+velocity = 92
+probability = 0.72
+
+[[events]]
+role = "hihat.closed"
+steps = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30]
+velocity = 76
+probability = 0.9
+humanize_velocity = 10
+
+[[events]]
+role = "hihat.open"
+steps = [15, 31]
+velocity = 94

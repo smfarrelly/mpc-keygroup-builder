@@ -29,9 +29,10 @@ inventing MPC schemas or treating generated output as hardware-tested.
   `docs/keygroup-variants.md`.
 - For generative sequences, use `docs/creative-midi.md` and
   `docs/drum-ideas.md`. Use `docs/composition-showcase.md` for the
-  redistributable three-composition proof.
+  redistributable six-composition proof, and run `mpc-recipe-audit` before
+  generating a library-wide batch.
 - For declarative formats, semantic validation, or editable recipe starters,
-  use `docs/schemas.md` and `mpc-schema`.
+  use `docs/schemas.md`, `mpc-schema`, and `mpc-tools new`.
 - For MPC, Launch Control XL 3, or Volca routing, use
   `docs/declarative-midi-control.md` and `docs/rig-profiles.md`.
 - For plugin parameter discovery, performance-page seeds, controller capacity,
