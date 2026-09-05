@@ -159,7 +159,10 @@ def render_report(rows: list[dict[str, Any]], fingerprint: str) -> str:
 
 
 def _write(path: Path, content: str, *, force: bool) -> None:
-    path = path.expanduser().resolve()
+    path = path.expanduser()
+    if path.is_symlink():
+        raise ValueError(f"plugin result output may not be a symbolic link: {path}")
+    path = path.resolve()
     if path.exists() and not force:
         raise FileExistsError(path)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -171,6 +174,27 @@ def _write(path: Path, content: str, *, force: bool) -> None:
     except Exception:
         Path(temporary).unlink(missing_ok=True)
         raise
+
+
+def _output_paths(ledger: Path, report: Path | None, *, force: bool) -> list[Path]:
+    paths = []
+    for label, path in (("ledger", ledger), ("report", report)):
+        if path is None:
+            continue
+        path = path.expanduser()
+        if path.is_symlink():
+            raise ValueError(f"plugin result {label} may not be a symbolic link: {path}")
+        resolved = path.resolve()
+        if resolved.exists() and not resolved.is_file():
+            raise ValueError(f"plugin result {label} must be a regular file: {resolved}")
+        paths.append(resolved)
+    if len(paths) != len(set(paths)):
+        raise ValueError("ledger and report must use different paths")
+    if not force:
+        existing = [path for path in paths if path.exists()]
+        if existing:
+            raise FileExistsError(existing[0])
+    return paths
 
 
 def _companion(args: argparse.Namespace) -> dict[str, Any]:
@@ -200,24 +224,16 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv or sys.argv[1:])
+    targets = _output_paths(args.ledger, args.report, force=args.force)
     companion = _companion(args)
     if args.command == "init":
         rows = expected_rows(companion)
     else:
         document = json.loads(args.results.expanduser().resolve().read_text(encoding="utf-8"))
         rows = apply_results(companion, document)
-    targets = [args.ledger.expanduser().resolve()]
+    _write(targets[0], render_csv(rows), force=args.force)
     if args.report:
-        targets.append(args.report.expanduser().resolve())
-    if len(targets) != len(set(targets)):
-        raise ValueError("ledger and report must use different paths")
-    if not args.force:
-        existing = [path for path in targets if path.exists()]
-        if existing:
-            raise FileExistsError(existing[0])
-    _write(args.ledger, render_csv(rows), force=args.force)
-    if args.report:
-        _write(args.report, render_report(rows, companion["fingerprint"]), force=args.force)
+        _write(targets[1], render_report(rows, companion["fingerprint"]), force=args.force)
     counts = Counter(row["status"] for row in rows)
     print(
         f"Wrote {len(rows)} controls -> {args.ledger.expanduser().resolve()} "
