@@ -21,6 +21,17 @@ class WebDemoTests(unittest.TestCase):
             with self.assertRaises(FileExistsError):
                 build_web_demo(output)
 
+    def test_force_refuses_symlink_output(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            external = root / "external.html"
+            external.write_text("preserve")
+            output = root / "demo.html"
+            output.symlink_to(external)
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                build_web_demo(output, force=True)
+            self.assertEqual(external.read_text(), "preserve")
+
 
 if __name__ == "__main__":
     unittest.main()

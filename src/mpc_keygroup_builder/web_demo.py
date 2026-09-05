@@ -76,6 +76,10 @@ def demo_bundle() -> dict:
 
 
 def build_web_demo(output: Path, *, force: bool = False) -> Path:
+    output = output.expanduser()
+    if output.is_symlink():
+        raise ValueError(f"browser demo output may not be a symbolic link: {output}")
+    output = output.resolve()
     if output.exists() and not force:
         raise FileExistsError(f"browser demo exists: {output}")
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -88,7 +92,7 @@ def main() -> int:
     parser.add_argument("--output", type=Path, required=True, help="standalone HTML file to create")
     parser.add_argument("--force", action="store_true", help="replace an existing HTML file")
     args = parser.parse_args()
-    path = build_web_demo(args.output.expanduser().resolve(), force=args.force)
+    path = build_web_demo(args.output, force=args.force)
     print(f"Wrote: {path}")
     print("Browser capabilities: inspect, compare, edit layouts, undo/redo, download draft JSON")
     print("Validated XPM export remains a CLI operation.")

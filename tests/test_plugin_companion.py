@@ -86,6 +86,16 @@ priority = "secondary"
             with self.assertRaises(FileExistsError):
                 plugin_companion.build_companion(profiles, synth_root, output)
 
+            external = root / "external.html"
+            external.write_text("preserve")
+            symlink = root / "companion-link.html"
+            symlink.symlink_to(external)
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                plugin_companion.build_companion(
+                    profiles, synth_root, symlink, force=True
+                )
+            self.assertEqual(external.read_text(), "preserve")
+
     def test_data_is_deterministic_and_orders_pages_by_slot(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

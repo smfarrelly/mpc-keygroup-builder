@@ -90,6 +90,16 @@ class WorkstationWaveTests(unittest.TestCase):
             )
             with self.assertRaises(FileExistsError):
                 creative_review.build_review(wave / "wave.json", output)
+
+            external = root / "external.html"
+            external.write_text("preserve")
+            symlink = root / "review-link.html"
+            symlink.symlink_to(external)
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                creative_review.build_review(
+                    wave / "wave.json", symlink, force=True
+                )
+            self.assertEqual(external.read_text(), "preserve")
             with self.assertRaisesRegex(ValueError, "mpc-workstation-wave"):
                 creative_review.review_data({"kind": "wrong", "candidates": []})
 

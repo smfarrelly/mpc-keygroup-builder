@@ -100,7 +100,10 @@ def build_companion(
     project: Path | None = None,
     force: bool = False,
 ) -> Path:
-    output = output.expanduser().resolve()
+    output = output.expanduser()
+    if output.is_symlink():
+        raise ValueError(f"plugin companion output may not be a symbolic link: {output}")
+    output = output.resolve()
     if output.exists() and not force:
         raise FileExistsError(f"plugin companion exists: {output}")
     profiles = sorted(
