@@ -268,9 +268,9 @@ def _validate_copy(program: Path, data: Path, expected: dict[str, Path]) -> dict
     return counts
 
 
-def inspect_batch(settings: Settings, batch: Batch) -> int:
+def inspect_batch_report(settings: Settings, batch: Batch) -> dict[str, Any]:
     hashes: dict[str, list[str]] = {}
-    failures = 0
+    programs = []
     for instrument in batch.instruments:
         try:
             selected = selected_wav_map(instrument)
@@ -299,26 +299,64 @@ def inspect_batch(settings: Settings, batch: Batch) -> int:
                 files = wav_map(instrument.centralized)
                 zeros = sum(path.stat().st_size == 0 for path in files.values())
                 central = f"{len(files)} WAVs, {zeros} zero-byte"
-            print(
-                f"PASS\t{instrument.category}/{instrument.name}\t"
-                f"keygroups={len(groups)}\tsamples={len(samples)}\tcentral={central}"
-                f"\texcluded={len(wav_map(instrument.source)) - len(selected)}"
-                f"\troot_shift="
-                f"{(placement.shift if placement is not None else instrument.root_shift):+d}"
-                f"\troot_target="
-                f"{instrument.root_target if instrument.root_target is not None else 'none'}"
-            )
+            programs.append({
+                "name": instrument.name, "category": instrument.category, "status": "pass",
+                "source": str(instrument.source), "keygroups": len(groups), "samples": len(samples),
+                "selected_bytes": sum(sample.path.stat().st_size for sample in samples),
+                "excluded_samples": len(wav_map(instrument.source)) - len(selected),
+                "centralized": central,
+                "root_shift": placement.shift if placement is not None else instrument.root_shift,
+                "root_target": list(instrument.root_target) if instrument.root_target is not None else None,
+            })
         except (FileNotFoundError, KeyError, ValueError, wave.Error) as error:
-            failures += 1
-            print(f"FAIL\t{instrument.category}/{instrument.name}\t{error}")
-    duplicates = [paths for paths in hashes.values() if len(paths) > 1]
+            programs.append({
+                "name": instrument.name, "category": instrument.category, "status": "fail",
+                "source": str(instrument.source), "error": str(error),
+            })
+    duplicates = [sorted(paths) for paths in hashes.values() if len(paths) > 1]
+    failures = sum(item["status"] == "fail" for item in programs)
+    return {
+        "schema_version": 1, "kind": "mpc-keygroup-batch-inspection",
+        "library": batch.library, "manifest": str(batch.manifest_path),
+        "summary": {
+            "instruments": len(batch.instruments), "passed": len(batch.instruments) - failures,
+            "failures": failures, "keygroups": sum(item.get("keygroups", 0) for item in programs),
+            "samples": sum(item.get("samples", 0) for item in programs),
+            "selected_bytes": sum(item.get("selected_bytes", 0) for item in programs),
+            "unique_audio": len(hashes), "duplicate_groups": len(duplicates),
+        },
+        "programs": programs, "duplicate_audio_groups": sorted(duplicates),
+    }
+
+
+def inspect_batch(settings: Settings, batch: Batch, report_path: Path | None = None, *, force_report: bool = False) -> int:
+    report = inspect_batch_report(settings, batch)
+    for item in report["programs"]:
+        identity = f"{item['category']}/{item['name']}"
+        if item["status"] == "fail":
+            print(f"FAIL\t{identity}\t{item['error']}")
+            continue
+        print(
+            f"PASS\t{identity}\tkeygroups={item['keygroups']}\tsamples={item['samples']}"
+            f"\tbytes={item['selected_bytes']}\tcentral={item['centralized']}"
+            f"\texcluded={item['excluded_samples']}\troot_shift={item['root_shift']:+d}"
+            f"\troot_target={tuple(item['root_target']) if item['root_target'] is not None else 'none'}"
+        )
+    summary = report["summary"]
     print(
-        f"SUMMARY\tinstruments={len(batch.instruments)}\tfailures={failures}\t"
-        f"unique_audio={len(hashes)}\tduplicate_groups={len(duplicates)}"
+        f"SUMMARY\tinstruments={summary['instruments']}\tfailures={summary['failures']}\t"
+        f"keygroups={summary['keygroups']}\tsamples={summary['samples']}\tbytes={summary['selected_bytes']}\t"
+        f"unique_audio={summary['unique_audio']}\tduplicate_groups={summary['duplicate_groups']}"
     )
-    for paths in duplicates:
+    for paths in report["duplicate_audio_groups"]:
         print("DUPLICATE\t" + "\t".join(paths))
-    return 1 if failures or duplicates else 0
+    if report_path is not None:
+        destination = report_path.expanduser().resolve()
+        if destination.exists() and not force_report:
+            raise FileExistsError(f"inspection report exists; pass --force-report to replace: {destination}")
+        _write_json_atomic(destination, report)
+        print(f"REPORT\t{destination}")
+    return 1 if summary["failures"] or summary["duplicate_groups"] else 0
 
 
 def build_batch(settings: Settings, batch: Batch, *, force: bool) -> None:
@@ -546,6 +584,9 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
             )
         elif command == "install":
             child.add_argument("--execute", action="store_true")
+        elif command == "inspect":
+            child.add_argument("--report", type=Path, help="write a machine-readable preflight report")
+            child.add_argument("--force-report", action="store_true", help="replace the named report")
         elif command == "clean":
             child.add_argument("--execute", action="store_true")
     return parser.parse_args(argv)
@@ -556,7 +597,7 @@ def main(argv: list[str] | None = None) -> int:
     settings = load_settings(args.config.resolve())
     batch = load_batch(args.manifest.resolve(), settings)
     if args.command == "inspect":
-        return inspect_batch(settings, batch)
+        return inspect_batch(settings, batch, args.report, force_report=args.force_report)
     if args.command == "build":
         build_batch(settings, batch, force=args.force)
     elif args.command == "validate":
