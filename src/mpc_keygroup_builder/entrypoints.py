@@ -81,6 +81,7 @@ COMMANDS = {
     "mpc-session-report": _spec("session", "Hardware", "Combine rig, candidate, and capture readiness", "docs/rig-profiles.md"),
     "mpc-plugin-audit": _spec("plugin_audit", "Inspect", "Inventory installed MPC plugin content", "docs/hardware-workflow-tools.md"),
     "mpc-plugin-params": _spec("plugin_params", "MIDI control", "Search plugin controls and verified MIDI Learn mappings", "docs/plugin-parameters.md"),
+    "mpc-plugin-skin-audit": _spec("plugin_skin_audit", "MIDI control", "Compare plugin UI skin parameter metadata", "docs/plugin-parameters.md"),
     "mpc-plugin-map": _spec("plugin_map", "MIDI control", "Compile role-based Launch Control plugin pages", "docs/plugin-mapping.md"),
     "mpc-plugin-companion": _spec("plugin_companion", "Browser", "Generate an offline plugin-mapping companion", "docs/plugin-mapping.md"),
     "mpc-plugin-results": _spec("plugin_results", "Hardware", "Validate companion exports and write a durable ledger", "docs/plugin-mapping.md"),
