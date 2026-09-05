@@ -329,6 +329,10 @@ performance program.
   excluding Wave 01 and exact duplicates. All 24 build transactionally and pass
   semantic simulation; the generated 71 MB owned-audio bundle, checksums, and
   per-program hardware checklist remain ignored and hardware-deferred.
+- [x] `mpc-ableton-risk` converts repetitive Wave build diagnostics into a
+  severity-ordered, per-program hardware queue. JSON, CSV, and Markdown retain
+  exact affected pads while grouping gain, sample-start, pitch, loop, warp,
+  stereo, device, and macro differences into one actionable listening check.
 
 Exporter expansion beyond the implemented Drum topology remains gated on
 manual source comparison and representative MPC target captures. The Clip
@@ -504,6 +508,10 @@ control.
 - [x] Audit alternate plugin UI skins for missing preferred-skin controls,
   conflicting name-to-parameter bindings, harmless display-name/type variants,
   and parse failures before treating UI metadata as mapping evidence.
+- [x] Measure plugin-page coverage against every installed UI control and
+  optional XPJ Learn evidence, exposing role/evidence gaps, redundant targets,
+  unmapped plugins, and the best useful omissions without encouraging exhaustive
+  parameter mapping.
 
 ### Release readiness
 

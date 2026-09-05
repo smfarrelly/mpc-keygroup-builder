@@ -9,6 +9,16 @@ from io import StringIO
 from pathlib import Path
 
 
+REQUIRED_FIELDS = {
+    "path",
+    "program_type",
+    "hardware_status",
+    "favorite",
+    "scratchpad_role",
+    "notes",
+}
+
+
 def query(
     ledger: Path,
     *,
@@ -19,7 +29,16 @@ def query(
     search: str | None = None,
 ) -> list[dict[str, str]]:
     with ledger.open(newline="", encoding="utf-8") as stream:
-        rows = list(csv.DictReader(stream))
+        reader = csv.DictReader(stream)
+        missing = REQUIRED_FIELDS - set(reader.fieldnames or [])
+        if missing:
+            raise ValueError(
+                f"program ledger is missing fields: {', '.join(sorted(missing))}"
+            )
+        rows = list(reader)
+    for number, row in enumerate(rows, 2):
+        if None in row or any(value is None for value in row.values()):
+            raise ValueError(f"program ledger row {number} has the wrong number of columns")
     filters = {
         "program_type": program_type,
         "hardware_status": hardware,
@@ -31,7 +50,11 @@ def query(
             rows = [row for row in rows if row.get(field, "").casefold() == value.casefold()]
     if search:
         needle = search.casefold()
-        rows = [row for row in rows if any(needle in value.casefold() for value in row.values())]
+        rows = [
+            row
+            for row in rows
+            if any(needle in value.casefold() for value in row.values())
+        ]
     return rows
 
 

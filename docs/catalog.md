@@ -6,6 +6,11 @@ never copies licensed audio. An explicit enrichment mode measures referenced
 local WAVs while still writing only numeric descriptors and provenance to the
 catalog.
 
+The lightweight `mpc-library` command queries the CSV ledger directly. It
+validates the required headers and row widths before applying filters, so a
+damaged hand edit reports the header or row to repair instead of returning
+partial results.
+
 Build it from an SD card, immutable backup, or another directory whose layout
 matches the ledger paths:
 
