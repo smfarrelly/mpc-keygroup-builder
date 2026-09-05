@@ -333,6 +333,10 @@ performance program.
   severity-ordered, per-program hardware queue. JSON, CSV, and Markdown retain
   exact affected pads while grouping gain, sample-start, pitch, loop, warp,
   stereo, device, and macro differences into one actionable listening check.
+- [x] `mpc-ableton-loop-audit` inventories raw sustain/release modes,
+  crossfades, endpoint relationships, affected packs, and representative source
+  presets so future MPC loop serialization starts from bounded evidence rather
+  than guessed enum meanings.
 
 Exporter expansion beyond the implemented Drum topology remains gated on
 manual source comparison and representative MPC target captures. The Clip

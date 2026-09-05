@@ -47,6 +47,7 @@ COMMANDS = {
     "mpc-ableton-backlog": _spec("ableton_backlog", "Inspect", "Prioritize an Ableton conversion backlog", "docs/ableton-source-inspector.md"),
     "mpc-ableton-drum": _spec("ableton_drum", "Build", "Plan and build Ableton Drum conversions", "docs/ableton-source-inspector.md"),
     "mpc-ableton-fidelity": _spec("ableton_fidelity", "Inspect", "Model Ableton-to-MPC feature fidelity", "docs/ableton-source-inspector.md"),
+    "mpc-ableton-loop-audit": _spec("ableton_loop_audit", "Inspect", "Inventory Ableton sample-loop signatures", "docs/ableton-source-inspector.md"),
     "mpc-ableton-wave": _spec("ableton_wave", "Build", "Plan and build diverse Ableton Drum waves", "docs/ableton-source-inspector.md"),
     "mpc-ableton-risk": _spec("ableton_risk", "Inspect", "Prioritize Ableton conversion risks for hardware review", "docs/ableton-source-inspector.md"),
     "mpc-program-model": _spec("model", "Inspect", "Normalize an XPM or Drum manifest", "docs/program-model-and-layouts.md"),
