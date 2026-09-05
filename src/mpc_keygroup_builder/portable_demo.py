@@ -99,7 +99,7 @@ def _write_sound(path: Path, kind: str, duration: float, frequency: float, seed:
         stream.writeframes(b"".join(struct.pack("<h", value) for value in frames))
 
 
-def _write_template(path: Path) -> None:
+def write_drum_template(path: Path) -> None:
     pads = {f"value{index}": 0 for index in range(128)}
     root = ET.Element("MPCVObject")
     program = ET.SubElement(root, "Program", type="Drum")
@@ -356,7 +356,7 @@ def build_demo(output: Path, recipe_root: Path | None = None) -> dict[str, objec
             _write_sound(audio / name, kind, duration, frequency, seed=10_000 + index)
         template = staging / "Template/Portable Drum Template.xpm"
         template.parent.mkdir(parents=True)
-        _write_template(template)
+        write_drum_template(template)
         source_manifest = staging / "Recipes/manifests/source-program.toml"
         source_manifest.parent.mkdir(parents=True)
         source_manifest.write_text(_source_manifest(), encoding="utf-8")

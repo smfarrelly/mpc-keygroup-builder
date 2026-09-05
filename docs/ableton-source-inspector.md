@@ -63,6 +63,55 @@ The plan explicitly reports sampler or device behavior that is not yet
 serialized. A generated program therefore preserves the raw sample instrument
 topology but does not claim to reproduce Ableton Rack effects or macros.
 
+## Produce an explicit translation contract
+
+`mpc-ableton-fidelity` expands the coarse A–D suggestion into feature-level
+evidence. It records whether samples, key and velocity ranges, roots, Drum
+notes, choke groups, endpoints, tuning, loops, warp, macros, and devices are
+direct, template-level, review-required, reference-only, or absent.
+
+```bash
+mpc-ableton-fidelity \
+  "/path/to/Kit.adg" "/path/to/Instrument.adg" \
+  --source-root "/path/to/Samples From Mars" \
+  --output work/fidelity-review
+```
+
+The JSON retains normalized zone/pad evidence; the Markdown is a short review
+view. The destination is transactional and must not already exist. Missing root
+notes, Ableton warp, plug-ins, effects, or macro intent stay visible instead of
+being silently treated as converted.
+
+## Plan and build a diverse Drum wave
+
+`mpc-ableton-wave` turns a coverage backlog into a bounded test batch. It
+excludes prior recipes and exact duplicates, distributes choices across packs,
+resolves every referenced sample, and runs the Drum converter in preflight
+before publishing a recipe:
+
+```bash
+mpc-ableton-wave plan work/samples-from-mars-mpc-backlog.json \
+  --source-root "/path/to/Samples From Mars" \
+  --exclude-recipe inventory/ableton-drum-wave-01.toml \
+  --count 24 --max-per-pack 2 \
+  --output work/ableton-drum-wave-02-plan
+```
+
+Build that recipe with a generated structural target template:
+
+```bash
+mpc-ableton-wave build \
+  work/ableton-drum-wave-02-plan/ableton-drum-wave-02.toml \
+  --source-root "/path/to/Samples From Mars" \
+  --output work/hardware-candidates/sfm-ableton-wave-02
+```
+
+The build is all-or-nothing, locally simulates every XPM, removes machine-local
+paths from its reports, writes checksums, and creates an MPC hardware checklist.
+It copies licensed source audio into ignored local output only; never commit or
+redistribute that output. The maintained Wave 02 selection metadata lives in
+`inventory/ableton-drum-wave-02.toml`.
+
 ## Fidelity suggestions
 
 The labels are conservative routing suggestions, not automated conversion
@@ -77,13 +126,14 @@ claims:
 - **D — reference-only:** a plug-in dependency or missing sample-zone data
   prevents a defensible automatic translation.
 
-These heuristics intentionally leave false confidence on the table. A future
-translator must also compare representative reports with Ableton's visible
-behavior and use MPC-authored templates as target-format ground truth.
+These heuristics intentionally leave false confidence on the table. The
+feature-level contract provides the source-side comparison surface, while MPC
+hardware results and MPC-authored target templates remain the ground truth.
 
 ## Current boundary
 
-The inspector identifies device/effect types but does not yet normalize every
-device parameter or macro target. Choke groups, voice limits, modulation
-routing, and exact per-device semantics require representative source studies
-before they become exporter inputs.
+The inspector identifies device/effect types but does not yet decode every
+device parameter or macro target. The current Drum exporter preserves sample
+topology, velocity layers, and choke groups; voice limits, modulation routing,
+effects, warp, and exact per-device semantics still require representative
+source studies before they become exporter inputs.

@@ -69,6 +69,8 @@ mpc-tools new workstation --name "My Scratchpad" --output my-scratchpad
 mpc-tools demo --output my-mpc-demo
 mpc-showcase --output my-mpc-showcase
 mpc-workstation-wave recipes --families all --seeds-per-family 4 --output my-wave
+mpc-creative-results init my-wave/wave.json --output my-wave-ledger
+mpc-ableton-fidelity "/path/to/Kit.adg" --output my-fidelity-report
 mpc-tools web-demo --output program-designer-demo.html
 mpc-tools help mpc-drum-build
 mpc-schema list

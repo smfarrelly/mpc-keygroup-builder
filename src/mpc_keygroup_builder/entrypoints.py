@@ -45,6 +45,8 @@ COMMANDS = {
     "mpc-ableton": _spec("ableton", "Inspect", "Inspect Ableton racks and libraries", "docs/ableton-source-inspector.md"),
     "mpc-ableton-backlog": _spec("ableton_backlog", "Inspect", "Prioritize an Ableton conversion backlog", "docs/ableton-source-inspector.md"),
     "mpc-ableton-drum": _spec("ableton_drum", "Build", "Plan and build Ableton Drum conversions", "docs/ableton-source-inspector.md"),
+    "mpc-ableton-fidelity": _spec("ableton_fidelity", "Inspect", "Model Ableton-to-MPC feature fidelity", "docs/ableton-source-inspector.md"),
+    "mpc-ableton-wave": _spec("ableton_wave", "Build", "Plan and build diverse Ableton Drum waves", "docs/ableton-source-inspector.md"),
     "mpc-program-model": _spec("model", "Inspect", "Normalize an XPM or Drum manifest", "docs/program-model-and-layouts.md"),
     "mpc-program-designer": _spec("designer", "Browser", "Generate a self-contained Program Designer", "docs/program-designer.md"),
     "mpc-web-demo": _spec("web_demo", "Browser", "Generate the no-install synthetic browser demo", "docs/browser-demo.md"),
@@ -88,6 +90,7 @@ COMMANDS = {
     "mpc-recipe-audit": _spec("recipe_audit", "Creative MIDI", "Audit recipe dependencies, compatibility, IDs, and channels", "docs/creative-midi.md"),
     "mpc-workstation-wave": _spec("workstation_wave", "Creative MIDI", "Generate and rank a multi-family workstation wave", "docs/creative-wave.md"),
     "mpc-creative-review": _spec("creative_review", "Browser", "Render an offline creative-wave review companion", "docs/creative-wave.md"),
+    "mpc-creative-results": _spec("creative_results", "Creative MIDI", "Validate review exports and package an MPC shortlist", "docs/creative-wave.md"),
 }
 
 
@@ -108,7 +111,15 @@ def version() -> str:
     try:
         return importlib.metadata.version("mpc-keygroup-builder")
     except importlib.metadata.PackageNotFoundError:
-        return "development"
+        # Source checkouts used by system pytest may not expose wheel metadata.
+        # Keep --version useful without making the command depend on its cwd.
+        project = os.path.join(os.path.dirname(__file__), "..", "..", "pyproject.toml")
+        try:
+            with open(project, "rb") as stream:
+                value = tomllib.load(stream).get("project", {}).get("version")
+            return str(value) if value else "development"
+        except (OSError, tomllib.TOMLDecodeError):
+            return "development"
 
 
 def _hint(error: Exception, command: str) -> str:

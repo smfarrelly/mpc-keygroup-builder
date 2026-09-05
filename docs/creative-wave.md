@@ -68,6 +68,34 @@ mpc-creative-review work/creative-wave-01/wave.json \
 The command refuses to replace an existing file unless `--force` names that
 exact HTML destination.
 
+## Preserve review decisions and build a shortlist
+
+The browser's JSON export is intentionally separate from the generated wave.
+Import one or more exports into a durable ledger and a smaller transfer bundle:
+
+```bash
+mpc-creative-results import work/creative-wave-01/wave.json \
+  Downloads/creative-wave-results.json \
+  --output work/creative-wave-01-shortlist
+```
+
+Each export must contain the exact candidate set, the matching wave fingerprint,
+valid identities and verdicts, and a timezone-aware export timestamp. Multiple
+sessions are applied chronologically. A later `pending` value does not erase a
+previous decision, while distinct notes accumulate as listening history.
+
+The resulting `review-ledger.csv` records keep, provisional, reject, and pending
+states. Only keep and provisional candidates are copied into `Shortlist/`.
+Checksums, a copy manifest, and a narrowed MPC checklist are generated with the
+bundle. This remains a curation result—not a hardware pass.
+
+Create an all-pending ledger before listening when useful:
+
+```bash
+mpc-creative-results init work/creative-wave-01/wave.json \
+  --output work/creative-wave-01-ledger
+```
+
 ## Evidence and MPC transfer
 
 Every wave contains:

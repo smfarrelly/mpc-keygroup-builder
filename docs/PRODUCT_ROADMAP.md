@@ -320,10 +320,19 @@ performance program.
   default position. NR3 adds one more octave for roots MIDI 73–98; computer
   acceptance and canonical external-drive preservation pass, while SD transfer
   and hardware confirmation remain open.
+- [x] `mpc-ableton-fidelity` now emits a normalized, feature-by-feature source
+  contract for samples, ranges, roots, pad notes, choke groups, playback,
+  loops, warp, macros, and device/routing intent. Direct, Template,
+  Review-required, and Reference-only boundaries are machine-readable instead
+  of being collapsed into one optimistic conversion label.
+- [x] Ableton Drum Wave 02 selects 24 preflighted programs across 24 packs,
+  excluding Wave 01 and exact duplicates. All 24 build transactionally and pass
+  semantic simulation; the generated 71 MB owned-audio bundle, checksums, and
+  per-program hardware checklist remain ignored and hardware-deferred.
 
-Normalized-model import and exporter behavior remain gated on manual source
-comparison and representative MPC target captures. The Clip subset remains
-gated on the minimal MPC-authored Clip reference.
+Exporter expansion beyond the implemented Drum topology remains gated on
+manual source comparison and representative MPC target captures. The Clip
+subset remains gated on the minimal MPC-authored Clip reference.
 
 **Exit gate:** The utility can explain a representative Ableton preset and
 generate an MPC result that preserves more intent than filename inference alone.

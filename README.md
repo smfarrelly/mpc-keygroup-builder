@@ -48,7 +48,10 @@ is required for the software portion.
 - Inspect, extract, and compare MPC 3 XPJ projects without modifying them.
 - Generate deterministic Drum, Bass, Chords, Melody, and arrangement MIDI.
 - Generate multi-family candidate waves with transparent scoring, duplicate
-  detection, an offline visual review companion, and shortlist export.
+  detection, an offline visual review companion, strict result import, and
+  checksum-verified shortlist packaging.
+- Inspect Ableton source feature fidelity and build diverse, preflighted Drum
+  conversion waves without claiming unsupported Rack behavior.
 - Build a redistributable six-composition showcase with deterministic
   evidence, editable recipes, and synthetic CC0 Drum audio.
 - Compile declarative MPC, Launch Control XL 3, and Volca routing plans.
@@ -132,6 +135,7 @@ for the exact boundary.
 - [Six-composition showcase](docs/composition-showcase.md)
 - [Creative MIDI](docs/creative-midi.md)
 - [Creative batch and review](docs/creative-wave.md)
+- [Ableton source inspection and conversion](docs/ableton-source-inspector.md)
 - [Declarative MIDI control](docs/declarative-midi-control.md)
 - [Plugin parameter catalog](docs/plugin-parameters.md)
 - [Declarative plugin performance pages](docs/plugin-mapping.md)

@@ -31,6 +31,8 @@ mpc-loop-inventory = "mpc_keygroup_builder.entrypoints:main"
 mpc-ableton = "mpc_keygroup_builder.entrypoints:main"
 mpc-ableton-backlog = "mpc_keygroup_builder.entrypoints:main"
 mpc-ableton-drum = "mpc_keygroup_builder.entrypoints:main"
+mpc-ableton-fidelity = "mpc_keygroup_builder.entrypoints:main"
+mpc-ableton-wave = "mpc_keygroup_builder.entrypoints:main"
 mpc-program-model = "mpc_keygroup_builder.entrypoints:main"
 mpc-program-designer = "mpc_keygroup_builder.entrypoints:main"
 mpc-web-demo = "mpc_keygroup_builder.entrypoints:main"
@@ -75,6 +77,7 @@ mpc-showcase = "mpc_keygroup_builder.entrypoints:main"
 mpc-recipe-audit = "mpc_keygroup_builder.entrypoints:main"
 mpc-workstation-wave = "mpc_keygroup_builder.entrypoints:main"
 mpc-creative-review = "mpc_keygroup_builder.entrypoints:main"
+mpc-creative-results = "mpc_keygroup_builder.entrypoints:main"
 
 [build-system]
 requires = ["uv_build>=0.12.5,<0.13.0"]

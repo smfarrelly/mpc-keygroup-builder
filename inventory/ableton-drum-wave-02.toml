@@ -1,0 +1,169 @@
+name = "Samples From Mars Ableton Drum Wave 02"
+
+[[programs]]
+id = "2600-all-noise"
+name = "All Noise"
+collection = "2600"
+preset = "2600_from_mars/2600 From Mars/Ableton Live/2600 From Mars/Presets/Drum Racks/All Noise.adg"
+pack_root = "2600_from_mars/2600 From Mars"
+
+[[programs]]
+id = "505-505-sp1200-from-mars-grit-kit"
+name = "505 SP1200 From Mars - Grit Kit"
+collection = "505"
+preset = "505_from_mars/505 From Mars/Ableton Live/505 From Mars/Presets/02. Kits/505 SP1200/505 SP1200 From Mars - Grit Kit.adg"
+pack_root = "505_from_mars/505 From Mars"
+
+[[programs]]
+id = "606-flateric-kit-606-from-mars"
+name = "FlatEric Kit - 606 From Mars"
+collection = "606"
+preset = "606_from_mars/606 From Mars/Ableton Live/606 From Mars/Presets/02. Kits/606/FlatEric Kit - 606 From Mars.adg"
+pack_root = "606_from_mars/606 From Mars"
+
+[[programs]]
+id = "626-clean-kit-2"
+name = "Clean Kit 2"
+collection = "626"
+preset = "626_from_mars/626 From Mars/Ableton Live/626 From Mars/Presets/Kits/Clean Kit 2.adg"
+pack_root = "626_from_mars/626 From Mars"
+
+[[programs]]
+id = "707-mod-kit-1-707-from-mars"
+name = "Mod Kit 1 - 707 From Mars"
+collection = "707"
+preset = "707_from_mars/707 From Mars/Ableton Live/707 From Mars/Presets/Kits/707 From Mars/Mod Kit 1 - 707 From Mars.adg"
+pack_root = "707_from_mars/707 From Mars"
+
+[[programs]]
+id = "727-727-from-mars-kits-1-5"
+name = "727 From Mars Kits 1-5"
+collection = "727"
+preset = "727_from_mars/727 From Mars/Ableton Live/727 From Mars/Presets/727 From Mars Kits 1-5.adg"
+pack_root = "727_from_mars/727 From Mars"
+
+[[programs]]
+id = "808-clean-kit-02-808"
+name = "Clean Kit 02 - 808"
+collection = "808"
+preset = "808-from-mars/808 From Mars/Ableton Live/808 From Mars/Presets/02. Kits/Clean Kit 02 - 808.adg"
+pack_root = "808-from-mars/808 From Mars"
+
+[[programs]]
+id = "808-legacy-kit-1-clean"
+name = "Kit 1 (Clean)"
+collection = "808 Legacy"
+preset = "808_from_mars_legacy/808 From Mars - Legacy/Ableton Live/808 From Mars/Presets/Kits/Kit 1 (Clean).adg"
+pack_root = "808_from_mars_legacy/808 From Mars - Legacy"
+
+[[programs]]
+id = "909-color-kit"
+name = "Color Kit"
+collection = "909"
+preset = "909_from_mars/909 From Mars/Ableton Live/909 From Mars/Presets/Kits/Color Kit.adg"
+pack_root = "909_from_mars/909 From Mars"
+
+[[programs]]
+id = "acid-acid-from-mars-drums"
+name = "Acid From Mars Drums"
+collection = "Acid"
+preset = "acid_from_mars/Acid From Mars/Ableton Live/Acid From Mars/Presets/Acid From Mars Drums.adg"
+pack_root = "acid_from_mars/Acid From Mars/Ableton Live/Acid From Mars"
+
+[[programs]]
+id = "dmx-dmx-612-from-mars-classic-kit"
+name = "DMX 612 From Mars - Classic Kit"
+collection = "DMX"
+preset = "dmx_from_mars/DMX From Mars/Ableton Live/DMX From Mars/Presets/02. Kits/DMX 612/DMX 612 From Mars - Classic Kit.adg"
+pack_root = "dmx_from_mars/DMX From Mars"
+
+[[programs]]
+id = "drumtrax-kit-2"
+name = "Kit 2"
+collection = "Drumtrax"
+preset = "drumtrax_from_mars/Drumtrax From Mars/Ableton Live/Drumtrax From Mars/Presets/Kit 2.adg"
+pack_root = "drumtrax_from_mars/Drumtrax From Mars"
+
+[[programs]]
+id = "drumulator-assorted-dirt"
+name = "Assorted Dirt"
+collection = "Drumulator"
+preset = "drumulator_from_mars/Drumulator From Mars/Ableton Live/Drumulator From Mars/Presets/Kits/Assorted Dirt.adg"
+pack_root = "drumulator_from_mars/Drumulator From Mars"
+
+[[programs]]
+id = "dx-kit-1"
+name = "Kit 1"
+collection = "DX"
+preset = "dx_from_mars/DX From Mars/Ableton Live/DX From Mars/Presets/Kit 1.adg"
+pack_root = "dx_from_mars/DX From Mars"
+
+[[programs]]
+id = "found-sounds-bodymisc-repitched"
+name = "BodyMisc Repitched"
+collection = "Found Sounds"
+preset = "found_sounds_from_mars/Found Sounds From Mars/Ableton Live/Found Sounds From Mars Project/Presets/Repitched Kits/BodyMisc Repitched.adg"
+pack_root = "found_sounds_from_mars/Found Sounds From Mars"
+
+[[programs]]
+id = "lindrum-legacy-lindrum-from-mars-kit-1"
+name = "Lindrum From Mars Kit 1"
+collection = "Lindrum Legacy"
+preset = "lindrum_from_mars_legacy/Lindrum From Mars - Legacy/Ableton Live/Lindrum From Mars/Presets/Kits/Lindrum From Mars Kit 1.adg"
+pack_root = "lindrum_from_mars_legacy/Lindrum From Mars - Legacy"
+
+[[programs]]
+id = "lm-1-777-clean-kit-lm1-from-mars"
+name = "777 Clean Kit - LM1 From Mars"
+collection = "LM-1"
+preset = "lm1_from_mars/LM1 From Mars/Ableton Live/LM1 From Mars/Presets/02. Kits/777 Clean Kit - LM1 From Mars.adg"
+pack_root = "lm1_from_mars/LM1 From Mars"
+
+[[programs]]
+id = "modern-oddities-a-kit"
+name = "A# Kit"
+collection = "Modern Oddities"
+preset = "modern_oddities_from_mars/Modern Oddities From Mars/Ableton Live/Modern Oddities From Mars/Presets/Kits/A# Kit.adg"
+pack_root = "modern_oddities_from_mars/Modern Oddities From Mars"
+
+[[programs]]
+id = "rhythm-rhythm-700-kit-1"
+name = "Rhythm 700 Kit 1"
+collection = "Rhythm"
+preset = "rhythm_from_mars/Rhythm From Mars/Ableton Live/Rhythm From Mars/Presets/Kits/Rhythm 700 Kit 1.adg"
+pack_root = "rhythm_from_mars/Rhythm From Mars"
+
+[[programs]]
+id = "s612-909ish-kit-s612-from-mars"
+name = "909ish Kit - S612 From Mars"
+collection = "S612"
+preset = "s612_from_mars/S612 From Mars/Ableton Live/S612 From Mars/Presets/Drums/02. Kits/909ish Kit - S612 From Mars.adg"
+pack_root = "s612_from_mars/S612 From Mars"
+
+[[programs]]
+id = "s950-snacks-rave-9-kit-s950-snacks-from-mars"
+name = "Rave 9 Kit - S950 Snacks From Mars"
+collection = "S950 Snacks"
+preset = "s950_snacks_from_mars/S950 Snacks From Mars/Presets/Ableton/S950 Snacks From Mars/Presets/Drums/02. Kits/02. Rave 9 Kit - S950 Snacks From Mars.adg"
+pack_root = "s950_snacks_from_mars/S950 Snacks From Mars"
+
+[[programs]]
+id = "sds800-assorted-kit-1"
+name = "Assorted Kit 1"
+collection = "SDS800"
+preset = "sds800_from_mars/SDS800 From Mars/Ableton Live/SDS800 From Mars/Presets/Kits/Assorted Kit 1.adg"
+pack_root = "sds800_from_mars/SDS800 From Mars"
+
+[[programs]]
+id = "sds-v-assorted-kit-1"
+name = "Assorted Kit 1"
+collection = "SDS-V"
+preset = "sdsv_from_mars/SDSV From Mars/Ableton Live/SDSV From Mars/Presets/Kits/Assorted Kit 1.adg"
+pack_root = "sdsv_from_mars/SDSV From Mars/Ableton Live/SDSV From Mars"
+
+[[programs]]
+id = "synare-synare-kits-2"
+name = "Synare Kits 2"
+collection = "Synare"
+preset = "synare_from_mars/Synare From Mars/Ableton Live/Synare From Mars/Presets/Drums & FX/Synare Kits 2.adg"
+pack_root = "synare_from_mars/Synare From Mars"
