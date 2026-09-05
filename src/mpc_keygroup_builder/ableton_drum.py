@@ -243,7 +243,7 @@ def load_recipe(path: Path, library_root: Path) -> tuple[str, tuple[RecipeProgra
     destinations = set()
     for index, raw in enumerate(raw_programs, 1):
         if not isinstance(raw, dict):
-            raise TypeError(f"Ableton Drum batch entry {index} is not a table")
+            raise ValueError(f"Ableton Drum batch entry {index} is not a table")
         values = {key: raw.get(key) for key in ("id", "name", "collection", "preset", "pack_root")}
         if not all(isinstance(value, str) and value.strip() for value in values.values()):
             raise ValueError(f"Ableton Drum batch entry {index} has missing string fields")

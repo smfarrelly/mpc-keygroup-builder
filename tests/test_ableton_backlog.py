@@ -1,8 +1,11 @@
+import contextlib
+import io
+import json
 import tempfile
 import unittest
 from pathlib import Path
 
-from mpc_keygroup_builder import ableton_backlog
+from mpc_keygroup_builder import ableton_backlog, entrypoints
 
 
 class AbletonBacklogTests(unittest.TestCase):
@@ -153,6 +156,40 @@ class AbletonBacklogTests(unittest.TestCase):
             self.assertEqual(duplicate_entry["duplicate_of"], first)
             self.assertLess(duplicate_entry["score"], canonical_entry["score"])
             self.assertEqual(backlog["summary"]["exact_duplicates"], 1)
+
+    def test_malformed_inventory_is_a_friendly_cli_error(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            inventory = root / "inventory.json"
+            inventory.write_text(json.dumps({"presets": {}}), encoding="utf-8")
+            error = io.StringIO()
+            with contextlib.redirect_stderr(error):
+                status = entrypoints.invoke(
+                    "mpc-ableton-backlog",
+                    [
+                        str(inventory),
+                        "--json", str(root / "backlog.json"),
+                        "--markdown", str(root / "backlog.md"),
+                    ],
+                )
+            self.assertEqual(status, 2)
+            self.assertIn("presets must be a list", error.getvalue())
+            self.assertIn("NEXT:", error.getvalue())
+            self.assertNotIn("Traceback", error.getvalue())
+            self.assertFalse((root / "backlog.json").exists())
+            self.assertFalse((root / "backlog.md").exists())
+
+    def test_malformed_catalog_uses_validation_error(self):
+        with self.assertRaisesRegex(ValueError, "programs must be a list"):
+            ableton_backlog.build_backlog(self.inventory(), {"programs": {}})
+        with self.assertRaisesRegex(ValueError, "catalog must be a JSON object"):
+            ableton_backlog.build_backlog(self.inventory(), [1])
+
+    def test_malformed_inventory_entries_use_validation_errors(self):
+        with self.assertRaisesRegex(ValueError, "inventory must be a JSON object"):
+            ableton_backlog.build_backlog([])
+        with self.assertRaisesRegex(ValueError, "preset 1 must be an object"):
+            ableton_backlog.build_backlog({"presets": [1]})
 
 
 if __name__ == "__main__":

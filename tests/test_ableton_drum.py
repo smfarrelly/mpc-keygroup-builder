@@ -94,6 +94,14 @@ class AbletonDrumTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "escapes"):
                 ableton_drum.load_recipe(recipe, root)
 
+    def test_batch_recipe_rejects_non_table_entries_as_validation_errors(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            recipe = root / "recipe.toml"
+            recipe.write_text('name="Bad"\nprograms=[1]\n', encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "entry 1 is not a table"):
+                ableton_drum.load_recipe(recipe, root)
+
     def test_batch_plan_retains_translation_warning_field(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
