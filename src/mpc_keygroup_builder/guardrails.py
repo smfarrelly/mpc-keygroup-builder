@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import subprocess
 from pathlib import Path
 
@@ -26,9 +27,12 @@ def scan(paths: list[Path], max_bytes: int = 5 * 1024 * 1024) -> list[str]:
 
 def tracked_files(root: Path) -> list[Path]:
     result = subprocess.run(
-        ["git", "ls-files", "-z"], cwd=root, check=True, capture_output=True
+        ["git", "ls-files", "-z"], cwd=root, check=False, capture_output=True
     )
-    return [root / value.decode() for value in result.stdout.split(b"\0") if value]
+    if result.returncode:
+        detail = os.fsdecode(result.stderr).strip() or "git ls-files failed"
+        raise ValueError(f"repository guard requires a Git worktree at {root}: {detail}")
+    return [root / os.fsdecode(value) for value in result.stdout.split(b"\0") if value]
 
 
 def main() -> int:

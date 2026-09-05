@@ -1,8 +1,10 @@
+import contextlib
+import io
 import tempfile
 import unittest
 from pathlib import Path
 
-from mpc_keygroup_builder import guardrails
+from mpc_keygroup_builder import entrypoints, guardrails
 
 
 class GuardrailTests(unittest.TestCase):
@@ -26,6 +28,19 @@ class GuardrailTests(unittest.TestCase):
             path = Path(directory) / "tool.py"
             path.write_text("pass\n")
             self.assertEqual(guardrails.scan([path]), [])
+
+    def test_non_repository_error_is_actionable_without_traceback(self):
+        with tempfile.TemporaryDirectory() as directory:
+            error = io.StringIO()
+            with contextlib.redirect_stderr(error):
+                status = entrypoints.invoke(
+                    "mpc-repository-guard", ["--root", directory]
+                )
+            self.assertEqual(status, 2)
+            rendered = error.getvalue()
+            self.assertIn("requires a Git worktree", rendered)
+            self.assertIn("NEXT:", rendered)
+            self.assertNotIn("Traceback", rendered)
 
 
 if __name__ == "__main__":
