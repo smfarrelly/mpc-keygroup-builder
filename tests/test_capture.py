@@ -53,6 +53,24 @@ class CaptureTests(unittest.TestCase):
                 capture.capture_projects(source, output)
             self.assertEqual((output / "keep.txt").read_text(), "preserve")
 
+    def test_refuses_nested_symlink_before_creating_output(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, output, outside = root / "sd", root / "capture", root / "outside"
+            source.mkdir()
+            outside.mkdir()
+            (outside / "private.db").write_bytes(b"outside")
+            self.make_pair(source, "Key37_Routing_Baseline", b"baseline")
+            self.make_pair(source, "Key37_Routing_Changed", b"changed")
+            data = source / "Key37_Routing_Changed_[ProjectData]"
+            (data / "external").symlink_to(outside, target_is_directory=True)
+
+            with self.assertRaisesRegex(ValueError, "symbolic links"):
+                capture.capture_projects(source, output)
+
+            self.assertFalse(output.exists())
+            self.assertEqual((outside / "private.db").read_bytes(), b"outside")
+
 
 if __name__ == "__main__":
     unittest.main()

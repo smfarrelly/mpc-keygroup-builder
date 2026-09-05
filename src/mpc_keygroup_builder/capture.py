@@ -105,7 +105,10 @@ def capture_projects(
     artifacts = []
     for name in project_names:
         project = _find_project(source, name)
-        artifacts.append((project.stem, project, _find_project_data(project)))
+        project_data = _find_project_data(project)
+        _regular_files(project)
+        _regular_files(project_data)
+        artifacts.append((project.stem, project, project_data))
 
     destination.parent.mkdir(parents=True, exist_ok=True)
     staging = Path(tempfile.mkdtemp(prefix=f".{destination.name}-", dir=destination.parent))
