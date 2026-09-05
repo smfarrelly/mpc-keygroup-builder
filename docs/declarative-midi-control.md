@@ -167,7 +167,10 @@ uv run mpc-controller-capacity midi/controller-capacity.toml \
 
 The report checks duplicate slots, invalid channels, plugin-page conflicts with
 Volca channels 1–3 or MPC control channel 16, and expected capture channels. It
-currently reports all 15 slots assigned and channel 8 unreserved. OPx-4 and Jura
+first validates that every `[[modes]]` entry is a table with scalar slot, name,
+channel, role, and source fields, so malformed TOML is reported before analysis.
+The maintained plan currently reports all 15 slots assigned and channel 8
+unreserved. OPx-4 and Jura
 slot numbers are supported by their captured mode names; the working slot order
 for the other four captured modes remains clearly warned until confirmed in
 Components.

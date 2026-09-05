@@ -26,12 +26,12 @@ def load_plan(path: Path) -> dict[str, Any]:
     if not isinstance(document.get("name"), str) or not document["name"]:
         raise ValueError(f"{path}: capacity plan requires name")
     control_channel = document.get("control_channel")
-    if not isinstance(control_channel, int) or not 1 <= control_channel <= 16:
+    if type(control_channel) is not int or not 1 <= control_channel <= 16:
         raise ValueError(f"{path}: capacity plan control_channel must be 1..16")
     external_channels = document.get("external_channels")
     if (
         not isinstance(external_channels, list)
-        or any(not isinstance(item, int) or not 1 <= item <= 16 for item in external_channels)
+        or any(type(item) is not int or not 1 <= item <= 16 for item in external_channels)
         or len(external_channels) != len(set(external_channels))
     ):
         raise ValueError(f"{path}: capacity plan requires external_channels")
@@ -39,6 +39,25 @@ def load_plan(path: Path) -> dict[str, Any]:
         raise ValueError(f"{path}: control_channel cannot also be an external channel")
     if not isinstance(document.get("modes"), list):
         raise ValueError(f"{path}: capacity plan requires [[modes]]")
+    required = {"slot": int, "name": str, "channel": int, "role": str, "source": str}
+    for index, mode in enumerate(document["modes"], 1):
+        if not isinstance(mode, dict):
+            raise ValueError(f"{path}: capacity mode {index} must be a table")
+        for field, kind in required.items():
+            value = mode.get(field)
+            invalid = type(value) is not kind or (kind is str and not value.strip())
+            if invalid:
+                requirement = "an integer" if kind is int else "a nonempty string"
+                raise ValueError(
+                    f"{path}: capacity mode {index} {field} must be {requirement}"
+                )
+        capture_name = mode.get("capture_name")
+        if capture_name is not None and (
+            not isinstance(capture_name, str) or not capture_name.strip()
+        ):
+            raise ValueError(
+                f"{path}: capacity mode {index} capture_name must be a nonempty string"
+            )
     return document
 
 
