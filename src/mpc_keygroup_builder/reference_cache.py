@@ -111,9 +111,14 @@ def fetch_documents(
     force: bool = False,
 ) -> dict[str, Any]:
     cache_dir.mkdir(parents=True, exist_ok=True)
+    index_path = cache_dir / "index.json"
+    if index_path.is_symlink():
+        raise ValueError(f"reference cache index may not be a symbolic link: {index_path}")
     records = []
     for document in documents:
         target = cache_dir / document.filename
+        if target.is_symlink():
+            raise ValueError(f"cached reference may not be a symbolic link: {target}")
         status = "cached"
         if force or not target.is_file():
             request = urllib.request.Request(
@@ -157,7 +162,7 @@ def fetch_documents(
         "cache_dir": str(cache_dir.resolve()),
         "documents": records,
     }
-    (cache_dir / "index.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    index_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     return report
 
 
@@ -165,6 +170,8 @@ def verify_cache(documents: tuple[ReferenceDocument, ...], cache_dir: Path) -> d
     results = []
     for document in documents:
         path = cache_dir / document.filename
+        if path.is_symlink():
+            raise ValueError(f"cached reference may not be a symbolic link: {path}")
         if not path.is_file():
             results.append({"id": document.id, "status": "missing", "path": str(path)})
             continue
