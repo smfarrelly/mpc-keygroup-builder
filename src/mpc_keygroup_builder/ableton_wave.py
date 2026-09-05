@@ -41,6 +41,11 @@ def _excluded(paths: list[Path]) -> set[str]:
 
 def infer_pack_root(preset: Path, library_root: Path, report: dict[str, Any]) -> Path:
     references = []
+    for zone in report.get("zones", []):
+        sample = zone.get("sample") if isinstance(zone, dict) else None
+        relative = sample.get("relative_path") if isinstance(sample, dict) else None
+        if isinstance(relative, str):
+            references.append(relative)
     for pad in report.get("drum_pads", []):
         for zone in pad.get("zones", []) if isinstance(pad, dict) else []:
             sample = zone.get("sample") if isinstance(zone, dict) else None
@@ -48,7 +53,7 @@ def infer_pack_root(preset: Path, library_root: Path, report: dict[str, Any]) ->
             if isinstance(relative, str):
                 references.append(relative)
     if not references:
-        raise ValueError(f"no readable Drum Rack sample paths: {preset}")
+        raise ValueError(f"no readable Ableton sample paths: {preset}")
     current = preset.parent.resolve()
     boundary = library_root.resolve()
     while True:

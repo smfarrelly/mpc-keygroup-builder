@@ -131,6 +131,40 @@ timing/warp, sample-start, looping, pitch, gain, stereo, device, and macro
 risks; preserves affected pad numbers; and orders programs by the most severe
 difference. A risk level prioritizes listening—it is not a hardware verdict.
 
+## Plan a conservative Keygroup wave
+
+The catalog can contain far more Keygroup candidates than can be reviewed by
+hand. `mpc-ableton-keygroup-wave` selects a diverse, bounded P1–P2 batch (the
+P0 SP-1200 set already has its own wave) and emits a manifest for the existing
+Keygroup batch builder:
+
+```bash
+mpc-ableton-keygroup-wave work/samples-from-mars-mpc-backlog.json \
+  --source-root "/path/to/Samples From Mars" \
+  --count 24 --max-per-pack 2 \
+  --output work/ableton-keygroup-wave-plan
+```
+
+Selection preflights every referenced WAV and accepts only topology the current
+builder can represent without silent changes: one sample directory, unique
+basenames, valid roots, exact midpoint key ranges, consistent contiguous
+velocity layers, no warp, nonzero sample start, detune, panorama, or active
+sample loops. Source volume differences remain explicit listening warnings.
+Rejected candidates and reasons stay in `keygroup-wave.json`.
+
+Lossless planning is the default. `--allow-loop-loss` admits otherwise
+compatible looped instruments only as an explicit comparison wave; every
+omitted source loop remains a per-program warning and the program is labeled
+`review-required`. This option is useful for prioritizing loop-serializer work,
+not for claiming a faithful conversion.
+
+The output also includes `keygroup-batch.json`, a settings template, and a
+hardware checklist. Fill the absolute paths in `settings-example.toml`, inspect
+with `mpc-keygroup-batch --config SETTINGS inspect keygroup-batch.json`, and
+build only into ignored or external storage. The plan contains no
+licensed audio and does not claim that Ableton effects, macros, or sound have
+been reproduced.
+
 ## Fidelity suggestions
 
 The labels are conservative routing suggestions, not automated conversion
