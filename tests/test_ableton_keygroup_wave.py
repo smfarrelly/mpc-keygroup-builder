@@ -100,6 +100,22 @@ class AbletonKeygroupWaveTests(unittest.TestCase):
             self.assertEqual(result["fidelity"], "review-required")
             self.assertIn("omitted from the comparison build", result["warnings"][0])
 
+    def test_shortened_sample_end_requires_explicit_opt_in(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            preset = self.fixture(root, "short_from_mars", "Short")
+            raw = gzip.decompress(preset.read_bytes()).replace(
+                b"</MultiSamplePart>", b'<SampleEnd Value="10"/></MultiSamplePart>',
+            )
+            with gzip.open(preset, "wb") as stream:
+                stream.write(raw)
+            entry = {"path": preset.relative_to(root).as_posix(), "name": "Short", "pack": "short_from_mars"}
+            with self.assertRaisesRegex(ValueError, "sampleend=10 differs from WAV end=19"):
+                ableton_keygroup_wave.preflight(entry, root)
+            result = ableton_keygroup_wave.preflight(entry, root, allow_endpoint_loss=True)
+            self.assertEqual(result["fidelity"], "review-required")
+            self.assertIn("comparison uses WAV end=19", result["warnings"][0])
+
 
 if __name__ == "__main__":
     unittest.main()

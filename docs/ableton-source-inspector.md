@@ -158,6 +158,11 @@ omitted source loop remains a per-program warning and the program is labeled
 `review-required`. This option is useful for prioritizing loop-serializer work,
 not for claiming a faithful conversion.
 
+Likewise, `--allow-endpoint-loss` explicitly admits a source zone whose
+`SampleEnd` truncates the referenced WAV. The comparison build plays through
+the WAV end and records both endpoints as a warning. Non-default sample starts,
+tuning, panorama, and warp remain hard rejections.
+
 The output also includes `keygroup-batch.json`, a settings template, and a
 hardware checklist. Fill the absolute paths in `settings-example.toml`, inspect
 with `mpc-keygroup-batch --config SETTINGS inspect keygroup-batch.json`, and

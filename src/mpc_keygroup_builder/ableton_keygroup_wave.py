@@ -35,7 +35,10 @@ def _range_for(roots: list[int], index: int) -> tuple[int, int]:
     return low, high
 
 
-def preflight(entry: dict[str, Any], source_root: Path, *, allow_loop_loss: bool = False) -> dict[str, Any]:
+def preflight(
+    entry: dict[str, Any], source_root: Path, *, allow_loop_loss: bool = False,
+    allow_endpoint_loss: bool = False,
+) -> dict[str, Any]:
     relative = entry.get("path")
     if not isinstance(relative, str) or not relative:
         raise ValueError("backlog entry path must be a non-empty string")
@@ -50,6 +53,7 @@ def preflight(entry: dict[str, Any], source_root: Path, *, allow_loop_loss: bool
         raise ValueError("no active sample zones")
     pack_root = infer_pack_root(preset, source_root, report)
     samples: list[tuple[dict[str, Any], Path]] = []
+    warnings = []
     for index, zone in enumerate(zones, 1):
         sample = zone.get("sample")
         sample_relative = sample.get("relative_path") if isinstance(sample, dict) else None
@@ -62,7 +66,16 @@ def preflight(entry: dict[str, Any], source_root: Path, *, allow_loop_loss: bool
             raise ValueError(f"zone {index} sample escapes pack root") from error
         if path.suffix.casefold() != ".wav" or not path.is_file():
             raise FileNotFoundError(f"zone {index} WAV not found: {path}")
-        wav_frames(path)
+        frames = wav_frames(path)
+        sample_end = zone.get("sampleend")
+        if sample_end not in (None, frames - 1):
+            if not allow_endpoint_loss:
+                raise ValueError(
+                    f"zone {index} sampleend={sample_end} differs from WAV end={frames - 1}"
+                )
+            warnings.append(
+                f"zone {index} source sampleend={sample_end} is omitted; comparison uses WAV end={frames - 1}"
+            )
         samples.append((zone, path))
     parents = {path.parent for _, path in samples}
     if len(parents) != 1:
@@ -71,7 +84,6 @@ def preflight(entry: dict[str, Any], source_root: Path, *, allow_loop_loss: bool
     if len(names) != len(set(names)):
         raise ValueError("referenced WAV basenames are not unique")
     grouped: dict[int, list[dict[str, Any]]] = defaultdict(list)
-    warnings = []
     for index, (zone, _) in enumerate(samples, 1):
         root = zone.get("rootkey")
         if isinstance(root, bool) or not isinstance(root, int) or not 0 <= root <= 127:
@@ -147,6 +159,7 @@ def _batch(selected: list[dict[str, Any]], name: str) -> dict[str, Any]:
 def plan(
     backlog_path: Path, source_root: Path, output: Path, *, count: int = 24,
     max_per_pack: int = 2, allow_loop_loss: bool = False,
+    allow_endpoint_loss: bool = False,
 ) -> dict[str, Any]:
     if count < 1 or max_per_pack < 1:
         raise ValueError("count and max-per-pack must be positive")
@@ -172,7 +185,10 @@ def plan(
             while groups[pack] and not accepted:
                 entry = groups[pack].popleft()
                 try:
-                    selected.append(preflight(entry, source_root, allow_loop_loss=allow_loop_loss))
+                    selected.append(preflight(
+                        entry, source_root, allow_loop_loss=allow_loop_loss,
+                        allow_endpoint_loss=allow_endpoint_loss,
+                    ))
                     accepted = True
                 except (ValueError, FileNotFoundError, TypeError) as error:
                     rejected.append({"path": str(entry.get("path", "")), "reason": str(error)})
@@ -190,6 +206,7 @@ def plan(
         "schema_version": 1, "kind": "mpc-ableton-keygroup-wave-plan", "name": name,
         "software_status": "preflight-pass", "hardware_status": "deferred",
         "allow_loop_loss": allow_loop_loss,
+        "allow_endpoint_loss": allow_endpoint_loss,
         "summary": {
             "programs": len(selected), "packs": len({item["collection"] for item in selected}),
             "zones": sum(item["zones"] for item in selected),
@@ -245,10 +262,15 @@ def main(argv: list[str] | None = None) -> int:
         "--allow-loop-loss", action="store_true",
         help="build an explicit comparison wave that omits unsupported Ableton loops",
     )
+    parser.add_argument(
+        "--allow-endpoint-loss", action="store_true",
+        help="build an explicit comparison wave that extends shortened zones to the WAV end",
+    )
     args = parser.parse_args(argv or sys.argv[1:])
     report = plan(
         args.backlog, args.source_root, args.output, count=args.count,
         max_per_pack=args.max_per_pack, allow_loop_loss=args.allow_loop_loss,
+        allow_endpoint_loss=args.allow_endpoint_loss,
     )
     print(f"Wrote: {args.output.resolve()}")
     print(f"Programs: {report['summary']['programs']}; packs: {report['summary']['packs']}; hardware: deferred")
