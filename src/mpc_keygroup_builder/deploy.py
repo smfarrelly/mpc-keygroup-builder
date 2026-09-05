@@ -28,18 +28,33 @@ def _program_data(program: Path) -> list[Path]:
     for item in program.parent.iterdir():
         normalized = "".join(c for c in item.name.casefold() if c.isalnum())
         if item.is_dir() and normalized.startswith(prefix) and "programdata" in normalized:
-            matches.extend(path for path in item.rglob("*") if path.is_file())
+            for path in item.rglob("*"):
+                if path.is_symlink():
+                    raise ValueError(
+                        f"companion ProgramData may not contain symbolic links: {path}"
+                    )
+                if path.is_file():
+                    matches.append(path)
     return sorted(matches)
 
 
-def _contained_path(root: Path, value: object, label: str) -> Path:
+def _contained_path(
+    root: Path, value: object, label: str, *, reject_symlinks: bool = False
+) -> Path:
     if not isinstance(value, str) or not value:
         raise ValueError(f"{label} must be a nonempty relative path")
     relative = Path(value)
     if relative.is_absolute():
         raise ValueError(f"{label} must be a relative path: {value!r}")
     root = root.expanduser().resolve()
-    path = (root / relative).resolve()
+    unresolved = root / relative
+    if reject_symlinks:
+        current = root
+        for part in relative.parts:
+            current /= part
+            if current.is_symlink():
+                raise ValueError(f"{label} may not contain symbolic links: {value!r}")
+    path = unresolved.resolve()
     try:
         path.relative_to(root)
     except ValueError as error:
@@ -51,6 +66,8 @@ def build_plan(
     manifest: Path, local_root: Path, target_root: Path, *, include_audio: bool = False
 ) -> list[dict[str, object]]:
     document = load_manifest(manifest)
+    local_root = local_root.expanduser().resolve()
+    target_root = target_root.expanduser().resolve()
     plan: list[dict[str, object]] = []
     for candidate in document["candidates"]:
         relative = candidate["sd_path"]
@@ -83,6 +100,8 @@ def build_plan(
                 "source": str(item.resolve()),
                 "target": str(item_target),
                 "relative": str(item_relative),
+                "local_root": str(local_root),
+                "target_root": str(target_root),
                 "bytes": item.stat().st_size,
                 "source_sha256": source_hash,
                 "target_sha256_before": target_hash,
@@ -98,14 +117,32 @@ def apply_plan(plan: list[dict[str, object]], backup_dir: Path | None = None) ->
     for item in plan:
         if item["action"] == "unchanged":
             continue
-        source, target = Path(str(item["source"])), Path(str(item["target"]))
+        relative = item["relative"]
+        source = _contained_path(
+            Path(str(item["local_root"])),
+            relative,
+            "planned source path",
+            reject_symlinks=True,
+        )
+        target = _contained_path(
+            Path(str(item["target_root"])), relative, "planned target path"
+        )
         if item["action"] == "replace":
+            target = _contained_path(
+                Path(str(item["target_root"])), relative, "replacement target path"
+            )
             backup = backup_dir / str(item["relative"])
             backup.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(target, backup)
             if sha256(backup) != item["target_sha256_before"]:
                 raise OSError(f"backup verification failed: {target}")
+        target = _contained_path(
+            Path(str(item["target_root"])), relative, "deployment target path"
+        )
         target.parent.mkdir(parents=True, exist_ok=True)
+        target = _contained_path(
+            Path(str(item["target_root"])), relative, "deployment target path"
+        )
         descriptor, temporary_name = tempfile.mkstemp(prefix=f".{target.name}-", dir=target.parent)
         os.close(descriptor)
         temporary = Path(temporary_name)
@@ -113,9 +150,15 @@ def apply_plan(plan: list[dict[str, object]], backup_dir: Path | None = None) ->
             shutil.copy2(source, temporary)
             if sha256(temporary) != item["source_sha256"]:
                 raise OSError(f"copy verification failed: {source}")
+            target = _contained_path(
+                Path(str(item["target_root"])), relative, "deployment target path"
+            )
             os.replace(temporary, target)
         finally:
             temporary.unlink(missing_ok=True)
+        target = _contained_path(
+            Path(str(item["target_root"])), relative, "deployment target path"
+        )
         if sha256(target) != item["source_sha256"]:
             raise OSError(f"target verification failed: {target}")
 

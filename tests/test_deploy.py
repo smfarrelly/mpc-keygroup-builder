@@ -78,6 +78,41 @@ class DeployTests(unittest.TestCase):
                 deploy.build_plan(self.manifest(root), local, target)
             self.assertEqual(list(outside.iterdir()), [])
 
+    def test_companion_audio_symlink_cannot_escape_local_root(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            local, target = root / "local", root / "sd"
+            program = local / "Programs/Kit.xpm"
+            program.parent.mkdir(parents=True)
+            program.write_bytes(b"new")
+            data = program.with_name("Kit_[ProgramData]")
+            data.mkdir()
+            outside = root / "outside.wav"
+            outside.write_bytes(b"private")
+            (data / "Kick.wav").symlink_to(outside)
+
+            with self.assertRaisesRegex(ValueError, "ProgramData.*symbolic links"):
+                deploy.build_plan(
+                    self.manifest(root), local, target, include_audio=True
+                )
+            self.assertFalse(target.exists())
+
+    def test_apply_revalidates_target_after_plan(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            local, target, outside = root / "local", root / "sd", root / "outside"
+            program = local / "Programs/Kit.xpm"
+            program.parent.mkdir(parents=True)
+            program.write_bytes(b"new")
+            plan = deploy.build_plan(self.manifest(root), local, target)
+
+            outside.mkdir()
+            target.mkdir()
+            (target / "Programs").symlink_to(outside, target_is_directory=True)
+            with self.assertRaisesRegex(ValueError, "escapes"):
+                deploy.apply_plan(plan)
+            self.assertFalse((outside / "Kit.xpm").exists())
+
 
 if __name__ == "__main__":
     unittest.main()
