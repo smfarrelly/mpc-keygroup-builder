@@ -58,6 +58,7 @@ def load(path: Path) -> dict[str, Any]:
         label = f"control group {index}"
         for field in ("controller", "controls", "semantic", "target"):
             _required_scalar(group, field, label, str)
+        _required_scalar(group, "count", label, int)
     return document
 
 

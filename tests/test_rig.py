@@ -90,6 +90,23 @@ class RigTests(unittest.TestCase):
             self.assertIn("tracks entry 1 must be a table", error.getvalue())
             self.assertNotIn("Traceback", error.getvalue())
 
+    def test_plan_rejects_control_group_without_count_cleanly(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "rig.toml"
+            path.write_text(
+                'schema_version=1\nname="Bad"\n'
+                '[[devices]]\nid="ctl"\nkind="controller"\n'
+                '[[tracks]]\nindex=1\nname="Track"\nrole="bass"\ntype="midi"\n'
+                '[[control_groups]]\ncontroller="ctl"\ncontrols="fader-{n}"\n'
+                'semantic="volume"\ntarget="track-{n}"\n'
+            )
+            error = io.StringIO()
+            with contextlib.redirect_stderr(error):
+                status = entrypoints.invoke("mpc-rig", ["plan", str(path)])
+            self.assertEqual(status, 2)
+            self.assertIn("control group 1 count", error.getvalue())
+            self.assertNotIn("Traceback", error.getvalue())
+
 
 if __name__ == "__main__":
     unittest.main()
