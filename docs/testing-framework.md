@@ -85,6 +85,16 @@ Auditions are intentionally dry and approximate. They help detect silence,
 wrong source selection, extreme pitch mapping, corrupt PCM data, and obvious
 level differences; they do not emulate the MPC audio engine.
 
+Measure one or more WAV files or directories before listening:
+
+```bash
+uv run mpc-audio-levels work/auditions --tolerance-db 6
+```
+
+Directory discovery accepts `.wav` in any letter case and fails clearly when
+no WAV files are present. The tolerance must be finite and nonnegative; it is
+the allowed distance from the batch median before a level-outlier flag.
+
 ## Drum performance audit
 
 Inspect pad classification, playback fields, and hat mute groups with:
