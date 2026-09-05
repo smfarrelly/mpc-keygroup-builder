@@ -16,7 +16,7 @@ from typing import Any
 
 
 RULES = (
-    (re.compile(r"\bwarped\b", re.I), "timing-warp", "critical", "Check tempo lock, transients, and loop alignment."),
+    (re.compile(r"\bwarp(?:ed|\s+behavior)?\b", re.I), "timing-warp", "critical", "Check tempo lock, transients, and loop alignment."),
     (re.compile(r"\bsamplestart\b", re.I), "sample-start", "high", "Compare attacks and timing with the Ableton source."),
     (re.compile(r"\b(?:sustain|release).*loop", re.I), "sample-loop", "high", "Hold pads and compare loop and release behavior."),
     (re.compile(r"\bdetune\b", re.I), "pitch", "high", "Compare pitch and tuning on every affected pad."),

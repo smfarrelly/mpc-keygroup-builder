@@ -46,6 +46,11 @@ class AbletonRiskTests(unittest.TestCase):
         clean = next(item for item in result["programs"] if item["id"] == "clean")
         self.assertEqual(clean["warning_count"], 3)
 
+    def test_actual_converter_warp_diagnostic_is_critical(self):
+        result = ableton_risk.classify_warning("pad 6 warp behavior is not serialized")
+        self.assertEqual(result["category"], "timing-warp")
+        self.assertEqual(result["severity"], "critical")
+
     def test_writes_transactional_machine_and_human_reviews(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
