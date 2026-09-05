@@ -13,6 +13,26 @@ TRACK_TYPES = {"drum", "keygroup", "plugin", "midi", "audio", "clip"}
 CLOCK_VALUES = {"internal", "send", "receive", "none"}
 
 
+def _tables(
+    document: dict[str, Any], field: str, *, required: bool = False
+) -> list[dict[str, Any]]:
+    value = document.get(field, [])
+    if not isinstance(value, list) or (required and not value):
+        qualifier = "at least one " if required else ""
+        raise ValueError(f"rig {field} must contain {qualifier}table")
+    for index, item in enumerate(value, 1):
+        if not isinstance(item, dict):
+            raise ValueError(f"rig {field} entry {index} must be a table")
+    return value
+
+
+def _required_scalar(item: dict[str, Any], field: str, label: str, kind: type) -> None:
+    value = item.get(field)
+    invalid_integer = kind is int and (not isinstance(value, int) or isinstance(value, bool))
+    if invalid_integer or not isinstance(value, kind) or (kind is str and not value.strip()):
+        raise ValueError(f"{label} {field} must be a nonempty {kind.__name__}")
+
+
 def load(path: Path) -> dict[str, Any]:
     with path.open("rb") as stream:
         document = tomllib.load(stream)
@@ -20,8 +40,24 @@ def load(path: Path) -> dict[str, Any]:
         raise ValueError("rig requires schema_version=1")
     if not isinstance(document.get("name"), str) or not document.get("name"):
         raise ValueError("rig requires a name")
-    if not isinstance(document.get("tracks"), list) or not document["tracks"]:
-        raise ValueError("rig requires [[tracks]]")
+    devices = _tables(document, "devices")
+    tracks = _tables(document, "tracks", required=True)
+    groups = _tables(document, "control_groups")
+    for index, device in enumerate(devices, 1):
+        _required_scalar(device, "id", f"device {index}", str)
+        if "clock" in device:
+            _required_scalar(device, "clock", f"device {index}", str)
+    for index, track in enumerate(tracks, 1):
+        label = f"track {index}"
+        _required_scalar(track, "index", label, int)
+        for field in ("name", "role", "type"):
+            _required_scalar(track, field, label, str)
+        if "device" in track:
+            _required_scalar(track, "device", label, str)
+    for index, group in enumerate(groups, 1):
+        label = f"control group {index}"
+        for field in ("controller", "controls", "semantic", "target"):
+            _required_scalar(group, field, label, str)
     return document
 
 
