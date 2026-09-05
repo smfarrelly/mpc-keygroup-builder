@@ -124,6 +124,10 @@ uv run mpc-session-report inventory/scratchpad-candidates.toml \
   --output work/session-report.json
 ```
 
+Optional evidence paths may be absent, in which case the report adds a next
+action. Existing paths must be regular, non-symlink files containing JSON
+objects; malformed evidence is rejected instead of being reported as missing.
+
 Search the full program ledger without editing it:
 
 ```bash
