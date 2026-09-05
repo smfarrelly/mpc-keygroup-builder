@@ -12,25 +12,31 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
-      - run: python -m pip install -e . pytest
-      - run: pytest -q
+      - name: Install uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          enable-cache: true
+      - name: Install the locked development environment
+        run: uv sync --locked
+      - name: Run the test suite
+        run: uv run python -m unittest discover -s tests -v
       - name: Validate published declarative examples
         run: |
-          mpc-schema validate device-profile devices/*.toml
-          mpc-schema validate drum-manifest inventory/fg-vinyl-layered-kit.toml
-          mpc-schema validate drum-recipe recipes/drums/*.toml
-          mpc-schema validate harmony-recipe recipes/harmony/*.toml
-          mpc-schema validate melody-recipe recipes/melody/*.toml
-          mpc-schema validate workstation-recipe recipes/workstation/*.toml
-          mpc-schema validate kit-recipe recipes/kits/*.toml
-          mpc-schema validate layout-preset layouts/*.toml
-          mpc-schema validate keygroup-variant variants/keygroups/*.toml
-          mpc-schema validate midi-device midi/devices/*.toml
-          mpc-schema validate midi-control-map midi/maps/*.toml
-          mpc-schema validate plugin-profile midi/plugins/*.toml
-          mpc-schema validate rig-profile rigs/*.toml
-          mpc-schema validate controller-capacity midi/controller-capacity.toml
-          mpc-recipe-audit recipes --output /tmp/mpc-recipe-audit
+          uv run mpc-schema validate device-profile devices/*.toml
+          uv run mpc-schema validate drum-manifest inventory/fg-vinyl-layered-kit.toml
+          uv run mpc-schema validate drum-recipe recipes/drums/*.toml
+          uv run mpc-schema validate harmony-recipe recipes/harmony/*.toml
+          uv run mpc-schema validate melody-recipe recipes/melody/*.toml
+          uv run mpc-schema validate workstation-recipe recipes/workstation/*.toml
+          uv run mpc-schema validate kit-recipe recipes/kits/*.toml
+          uv run mpc-schema validate layout-preset layouts/*.toml
+          uv run mpc-schema validate keygroup-variant variants/keygroups/*.toml
+          uv run mpc-schema validate midi-device midi/devices/*.toml
+          uv run mpc-schema validate midi-control-map midi/maps/*.toml
+          uv run mpc-schema validate plugin-profile midi/plugins/*.toml
+          uv run mpc-schema validate rig-profile rigs/*.toml
+          uv run mpc-schema validate controller-capacity midi/controller-capacity.toml
+          uv run mpc-recipe-audit recipes --output /tmp/mpc-recipe-audit
       - name: Smoke-test the installed wheel outside the checkout
         run: |
           python -m pip wheel . --no-deps --wheel-dir /tmp/mpc-wheel
@@ -48,4 +54,4 @@ jobs:
           /tmp/mpc-installed/bin/mpc-showcase --output /tmp/mpc-showcase-smoke
           test -f /tmp/mpc-portable-smoke/HARDWARE_CHECKLIST.md
           test -f /tmp/mpc-showcase-smoke/Compositions/electro/Sequences/outro.mid
-      - run: mpc-repository-guard
+      - run: uv run mpc-repository-guard
