@@ -133,6 +133,10 @@ def output_paths(json_path: Path, csv_path: Path) -> tuple[Path, Path]:
         path = path.expanduser()
         if path.is_symlink():
             raise ValueError(f"loop inventory {label} output may not be a symbolic link: {path}")
+        if path.exists() and not path.is_file():
+            raise ValueError(
+                f"loop inventory {label} output must be a regular file: {path}"
+            )
         paths.append(path.resolve())
     if paths[0] == paths[1]:
         raise ValueError("loop inventory JSON and CSV outputs must be different files")

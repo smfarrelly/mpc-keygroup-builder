@@ -71,3 +71,19 @@ class LoopInventoryTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "symbolic link"):
                 loop_inventory.output_paths(linked, root / "inventory.csv")
             self.assertEqual(external.read_text(), "preserve")
+
+    def test_invalid_csv_destination_leaves_json_absent(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            json_path = root / "inventory.json"
+            csv_path = root / "csv-directory"
+            csv_path.mkdir()
+            error = io.StringIO()
+            with contextlib.redirect_stderr(error):
+                status = entrypoints.invoke(
+                    "mpc-loop-inventory",
+                    [str(root), "--json", str(json_path), "--csv", str(csv_path)],
+                )
+            self.assertEqual(status, 2)
+            self.assertIn("CSV output must be a regular file", error.getvalue())
+            self.assertFalse(json_path.exists())
