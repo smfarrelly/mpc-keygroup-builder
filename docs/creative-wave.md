@@ -112,7 +112,8 @@ Every wave contains:
 Copy the wave folder as a unit instead of flattening it. The checklist gives the
 resulting MPC browser path for every candidate. Sound assignment, MIDI import,
 save/reload, listening, and musical promotion remain deferred until a person
-tests them on the MPC.
+tests them on the MPC. Run `mpc-bundle-verify PATH-TO-WAVE` after any copy to
+verify the complete receipt without changing the wave.
 
 ## Exploration score
 

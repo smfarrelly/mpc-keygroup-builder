@@ -44,6 +44,28 @@ listening tests recorded in `inventory/program-status.csv`.
 
 The command exits unsuccessfully only when a production-scope program fails.
 
+## Verify a complete workflow bundle
+
+Generated workstation waves, creative shortlists, Ableton conversion waves,
+showcases, and the portable demo include a root `checksums.json` receipt. Verify
+one after generating, copying, downloading, or moving it:
+
+```bash
+mpc-bundle-verify "/path/to/complete bundle"
+```
+
+The verifier is read-only. It requires the receipt to list every regular file
+except itself, rejects missing and unrecorded files, validates every SHA-256,
+and refuses absolute, ambiguous, traversal, Windows-incompatible, or symbolic
+link paths. `--json` prints a stable machine-readable report. A receipt in a
+different location can be selected with a relative POSIX `--receipt` path.
+
+A generic bundle pass proves byte integrity only. It reports hardware status as
+`not-evaluated` and does not replace program simulation or listening. The
+portable-demo-specific `mpc-portable-demo --verify` command calls this verifier
+and then additionally reruns its cross-kit simulation and checks the demo's
+deferred-hardware evidence.
+
 ## Deterministic audition rendering
 
 Generate a dry local preview with:

@@ -52,6 +52,7 @@ jobs:
           /tmp/mpc-installed/bin/mpc-workstation-wave /tmp/mpc-recipe-starter --families ambient --seeds-per-family 1 --output /tmp/mpc-wave-smoke
           /tmp/mpc-installed/bin/mpc-creative-review /tmp/mpc-wave-smoke/wave.json --output /tmp/mpc-wave-review.html
           /tmp/mpc-installed/bin/mpc-tools demo --output /tmp/mpc-portable-smoke
+          /tmp/mpc-installed/bin/mpc-bundle-verify /tmp/mpc-portable-smoke
           /tmp/mpc-installed/bin/mpc-showcase --output /tmp/mpc-showcase-smoke
           test -f /tmp/mpc-portable-smoke/HARDWARE_CHECKLIST.md
           test -f /tmp/mpc-showcase-smoke/Compositions/electro/Sequences/outro.mid

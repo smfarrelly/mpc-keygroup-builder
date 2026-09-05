@@ -507,6 +507,11 @@ control.
 - [x] A transactional portable demo synthesizes 16 CC0 WAVs and exercises
   source-program, catalog, cross-kit, Drum build, four-track workstation, and
   five-section arrangement workflows with checksums and editable recipes.
+- [x] A shared read-only bundle verifier validates complete receipts for the
+  portable demo, creative waves and shortlists, showcases, and private Ableton
+  conversion waves. It rejects missing, changed, extra, unsafe, symlinked, and
+  special filesystem entries while keeping hardware status explicitly
+  unevaluated; the portable verifier adds its domain-specific simulation.
 - [x] Document bring-your-own-samples licensing boundaries, including explicit
   local-use guidance for Samples From Mars, open/CC0 options, per-source
   provenance, and redistribution restrictions.

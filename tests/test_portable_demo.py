@@ -105,7 +105,7 @@ class PortableDemoTests(unittest.TestCase):
             external_receipt = root / "external-checksums.json"
             receipt.replace(external_receipt)
             receipt.symlink_to(external_receipt)
-            with self.assertRaisesRegex(ValueError, "receipt.*symbolic link"):
+            with self.assertRaisesRegex(ValueError, "receipt.*symbolic links"):
                 verify_demo(output)
 
     def test_builds_with_packaged_recipe_defaults(self):
