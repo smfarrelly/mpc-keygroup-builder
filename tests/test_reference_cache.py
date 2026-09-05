@@ -3,7 +3,12 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from mpc_keygroup_builder.reference_cache import ReferenceDocument, load_manifest, verify_cache
+from mpc_keygroup_builder.reference_cache import (
+    ReferenceDocument,
+    fetch_documents,
+    load_manifest,
+    verify_cache,
+)
 
 
 class ReferenceCacheTests(unittest.TestCase):
@@ -37,6 +42,41 @@ class ReferenceCacheTests(unittest.TestCase):
             )
             with self.assertRaisesRegex(ValueError, "HTTPS"):
                 load_manifest(path)
+
+    def test_cached_document_symlink_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            external = root / "external.pdf"
+            external.write_bytes(b"private document")
+            cache = root / "cache"
+            cache.mkdir()
+            (cache / "doc.pdf").symlink_to(external)
+            document = ReferenceDocument(
+                "one", "One", "Vendor", "https://example.com/doc.pdf",
+                "doc.pdf", "personal-copy-only", None,
+            )
+            with self.assertRaisesRegex(ValueError, "cached reference.*symbolic link"):
+                verify_cache((document,), cache)
+            with self.assertRaisesRegex(ValueError, "cached reference.*symbolic link"):
+                fetch_documents((document,), cache)
+            self.assertEqual(external.read_bytes(), b"private document")
+
+    def test_cache_index_symlink_is_rejected_before_write(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            cache = root / "cache"
+            cache.mkdir()
+            (cache / "doc.pdf").write_bytes(b"cached document")
+            external = root / "external.json"
+            external.write_text("preserve")
+            (cache / "index.json").symlink_to(external)
+            document = ReferenceDocument(
+                "one", "One", "Vendor", "https://example.com/doc.pdf",
+                "doc.pdf", "personal-copy-only", None,
+            )
+            with self.assertRaisesRegex(ValueError, "index.*symbolic link"):
+                fetch_documents((document,), cache)
+            self.assertEqual(external.read_text(), "preserve")
 
 
 if __name__ == "__main__":
