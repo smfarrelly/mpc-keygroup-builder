@@ -501,6 +501,10 @@ control.
   role-selected controls into nine additive performance pages with validation,
   Components worksheets, MPC Learn worksheets, capture comparison, and a
   minimal hardware-verification checklist.
+- [x] Measure plugin-page coverage against every installed UI control and
+  optional XPJ Learn evidence, exposing role/evidence gaps, redundant targets,
+  unmapped plugins, and the best useful omissions without encouraging exhaustive
+  parameter mapping.
 
 ### Release readiness
 
