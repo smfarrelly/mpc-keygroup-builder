@@ -329,6 +329,10 @@ performance program.
   excluding Wave 01 and exact duplicates. All 24 build transactionally and pass
   semantic simulation; the generated 71 MB owned-audio bundle, checksums, and
   per-program hardware checklist remain ignored and hardware-deferred.
+- [x] `mpc-ableton-risk` converts repetitive Wave build diagnostics into a
+  severity-ordered, per-program hardware queue. JSON, CSV, and Markdown retain
+  exact affected pads while grouping gain, sample-start, pitch, loop, warp,
+  stereo, device, and macro differences into one actionable listening check.
 
 Exporter expansion beyond the implemented Drum topology remains gated on
 manual source comparison and representative MPC target captures. The Clip

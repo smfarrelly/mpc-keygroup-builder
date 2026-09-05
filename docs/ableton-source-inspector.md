@@ -112,6 +112,23 @@ It copies licensed source audio into ignored local output only; never commit or
 redistribute that output. The maintained Wave 02 selection metadata lives in
 `inventory/ableton-drum-wave-02.toml`.
 
+### Prioritize translation risks
+
+Raw converter diagnostics can be repetitive—for example, one gain difference
+may appear once per pad. Convert a wave's build report into a compact,
+per-program review queue:
+
+```bash
+mpc-ableton-risk work/hardware-candidates/sfm-ableton-wave-02/build-report.json \
+  --output work/hardware-candidates/sfm-ableton-wave-02-risk-review
+```
+
+The transactional output contains JSON for automation, CSV for sorting, and
+`TRANSLATION_REVIEW.md` for the hardware session. It groups warnings into
+timing/warp, sample-start, looping, pitch, gain, stereo, device, and macro
+risks; preserves affected pad numbers; and orders programs by the most severe
+difference. A risk level prioritizes listening—it is not a hardware verdict.
+
 ## Fidelity suggestions
 
 The labels are conservative routing suggestions, not automated conversion
