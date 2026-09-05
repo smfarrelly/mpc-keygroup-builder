@@ -20,7 +20,9 @@ uv run mpc-portable-demo --verify work/fg-portable-demo
 
 Verification is read-only. It rejects missing, changed, unrecorded, or unsafe
 receipt paths, reruns the cross-kit software simulation, and confirms that
-hardware status remains deferred.
+hardware status remains deferred. It shares its byte-integrity checks with
+`mpc-bundle-verify`, which can verify any generated project bundle containing a
+complete `checksums.json` receipt.
 
 Paths recorded inside the bundle are relative to its root. Identical inputs
 therefore produce byte-identical bundles in different destination directories,

@@ -45,6 +45,8 @@ is required for the software portion.
 - Build pitched Keygroups from named WAV files, including velocity layers.
 - Build, color, audit, compose, and lay out Drum Programs.
 - Inspect XPM programs without modifying them.
+- Verify complete checksum-bearing workflow bundles after local copies or
+  transfers without making a hardware-pass claim.
 - Inspect, extract, and compare MPC 3 XPJ projects without modifying them.
 - Generate deterministic Drum, Bass, Chords, Melody, and arrangement MIDI.
 - Generate multi-family candidate waves with transparent scoring, duplicate

@@ -20,6 +20,7 @@ from pathlib import Path
 from .arrangement import arrange_idea, render_markdown as render_arrangement_markdown
 from .arrangement import render_section
 from .catalog import build_catalog
+from .bundle_verify import verify_bundle
 from .drum_builder import build_drum_program, load_manifest
 from .kit_select import load_recipe as load_kit_recipe
 from .kit_select import render_manifest, render_markdown as render_selection_markdown
@@ -170,53 +171,7 @@ def _sha256(path: Path) -> str:
 def verify_demo(root: Path) -> dict[str, object]:
     """Verify a generated demo without changing it or claiming a hardware pass."""
     root = root.expanduser().resolve()
-    if not root.is_dir():
-        raise NotADirectoryError(root)
-    receipt_path = root / "checksums.json"
-    if receipt_path.is_symlink():
-        raise ValueError("portable demo checksum receipt may not be a symbolic link")
-    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
-    if not isinstance(receipt, dict) or not receipt:
-        raise ValueError("portable demo checksum receipt must be a non-empty object")
-
-    expected: dict[str, str] = {}
-    for relative, checksum in receipt.items():
-        if not isinstance(relative, str) or not isinstance(checksum, str):
-            raise ValueError("portable demo checksum entries must map paths to hashes")
-        path = Path(relative)
-        if path.is_absolute() or ".." in path.parts or relative == "checksums.json":
-            raise ValueError(f"unsafe portable demo checksum path: {relative!r}")
-        if len(checksum) != 64 or any(character not in "0123456789abcdef" for character in checksum):
-            raise ValueError(f"invalid SHA-256 for portable demo file: {relative}")
-        normalized = path.as_posix()
-        if normalized in expected:
-            raise ValueError(f"duplicate portable demo checksum path: {relative}")
-        expected[normalized] = checksum
-
-    paths = list(root.rglob("*"))
-    symbolic_links = sorted(
-        path.relative_to(root).as_posix() for path in paths if path.is_symlink()
-    )
-    if symbolic_links:
-        raise ValueError(
-            f"portable demo may not contain symbolic links: {symbolic_links[0]}"
-        )
-    actual = {
-        path.relative_to(root).as_posix()
-        for path in paths
-        if path.is_file() and path != receipt_path
-    }
-    missing = sorted(set(expected) - actual)
-    extra = sorted(actual - set(expected))
-    if missing:
-        raise ValueError(f"portable demo files are missing: {', '.join(missing)}")
-    if extra:
-        raise ValueError(f"portable demo has unrecorded files: {', '.join(extra)}")
-
-    for relative, checksum in expected.items():
-        path = root / relative
-        if _sha256(path) != checksum:
-            raise ValueError(f"portable demo checksum mismatch: {relative}")
+    bundle = verify_bundle(root)
 
     acceptance = json.loads(
         (root / "software-acceptance.json").read_text(encoding="utf-8")
@@ -231,7 +186,7 @@ def verify_demo(root: Path) -> dict[str, object]:
         raise ValueError("portable demo cross-kit simulation failed during verification")
     return {
         "schema_version": 1,
-        "verified_files": len(expected),
+        "verified_files": bundle["verified_files"],
         "cross_kit_simulation": simulation.verdict,
         "hardware_status": "deferred",
     }

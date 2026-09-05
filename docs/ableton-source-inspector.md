@@ -110,7 +110,9 @@ The build is all-or-nothing, locally simulates every XPM, removes machine-local
 paths from its reports, writes checksums, and creates an MPC hardware checklist.
 It copies licensed source audio into ignored local output only; never commit or
 redistribute that output. The maintained Wave 02 selection metadata lives in
-`inventory/ableton-drum-wave-02.toml`.
+`inventory/ableton-drum-wave-02.toml`. Run `mpc-bundle-verify PATH-TO-WAVE`
+after moving the private bundle to confirm that every licensed local file still
+matches its receipt.
 
 ## Fidelity suggestions
 
