@@ -30,6 +30,17 @@ uses bounded process workers while preserving the same deterministic ordering
 as the serial scan. Licensed samples and preset XML are never copied into the
 repository.
 
+## Inventory tempo-named loops
+
+```bash
+uv run mpc-loop-inventory "/path/to/loop pack" \
+  --json work/loops.json --csv work/loops.csv
+```
+
+The source must be an existing directory, and JSON and CSV must name distinct
+regular output files. Output symlinks are refused. Individual unreadable or
+poorly named WAVs remain visible as issues without hiding valid loops.
+
 ## Build a coverage-aware backlog
 
 ```bash

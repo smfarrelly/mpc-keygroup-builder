@@ -83,6 +83,9 @@ def inspect_loop(path: Path, root: Path) -> LoopInfo:
 
 
 def scan(root: Path) -> dict[str, object]:
+    root = root.expanduser().resolve()
+    if not root.is_dir():
+        raise NotADirectoryError(f"loop inventory root is not a directory: {root}")
     loops = []
     issues = []
     for path in sorted(root.rglob("*")):
@@ -124,6 +127,22 @@ def render_csv(report: dict[str, object]) -> str:
     return stream.getvalue()
 
 
+def output_paths(json_path: Path, csv_path: Path) -> tuple[Path, Path]:
+    paths = []
+    for label, path in (("JSON", json_path), ("CSV", csv_path)):
+        path = path.expanduser()
+        if path.is_symlink():
+            raise ValueError(f"loop inventory {label} output may not be a symbolic link: {path}")
+        if path.exists() and not path.is_file():
+            raise ValueError(
+                f"loop inventory {label} output must be a regular file: {path}"
+            )
+        paths.append(path.resolve())
+    if paths[0] == paths[1]:
+        raise ValueError("loop inventory JSON and CSV outputs must be different files")
+    return paths[0], paths[1]
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("root", type=Path)
@@ -131,11 +150,12 @@ def main() -> int:
     parser.add_argument("--csv", type=Path, required=True)
     args = parser.parse_args()
     root = args.root.expanduser().resolve()
+    json_path, csv_path = output_paths(args.json, args.csv)
     report = scan(root)
-    args.json.parent.mkdir(parents=True, exist_ok=True)
-    args.csv.parent.mkdir(parents=True, exist_ok=True)
-    args.json.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
-    args.csv.write_text(render_csv(report), encoding="utf-8")
+    json_path.parent.mkdir(parents=True, exist_ok=True)
+    csv_path.parent.mkdir(parents=True, exist_ok=True)
+    json_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    csv_path.write_text(render_csv(report), encoding="utf-8")
     print(
         f"loops={report['count']} bpm={report['bpm_min']}..{report['bpm_max']} "
         f"issues={len(report['issues'])} timing_warnings={len(report['timing_warnings'])}"
