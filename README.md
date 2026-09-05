@@ -158,6 +158,10 @@ using the tools.
 
 ## Development
 
+See [Contributing](CONTRIBUTING.md) for branch scope, command-registration
+expectations, test guidance, and the project's artifact and hardware-evidence
+boundaries.
+
 ```bash
 git clone https://github.com/smfarrelly/mpc-keygroup-builder.git
 cd mpc-keygroup-builder

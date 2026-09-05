@@ -7,6 +7,7 @@ from pathlib import Path
 MARKDOWN_LINK = re.compile(r"\[[^]]+\]\(([^)]+)\)")
 ONBOARDING_DOCUMENTS = (
     "README.md",
+    "CONTRIBUTING.md",
     "docs/index.md",
     "docs/getting-started.md",
     "docs/cli-reference.md",
