@@ -13,7 +13,7 @@ from collections import defaultdict
 from pathlib import Path
 
 from .entrypoints import COMMANDS, invoke, version
-from .portable_demo import build_demo
+from .portable_demo import build_demo, verify_demo
 from .scaffold import KINDS, create as create_scaffold
 from .web_demo import build_web_demo
 
@@ -189,7 +189,9 @@ def main() -> int:
     )
     resume.add_argument("--json", action="store_true", help="emit machine-readable JSON")
     demo = subparsers.add_parser("demo", help="build the complete redistributable workflow fixture")
-    demo.add_argument("--output", type=Path, required=True, help="new directory for the generated demo")
+    demo_destination = demo.add_mutually_exclusive_group(required=True)
+    demo_destination.add_argument("--output", type=Path, help="new directory for the generated demo")
+    demo_destination.add_argument("--verify", type=Path, metavar="DEMO", help="verify an existing demo without changing it")
     browser = subparsers.add_parser("web-demo", help="write a standalone browser-only Program Designer demo")
     browser.add_argument("--output", type=Path, required=True, help="HTML file to create")
     browser.add_argument("--force", action="store_true", help="replace an existing demo HTML file")
@@ -215,6 +217,11 @@ def main() -> int:
     if args.command == "resume":
         return _resume(args.checkpoint, args.sd_root, args.json)
     if args.command == "demo":
+        if args.verify is not None:
+            report = verify_demo(args.verify)
+            print(f"PASS: {report['verified_files']} files and the cross-kit simulation verified")
+            print(f"Hardware status: {report['hardware_status']}")
+            return 0
         report = build_demo(args.output.expanduser(), None)
         print(f"PASS: {report['cross_kit_program']}")
         print(f"Next: open {args.output.resolve() / 'HARDWARE_CHECKLIST.md'}")

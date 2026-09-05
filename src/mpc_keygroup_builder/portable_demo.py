@@ -167,6 +167,68 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def verify_demo(root: Path) -> dict[str, object]:
+    """Verify a generated demo without changing it or claiming a hardware pass."""
+    root = root.expanduser().resolve()
+    if not root.is_dir():
+        raise NotADirectoryError(root)
+    receipt_path = root / "checksums.json"
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    if not isinstance(receipt, dict) or not receipt:
+        raise ValueError("portable demo checksum receipt must be a non-empty object")
+
+    expected: dict[str, str] = {}
+    for relative, checksum in receipt.items():
+        if not isinstance(relative, str) or not isinstance(checksum, str):
+            raise ValueError("portable demo checksum entries must map paths to hashes")
+        path = Path(relative)
+        if path.is_absolute() or ".." in path.parts or relative == "checksums.json":
+            raise ValueError(f"unsafe portable demo checksum path: {relative!r}")
+        if len(checksum) != 64 or any(character not in "0123456789abcdef" for character in checksum):
+            raise ValueError(f"invalid SHA-256 for portable demo file: {relative}")
+        normalized = path.as_posix()
+        if normalized in expected:
+            raise ValueError(f"duplicate portable demo checksum path: {relative}")
+        expected[normalized] = checksum
+
+    actual = {
+        path.relative_to(root).as_posix()
+        for path in root.rglob("*")
+        if path.is_file() and path != receipt_path
+    }
+    missing = sorted(set(expected) - actual)
+    extra = sorted(actual - set(expected))
+    if missing:
+        raise ValueError(f"portable demo files are missing: {', '.join(missing)}")
+    if extra:
+        raise ValueError(f"portable demo has unrecorded files: {', '.join(extra)}")
+
+    for relative, checksum in expected.items():
+        path = root / relative
+        if path.is_symlink():
+            raise ValueError(f"portable demo receipt path is a symbolic link: {relative}")
+        if _sha256(path) != checksum:
+            raise ValueError(f"portable demo checksum mismatch: {relative}")
+
+    acceptance = json.loads(
+        (root / "software-acceptance.json").read_text(encoding="utf-8")
+    )
+    if acceptance.get("cross_kit_simulation") != "pass":
+        raise ValueError("portable demo software acceptance is not pass")
+    if acceptance.get("hardware_status") != "deferred":
+        raise ValueError("portable demo receipt must leave hardware status deferred")
+    program = root / "Cross Kit/FG Portable Cross Kit.xpm"
+    simulation = test_program(program, program.parent)
+    if simulation.verdict != "pass":
+        raise ValueError("portable demo cross-kit simulation failed during verification")
+    return {
+        "schema_version": 1,
+        "verified_files": len(expected),
+        "cross_kit_simulation": simulation.verdict,
+        "hardware_status": "deferred",
+    }
+
+
 def _final_paths(value: object, staging: Path, output: Path) -> object:
     if isinstance(value, str):
         prefix = str(staging)
@@ -464,8 +526,9 @@ libraries. It demonstrates source-program creation, audio cataloging,
 descriptor-driven cross-kit selection, Drum Program construction, four-track
 idea generation, and five traceable arrangement variants.
 
-Start with `HARDWARE_CHECKLIST.md`. All editable TOML recipes and complete JSON
-provenance are included so the workflow can be repeated or adapted.
+Start by running `mpc-portable-demo --verify PATH-TO-THIS-DIRECTORY`, then use
+`HARDWARE_CHECKLIST.md` when an MPC is available. All editable TOML recipes and
+complete JSON provenance are included so the workflow can be repeated or adapted.
 """,
             encoding="utf-8",
         )
@@ -485,7 +548,7 @@ software source remains licensed under the repository's MIT License.
             encoding="utf-8",
         )
         checksums = {
-            str(path.relative_to(staging)): _sha256(path)
+            path.relative_to(staging).as_posix(): _sha256(path)
             for path in sorted(staging.rglob("*"))
             if path.is_file() and path.name != "checksums.json"
         }
@@ -501,12 +564,19 @@ software source remains licensed under the repository's MIT License.
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output", type=Path, required=True)
+    destination = parser.add_mutually_exclusive_group(required=True)
+    destination.add_argument("--output", type=Path)
+    destination.add_argument("--verify", type=Path, metavar="DEMO")
     parser.add_argument(
         "--recipe-root", type=Path,
         help="optional checkout recipe directory; the installed command has bundled defaults",
     )
     args = parser.parse_args()
+    if args.verify is not None:
+        report = verify_demo(args.verify)
+        print(f"Verified files: {report['verified_files']}; software acceptance: pass")
+        print(f"Hardware status: {report['hardware_status']}")
+        return 0
     recipe_root = args.recipe_root.expanduser() if args.recipe_root is not None else None
     report = build_demo(args.output.expanduser(), recipe_root)
     print(f"Built: {report['cross_kit_program']}")

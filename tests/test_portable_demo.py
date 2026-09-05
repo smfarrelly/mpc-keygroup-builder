@@ -4,7 +4,7 @@ import unittest
 import wave
 from pathlib import Path
 
-from mpc_keygroup_builder.portable_demo import build_demo
+from mpc_keygroup_builder.portable_demo import build_demo, verify_demo
 
 
 class PortableDemoTests(unittest.TestCase):
@@ -36,6 +36,40 @@ class PortableDemoTests(unittest.TestCase):
                 self.assertGreater(stream.getnframes(), 0)
             with self.assertRaises(FileExistsError):
                 build_demo(output, repository / "recipes")
+
+    def test_verifies_moved_demo_and_rejects_tampering(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            original = root / "original"
+            build_demo(original, None)
+            moved = root / "moved"
+            original.rename(moved)
+
+            report = verify_demo(moved)
+            self.assertGreater(report["verified_files"], 20)
+            self.assertEqual(report["cross_kit_simulation"], "pass")
+            self.assertEqual(report["hardware_status"], "deferred")
+
+            sample = next((moved / "Synthetic Audio").glob("*.wav"))
+            sample.write_bytes(sample.read_bytes() + b"tampered")
+            with self.assertRaisesRegex(ValueError, "checksum mismatch"):
+                verify_demo(moved)
+
+    def test_verifier_rejects_unrecorded_and_unsafe_paths(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "portable"
+            build_demo(output, None)
+            (output / "unexpected.txt").write_text("not in the receipt")
+            with self.assertRaisesRegex(ValueError, "unrecorded files"):
+                verify_demo(output)
+
+            (output / "unexpected.txt").unlink()
+            receipt_path = output / "checksums.json"
+            receipt = json.loads(receipt_path.read_text())
+            receipt["../outside"] = "0" * 64
+            receipt_path.write_text(json.dumps(receipt))
+            with self.assertRaisesRegex(ValueError, "unsafe.*path"):
+                verify_demo(output)
 
     def test_builds_with_packaged_recipe_defaults(self):
         with tempfile.TemporaryDirectory() as directory:

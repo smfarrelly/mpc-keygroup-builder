@@ -62,9 +62,11 @@ Then build the portable demo in a new directory:
 
 ```bash
 mpc-tools demo --output my-mpc-demo
+mpc-tools demo --verify my-mpc-demo
 ```
 
-Open `my-mpc-demo/HARDWARE_CHECKLIST.md`. The generated WAVs are simple
+The verification is read-only and leaves hardware status deferred. Then open
+`my-mpc-demo/HARDWARE_CHECKLIST.md`. The generated WAVs are simple
 mathematical fixtures intended to verify the workflow, not production sounds.
 You can complete all software checks without an MPC and defer the hardware
 rows.
