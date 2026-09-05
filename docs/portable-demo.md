@@ -12,6 +12,20 @@ uv run mpc-portable-demo --output work/fg-portable-demo
 The command refuses an existing destination and builds in a sibling temporary
 directory. The final folder appears only after all stages succeed.
 
+Verify the complete receipt after generation, copying, or moving the folder:
+
+```bash
+uv run mpc-portable-demo --verify work/fg-portable-demo
+```
+
+Verification is read-only. It rejects missing, changed, unrecorded, or unsafe
+receipt paths, reruns the cross-kit software simulation, and confirms that
+hardware status remains deferred.
+
+Paths recorded inside the bundle are relative to its root. Identical inputs
+therefore produce byte-identical bundles in different destination directories,
+and moving a bundle does not leave stale computer-specific paths in its evidence.
+
 ## Included workflow
 
 - 16 mono 44.1 kHz synthetic drum and percussion WAVs;
@@ -36,5 +50,5 @@ the generator itself.
 Edit the included TOML recipes, replace the source WAVs with files you may
 legally use, or point the normal catalog/kit-wave commands at a larger local
 library. `checksums.json` provides a stable receipt for the delivered demo;
-regenerate into a new destination after making changes rather than overwriting
-the original evidence.
+verify it after a copy, and regenerate into a new destination after making
+changes rather than overwriting the original evidence.

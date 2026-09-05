@@ -167,16 +167,90 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def _final_paths(value: object, staging: Path, output: Path) -> object:
+def verify_demo(root: Path) -> dict[str, object]:
+    """Verify a generated demo without changing it or claiming a hardware pass."""
+    root = root.expanduser().resolve()
+    if not root.is_dir():
+        raise NotADirectoryError(root)
+    receipt_path = root / "checksums.json"
+    if receipt_path.is_symlink():
+        raise ValueError("portable demo checksum receipt may not be a symbolic link")
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    if not isinstance(receipt, dict) or not receipt:
+        raise ValueError("portable demo checksum receipt must be a non-empty object")
+
+    expected: dict[str, str] = {}
+    for relative, checksum in receipt.items():
+        if not isinstance(relative, str) or not isinstance(checksum, str):
+            raise ValueError("portable demo checksum entries must map paths to hashes")
+        path = Path(relative)
+        if path.is_absolute() or ".." in path.parts or relative == "checksums.json":
+            raise ValueError(f"unsafe portable demo checksum path: {relative!r}")
+        if len(checksum) != 64 or any(character not in "0123456789abcdef" for character in checksum):
+            raise ValueError(f"invalid SHA-256 for portable demo file: {relative}")
+        normalized = path.as_posix()
+        if normalized in expected:
+            raise ValueError(f"duplicate portable demo checksum path: {relative}")
+        expected[normalized] = checksum
+
+    paths = list(root.rglob("*"))
+    symbolic_links = sorted(
+        path.relative_to(root).as_posix() for path in paths if path.is_symlink()
+    )
+    if symbolic_links:
+        raise ValueError(
+            f"portable demo may not contain symbolic links: {symbolic_links[0]}"
+        )
+    actual = {
+        path.relative_to(root).as_posix()
+        for path in paths
+        if path.is_file() and path != receipt_path
+    }
+    missing = sorted(set(expected) - actual)
+    extra = sorted(actual - set(expected))
+    if missing:
+        raise ValueError(f"portable demo files are missing: {', '.join(missing)}")
+    if extra:
+        raise ValueError(f"portable demo has unrecorded files: {', '.join(extra)}")
+
+    for relative, checksum in expected.items():
+        path = root / relative
+        if _sha256(path) != checksum:
+            raise ValueError(f"portable demo checksum mismatch: {relative}")
+
+    acceptance = json.loads(
+        (root / "software-acceptance.json").read_text(encoding="utf-8")
+    )
+    if acceptance.get("cross_kit_simulation") != "pass":
+        raise ValueError("portable demo software acceptance is not pass")
+    if acceptance.get("hardware_status") != "deferred":
+        raise ValueError("portable demo receipt must leave hardware status deferred")
+    program = root / "Cross Kit/FG Portable Cross Kit.xpm"
+    simulation = test_program(program, program.parent)
+    if simulation.verdict != "pass":
+        raise ValueError("portable demo cross-kit simulation failed during verification")
+    return {
+        "schema_version": 1,
+        "verified_files": len(expected),
+        "cross_kit_simulation": simulation.verdict,
+        "hardware_status": "deferred",
+    }
+
+
+def _portable_paths(value: object, staging: Path) -> object:
     if isinstance(value, str):
         prefix = str(staging)
-        return str(output) + value[len(prefix) :] if value.startswith(prefix) else value
+        if value == prefix:
+            return "."
+        if value.startswith(prefix + os.sep):
+            return Path(value).relative_to(staging).as_posix()
+        return value
     if isinstance(value, list):
-        return [_final_paths(item, staging, output) for item in value]
+        return [_portable_paths(item, staging) for item in value]
     if isinstance(value, tuple):
-        return tuple(_final_paths(item, staging, output) for item in value)
+        return tuple(_portable_paths(item, staging) for item in value)
     if isinstance(value, dict):
-        return {key: _final_paths(item, staging, output) for key, item in value.items()}
+        return {key: _portable_paths(item, staging) for key, item in value.items()}
     return value
 
 
@@ -314,7 +388,7 @@ melody = "Any lead or pad program"
     return workstation
 
 
-def _hardware_checklist(output: Path) -> str:
+def _hardware_checklist() -> str:
     return f"""# FG Portable MPC Demo — hardware checklist
 
 All audio in this bundle is generated mathematically and may be redistributed.
@@ -322,7 +396,7 @@ Software structure, samples, MIDI, and checksums pass; MPC listening is deferred
 
 ## Drum Program
 
-Full MPC path: `{output / 'Cross Kit/FG Portable Cross Kit.xpm'}`
+Path inside this demo: `Cross Kit/FG Portable Cross Kit.xpm`
 
 - [ ] Program loads and all 16 Bank A pads sound.
 - [ ] Pads A07/A08 behave as a closed/open-hat choke pair.
@@ -331,7 +405,7 @@ Full MPC path: `{output / 'Cross Kit/FG Portable Cross Kit.xpm'}`
 
 ## Creative MIDI
 
-Full MIDI path: `{output / 'Creative MIDI/portable-demo.mid'}`
+Path inside this demo: `Creative MIDI/portable-demo.mid`
 
 - [ ] Import creates or exposes Drums, Bass, Chords, and Melody parts.
 - [ ] Assign Drums to `FG Portable Cross Kit`; assign any local sounds to the other tracks.
@@ -375,22 +449,21 @@ def build_demo(output: Path, recipe_root: Path | None = None) -> dict[str, objec
         plan = select_kit(load_kit_recipe(recipe_path), catalog, catalog_path=catalog_path)
         stage = stage_audio(plan, staging / "Selected Audio")
         persisted_catalog = dict(catalog)
-        persisted_catalog["program_root"] = str(output)
         catalog_path.write_text(
-            json.dumps(_final_paths(persisted_catalog, staging, output), indent=2) + "\n",
+            json.dumps(_portable_paths(persisted_catalog, staging), indent=2) + "\n",
             encoding="utf-8",
         )
         selection_root = staging / "Selection"
         selection_root.mkdir()
         (selection_root / "selection.json").write_text(
-            json.dumps(_final_paths(plan.to_dict(), staging, output), indent=2) + "\n",
+            json.dumps(_portable_paths(plan.to_dict(), staging), indent=2) + "\n",
             encoding="utf-8",
         )
         (selection_root / "SELECTION.md").write_text(
             render_selection_markdown(plan), encoding="utf-8"
         )
         (selection_root / "staging-checksums.json").write_text(
-            json.dumps(_final_paths(stage, staging, output), indent=2) + "\n",
+            json.dumps(_portable_paths(stage, staging), indent=2) + "\n",
             encoding="utf-8",
         )
         manifest = staging / "Recipes/manifests/cross-kit.toml"
@@ -410,7 +483,7 @@ def build_demo(output: Path, recipe_root: Path | None = None) -> dict[str, objec
             loaded, model, program_path=cross_program, seed=37, tempo=92.0, density=1.0
         )
         idea = replace(
-            idea, drum_program_file=str(output / cross_program.relative_to(staging))
+            idea, drum_program_file=cross_program.relative_to(staging).as_posix()
         )
         midi_root = staging / "Creative MIDI"
         midi_root.mkdir()
@@ -441,19 +514,19 @@ def build_demo(output: Path, recipe_root: Path | None = None) -> dict[str, objec
             "schema_version": 1,
             "license": "CC0-1.0 for generated audio; repository source remains MIT",
             "generated_samples": len(SOUNDS),
-            "source_program": str(output / source_program.relative_to(staging)),
-            "cross_kit_program": str(output / cross_program.relative_to(staging)),
+            "source_program": source_program.relative_to(staging).as_posix(),
+            "cross_kit_program": cross_program.relative_to(staging).as_posix(),
             "cross_kit_simulation": simulation.verdict,
             "creative_midi_tracks": ["Drums", "Bass", "Chords", "Melody"],
             "arrangement_sections": [section.id for section in arrangement.sections],
             "hardware_status": "deferred",
-            "staged_audio": _final_paths(stage, staging, output),
+            "staged_audio": _portable_paths(stage, staging),
         }
         (staging / "software-acceptance.json").write_text(
             json.dumps(report, indent=2) + "\n", encoding="utf-8"
         )
         (staging / "HARDWARE_CHECKLIST.md").write_text(
-            _hardware_checklist(output), encoding="utf-8"
+            _hardware_checklist(), encoding="utf-8"
         )
         (staging / "README.md").write_text(
             """# FG Portable MPC Workflow Demo
@@ -464,8 +537,9 @@ libraries. It demonstrates source-program creation, audio cataloging,
 descriptor-driven cross-kit selection, Drum Program construction, four-track
 idea generation, and five traceable arrangement variants.
 
-Start with `HARDWARE_CHECKLIST.md`. All editable TOML recipes and complete JSON
-provenance are included so the workflow can be repeated or adapted.
+Start by running `mpc-portable-demo --verify PATH-TO-THIS-DIRECTORY`, then use
+`HARDWARE_CHECKLIST.md` when an MPC is available. All editable TOML recipes and
+complete JSON provenance are included so the workflow can be repeated or adapted.
 """,
             encoding="utf-8",
         )
@@ -485,7 +559,7 @@ software source remains licensed under the repository's MIT License.
             encoding="utf-8",
         )
         checksums = {
-            str(path.relative_to(staging)): _sha256(path)
+            path.relative_to(staging).as_posix(): _sha256(path)
             for path in sorted(staging.rglob("*"))
             if path.is_file() and path.name != "checksums.json"
         }
@@ -501,15 +575,22 @@ software source remains licensed under the repository's MIT License.
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output", type=Path, required=True)
+    destination = parser.add_mutually_exclusive_group(required=True)
+    destination.add_argument("--output", type=Path)
+    destination.add_argument("--verify", type=Path, metavar="DEMO")
     parser.add_argument(
         "--recipe-root", type=Path,
         help="optional checkout recipe directory; the installed command has bundled defaults",
     )
     args = parser.parse_args()
+    if args.verify is not None:
+        report = verify_demo(args.verify)
+        print(f"Verified files: {report['verified_files']}; software acceptance: pass")
+        print(f"Hardware status: {report['hardware_status']}")
+        return 0
     recipe_root = args.recipe_root.expanduser() if args.recipe_root is not None else None
     report = build_demo(args.output.expanduser(), recipe_root)
-    print(f"Built: {report['cross_kit_program']}")
+    print(f"Built: {args.output.expanduser().resolve() / report['cross_kit_program']}")
     print(f"Synthetic WAVs: {report['generated_samples']}; software acceptance: pass")
     print(f"Hardware status: {report['hardware_status']}")
     return 0
