@@ -48,6 +48,7 @@ COMMANDS = {
     "mpc-ableton-drum": _spec("ableton_drum", "Build", "Plan and build Ableton Drum conversions", "docs/ableton-source-inspector.md"),
     "mpc-ableton-fidelity": _spec("ableton_fidelity", "Inspect", "Model Ableton-to-MPC feature fidelity", "docs/ableton-source-inspector.md"),
     "mpc-ableton-wave": _spec("ableton_wave", "Build", "Plan and build diverse Ableton Drum waves", "docs/ableton-source-inspector.md"),
+    "mpc-ableton-risk": _spec("ableton_risk", "Inspect", "Prioritize Ableton conversion risks for hardware review", "docs/ableton-source-inspector.md"),
     "mpc-program-model": _spec("model", "Inspect", "Normalize an XPM or Drum manifest", "docs/program-model-and-layouts.md"),
     "mpc-program-designer": _spec("designer", "Browser", "Generate a self-contained Program Designer", "docs/program-designer.md"),
     "mpc-web-demo": _spec("web_demo", "Browser", "Generate the no-install synthetic browser demo", "docs/browser-demo.md"),
