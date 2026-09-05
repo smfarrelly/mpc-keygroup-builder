@@ -173,6 +173,8 @@ def verify_demo(root: Path) -> dict[str, object]:
     if not root.is_dir():
         raise NotADirectoryError(root)
     receipt_path = root / "checksums.json"
+    if receipt_path.is_symlink():
+        raise ValueError("portable demo checksum receipt may not be a symbolic link")
     receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
     if not isinstance(receipt, dict) or not receipt:
         raise ValueError("portable demo checksum receipt must be a non-empty object")
@@ -191,9 +193,17 @@ def verify_demo(root: Path) -> dict[str, object]:
             raise ValueError(f"duplicate portable demo checksum path: {relative}")
         expected[normalized] = checksum
 
+    paths = list(root.rglob("*"))
+    symbolic_links = sorted(
+        path.relative_to(root).as_posix() for path in paths if path.is_symlink()
+    )
+    if symbolic_links:
+        raise ValueError(
+            f"portable demo may not contain symbolic links: {symbolic_links[0]}"
+        )
     actual = {
         path.relative_to(root).as_posix()
-        for path in root.rglob("*")
+        for path in paths
         if path.is_file() and path != receipt_path
     }
     missing = sorted(set(expected) - actual)
@@ -205,8 +215,6 @@ def verify_demo(root: Path) -> dict[str, object]:
 
     for relative, checksum in expected.items():
         path = root / relative
-        if path.is_symlink():
-            raise ValueError(f"portable demo receipt path is a symbolic link: {relative}")
         if _sha256(path) != checksum:
             raise ValueError(f"portable demo checksum mismatch: {relative}")
 

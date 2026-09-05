@@ -90,6 +90,24 @@ class PortableDemoTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "unsafe.*path"):
                 verify_demo(output)
 
+    def test_verifier_rejects_broken_and_receipt_symbolic_links(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            output = root / "portable"
+            build_demo(output, None)
+            broken = output / "unrecorded-broken-link"
+            broken.symlink_to(output / "missing-target")
+            with self.assertRaisesRegex(ValueError, "symbolic links"):
+                verify_demo(output)
+
+            broken.unlink()
+            receipt = output / "checksums.json"
+            external_receipt = root / "external-checksums.json"
+            receipt.replace(external_receipt)
+            receipt.symlink_to(external_receipt)
+            with self.assertRaisesRegex(ValueError, "receipt.*symbolic link"):
+                verify_demo(output)
+
     def test_builds_with_packaged_recipe_defaults(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "installed-style-demo"
