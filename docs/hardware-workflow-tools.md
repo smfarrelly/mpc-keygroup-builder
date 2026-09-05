@@ -80,6 +80,11 @@ uv run mpc-sd-deploy inventory/scratchpad-candidates.toml \
 The deployer is additive: it does not remove unrelated card content. Each copy
 uses a temporary file, SHA-256 verification, and atomic replacement. An
 existing changed target is backed up and verified before replacement.
+Every manifest `sd_path` must be relative and remain within both roots after
+symbolic links are resolved. Invalid paths are rejected during the dry run,
+before any deployment file or backup is created. Companion ProgramData may not
+contain symbolic links, and apply mode revalidates source and destination paths
+against their original roots in case the filesystem changed after the preview.
 
 ### Transaction-safe self-contained packages
 
