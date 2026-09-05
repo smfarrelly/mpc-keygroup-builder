@@ -27,7 +27,13 @@ def _program_data(program: Path) -> list[Path]:
     matches = []
     for item in program.parent.iterdir():
         normalized = "".join(c for c in item.name.casefold() if c.isalnum())
-        if item.is_dir() and normalized.startswith(prefix) and "programdata" in normalized:
+        if normalized.startswith(prefix) and "programdata" in normalized:
+            if item.is_symlink():
+                raise ValueError(
+                    f"companion ProgramData may not be a symbolic link: {item}"
+                )
+            if not item.is_dir():
+                continue
             for path in item.rglob("*"):
                 if path.is_symlink():
                     raise ValueError(

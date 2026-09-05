@@ -97,6 +97,25 @@ class DeployTests(unittest.TestCase):
                 )
             self.assertFalse(target.exists())
 
+    def test_program_data_directory_may_not_be_a_symlink(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            local, target, outside = root / "local", root / "sd", root / "outside"
+            program = local / "Programs/Kit.xpm"
+            program.parent.mkdir(parents=True)
+            program.write_bytes(b"new")
+            outside.mkdir()
+            (outside / "private.wav").write_bytes(b"private")
+            program.with_name("Kit_[ProgramData]").symlink_to(
+                outside, target_is_directory=True
+            )
+
+            with self.assertRaisesRegex(ValueError, "ProgramData.*symbolic link"):
+                deploy.build_plan(
+                    self.manifest(root), local, target, include_audio=True
+                )
+            self.assertFalse(target.exists())
+
     def test_apply_revalidates_target_after_plan(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
