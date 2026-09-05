@@ -94,6 +94,8 @@ uv run mpc-audio-levels work/auditions --tolerance-db 6
 Directory discovery accepts `.wav` in any letter case and fails clearly when
 no WAV files are present. The tolerance must be finite and nonnegative; it is
 the allowed distance from the batch median before a level-outlier flag.
+When `--output` is used, parent directories are created and the report is
+replaced atomically. The output may not be a symlink or one of the input WAVs.
 
 ## Drum performance audit
 

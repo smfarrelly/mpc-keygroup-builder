@@ -6,7 +6,9 @@ import argparse
 import csv
 import json
 import math
+import os
 import statistics
+import tempfile
 from pathlib import Path
 
 from .audition import read_pcm_mono
@@ -97,6 +99,31 @@ def discover(inputs: list[Path]) -> list[Path]:
     return paths
 
 
+def write_report(output: Path, inputs: list[Path], rendered: str) -> Path:
+    output = output.expanduser()
+    if output.is_symlink():
+        raise ValueError(f"audio-level output may not be a symbolic link: {output}")
+    output = output.resolve()
+    if output in {path.expanduser().resolve() for path in inputs}:
+        raise ValueError(f"audio-level output may not replace an input WAV: {output}")
+    if output.exists() and not output.is_file():
+        raise ValueError(f"audio-level output must be a regular file: {output}")
+    output.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{output.name}.", dir=output.parent
+    )
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8") as stream:
+            stream.write(rendered)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, output)
+    finally:
+        temporary.unlink(missing_ok=True)
+    return output
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("paths", nargs="+", type=Path)
@@ -117,7 +144,7 @@ def main() -> int:
         writer.writerows({**row, "flags": ";".join(row["flags"])} for row in rows)
         rendered = output.getvalue()
     if args.output:
-        args.output.write_text(rendered, encoding="utf-8")
+        write_report(args.output, paths, rendered)
     else:
         print(rendered, end="")
     return 1 if any(row["flags"] for row in rows) else 0
