@@ -185,3 +185,27 @@ continuous controls, infers broad musical roles, and groups tone, motion,
 texture, envelope, source, and global controls consistently. Its output is
 explicitly a draft: review labels, roles, layout, slot/channel replacement, and
 musical value before hardware use.
+
+## Measure mapping coverage
+
+Profiles intentionally select a small performance surface, but omission should
+be deliberate. Compare every current profile with installed UI metadata and an
+optional MPC-authored XPJ:
+
+```bash
+mpc-plugin-coverage midi/plugins/*.toml \
+  --synth-root "/media/user/CARD/Synths" \
+  --project "/media/user/CARD/Projects/Boot.xpj" \
+  --output work/plugin-mapping-coverage
+```
+
+The transactional directory contains JSON, CSV, and a readable review. It
+reports unique planned controls, independently learned controls, their union,
+musical-role and parameter-evidence coverage, accidentally redundant targets,
+and the highest-ranked useful controls that remain omitted. Installed plugins
+without a profile remain visible instead of disappearing from the plan.
+
+Coverage is not a goal of mapping every parameter. It makes the tradeoff
+explicit: a compact page can be accepted when the omitted list contains only
+low-value controls, while a missing filter, envelope, mix, or performance macro
+becomes an actionable profile revision.
