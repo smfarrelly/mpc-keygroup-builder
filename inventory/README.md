@@ -57,6 +57,9 @@ uv run mpc-hardware-init inventory/program-status.csv \
   inventory/scratchpad-candidates.toml --output work/key37-hardware-results.toml
 ```
 
+The output must be a new regular file. Symbolic links, including broken links,
+are refused so initialization cannot create or replace a file elsewhere.
+
 Render a physical pad reference before testing a drum candidate:
 
 ```bash

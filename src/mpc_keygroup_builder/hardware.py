@@ -104,6 +104,10 @@ def update_ledger(
 
 
 def initialize_results(ledger: Path, manifest: Path, output: Path) -> int:
+    output = output.expanduser()
+    if output.is_symlink():
+        raise ValueError(f"hardware-session output may not be a symbolic link: {output}")
+    output = output.resolve()
     if output.exists():
         raise FileExistsError(f"refusing to overwrite hardware-session file: {output}")
     candidates = load_manifest(manifest)["candidates"]
