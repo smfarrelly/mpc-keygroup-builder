@@ -106,6 +106,25 @@ class HardwareResultTests(unittest.TestCase):
             with self.assertRaises(FileExistsError):
                 hardware.initialize_results(ledger, manifest, output)
 
+    def test_initialize_refuses_broken_output_symlink(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            ledger = root / "status.csv"
+            manifest = root / "candidates.toml"
+            self.write_ledger(ledger)
+            manifest.write_text(
+                'schema_version = 1\nname = "Test"\n[[candidates]]\nid = "bass"\n'
+                'ledger_path = "Programs/Bass.xpm"\nsd_path = "Programs/Bass.xpm"\n'
+                'role = "bass"\nselected = true\n'
+            )
+            external = root / "outside" / "results.toml"
+            output = root / "results-link.toml"
+            output.symlink_to(external)
+
+            with self.assertRaisesRegex(ValueError, "output.*symbolic link"):
+                hardware.initialize_results(ledger, manifest, output)
+            self.assertFalse(external.exists())
+
 
 if __name__ == "__main__":
     unittest.main()
