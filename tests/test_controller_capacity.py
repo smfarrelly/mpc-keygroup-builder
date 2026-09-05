@@ -1,7 +1,10 @@
+import contextlib
+import io
+import tempfile
 import unittest
 from pathlib import Path
 
-from mpc_keygroup_builder import controller_capacity, plugin_map
+from mpc_keygroup_builder import controller_capacity, entrypoints, plugin_map
 
 
 class ControllerCapacityTests(unittest.TestCase):
@@ -63,6 +66,46 @@ class ControllerCapacityTests(unittest.TestCase):
         self.assertEqual(report["errors"], [])
         self.assertEqual(report["missing_slots"], [])
         self.assertEqual(report["spare_channels"], [8])
+
+    def test_load_rejects_malformed_mode_structure(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "capacity.toml"
+            base = (
+                'schema_version=1\nname="Bad"\ncontrol_channel=16\n'
+                'external_channels=[]\n'
+            )
+            cases = (
+                (base + 'modes=["bad"]\n', "mode 1 must be a table"),
+                (
+                    base
+                    + '[[modes]]\nslot=true\nname="Mode"\nchannel=1\n'
+                    'role="plugin"\nsource="plan"\n',
+                    "mode 1 slot must be an integer",
+                ),
+            )
+            for source, message in cases:
+                with self.subTest(message=message):
+                    path.write_text(source)
+                    with self.assertRaisesRegex(ValueError, message):
+                        controller_capacity.load_plan(path)
+
+    def test_malformed_mode_is_friendly_through_installed_command(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            plan = root / "capacity.toml"
+            plan.write_text(
+                'schema_version=1\nname="Bad"\ncontrol_channel=16\n'
+                'external_channels=[]\nmodes=["bad"]\n'
+            )
+            error = io.StringIO()
+            with contextlib.redirect_stderr(error):
+                status = entrypoints.invoke(
+                    "mpc-controller-capacity",
+                    [str(plan), str(root / "missing.toml"), "--output", str(root / "out")],
+                )
+            self.assertEqual(status, 2)
+            self.assertIn("capacity mode 1 must be a table", error.getvalue())
+            self.assertNotIn("Traceback", error.getvalue())
 
 
 if __name__ == "__main__":
