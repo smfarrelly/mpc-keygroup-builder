@@ -48,6 +48,27 @@ class PluginAuditTests(unittest.TestCase):
             self.assertIn("activation", text)
             self.assertIn("| Name | Evidence |", text)
 
+    def test_rejects_root_and_nested_symbolic_links(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            synths = root / "Synths"
+            synths.mkdir()
+            external = root / "external"
+            external.mkdir()
+            (external / "preset.xpl").write_text("private")
+
+            root_link = synths / "External Plugin"
+            root_link.symlink_to(external, target_is_directory=True)
+            with self.assertRaisesRegex(ValueError, "root.*symbolic links"):
+                plugin_audit.audit(synths)
+
+            root_link.unlink()
+            plugin = synths / "Local Plugin"
+            plugin.mkdir()
+            (plugin / "broken.xpl").symlink_to(root / "missing.xpl")
+            with self.assertRaisesRegex(ValueError, "content.*symbolic links"):
+                plugin_audit.audit(synths)
+
 
 if __name__ == "__main__":
     unittest.main()

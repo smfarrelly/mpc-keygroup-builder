@@ -36,6 +36,20 @@ The XPM comparison normalizes the fields we currently understand across legacy
 XML and MPC 3 compressed formats. Unknown fields remain visible in same-format
 structural comparisons. Level flags are triage signals, not mastering targets.
 
+## Read-only plugin content audit
+
+Inventory an MPC Synths content tree without making activation or playability
+claims:
+
+```bash
+uv run mpc-plugin-audit "/path/to/Synths" --format markdown \
+  --output work/plugin-content-audit.md
+```
+
+The audit refuses symbolic links anywhere below the selected root rather than
+following content into another tree. Version files and installed presets are
+filesystem evidence only; activation and sound remain hardware checks.
+
 ## Safe SD-card delta deployment
 
 Candidate manifest fields `id`, `ledger_path`, `sd_path`, and `role` must be

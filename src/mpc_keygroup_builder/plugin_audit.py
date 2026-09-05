@@ -31,7 +31,11 @@ def _version(path: Path) -> tuple[str | None, str | None, str | None]:
 
 
 def inspect_content(path: Path) -> dict[str, Any]:
-    files = sorted(item for item in path.rglob("*") if item.is_file())
+    paths = list(path.rglob("*"))
+    links = sorted(item for item in paths if item.is_symlink())
+    if links:
+        raise ValueError(f"plugin content may not contain symbolic links: {links[0]}")
+    files = sorted(item for item in paths if item.is_file())
     identifier, version, marker_issue = _version(path)
     presets = [
         item
@@ -72,7 +76,11 @@ def audit(root: Path) -> dict[str, Any]:
     root = root.expanduser().resolve()
     if not root.is_dir():
         raise NotADirectoryError(root)
-    entries = [inspect_content(path) for path in sorted(root.iterdir()) if path.is_dir()]
+    children = sorted(root.iterdir())
+    links = [path for path in children if path.is_symlink()]
+    if links:
+        raise ValueError(f"plugin content root may not contain symbolic links: {links[0]}")
+    entries = [inspect_content(path) for path in children if path.is_dir()]
     return {
         "schema_version": 1,
         "root": str(root),
