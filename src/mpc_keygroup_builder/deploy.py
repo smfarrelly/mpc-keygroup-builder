@@ -32,30 +32,57 @@ def _program_data(program: Path) -> list[Path]:
     return sorted(matches)
 
 
+def _contained_path(root: Path, value: object, label: str) -> Path:
+    if not isinstance(value, str) or not value:
+        raise ValueError(f"{label} must be a nonempty relative path")
+    relative = Path(value)
+    if relative.is_absolute():
+        raise ValueError(f"{label} must be a relative path: {value!r}")
+    root = root.expanduser().resolve()
+    path = (root / relative).resolve()
+    try:
+        path.relative_to(root)
+    except ValueError as error:
+        raise ValueError(f"{label} escapes its root: {value!r}") from error
+    return path
+
+
 def build_plan(
     manifest: Path, local_root: Path, target_root: Path, *, include_audio: bool = False
 ) -> list[dict[str, object]]:
     document = load_manifest(manifest)
     plan: list[dict[str, object]] = []
     for candidate in document["candidates"]:
-        source = local_root / candidate["sd_path"]
+        relative = candidate["sd_path"]
+        source = _contained_path(local_root, relative, "candidate sd_path")
+        target = _contained_path(target_root, relative, "candidate sd_path")
         if not source.is_file():
             raise FileNotFoundError(f"local program is missing: {source}")
         files = [source]
         if include_audio:
             files.extend(_program_data(source))
         for item in files:
-            relative = Path(candidate["sd_path"]) if item == source else Path(candidate["sd_path"]).parent / item.relative_to(source.parent)
-            target = target_root / relative
+            item_relative = (
+                Path(relative)
+                if item == source
+                else Path(relative).parent / item.relative_to(source.parent)
+            )
+            item_target = (
+                target
+                if item == source
+                else _contained_path(
+                    target_root, item_relative.as_posix(), "companion audio path"
+                )
+            )
             source_hash = sha256(item)
-            target_hash = sha256(target) if target.is_file() else None
+            target_hash = sha256(item_target) if item_target.is_file() else None
             action = "unchanged" if source_hash == target_hash else ("replace" if target_hash else "create")
             plan.append({
                 "candidate": candidate["id"],
                 "kind": "program" if item == source else "audio",
                 "source": str(item.resolve()),
-                "target": str(target.resolve()),
-                "relative": str(relative),
+                "target": str(item_target),
+                "relative": str(item_relative),
                 "bytes": item.stat().st_size,
                 "source_sha256": source_hash,
                 "target_sha256_before": target_hash,
