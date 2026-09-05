@@ -26,7 +26,7 @@ class PortableDemoTests(unittest.TestCase):
             idea = json.loads((output / "Creative MIDI/portable-demo.json").read_text())
             self.assertEqual(
                 idea["drum_program_file"],
-                str(output / "Cross Kit/FG Portable Cross Kit.xpm"),
+                "Cross Kit/FG Portable Cross Kit.xpm",
             )
             self.assertTrue((output / "LICENSE-GENERATED-AUDIO.txt").is_file())
             wavs = sorted((output / "Synthetic Audio").glob("*.wav"))
@@ -36,6 +36,25 @@ class PortableDemoTests(unittest.TestCase):
                 self.assertGreater(stream.getnframes(), 0)
             with self.assertRaises(FileExistsError):
                 build_demo(output, repository / "recipes")
+
+    def test_output_is_reproducible_across_destination_paths(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            first = root / "first"
+            second = root / "nested" / "second"
+            build_demo(first, None)
+            build_demo(second, None)
+            first_files = {
+                path.relative_to(first).as_posix(): path.read_bytes()
+                for path in first.rglob("*")
+                if path.is_file()
+            }
+            second_files = {
+                path.relative_to(second).as_posix(): path.read_bytes()
+                for path in second.rglob("*")
+                if path.is_file()
+            }
+            self.assertEqual(first_files, second_files)
 
     def test_verifies_moved_demo_and_rejects_tampering(self):
         with tempfile.TemporaryDirectory() as directory:

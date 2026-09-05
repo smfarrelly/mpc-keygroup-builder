@@ -223,7 +223,7 @@ def main() -> int:
             print(f"Hardware status: {report['hardware_status']}")
             return 0
         report = build_demo(args.output.expanduser(), None)
-        print(f"PASS: {report['cross_kit_program']}")
+        print(f"PASS: {args.output.expanduser().resolve() / report['cross_kit_program']}")
         print(f"Next: open {args.output.resolve() / 'HARDWARE_CHECKLIST.md'}")
         return 0
     if args.command == "new":

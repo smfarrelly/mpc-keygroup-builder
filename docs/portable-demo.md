@@ -22,6 +22,10 @@ Verification is read-only. It rejects missing, changed, unrecorded, or unsafe
 receipt paths, reruns the cross-kit software simulation, and confirms that
 hardware status remains deferred.
 
+Paths recorded inside the bundle are relative to its root. Identical inputs
+therefore produce byte-identical bundles in different destination directories,
+and moving a bundle does not leave stale computer-specific paths in its evidence.
+
 ## Included workflow
 
 - 16 mono 44.1 kHz synthetic drum and percussion WAVs;

@@ -229,16 +229,20 @@ def verify_demo(root: Path) -> dict[str, object]:
     }
 
 
-def _final_paths(value: object, staging: Path, output: Path) -> object:
+def _portable_paths(value: object, staging: Path) -> object:
     if isinstance(value, str):
         prefix = str(staging)
-        return str(output) + value[len(prefix) :] if value.startswith(prefix) else value
+        if value == prefix:
+            return "."
+        if value.startswith(prefix + os.sep):
+            return Path(value).relative_to(staging).as_posix()
+        return value
     if isinstance(value, list):
-        return [_final_paths(item, staging, output) for item in value]
+        return [_portable_paths(item, staging) for item in value]
     if isinstance(value, tuple):
-        return tuple(_final_paths(item, staging, output) for item in value)
+        return tuple(_portable_paths(item, staging) for item in value)
     if isinstance(value, dict):
-        return {key: _final_paths(item, staging, output) for key, item in value.items()}
+        return {key: _portable_paths(item, staging) for key, item in value.items()}
     return value
 
 
@@ -376,7 +380,7 @@ melody = "Any lead or pad program"
     return workstation
 
 
-def _hardware_checklist(output: Path) -> str:
+def _hardware_checklist() -> str:
     return f"""# FG Portable MPC Demo — hardware checklist
 
 All audio in this bundle is generated mathematically and may be redistributed.
@@ -384,7 +388,7 @@ Software structure, samples, MIDI, and checksums pass; MPC listening is deferred
 
 ## Drum Program
 
-Full MPC path: `{output / 'Cross Kit/FG Portable Cross Kit.xpm'}`
+Path inside this demo: `Cross Kit/FG Portable Cross Kit.xpm`
 
 - [ ] Program loads and all 16 Bank A pads sound.
 - [ ] Pads A07/A08 behave as a closed/open-hat choke pair.
@@ -393,7 +397,7 @@ Full MPC path: `{output / 'Cross Kit/FG Portable Cross Kit.xpm'}`
 
 ## Creative MIDI
 
-Full MIDI path: `{output / 'Creative MIDI/portable-demo.mid'}`
+Path inside this demo: `Creative MIDI/portable-demo.mid`
 
 - [ ] Import creates or exposes Drums, Bass, Chords, and Melody parts.
 - [ ] Assign Drums to `FG Portable Cross Kit`; assign any local sounds to the other tracks.
@@ -437,22 +441,21 @@ def build_demo(output: Path, recipe_root: Path | None = None) -> dict[str, objec
         plan = select_kit(load_kit_recipe(recipe_path), catalog, catalog_path=catalog_path)
         stage = stage_audio(plan, staging / "Selected Audio")
         persisted_catalog = dict(catalog)
-        persisted_catalog["program_root"] = str(output)
         catalog_path.write_text(
-            json.dumps(_final_paths(persisted_catalog, staging, output), indent=2) + "\n",
+            json.dumps(_portable_paths(persisted_catalog, staging), indent=2) + "\n",
             encoding="utf-8",
         )
         selection_root = staging / "Selection"
         selection_root.mkdir()
         (selection_root / "selection.json").write_text(
-            json.dumps(_final_paths(plan.to_dict(), staging, output), indent=2) + "\n",
+            json.dumps(_portable_paths(plan.to_dict(), staging), indent=2) + "\n",
             encoding="utf-8",
         )
         (selection_root / "SELECTION.md").write_text(
             render_selection_markdown(plan), encoding="utf-8"
         )
         (selection_root / "staging-checksums.json").write_text(
-            json.dumps(_final_paths(stage, staging, output), indent=2) + "\n",
+            json.dumps(_portable_paths(stage, staging), indent=2) + "\n",
             encoding="utf-8",
         )
         manifest = staging / "Recipes/manifests/cross-kit.toml"
@@ -472,7 +475,7 @@ def build_demo(output: Path, recipe_root: Path | None = None) -> dict[str, objec
             loaded, model, program_path=cross_program, seed=37, tempo=92.0, density=1.0
         )
         idea = replace(
-            idea, drum_program_file=str(output / cross_program.relative_to(staging))
+            idea, drum_program_file=cross_program.relative_to(staging).as_posix()
         )
         midi_root = staging / "Creative MIDI"
         midi_root.mkdir()
@@ -503,19 +506,19 @@ def build_demo(output: Path, recipe_root: Path | None = None) -> dict[str, objec
             "schema_version": 1,
             "license": "CC0-1.0 for generated audio; repository source remains MIT",
             "generated_samples": len(SOUNDS),
-            "source_program": str(output / source_program.relative_to(staging)),
-            "cross_kit_program": str(output / cross_program.relative_to(staging)),
+            "source_program": source_program.relative_to(staging).as_posix(),
+            "cross_kit_program": cross_program.relative_to(staging).as_posix(),
             "cross_kit_simulation": simulation.verdict,
             "creative_midi_tracks": ["Drums", "Bass", "Chords", "Melody"],
             "arrangement_sections": [section.id for section in arrangement.sections],
             "hardware_status": "deferred",
-            "staged_audio": _final_paths(stage, staging, output),
+            "staged_audio": _portable_paths(stage, staging),
         }
         (staging / "software-acceptance.json").write_text(
             json.dumps(report, indent=2) + "\n", encoding="utf-8"
         )
         (staging / "HARDWARE_CHECKLIST.md").write_text(
-            _hardware_checklist(output), encoding="utf-8"
+            _hardware_checklist(), encoding="utf-8"
         )
         (staging / "README.md").write_text(
             """# FG Portable MPC Workflow Demo
@@ -579,7 +582,7 @@ def main() -> int:
         return 0
     recipe_root = args.recipe_root.expanduser() if args.recipe_root is not None else None
     report = build_demo(args.output.expanduser(), recipe_root)
-    print(f"Built: {report['cross_kit_program']}")
+    print(f"Built: {args.output.expanduser().resolve() / report['cross_kit_program']}")
     print(f"Synthetic WAVs: {report['generated_samples']}; software acceptance: pass")
     print(f"Hardware status: {report['hardware_status']}")
     return 0
