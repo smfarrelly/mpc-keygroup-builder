@@ -1,9 +1,11 @@
 import csv
+import contextlib
+import io
 import tempfile
 import unittest
 from pathlib import Path
 
-from mpc_keygroup_builder import candidates
+from mpc_keygroup_builder import candidates, entrypoints
 
 
 class CandidateTests(unittest.TestCase):
@@ -46,6 +48,39 @@ class CandidateTests(unittest.TestCase):
             path.write_text(path.read_text() + '\n[[candidates]]\nid="bass"\nledger_path="Other.xpm"\nsd_path="Other.xpm"\nrole="lead"\nselected=false\n')
             with self.assertRaisesRegex(ValueError, "duplicates"):
                 candidates.load_manifest(path)
+
+    def test_rejects_non_string_and_empty_required_fields(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "candidates.toml"
+            self.write_manifest(path)
+            original = path.read_text()
+            for field, replacement in (
+                ("id", 'id = ["drums"]'),
+                ("ledger_path", 'ledger_path = ""'),
+                ("sd_path", 'sd_path = 37'),
+                ("role", 'role = "   "'),
+            ):
+                with self.subTest(field=field):
+                    line = next(
+                        item for item in original.splitlines() if item.startswith(f"{field} =")
+                    )
+                    path.write_text(original.replace(line, replacement, 1))
+                    with self.assertRaisesRegex(
+                        ValueError, rf"candidate 1 {field} must be a nonempty string"
+                    ):
+                        candidates.load_manifest(path)
+
+    def test_invalid_field_is_friendly_through_installed_command(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "candidates.toml"
+            self.write_manifest(path)
+            path.write_text(path.read_text().replace('id = "drums"', 'id = ["drums"]'))
+            error = io.StringIO()
+            with contextlib.redirect_stderr(error):
+                status = entrypoints.invoke("mpc-scratchpad-check", [str(path)])
+            self.assertEqual(status, 2)
+            self.assertIn("candidate 1 id must be a nonempty string", error.getvalue())
+            self.assertNotIn("Traceback", error.getvalue())
 
     def test_rejects_missing_sd_root_instead_of_reporting_every_program_missing(self):
         with tempfile.TemporaryDirectory() as directory:

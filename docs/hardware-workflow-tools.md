@@ -38,6 +38,10 @@ structural comparisons. Level flags are triage signals, not mastering targets.
 
 ## Safe SD-card delta deployment
 
+Candidate manifest fields `id`, `ledger_path`, `sd_path`, and `role` must be
+nonempty strings; `selected` must be a boolean. Validation errors identify the
+candidate number and field before any SD-card operation begins.
+
 Always preview first:
 
 ```bash

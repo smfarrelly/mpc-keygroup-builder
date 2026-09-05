@@ -34,6 +34,11 @@ def load_manifest(path: Path) -> dict[str, Any]:
     for index, candidate in enumerate(candidates, 1):
         if not isinstance(candidate, dict) or required - set(candidate):
             raise ValueError(f"candidate {index} is missing required fields")
+        for field in ("id", "ledger_path", "sd_path", "role"):
+            if not isinstance(candidate[field], str) or not candidate[field].strip():
+                raise ValueError(
+                    f"candidate {index} {field} must be a nonempty string"
+                )
         if not isinstance(candidate["selected"], bool):
             raise ValueError(f"candidate {index} selected must be true or false")
         if candidate["id"] in ids or candidate["ledger_path"] in ledger_paths:
