@@ -80,14 +80,16 @@ def _sha256(path: Path) -> str:
 
 def catalog_coverage(catalog: dict[str, object] | None) -> dict[str, dict[str, int]]:
     coverage: dict[str, Counter[str]] = defaultdict(Counter)
-    if not catalog:
+    if catalog is None:
         return {}
+    if not isinstance(catalog, dict):
+        raise ValueError("catalog must be a JSON object")
     programs = catalog.get("programs", [])
     if not isinstance(programs, list):
-        raise TypeError("catalog programs must be a list")
-    for program in programs:
+        raise ValueError("catalog programs must be a list")
+    for index, program in enumerate(programs, 1):
         if not isinstance(program, dict):
-            continue
+            raise ValueError(f"catalog program {index} must be an object")
         program_type = str(program.get("program_type", "")).casefold()
         if program_type not in {"drum", "keygroup", "clip"}:
             continue
@@ -192,9 +194,14 @@ def priority_label(score: int) -> str:
 def build_backlog(
     ableton_inventory: dict[str, object], catalog: dict[str, object] | None = None
 ) -> dict[str, object]:
+    if not isinstance(ableton_inventory, dict):
+        raise ValueError("Ableton inventory must be a JSON object")
     presets = ableton_inventory.get("presets", [])
     if not isinstance(presets, list):
-        raise TypeError("Ableton inventory presets must be a list")
+        raise ValueError("Ableton inventory presets must be a list")
+    for index, preset in enumerate(presets, 1):
+        if not isinstance(preset, dict):
+            raise ValueError(f"Ableton inventory preset {index} must be an object")
     coverage = catalog_coverage(catalog)
     source_root = Path(str(ableton_inventory.get("root", "")))
     source_hashes = {}
