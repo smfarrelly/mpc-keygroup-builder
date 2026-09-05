@@ -53,7 +53,10 @@ def render_html(report: dict[str, Any]) -> str:
 
 def build_review(report_path: Path, output: Path, *, force: bool = False) -> Path:
     report_path = report_path.expanduser().resolve()
-    output = output.expanduser().resolve()
+    output = output.expanduser()
+    if output.is_symlink():
+        raise ValueError(f"creative review output may not be a symbolic link: {output}")
+    output = output.resolve()
     if output.exists() and not force:
         raise FileExistsError(f"creative review exists: {output}")
     report = json.loads(report_path.read_text(encoding="utf-8"))

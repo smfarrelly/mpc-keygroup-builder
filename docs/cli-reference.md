@@ -59,7 +59,8 @@ Builders normally refuse to replace a populated output directory. Deployment
 commands separate planning from applying and verify hashes. Inspectors and
 audits are read-only unless their help explicitly names an output. A `--force`
 flag, where present, applies only to the command's named output—not source
-audio.
+audio. HTML generators refuse symbolic-link outputs even with `--force`, so a
+named output cannot silently replace a file elsewhere.
 
 ## Useful first commands
 
