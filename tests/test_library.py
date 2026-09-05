@@ -50,6 +50,19 @@ class LibraryTests(unittest.TestCase):
             self.assertIn("program ledger is missing fields", error.getvalue())
             self.assertNotIn("Traceback", error.getvalue())
 
+    def test_rejects_unknown_enumerated_filters(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "status.csv"
+            path.write_text(
+                "path,program_type,hardware_status,favorite,scratchpad_role,notes\n"
+                "Kit.xpm,Drum,pass,yes,drums,good\n"
+            )
+            with self.assertRaisesRegex(ValueError, "invalid hardware status"):
+                library.query(path, hardware="psas")
+            with self.assertRaisesRegex(ValueError, "invalid favorite status"):
+                library.query(path, favorite="yse")
+            self.assertEqual(len(library.query(path, hardware="PASS", favorite="YES")), 1)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -17,6 +17,19 @@ REQUIRED_FIELDS = {
     "scratchpad_role",
     "notes",
 }
+ALLOWED_HARDWARE = {"untested", "pass", "warn", "fail"}
+ALLOWED_FAVORITES = {"yes", "no", "provisional"}
+
+
+def _filter_value(value: str | None, allowed: set[str], label: str) -> str | None:
+    if value is None:
+        return None
+    normalized = value.casefold()
+    if normalized not in allowed:
+        raise ValueError(
+            f"invalid {label}: {value!r}; choose from {', '.join(sorted(allowed))}"
+        )
+    return normalized
 
 
 def query(
@@ -28,6 +41,8 @@ def query(
     role: str | None = None,
     search: str | None = None,
 ) -> list[dict[str, str]]:
+    hardware = _filter_value(hardware, ALLOWED_HARDWARE, "hardware status")
+    favorite = _filter_value(favorite, ALLOWED_FAVORITES, "favorite status")
     with ledger.open(newline="", encoding="utf-8") as stream:
         reader = csv.DictReader(stream)
         missing = REQUIRED_FIELDS - set(reader.fieldnames or [])
@@ -79,8 +94,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("ledger", type=Path)
     parser.add_argument("--type", dest="program_type")
-    parser.add_argument("--hardware")
-    parser.add_argument("--favorite")
+    parser.add_argument("--hardware", type=str.casefold, choices=sorted(ALLOWED_HARDWARE))
+    parser.add_argument("--favorite", type=str.casefold, choices=sorted(ALLOWED_FAVORITES))
     parser.add_argument("--role")
     parser.add_argument("--search")
     parser.add_argument("--format", choices=("text", "json", "csv"), default="text")

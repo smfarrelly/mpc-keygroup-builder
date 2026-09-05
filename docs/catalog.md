@@ -9,7 +9,9 @@ catalog.
 The lightweight `mpc-library` command queries the CSV ledger directly. It
 validates the required headers and row widths before applying filters, so a
 damaged hand edit reports the header or row to repair instead of returning
-partial results.
+partial results. Hardware filters accept `untested`, `pass`, `warn`, or `fail`;
+favorite filters accept `yes`, `no`, or `provisional`. Unknown values are
+reported as input errors rather than successful empty queries.
 
 Build it from an SD card, immutable backup, or another directory whose layout
 matches the ledger paths:
