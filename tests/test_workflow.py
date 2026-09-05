@@ -128,6 +128,25 @@ class WorkflowTests(unittest.TestCase):
         with redirect_stdout(StringIO()):
             self.assertEqual(workflow.inspect_batch(self.settings, self.batch()), 1)
 
+    def test_inspection_report_records_storage_and_refuses_implicit_overwrite(self):
+        self.write_wav(self.source / "60 Patch C3.wav", frames=12)
+        batch = self.batch()
+        report = workflow.inspect_batch_report(self.settings, batch)
+        self.assertEqual(report["kind"], "mpc-keygroup-batch-inspection")
+        self.assertEqual(report["summary"]["instruments"], 1)
+        self.assertEqual(report["summary"]["keygroups"], 1)
+        self.assertEqual(report["summary"]["samples"], 1)
+        self.assertGreater(report["summary"]["selected_bytes"], 0)
+        destination = self.root / "reports" / "inspection.json"
+        with redirect_stdout(StringIO()):
+            self.assertEqual(workflow.inspect_batch(self.settings, batch, destination), 0)
+        saved = json.loads(destination.read_text())
+        self.assertEqual(saved["summary"], report["summary"])
+        with redirect_stdout(StringIO()), self.assertRaises(FileExistsError):
+            workflow.inspect_batch(self.settings, batch, destination)
+        with redirect_stdout(StringIO()):
+            self.assertEqual(workflow.inspect_batch(self.settings, batch, destination, force_report=True), 0)
+
     def test_manifest_path_escape_is_rejected(self):
         manifest = self.root / "escape.json"
         manifest.write_text(json.dumps({

@@ -228,6 +228,9 @@ bank, export it, and load the result on hardware without manually editing XML.
   and a one-command, self-contained multi-variant hardware package.
 - [x] Improve useful-range placement with strict octave-only `root_target`
   inference while retaining explicit hardware-proven shifts.
+- [x] Make large Keygroup batch preflight durable and capacity-aware with a
+  machine-readable report covering per-program failures, roots, selected and
+  excluded samples, byte estimates, and duplicate-audio groups.
 - [x] Preserve and validate velocity layers, loops, filters, sample registries,
   unknown settings, and Q-Link mappings while changing proven envelope/filter
   values. Polyphony editing remains deliberately unsupported pending evidence.

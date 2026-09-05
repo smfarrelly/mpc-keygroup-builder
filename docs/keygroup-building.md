@@ -39,16 +39,31 @@ writing.
 
 ## Batch conversion
 
-For repeatable libraries, define sources and outputs in a manifest and inspect:
+For repeatable libraries, define sources and outputs in a JSON manifest and
+inspect it with a local TOML settings file:
 
 ```bash
-mpc-keygroup-batch MANIFEST.toml --dry-run
-mpc-keygroup-batch MANIFEST.toml
+mpc-keygroup-batch --config config.local.toml inspect MANIFEST.json
+mpc-keygroup-batch --config config.local.toml build MANIFEST.json
 ```
 
 Manifest-driven builds make it possible to reproduce the program without
 checking licensed audio into Git. Keep paths environment-specific and record
 the source product, license, download date, and hashes separately.
+
+For large batches, retain the preflight evidence and estimate the ProgramData
+storage requirement before building:
+
+```bash
+mpc-keygroup-batch --config config.local.toml inspect MANIFEST.json \
+  --report work/keygroup-batch-inspection.json
+```
+
+The JSON records every passing or isolated failing instrument, inferred root
+shift, keygroup/sample counts, selected bytes, excluded WAV count, centralized
+source state, and cross-program duplicate-audio groups. The terminal summary
+adds the same byte estimate. Existing reports are refused unless
+`--force-report` names the intended replacement explicitly.
 
 ## Validate the result
 
