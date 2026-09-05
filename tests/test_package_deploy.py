@@ -111,6 +111,38 @@ class PackageDeployTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "symbolic links"):
                 package_deploy.inventory(source)
 
+    def test_source_destination_and_staging_must_not_overlap(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = self.package(root)
+            cases = (
+                (source, source),
+                (source, source / "nested-destination"),
+                (source, root),
+                (root / ".target.mpc-staging", root / "target"),
+            )
+            for candidate_source, destination in cases:
+                with self.subTest(source=candidate_source, destination=destination):
+                    if not candidate_source.exists():
+                        candidate_source.mkdir()
+                        (candidate_source / "program.xpm").write_bytes(b"program")
+                    destination_existed = destination.exists()
+                    with self.assertRaisesRegex(ValueError, "must not overlap"):
+                        package_deploy.build_plan(candidate_source, destination)
+                    stage = package_deploy.staging_path(destination)
+                    if stage != candidate_source:
+                        self.assertFalse(stage.exists())
+                    if not destination_existed:
+                        self.assertFalse(destination.exists())
+
+    def test_sibling_source_and_destination_are_allowed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = self.package(root)
+            destination = root / "FG Kit Copy"
+            plan = package_deploy.build_plan(source, destination)
+            self.assertEqual(plan["action"], "create")
+
     def test_resume_refuses_symlinked_staging_path(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

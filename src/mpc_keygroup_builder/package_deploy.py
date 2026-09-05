@@ -68,6 +68,10 @@ def staging_path(destination: Path) -> Path:
     return destination.parent / f".{destination.name}.mpc-staging"
 
 
+def _paths_overlap(left: Path, right: Path) -> bool:
+    return left == right or left.is_relative_to(right) or right.is_relative_to(left)
+
+
 def _same_inventory(
     left: tuple[FileRecord, ...], right: tuple[FileRecord, ...]
 ) -> bool:
@@ -83,6 +87,15 @@ def build_plan(source: Path, destination: Path) -> dict[str, object]:
         raise ValueError(f"package destination may not be a symbolic link: {destination}")
     source = source.resolve()
     destination = destination.resolve()
+    stage = staging_path(destination).resolve()
+    if _paths_overlap(source, destination):
+        raise ValueError(
+            f"package source and destination must not overlap: {source} and {destination}"
+        )
+    if _paths_overlap(source, stage):
+        raise ValueError(
+            f"package source and staging path must not overlap: {source} and {stage}"
+        )
     source_files = inventory(source)
     if destination.exists():
         action = (
