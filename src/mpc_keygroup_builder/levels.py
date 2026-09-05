@@ -61,6 +61,8 @@ def analyze_file(path: Path) -> dict[str, object]:
 
 
 def analyze(paths: list[Path], tolerance_db: float = 6.0) -> list[dict[str, object]]:
+    if not math.isfinite(tolerance_db) or tolerance_db < 0:
+        raise ValueError("level tolerance must be a finite nonnegative number")
     rows = [analyze_file(path) for path in paths]
     levels = [float(row["rms_dbfs"]) for row in rows if row["rms_dbfs"] is not None]
     median = statistics.median(levels) if levels else None
@@ -78,6 +80,23 @@ def analyze(paths: list[Path], tolerance_db: float = 6.0) -> list[dict[str, obje
     return rows
 
 
+def discover(inputs: list[Path]) -> list[Path]:
+    paths = []
+    for path in inputs:
+        if path.is_dir():
+            paths.extend(
+                item
+                for item in path.rglob("*")
+                if item.is_file() and item.suffix.casefold() == ".wav"
+            )
+        else:
+            paths.append(path)
+    paths = sorted(paths)
+    if not paths:
+        raise ValueError("no WAV files found in the requested paths")
+    return paths
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("paths", nargs="+", type=Path)
@@ -85,9 +104,7 @@ def main() -> int:
     parser.add_argument("--format", choices=("json", "csv"), default="json")
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
-    paths = []
-    for path in args.paths:
-        paths.extend(sorted(path.rglob("*.wav")) if path.is_dir() else [path])
+    paths = discover(args.paths)
     rows = analyze(paths, args.tolerance_db)
     if args.format == "json":
         rendered = json.dumps(rows, indent=2) + "\n"
