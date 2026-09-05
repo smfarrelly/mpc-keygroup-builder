@@ -142,6 +142,28 @@ timing/warp, sample-start, looping, pitch, gain, stereo, device, and macro
 risks; preserves affected pad numbers; and orders programs by the most severe
 difference. A risk level prioritizes listening—it is not a hardware verdict.
 
+## Audit sample-loop modes
+
+Before translating numeric Ableton loop modes into MPC fields, inventory their
+actual source patterns and choose a small representative capture set:
+
+```bash
+mpc-ableton-loop-audit work/samples-from-mars-mpc-backlog.json \
+  --source-root "/path/to/Samples From Mars" \
+  --target keygroup \
+  --output work/ableton-keygroup-loop-audit
+```
+
+The read-only scan emits JSON, CSV, and Markdown. It groups sustain and release
+loops by raw mode, crossfade presence, zero-start, and whether the loop end equals the
+sample end; counts affected presets and packs; and retains up to three concrete
+presets per signature for MPC-authored comparison. `--limit-presets` provides a
+quick sample, while `--target drum` or `all` broadens the scan.
+
+Mode numbers are intentionally not named or mapped to MPC behavior. Source
+frequency and endpoint patterns can guide fixture selection, but only a saved
+MPC program plus listening can prove loop semantics.
+
 ## Fidelity suggestions
 
 The labels are conservative routing suggestions, not automated conversion
