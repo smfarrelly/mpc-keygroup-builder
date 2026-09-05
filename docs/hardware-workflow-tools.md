@@ -94,6 +94,9 @@ After reconnecting and repairing the filesystem, rerun the same command with
 `--apply --resume`; verified staged files are reused and incomplete files are
 replaced. Unexpected stage files, symbolic links, and changed final
 destinations are refused rather than deleted or overwritten.
+The canonical source, hidden staging directory, and final destination must be
+separate trees. The command rejects identical or nested paths before creating
+any deployment files, preventing recursive copies into the source package.
 
 ## Controlled Key 37 routing capture
 
