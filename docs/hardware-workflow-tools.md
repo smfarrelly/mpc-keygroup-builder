@@ -100,6 +100,10 @@ any deployment files, preventing recursive copies into the source package.
 
 ## Controlled Key 37 routing capture
 
+Capture preflight rejects symbolic links anywhere in either ProjectData tree
+before it creates the output directory or copies files. Keep the controlled
+saves self-contained on the source volume.
+
 On the MPC, save exactly `Key37_Routing_Baseline.xpj` and
 `Key37_Routing_Changed.xpj`, each with its companion ProjectData folder. Change
 one named routing setting only. Then run:
