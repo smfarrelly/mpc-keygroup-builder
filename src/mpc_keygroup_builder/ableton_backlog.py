@@ -80,16 +80,16 @@ def _sha256(path: Path) -> str:
 
 def catalog_coverage(catalog: dict[str, object] | None) -> dict[str, dict[str, int]]:
     coverage: dict[str, Counter[str]] = defaultdict(Counter)
-    if not catalog:
+    if catalog is None:
         return {}
     if not isinstance(catalog, dict):
         raise ValueError("catalog must be a JSON object")
     programs = catalog.get("programs", [])
     if not isinstance(programs, list):
         raise ValueError("catalog programs must be a list")
-    for program in programs:
+    for index, program in enumerate(programs, 1):
         if not isinstance(program, dict):
-            continue
+            raise ValueError(f"catalog program {index} must be an object")
         program_type = str(program.get("program_type", "")).casefold()
         if program_type not in {"drum", "keygroup", "clip"}:
             continue

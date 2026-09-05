@@ -184,6 +184,12 @@ class AbletonBacklogTests(unittest.TestCase):
             ableton_backlog.build_backlog(self.inventory(), {"programs": {}})
         with self.assertRaisesRegex(ValueError, "catalog must be a JSON object"):
             ableton_backlog.build_backlog(self.inventory(), [1])
+        for malformed in ([], "", 0, False):
+            with self.subTest(catalog=malformed):
+                with self.assertRaisesRegex(ValueError, "catalog must be a JSON object"):
+                    ableton_backlog.build_backlog(self.inventory(), malformed)
+        with self.assertRaisesRegex(ValueError, "catalog program 1 must be an object"):
+            ableton_backlog.build_backlog(self.inventory(), {"programs": [1]})
 
     def test_malformed_inventory_entries_use_validation_errors(self):
         with self.assertRaisesRegex(ValueError, "inventory must be a JSON object"):
