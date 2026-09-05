@@ -55,3 +55,24 @@ After discovery, use [`mpc-plugin-map`](plugin-mapping.md) to validate curated
 role-based profiles and compile predictable Launch Control Components and MPC
 MIDI Learn worksheets. Catalog discovery remains broad; a performance profile
 is intentionally selective.
+
+## Audit alternate UI skins
+
+The catalog prefers `GUI-Popout.json`, then `GUI.json`, then `TUI.json`. Before
+assuming that preference contains the plugin's complete parameter surface,
+compare every available skin:
+
+```bash
+mpc-plugin-skin-audit "/media/user/CARD/Synths" \
+  --output work/plugin-skin-audit
+```
+
+The transactional JSON, CSV, and Markdown report records controls found only in
+an alternate skin, one normalized control name bound to different parameter
+numbers, name/type variants, and malformed skin documents. Use
+`--fail-on-issue` in automation when warnings should produce a nonzero exit.
+
+Name and control-type variants can be harmless adaptations to different screen
+sizes. Missing controls and conflicting bindings deserve review before
+expanding a performance profile. Even perfect skin agreement does not prove a
+parameter accepts MIDI Learn; an MPC-authored XPJ remains the stronger evidence.

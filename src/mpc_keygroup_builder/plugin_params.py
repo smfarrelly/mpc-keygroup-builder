@@ -112,6 +112,11 @@ def _decorative(name: str, control_type: str) -> bool:
     return control_type.casefold() in {"image", "label", "filmstrip"}
 
 
+def extract_components(document: Any) -> list[dict[str, Any]]:
+    """Return non-decorative parameter-bound controls from one UI document."""
+    return list(_components(document))
+
+
 def _score(name: str, learned: bool) -> int:
     lowered = name.casefold()
     score = 25 if learned else 0
@@ -179,7 +184,7 @@ def inspect_plugin(plugin: Path, project: Path | None = None) -> dict[str, Any]:
             learned_by_parameter.setdefault(parameter, []).append(row)
     qlinks = _qlinks(plugin)
     grouped: dict[int, list[dict[str, Any]]] = {}
-    for component in _components(data):
+    for component in extract_components(data):
         grouped.setdefault(component["ui_parameter"], []).append(component)
     offset_evidence = any(number + 4096 in learned_by_parameter for number in grouped)
     controls = []
