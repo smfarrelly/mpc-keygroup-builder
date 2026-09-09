@@ -127,7 +127,8 @@ the mapping simply placed useful roots below the default physical range. A
 suggested moving them one more octave to the right. The +36-semitone NR2 set
 still left seven keys unavailable at the default keyboard position. NR3 moves
 the unchanged samples another octave upward, for +48 total; it is structurally
-accepted and preserved externally, with SD transfer and listening pending.
+accepted, preserved externally, and checksum-verified on the SD card, with
+listening pending.
 
 Large programs can also create a misleading pause. Loading the Keygroup named
 Ultimate initially appeared to hang, then completed normally. For this unit,
@@ -299,7 +300,7 @@ Deferral means "not currently worth interrupting development for," not failure.
 - Hardware acceptance of Drum Alternates 06–09.
 - Detailed boundary and choke testing for the expanded layered program.
 - Final NR3 chromatic Keygroup register acceptance; NR2 received a seven-key
-  default-position warning, and the +48 NR3 package awaits SD transfer.
+  default-position warning, and the +48 NR3 package is now deployed.
 - Cold-start timing.
 - A revised Scratchpad Jam copy with an inspected lead phrase.
 - MPC-authored Volca sequence save/reload and simultaneous three-Volca testing.

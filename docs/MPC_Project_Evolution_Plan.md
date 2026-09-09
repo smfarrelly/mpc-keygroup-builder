@@ -821,8 +821,8 @@ Stop when the Scratchpad is enjoyable to play. Capture additional ideas in the b
   move one more octave right. NR2 at +36 semitones preserved the same 80 WAVs
   and passed structural/model checks, but hardware still found seven keys
   unavailable at the default position. Built and externally preserved NR3 at
-  +48 semitones with roots MIDI 73–98; SD transfer was safely deferred when the
-  card was removed before transactional staging began.
+  +48 semitones with roots MIDI 73–98; all 85 package files were transactionally
+  deployed and checksum-verified on the SD card September 9, 2026.
 - Hardware layout comparison selects the right-handed performance variant over
   Classic. The improvement is modest because the source has many varied
   one-shots instead of a compact kick/snare/cymbal kit. Both variants reload

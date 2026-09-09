@@ -290,13 +290,13 @@ Verified common root:
 default-position workflow; seven keys are unavailable. Preserve NR2 as evidence
 and move the complete family exactly one more octave upward.
 
-### Normal-register 03 — built; SD deployment pending
+### Normal-register 03 — deployed; hardware acceptance pending
 
 NR3 uses an explicit +48-semitone shift from the original mappings, +12 above
 NR2, without resampling or changing the 80 WAVs. All five programs pass batch
 inspection, structural validation, and normalized-model loading.
 
-Planned common root:
+Deployed and checksum-verified common root (September 9, 2026):
 
 `SD Card / 00 FG Hardware Tests / SFM Keygroup Register Fix 03 / Chromatic Percussion`
 
@@ -308,9 +308,9 @@ Planned common root:
 
 The source package is checksum-verified on the external drive at
 `MPC Transfer / FG Software Candidates 2026-08-28 / SFM Keygroup Register Fix 03`.
-The SD card was removed immediately before deployment, and the transactional
-deployer published no partial destination. Reinsert the card, deploy once, then
-test all five without keyboard octave transpose.
+The transactional package deployer copied and verified all 85 files (4,463,275
+bytes) with no replacements or deletions. Test all five without keyboard octave
+transpose.
 
 ### Vinyl and SP-1200 Drum Programs
 

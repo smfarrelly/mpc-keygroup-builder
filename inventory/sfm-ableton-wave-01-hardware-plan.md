@@ -149,7 +149,7 @@ Verified NR2 SD root:
 seven keys are unavailable at the default keyboard position. Move the complete
 family one more octave upward; retain NR2 as comparison evidence.
 
-### Normal-register 03 built; SD deployment pending
+### Normal-register 03 deployed; hardware acceptance pending
 
 `NR3` shifts the original roots up 48 semitones, exactly one octave above NR2.
 The same 80 unmodified WAVs pass batch inspection and validation:
@@ -160,12 +160,14 @@ The same 80 unmodified WAVs pass batch inspection and validation:
 - Chromatic Tom NR3 — roots 73–88.
 - Chromatic Tone NR3 — roots 81–96.
 
-Planned SD root after the next card insertion:
+Checksum-verified SD root (September 9, 2026):
 
 `SD Card / 00 FG Hardware Tests / SFM Keygroup Register Fix 03 / Chromatic Percussion`
 
 The exact 85-file package is checksum-verified on the external drive under
-`MPC Transfer / FG Software Candidates 2026-08-28 / SFM Keygroup Register Fix 03`.
+`MPC Transfer / FG Software Candidates 2026-08-28 / SFM Keygroup Register Fix 03`
+and on the SD card. Deployment created 85 files (4,463,275 bytes) without
+replacing or deleting card content.
 
 ## Drum bracket A — vinyl and SP-1200
 

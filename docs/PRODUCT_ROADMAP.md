@@ -321,8 +321,8 @@ performance program.
   left. NR2 shifts the same 80 WAVs three octaves above the originals and places
   roots at MIDI 61–86, but listening still found seven keys unavailable at the
   default position. NR3 adds one more octave for roots MIDI 73–98; computer
-  acceptance and canonical external-drive preservation pass, while SD transfer
-  and hardware confirmation remain open.
+  acceptance, canonical external-drive preservation, and checksum-verified SD
+  deployment pass, while hardware confirmation remains open.
 - [x] `mpc-ableton-fidelity` now emits a normalized, feature-by-feature source
   contract for samples, ranges, roots, pad notes, choke groups, playback,
   loops, warp, macros, and device/routing intent. Direct, Template,
