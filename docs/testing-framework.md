@@ -90,7 +90,9 @@ uv run mpc-program-audition "/path/to/Program.xpm" \
   --output work/auditions/program.wav
 ```
 
-The renderer writes a mono 44.1 kHz WAV and a neighboring JSON event manifest.
+The output must end in `.wav`. The renderer atomically writes a mono 44.1 kHz
+WAV and a neighboring JSON event manifest after preflighting both paths;
+neither may replace the input or target a symbolic link/non-file path.
 Keygroups use a fixed ten-note phrase with alternating medium and high
 velocities, select the corresponding layer, and apply approximate root-note
 pitching. Drum programs trigger the first 16 populated instruments. Source
