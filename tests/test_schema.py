@@ -85,6 +85,30 @@ class SchemaTests(unittest.TestCase):
             with self.assertRaises(FileExistsError):
                 schema.initialize_workstation(output, "ambient")
 
+    def test_schema_output_force_does_not_follow_symbolic_links(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            external = root / "external.json"
+            external.write_text("keep\n")
+            output = root / "schema.json"
+            output.symlink_to(external)
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                schema.write_schema(output, "{}\n", force=True)
+            self.assertEqual(external.read_text(), "keep\n")
+
+    def test_schema_output_is_atomic_and_creates_parents(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "new" / "schemas" / "plugin.json"
+            self.assertEqual(
+                schema.write_schema(output, '{"type": "object"}\n'),
+                output.resolve(),
+            )
+            self.assertEqual(json.loads(output.read_text()), {"type": "object"})
+            with self.assertRaises(FileExistsError):
+                schema.write_schema(output, "{}\n")
+            schema.write_schema(output, "{}\n", force=True)
+            self.assertEqual(json.loads(output.read_text()), {})
+
 
 if __name__ == "__main__":
     unittest.main()
