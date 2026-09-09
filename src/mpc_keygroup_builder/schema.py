@@ -243,6 +243,31 @@ def initialize_workstation(output: Path, family: str) -> Path:
     return output
 
 
+def write_schema(output: Path, rendered: str, *, force: bool = False) -> Path:
+    requested = output.expanduser()
+    if requested.is_symlink():
+        raise ValueError(f"schema output may not be a symbolic link: {requested}")
+    destination = requested.resolve()
+    if destination.exists() and not force:
+        raise FileExistsError(destination)
+    if destination.exists() and not destination.is_file():
+        raise ValueError(f"schema output is not a regular file: {requested}")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{destination.name}.", dir=destination.parent
+    )
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as stream:
+            stream.write(rendered)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, destination)
+    finally:
+        temporary.unlink(missing_ok=True)
+    return destination
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--version", action="version", version="%(prog)s 1")
@@ -274,11 +299,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "show":
         rendered = json.dumps(schema_document(args.schema), indent=2) + "\n"
         if args.output:
-            output = args.output.expanduser().resolve()
-            if output.exists() and not args.force:
-                raise FileExistsError(output)
-            output.parent.mkdir(parents=True, exist_ok=True)
-            output.write_text(rendered, encoding="utf-8")
+            output = write_schema(args.output, rendered, force=args.force)
             print(f"Wrote: {output}")
         else:
             print(rendered, end="")

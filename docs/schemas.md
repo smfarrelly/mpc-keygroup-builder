@@ -21,6 +21,10 @@ mpc-schema show drum-manifest
 mpc-schema show plugin-profile --output plugin-profile.schema.json
 ```
 
+Schema files are published atomically. Existing regular files require
+`--force`; symbolic-link and non-file destinations are always rejected, and
+missing parent directories are created.
+
 Validate one or many files with the same parser used by the builders:
 
 ```bash
