@@ -196,12 +196,19 @@ def build(
 ) -> dict[str, Any]:
     if not profile_paths:
         raise ValueError("at least one plugin profile is required")
-    output = output.expanduser().resolve()
+    sources = [path.expanduser().resolve() for path in profile_paths]
+    output = output.expanduser().absolute()
+    if output.is_symlink():
+        raise ValueError(f"refusing symbolic-link plugin core output: {output}")
+    resolved_output = output.resolve(strict=False)
+    for source in sources:
+        if source == resolved_output or source.is_relative_to(resolved_output):
+            raise ValueError(f"plugin core output must not contain source profile: {source}")
     if output.exists() and not force:
         raise FileExistsError(f"plugin core output already exists: {output}")
     if output.exists():
         receipt = output / "plugin-core-report.json"
-        if output.is_symlink() or not output.is_dir() or receipt.is_symlink() or not receipt.is_file():
+        if not output.is_dir() or receipt.is_symlink() or not receipt.is_file():
             raise ValueError(f"refusing to replace unrecognized plugin core output: {output}")
         try:
             previous = json.loads(receipt.read_text(encoding="utf-8"))
@@ -209,7 +216,7 @@ def build(
             raise ValueError(f"refusing to replace invalid plugin core output: {output}") from error
         if previous.get("kind") != "mpc-plugin-core":
             raise ValueError(f"refusing to replace unrecognized plugin core output: {output}")
-    profiles = [plugin_map.load_profile(path.expanduser().resolve()) for path in profile_paths]
+    profiles = [plugin_map.load_profile(path) for path in sources]
     ids = [profile["id"] for profile in profiles]
     if len(ids) != len(set(ids)):
         raise ValueError("plugin profile ids must be unique")

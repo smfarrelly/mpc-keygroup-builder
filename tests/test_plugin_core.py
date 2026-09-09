@@ -63,6 +63,20 @@ class PluginCoreTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "unrecognized"):
                 plugin_core.build([source], unsafe, force=True)
             self.assertTrue((unsafe / "keep").is_file())
+            link = root / "output-link"
+            link.symlink_to(output, target_is_directory=True)
+            before = (output / "plugin-core-report.json").read_bytes()
+            with self.assertRaisesRegex(ValueError, "symbolic-link"):
+                plugin_core.build([source], link, force=True)
+            self.assertTrue(output.is_dir())
+            self.assertEqual((output / "plugin-core-report.json").read_bytes(), before)
+
+            nested_source = output / "source-profile.toml"
+            nested_source.write_text(plugin_seed.render_toml(profile()))
+            source_before = nested_source.read_bytes()
+            with self.assertRaisesRegex(ValueError, "must not contain source profile"):
+                plugin_core.build([nested_source], output, force=True)
+            self.assertEqual(nested_source.read_bytes(), source_before)
 
 
 if __name__ == "__main__":
