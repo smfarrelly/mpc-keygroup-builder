@@ -175,6 +175,28 @@ slot numbers are supported by their captured mode names; the working slot order
 for the other four captured modes remains clearly warned until confirmed in
 Components.
 
+## Audit whether a layout earns its slot
+
+Capacity is not the same as performance value. The maintained
+`midi/controller-value-policy.toml` assigns each job to the XL 3, MPC pads,
+LiveTrak L6, or a device's native panel and gives compact plugin pages a budget:
+
+```bash
+uv run mpc-controller-value midi/controller-value-policy.toml \
+  --output work/midi-control/controller-value
+```
+
+The command resolves referenced plugin profiles relative to the policy, refuses
+path escapes, checks the default XL 3 page and control ownership, counts total,
+core, and fader assignments, and writes JSON, CSV, Markdown, and a focused live
+comparison checklist. `--strict` makes budget warnings fail automation.
+
+The maintained audit intentionally reports that four large effect pages exceed
+the 16-control/8-core working budget. That is a prioritization result, not a
+broken profile: full pages remain useful searchable evidence while smaller
+performance cores are designed and tested. Software never promotes a page on
+behalf of a musician.
+
 For plugin pages, use [`mpc-plugin-params`](plugin-parameters.md) to search the
 downloaded MPC UI metadata and cross-reference it with an existing project's
 MIDI Learn assignments. This produces named, ranked candidates before editing

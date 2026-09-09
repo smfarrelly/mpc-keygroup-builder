@@ -1,0 +1,168 @@
+schema_version = 1
+name = "FG Live Rig Controller Value Policy"
+default_xl3_layout = "mpc-internal-mix"
+max_performance_controls = 16
+max_core_controls = 8
+
+[[layouts]]
+id = "mpc-internal-mix"
+name = "MPC Internal Mix"
+kind = "mpc-mix"
+owner = "xl3"
+status = "primary"
+native_panel = false
+automation_need = "required"
+hardware_status = "pass"
+friction_removed = "balances MPC tracks and submixes without returning to the touchscreen mixer"
+
+[[layouts]]
+id = "flavor-pro-performance"
+name = "Flavor Pro Performance"
+kind = "mpc-effect"
+owner = "xl3"
+status = "candidate"
+native_panel = false
+automation_need = "optional"
+hardware_status = "pending"
+profile = "plugins/flavor-pro-performance.toml"
+friction_removed = "reaches insert-effect character controls hidden across MPC pages"
+
+[[layouts]]
+id = "iona-performance"
+name = "Iona Performance"
+kind = "mpc-effect"
+owner = "xl3"
+status = "candidate"
+native_panel = false
+automation_need = "optional"
+hardware_status = "pending"
+profile = "plugins/iona-performance.toml"
+friction_removed = "keeps granular movement gestures available without effect-page navigation"
+
+[[layouts]]
+id = "multitap-delay-performance"
+name = "MultiTap Delay Performance"
+kind = "mpc-effect"
+owner = "xl3"
+status = "candidate"
+native_panel = false
+automation_need = "optional"
+hardware_status = "pending"
+profile = "plugins/multitap-delay-performance.toml"
+friction_removed = "surfaces useful delay timing and feedback gestures from the MPC insert UI"
+
+[[layouts]]
+id = "trigger-fx-performance"
+name = "Trigger FX Performance"
+kind = "mpc-effect"
+owner = "xl3"
+status = "candidate"
+native_panel = false
+automation_need = "optional"
+hardware_status = "pending"
+profile = "plugins/trigger-fx-performance.toml"
+friction_removed = "makes momentary performance effects reachable without touchscreen targeting"
+
+[[layouts]]
+id = "air-chorus-performance"
+name = "AIR Chorus Performance"
+kind = "mpc-effect"
+owner = "xl3"
+status = "candidate"
+native_panel = false
+automation_need = "optional"
+hardware_status = "pending"
+profile = "plugins/air-chorus-performance.toml"
+friction_removed = "places the small useful chorus core on fixed controls"
+
+[[layouts]]
+id = "air-expander-performance"
+name = "AIR Expander Performance"
+kind = "mpc-effect"
+owner = "xl3"
+status = "candidate"
+native_panel = false
+automation_need = "optional"
+hardware_status = "pending"
+profile = "plugins/air-expander-performance.toml"
+friction_removed = "places the small useful dynamics core on fixed controls"
+
+[[layouts]]
+id = "analog-wear-rack-performance"
+name = "Analog Wear Rack Performance"
+kind = "mpc-effect"
+owner = "xl3"
+status = "candidate"
+native_panel = false
+automation_need = "optional"
+hardware_status = "pending"
+profile = "plugins/analog-wear-rack-performance.toml"
+friction_removed = "collects related internal wear controls that otherwise require page changes"
+
+[[layouts]]
+id = "color-compressor-performance"
+name = "Color Compressor Performance"
+kind = "mpc-effect"
+owner = "xl3"
+status = "candidate"
+native_panel = false
+automation_need = "optional"
+hardware_status = "pending"
+profile = "plugins/color-compressor-performance.toml"
+friction_removed = "keeps the compressor's musical macro controls immediately reachable"
+
+[[layouts]]
+id = "vintage-filter-performance"
+name = "Vintage Filter Performance"
+kind = "mpc-effect"
+owner = "xl3"
+status = "candidate"
+native_panel = false
+automation_need = "optional"
+hardware_status = "pending"
+profile = "plugins/vintage-filter-performance.toml"
+friction_removed = "keeps filter movement and drive controls on one compact page"
+
+[[layouts]]
+id = "volca-direct-control"
+name = "Volca Direct Control"
+kind = "external-instrument"
+owner = "native"
+status = "conditional"
+native_panel = true
+automation_need = "optional"
+hardware_status = "pass"
+friction_removed = "uses XL3 only when a CC gesture must be recorded or a Volca is out of reach"
+
+[[layouts]]
+id = "external-effects"
+name = "External Effects"
+kind = "external-effect"
+owner = "native"
+status = "conditional"
+native_panel = true
+automation_need = "none"
+hardware_status = "pending"
+friction_removed = "retains UltraTap, Qi, NTS-3, and future effect controls on their dedicated panels"
+
+[[layouts]]
+id = "physical-device-mix"
+name = "Physical Device Mix"
+kind = "physical-mixer"
+owner = "l6"
+status = "primary"
+native_panel = true
+automation_need = "none"
+hardware_status = "pass"
+friction_removed = "uses the L6 panel for device balance, aux sends, mutes, and external FX routing"
+
+[[layouts]]
+id = "next-sequence"
+name = "Next Sequence Launch"
+kind = "sequence-launch"
+owner = "mpc-pads"
+status = "deferred"
+native_panel = true
+automation_need = "none"
+hardware_status = "pass"
+friction_removed = "uses the MPC's existing pad launch surface instead of an unlearnable XL3 target"
