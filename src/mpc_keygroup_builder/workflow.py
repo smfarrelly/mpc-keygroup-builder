@@ -329,7 +329,17 @@ def inspect_batch_report(settings: Settings, batch: Batch) -> dict[str, Any]:
     }
 
 
-def inspect_batch(settings: Settings, batch: Batch, report_path: Path | None = None, *, force_report: bool = False) -> int:
+def _paths_alias(left: Path, right: Path) -> bool:
+    try:
+        return os.path.samefile(left, right)
+    except (FileNotFoundError, OSError):
+        return left.resolve(strict=False) == right.resolve(strict=False)
+
+
+def inspect_batch(
+    settings: Settings, batch: Batch, report_path: Path | None = None, *,
+    force_report: bool = False, protected_paths: tuple[Path, ...] = (),
+) -> int:
     report = inspect_batch_report(settings, batch)
     for item in report["programs"]:
         identity = f"{item['category']}/{item['name']}"
@@ -351,9 +361,18 @@ def inspect_batch(settings: Settings, batch: Batch, report_path: Path | None = N
     for paths in report["duplicate_audio_groups"]:
         print("DUPLICATE\t" + "\t".join(paths))
     if report_path is not None:
-        destination = report_path.expanduser().resolve()
-        if destination.exists() and not force_report:
-            raise FileExistsError(f"inspection report exists; pass --force-report to replace: {destination}")
+        destination = report_path.expanduser().absolute()
+        protected = (batch.manifest_path, *protected_paths)
+        for path in protected:
+            if _paths_alias(destination, path.expanduser().absolute()):
+                raise ValueError(f"inspection report must not overwrite input: {path}")
+        if destination.is_symlink():
+            raise ValueError(f"inspection report must not be a symbolic link: {destination}")
+        if destination.exists():
+            if not destination.is_file():
+                raise ValueError(f"inspection report must be a regular file: {destination}")
+            if not force_report:
+                raise FileExistsError(f"inspection report exists; pass --force-report to replace: {destination}")
         _write_json_atomic(destination, report)
         print(f"REPORT\t{destination}")
     return 1 if summary["failures"] or summary["duplicate_groups"] else 0
@@ -597,7 +616,10 @@ def main(argv: list[str] | None = None) -> int:
     settings = load_settings(args.config.resolve())
     batch = load_batch(args.manifest.resolve(), settings)
     if args.command == "inspect":
-        return inspect_batch(settings, batch, args.report, force_report=args.force_report)
+        return inspect_batch(
+            settings, batch, args.report, force_report=args.force_report,
+            protected_paths=(args.config.resolve(),),
+        )
     if args.command == "build":
         build_batch(settings, batch, force=args.force)
     elif args.command == "validate":

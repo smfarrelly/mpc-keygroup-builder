@@ -147,6 +147,42 @@ class WorkflowTests(unittest.TestCase):
         with redirect_stdout(StringIO()):
             self.assertEqual(workflow.inspect_batch(self.settings, batch, destination, force_report=True), 0)
 
+    def test_inspection_report_cannot_overwrite_inputs_or_follow_symlink(self):
+        self.write_wav(self.source / "60 Patch C3.wav")
+        manifest = self.root / "manifest.json"
+        manifest.write_text('{"keep":"manifest"}')
+        config = self.root / "config.toml"
+        config.write_text('keep="config"')
+        batch = workflow.Batch(
+            manifest, "Test From Mars", self.mpc / "Programs", self.batch().instruments,
+        )
+        with redirect_stdout(StringIO()), self.assertRaisesRegex(ValueError, "overwrite input"):
+            workflow.inspect_batch(self.settings, batch, manifest, force_report=True)
+        self.assertEqual(manifest.read_text(), '{"keep":"manifest"}')
+        with redirect_stdout(StringIO()), self.assertRaisesRegex(ValueError, "overwrite input"):
+            workflow.inspect_batch(
+                self.settings, batch, config, force_report=True,
+                protected_paths=(config,),
+            )
+        self.assertEqual(config.read_text(), 'keep="config"')
+
+        target = self.root / "target.json"
+        target.write_text('{"keep":"target"}')
+        link = self.root / "report.json"
+        link.symlink_to(target)
+        with redirect_stdout(StringIO()), self.assertRaisesRegex(ValueError, "symbolic link"):
+            workflow.inspect_batch(self.settings, batch, link, force_report=True)
+        self.assertEqual(target.read_text(), '{"keep":"target"}')
+
+    def test_inspection_report_rejects_non_regular_destination(self):
+        self.write_wav(self.source / "60 Patch C3.wav")
+        destination = self.root / "report-directory"
+        destination.mkdir()
+        with redirect_stdout(StringIO()), self.assertRaisesRegex(ValueError, "regular file"):
+            workflow.inspect_batch(
+                self.settings, self.batch(), destination, force_report=True,
+            )
+
     def test_manifest_path_escape_is_rejected(self):
         manifest = self.root / "escape.json"
         manifest.write_text(json.dumps({
