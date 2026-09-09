@@ -104,6 +104,19 @@ def _selected(documents: tuple[ReferenceDocument, ...], ids: list[str]) -> tuple
     return tuple(available[item] for item in ids)
 
 
+def _write_index(path: Path, report: dict[str, Any]) -> None:
+    descriptor, temporary_name = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as stream:
+            stream.write(json.dumps(report, indent=2) + "\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
 def fetch_documents(
     documents: tuple[ReferenceDocument, ...],
     cache_dir: Path,
@@ -162,7 +175,7 @@ def fetch_documents(
         "cache_dir": str(cache_dir.resolve()),
         "documents": records,
     }
-    index_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    _write_index(index_path, report)
     return report
 
 

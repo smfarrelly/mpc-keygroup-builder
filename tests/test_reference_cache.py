@@ -2,6 +2,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from mpc_keygroup_builder.reference_cache import (
     ReferenceDocument,
@@ -9,6 +10,7 @@ from mpc_keygroup_builder.reference_cache import (
     load_manifest,
     verify_cache,
 )
+from mpc_keygroup_builder import reference_cache
 
 
 class ReferenceCacheTests(unittest.TestCase):
@@ -77,6 +79,17 @@ class ReferenceCacheTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "index.*symbolic link"):
                 fetch_documents((document,), cache)
             self.assertEqual(external.read_text(), "preserve")
+
+    def test_cache_index_publication_failure_preserves_previous_index(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            index = root / "index.json"
+            index.write_text('{"previous": true}\n')
+            with mock.patch.object(reference_cache.os, "replace", side_effect=OSError("disk disconnected")):
+                with self.assertRaisesRegex(OSError, "disk disconnected"):
+                    reference_cache._write_index(index, {"schema_version": 1})
+            self.assertEqual(index.read_text(), '{"previous": true}\n')
+            self.assertEqual(sorted(path.name for path in root.iterdir()), ["index.json"])
 
 
 if __name__ == "__main__":
