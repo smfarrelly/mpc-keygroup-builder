@@ -113,6 +113,9 @@ uv run mpc-package-deploy \
 
 Apply runs a temporary 64 MiB sustained write/read/hash/delete probe by
 default. Set `--probe-mib 0` only when another write test has already passed.
+The report path is checked before the probe or copy begins, must remain outside
+both package trees, and is published atomically. Symbolic-link and non-file
+report destinations are rejected.
 Files are copied and fsynced into a hidden sibling staging directory, verified
 individually, then promoted with one same-filesystem rename. A disconnect
 leaves the final destination absent and the stage available for inspection.
