@@ -4,6 +4,17 @@ The local test framework validates and semantically simulates MPC XPM programs
 before they are copied to removable media. It supports MPC 3 gzip/JSON Keygroup
 programs and legacy XML Drum programs.
 
+Inspect one XPM or compare two captures without modifying the source programs:
+
+```bash
+uv run mpc-xpm inspect "/path/to/Kit.xpm" --output work/kit-inspection.json
+uv run mpc-xpm compare Before.xpm After.xpm --output work/xpm-comparison.json
+```
+
+Report outputs are published atomically and missing parent directories are
+created. A report cannot replace either input or target a symbolic link or
+non-file path.
+
 Run it with the project environment:
 
 ```bash
