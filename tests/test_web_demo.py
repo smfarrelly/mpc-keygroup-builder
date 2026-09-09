@@ -1,6 +1,9 @@
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
+
+from mpc_keygroup_builder import web_demo
 
 from mpc_keygroup_builder.web_demo import build_web_demo, demo_bundle
 
@@ -31,6 +34,17 @@ class WebDemoTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "symbolic link"):
                 build_web_demo(output, force=True)
             self.assertEqual(external.read_text(), "preserve")
+
+    def test_publication_failure_preserves_previous_demo(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            output = root / "demo.html"
+            output.write_text("previous\n")
+            with mock.patch.object(web_demo.os, "replace", side_effect=OSError("disk disconnected")):
+                with self.assertRaisesRegex(OSError, "disk disconnected"):
+                    build_web_demo(output, force=True)
+            self.assertEqual(output.read_text(), "previous\n")
+            self.assertEqual(sorted(path.name for path in root.iterdir()), ["demo.html"])
 
 
 if __name__ == "__main__":

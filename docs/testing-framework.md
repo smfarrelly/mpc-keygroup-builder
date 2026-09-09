@@ -4,6 +4,17 @@ The local test framework validates and semantically simulates MPC XPM programs
 before they are copied to removable media. It supports MPC 3 gzip/JSON Keygroup
 programs and legacy XML Drum programs.
 
+Inspect one XPM or compare two captures without modifying the source programs:
+
+```bash
+uv run mpc-xpm inspect "/path/to/Kit.xpm" --output work/kit-inspection.json
+uv run mpc-xpm compare Before.xpm After.xpm --output work/xpm-comparison.json
+```
+
+Report outputs are published atomically and missing parent directories are
+created. A report cannot replace either input or target a symbolic link or
+non-file path.
+
 Run it with the project environment:
 
 ```bash
@@ -11,6 +22,10 @@ uv run mpc-program-test "/path/to/SD mirror" \
   --json work/semantic-test-report.json \
   --csv work/semantic-test-report.csv
 ```
+
+The JSON and CSV reports must use distinct paths. Both destinations are
+preflighted before writing, cannot replace an input XPM or target a symbolic
+link/non-file path, and are published atomically into created parent folders.
 
 ## What a local production pass means
 
@@ -75,7 +90,9 @@ uv run mpc-program-audition "/path/to/Program.xpm" \
   --output work/auditions/program.wav
 ```
 
-The renderer writes a mono 44.1 kHz WAV and a neighboring JSON event manifest.
+The output must end in `.wav`. The renderer atomically writes a mono 44.1 kHz
+WAV and a neighboring JSON event manifest after preflighting both paths;
+neither may replace the input or target a symbolic link/non-file path.
 Keygroups use a fixed ten-note phrase with alternating medium and high
 velocities, select the corresponding layer, and apply approximate root-note
 pitching. Drum programs trigger the first 16 populated instruments. Source

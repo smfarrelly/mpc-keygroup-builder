@@ -147,6 +147,9 @@ uv run mpc-session-report inventory/scratchpad-candidates.toml \
 Optional evidence paths may be absent, in which case the report adds a next
 action. Existing paths must be regular, non-symlink files containing JSON
 objects; malformed evidence is rejected instead of being reported as missing.
+Report output is published atomically and missing parent directories are
+created. The destination cannot replace an input, target a symbolic link, or
+name a non-file path.
 
 Search the full program ledger without editing it:
 

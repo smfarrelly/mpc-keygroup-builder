@@ -38,6 +38,10 @@ Each change uses an RFC 6901-style JSON Pointer and is classified as `added`, `r
 
 MPC 2 files are currently detected and summarized by container generation, but structural extraction and comparison require MPC 3 projects.
 
+JSON outputs are published atomically and missing parent directories are
+created. An output cannot replace any input project or target a symbolic link
+or non-file path.
+
 ## Reverse-engineering safety
 
 The inspector does not write XPJ files. Treat field meanings as provisional until a controlled hardware experiment confirms them. Preserve plugin state blobs byte-for-byte in any future writer.

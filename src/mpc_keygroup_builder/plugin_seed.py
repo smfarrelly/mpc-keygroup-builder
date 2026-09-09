@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -20,6 +22,33 @@ ROLE_WORDS = (
     ("source", ("osc", "source", "sample", "wave", "saw", "pulse", "sub")),
     ("global", ("mix", "wet", "output", "gain", "level", "width", "volume", "amount")),
 )
+
+
+def prepare_output(output: Path, synth_root: Path, project: Path | None) -> Path:
+    requested = output.expanduser()
+    if requested.is_symlink():
+        raise ValueError(f"plugin seed output may not be a symbolic link: {requested}")
+    destination = requested.resolve()
+    content_root = synth_root.expanduser().resolve()
+    if destination == content_root or content_root in destination.parents:
+        raise ValueError("plugin seed output must be outside the scanned synth root")
+    if project and destination == project.expanduser().resolve():
+        raise ValueError("plugin seed output may not replace the project input")
+    if destination.exists() and not destination.is_file():
+        raise ValueError(f"plugin seed output is not a regular file: {requested}")
+    return destination
+
+
+def write_output(output: Path, text: str) -> None:
+    output.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(prefix=f".{output.name}.", dir=output.parent)
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as stream:
+            stream.write(text); stream.flush(); os.fsync(stream.fileno())
+        os.replace(temporary, output)
+    finally:
+        temporary.unlink(missing_ok=True)
 ROLE_COLORS = {
     "tone": "yellow", "movement": "blue", "texture": "orange", "source": "green",
     "global": "white", "envelope": "purple", "switch": "red", "other": "white",
@@ -184,6 +213,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args(argv or sys.argv[1:])
+    output = prepare_output(args.output, args.synth_root, args.project)
     catalog = plugin_params.catalog(args.synth_root.expanduser().resolve(), args.project)
     matches = [
         item for item in catalog["plugins"]
@@ -191,12 +221,10 @@ def main(argv: list[str] | None = None) -> int:
     ]
     if not matches:
         raise ValueError(f"plugin content not found: {args.plugin}")
-    output = args.output.expanduser().resolve()
     if output.exists() and not args.force:
         raise FileExistsError(output)
-    output.parent.mkdir(parents=True, exist_ok=True)
     profile = seed_profile(matches[0], args.slot, args.channel, args.limit)
-    output.write_text(render_toml(profile), encoding="utf-8")
+    write_output(output, render_toml(profile))
     print(
         f"Wrote {len(profile['controls'])}/{profile['source_control_count']} ranked controls -> {output}"
     )

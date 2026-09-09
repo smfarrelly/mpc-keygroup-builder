@@ -4,13 +4,41 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import random
+import tempfile
 import tomllib
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
 from .harmony import NOTE_NAMES, SCALES
 from .midi_writer import MidiNote, MidiTrack, render_standard_midi
+
+
+def write_outputs(prefix: Path, recipe: Path, json_text: str, midi: bytes, *, force: bool) -> tuple[Path, Path]:
+    prefix = prefix.expanduser().resolve()
+    paths = (prefix.with_suffix(".json"), prefix.with_suffix(".mid"))
+    source = recipe.expanduser().resolve()
+    for path in paths:
+        if path.is_symlink():
+            raise ValueError(f"melody output may not be a symbolic link: {path}")
+        if path == source:
+            raise ValueError(f"melody output may not replace the recipe: {path}")
+        if path.exists() and not path.is_file():
+            raise ValueError(f"melody output is not a regular file: {path}")
+    if not force and any(path.exists() for path in paths):
+        raise FileExistsError("output exists; pass --force to replace both files")
+    paths[0].parent.mkdir(parents=True, exist_ok=True)
+    for path, payload in zip(paths, (json_text.encode(), midi)):
+        descriptor, temporary_name = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
+        temporary = Path(temporary_name)
+        try:
+            with os.fdopen(descriptor, "wb") as stream:
+                stream.write(payload); stream.flush(); os.fsync(stream.fileno())
+            os.replace(temporary, path)
+        finally:
+            temporary.unlink(missing_ok=True)
+    return paths
 
 
 @dataclass(frozen=True)
@@ -268,14 +296,10 @@ def main() -> int:
     args = parser.parse_args()
     recipe = load_recipe(args.recipe.expanduser().resolve())
     idea = generate_idea(recipe, seed=args.seed, tempo=args.tempo)
-    prefix = args.output_prefix.expanduser().resolve()
-    json_path = prefix.with_suffix(".json")
-    midi_path = prefix.with_suffix(".mid")
-    if not args.force and (json_path.exists() or midi_path.exists()):
-        parser.error("output exists; pass --force to replace both files")
-    json_path.parent.mkdir(parents=True, exist_ok=True)
-    json_path.write_text(json.dumps(idea.to_dict(), indent=2) + "\n", encoding="utf-8")
-    midi_path.write_bytes(render_midi(idea, recipe, midi_format=args.midi_format))
+    json_path, midi_path = write_outputs(
+        args.output_prefix, args.recipe, json.dumps(idea.to_dict(), indent=2) + "\n",
+        render_midi(idea, recipe, midi_format=args.midi_format), force=args.force,
+    )
     variations = sum(event.variation != "repeat" for event in idea.events)
     print(f"Wrote: {json_path}")
     print(f"Wrote: {midi_path}")

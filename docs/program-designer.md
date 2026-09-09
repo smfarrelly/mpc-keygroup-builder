@@ -4,6 +4,9 @@
 the normalized Program Model. It does not run a server, load remote assets, or
 modify the source program. Drum layout changes remain an in-memory draft until
 a later export step is explicitly requested.
+Viewer output is published atomically and cannot replace any source or
+configuration input. Symbolic-link and non-file destinations are rejected even
+with `--force`.
 
 ## Drum Program viewer
 

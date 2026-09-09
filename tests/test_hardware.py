@@ -176,6 +176,22 @@ class HardwareResultTests(unittest.TestCase):
                 hardware.initialize_results(ledger, manifest, output)
             self.assertFalse(output.exists())
 
+    def test_initialize_cleans_up_after_publication_failure(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            ledger, manifest, output = root / "status.csv", root / "candidates.toml", root / "work/results.toml"
+            self.write_ledger(ledger)
+            manifest.write_text(
+                'schema_version = 1\nname = "Test"\n[[candidates]]\nid = "bass"\n'
+                'ledger_path = "Programs/Bass.xpm"\nsd_path = "Programs/Bass.xpm"\n'
+                'role = "bass"\nselected = true\n'
+            )
+            with mock.patch.object(hardware.os, "replace", side_effect=OSError("disk disconnected")):
+                with self.assertRaisesRegex(OSError, "disk disconnected"):
+                    hardware.initialize_results(ledger, manifest, output)
+            self.assertFalse(output.exists())
+            self.assertEqual(list(output.parent.iterdir()), [])
+
 
 if __name__ == "__main__":
     unittest.main()

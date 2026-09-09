@@ -5,7 +5,9 @@ from __future__ import annotations
 import argparse
 import gzip
 import json
+import os
 import struct
+import tempfile
 import wave
 import xml.etree.ElementTree as ET
 from dataclasses import asdict, dataclass
@@ -94,12 +96,34 @@ def write_wav(path: Path, samples: list[float]) -> None:
     for sample in samples:
         value = max(-32768, min(32767, round(sample * scale * 32767)))
         pcm.extend(struct.pack("<h", value))
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with wave.open(str(path), "wb") as stream:
-        stream.setnchannels(1)
-        stream.setsampwidth(2)
-        stream.setframerate(OUTPUT_RATE)
-        stream.writeframes(bytes(pcm))
+    descriptor, temporary_name = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
+    os.close(descriptor)
+    temporary = Path(temporary_name)
+    try:
+        with wave.open(str(temporary), "wb") as stream:
+            stream.setnchannels(1)
+            stream.setsampwidth(2)
+            stream.setframerate(OUTPUT_RATE)
+            stream.writeframes(bytes(pcm))
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+def output_paths(program: Path, output: Path) -> tuple[Path, Path]:
+    requested = output.expanduser()
+    if requested.suffix.casefold() != ".wav":
+        raise ValueError("audition output must use a .wav extension")
+    manifest_requested = requested.with_suffix(".json")
+    for label, path in (("audio", requested), ("manifest", manifest_requested)):
+        if path.is_symlink():
+            raise ValueError(f"audition {label} output may not be a symbolic link: {path}")
+        resolved = path.resolve()
+        if resolved == program.expanduser().resolve():
+            raise ValueError(f"audition {label} output may not replace the input program: {path}")
+        if resolved.exists() and not resolved.is_file():
+            raise ValueError(f"audition {label} output is not a regular file: {path}")
+    return requested.resolve(), manifest_requested.resolve()
 
 
 def _json_program(path: Path) -> dict[str, Any]:
@@ -189,6 +213,8 @@ def drum_events(path: Path) -> tuple[list[AuditionEvent], list[list[float]]]:
 
 
 def render(program: Path, output: Path) -> dict[str, Any]:
+    output, manifest_path = output_paths(program, output)
+    output.parent.mkdir(parents=True, exist_ok=True)
     if program.read_bytes()[:2] == b"\x1f\x8b":
         events, clips = keygroup_events(program)
         program_type = "Keygroup"
@@ -210,7 +236,18 @@ def render(program: Path, output: Path) -> dict[str, Any]:
         "events": [asdict(event) for event in events],
         "limitations": "Approximate dry sample selection and pitch preview; MPC envelopes, filters, effects, warp, and voice behavior are not rendered.",
     }
-    output.with_suffix(".json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{manifest_path.name}.", dir=manifest_path.parent
+    )
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as stream:
+            stream.write(json.dumps(manifest, indent=2) + "\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, manifest_path)
+    finally:
+        temporary.unlink(missing_ok=True)
     return manifest
 
 

@@ -241,6 +241,10 @@ uv run mpc-plugin-map check new-plugin-performance.toml \
   --synth-root "/media/user/CARD/Synths"
 ```
 
+The draft must be written outside the scanned Synths tree and cannot replace
+the optional project input. Symbolic-link/non-file destinations are rejected,
+and the completed TOML is published atomically.
+
 The generator ranks useful and Q-Link-visible controls, separates buttons from
 continuous controls, infers broad musical roles, and groups tone, motion,
 texture, envelope, source, and global controls consistently. Its output is

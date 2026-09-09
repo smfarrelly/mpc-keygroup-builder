@@ -158,6 +158,38 @@ class PackageDeployTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "symbolic link"):
                 package_deploy.apply_package(plan, resume=True, probe_bytes=0)
 
+    def test_report_must_stay_outside_package_trees(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = self.package(root)
+            destination = root / "sd/FG Kit"
+            for output, label in (
+                (source / "report.json", "source"),
+                (destination / "report.json", "destination"),
+            ):
+                with self.subTest(label=label):
+                    with self.assertRaisesRegex(ValueError, f"inside the {label}"):
+                        package_deploy.prepare_report(output, source, destination)
+
+    def test_report_rejects_symlinks_and_is_atomic(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = self.package(root)
+            destination = root / "sd/FG Kit"
+            external = root / "external.json"
+            external.write_text("keep\n")
+            linked = root / "report.json"
+            linked.symlink_to(external)
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                package_deploy.prepare_report(linked, source, destination)
+            self.assertEqual(external.read_text(), "keep\n")
+
+            output = package_deploy.prepare_report(
+                root / "reports/deploy.json", source, destination
+            )
+            package_deploy.write_report(output, {"status": "planned"})
+            self.assertIn('"status": "planned"', output.read_text())
+
 
 if __name__ == "__main__":
     unittest.main()

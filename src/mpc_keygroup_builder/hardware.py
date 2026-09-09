@@ -150,7 +150,18 @@ def initialize_results(ledger: Path, manifest: Path, output: Path) -> int:
         blocks.extend(f"{key} = {json.dumps(value)}" for key, value in values.items())
         blocks.append("")
     output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text("\n".join(blocks), encoding="utf-8")
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{output.name}.", dir=output.parent
+    )
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as stream:
+            stream.write("\n".join(blocks))
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, output)
+    finally:
+        temporary.unlink(missing_ok=True)
     return len(candidates)
 
 

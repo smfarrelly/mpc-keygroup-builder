@@ -132,6 +132,36 @@ class DeployTests(unittest.TestCase):
                 deploy.apply_plan(plan)
             self.assertFalse((outside / "Kit.xpm").exists())
 
+    def test_report_cannot_replace_manifest_or_deployment_files(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            local, target = root / "local", root / "sd"
+            source = local / "Programs/Kit.xpm"
+            source.parent.mkdir(parents=True)
+            source.write_bytes(b"new")
+            manifest = self.manifest(root)
+            plan = deploy.build_plan(manifest, local, target)
+            for protected in (manifest, Path(str(plan[0]["source"])), Path(str(plan[0]["target"]))):
+                with self.subTest(protected=protected):
+                    with self.assertRaisesRegex(ValueError, "may not replace"):
+                        deploy.prepare_report(protected, [manifest, source, Path(str(plan[0]["target"]))])
+            self.assertEqual(source.read_bytes(), b"new")
+
+    def test_report_rejects_symlinks_and_is_atomic(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            external = root / "external.json"
+            external.write_text("keep\n")
+            linked = root / "report.json"
+            linked.symlink_to(external)
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                deploy.prepare_report(linked, [])
+            self.assertEqual(external.read_text(), "keep\n")
+
+            output = deploy.prepare_report(root / "new/reports/deploy.json", [])
+            deploy.write_report(output, {"format": 1})
+            self.assertEqual(output.read_text(), '{\n  "format": 1\n}\n')
+
 
 if __name__ == "__main__":
     unittest.main()

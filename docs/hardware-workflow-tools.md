@@ -21,6 +21,10 @@ Applied ledger changes preserve the original line endings and permissions and
 are flushed to a temporary file before atomic replacement, which reduces the
 risk of a zero-length or partial ledger after removable-media interruption.
 
+Hardware-session initialization publishes its new TOML atomically after all
+ledger and manifest validation succeeds, so an interrupted write does not
+leave a partial result file.
+
 The first results command is a dry run. A pass or warning requires concise
 listening notes. The readiness checker keeps deployment, all-candidate hardware
 testing, selected core viability, and final favorite selection as separate
@@ -84,6 +88,9 @@ uv run mpc-sd-deploy inventory/scratchpad-candidates.toml \
 The deployer is additive: it does not remove unrelated card content. Each copy
 uses a temporary file, SHA-256 verification, and atomic replacement. An
 existing changed target is backed up and verified before replacement.
+The optional report destination is preflighted before `--apply`, published
+atomically, and cannot replace the manifest or any source/target program.
+Symbolic-link and non-file report destinations are rejected.
 Every manifest `sd_path` must be relative and remain within both roots after
 symbolic links are resolved. Invalid paths are rejected during the dry run,
 before any deployment file or backup is created. Companion ProgramData may not
@@ -114,6 +121,9 @@ uv run mpc-package-deploy \
 
 Apply runs a temporary 64 MiB sustained write/read/hash/delete probe by
 default. Set `--probe-mib 0` only when another write test has already passed.
+The report path is checked before the probe or copy begins, must remain outside
+both package trees, and is published atomically. Symbolic-link and non-file
+report destinations are rejected.
 Files are copied and fsynced into a hidden sibling staging directory, verified
 individually, then promoted with one same-filesystem rename. A disconnect
 leaves the final destination absent and the stage available for inspection.

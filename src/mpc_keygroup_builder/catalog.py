@@ -5,6 +5,8 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
+import tempfile
 import statistics
 from collections import Counter
 from pathlib import Path
@@ -415,6 +417,33 @@ def _render_query(programs: list[dict[str, Any]], output_format: str) -> str:
     )
 
 
+def write_output(output: Path, source: Path, rendered: str) -> Path:
+    """Publish catalog output without replacing the document being read."""
+    requested = output.expanduser()
+    if requested.is_symlink():
+        raise ValueError(f"catalog output may not be a symbolic link: {requested}")
+    destination = requested.resolve()
+    if destination == source.expanduser().resolve():
+        raise ValueError(f"catalog output may not replace its input: {requested}")
+    if destination.exists() and not destination.is_file():
+        raise ValueError(f"catalog output is not a regular file: {requested}")
+
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{destination.name}.", dir=destination.parent
+    )
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as stream:
+            stream.write(rendered)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, destination)
+    finally:
+        temporary.unlink(missing_ok=True)
+    return destination
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -451,8 +480,7 @@ def main() -> int:
             args.program_root.expanduser().resolve(),
             include_audio=args.audio_facets,
         )
-        args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(json.dumps(catalog, indent=2) + "\n", encoding="utf-8")
+        write_output(args.output, args.ledger, json.dumps(catalog, indent=2) + "\n")
         summary = catalog["summary"]
         print(f"Wrote: {args.output}")
         print(
@@ -481,8 +509,7 @@ def main() -> int:
     )
     rendered = _render_query(programs, args.format)
     if args.output:
-        args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(rendered, encoding="utf-8")
+        write_output(args.output, args.catalog, rendered)
     else:
         print(rendered, end="")
     return 0

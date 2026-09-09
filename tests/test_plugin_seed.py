@@ -1,5 +1,7 @@
 import tomllib
 import unittest
+import tempfile
+from pathlib import Path
 
 from mpc_keygroup_builder import plugin_seed
 
@@ -31,6 +33,34 @@ class PluginSeedTests(unittest.TestCase):
         plugin = {"plugin": "Empty", "control_count": 0, "controls": []}
         with self.assertRaisesRegex(ValueError, "limit must be"):
             plugin_seed.seed_profile(plugin, 1, 1, 49)
+
+    def test_output_stays_outside_scanned_content_and_project(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            synth = root / "Synths"
+            synth.mkdir()
+            project = root / "Boot.xpj"
+            project.write_text("keep\n")
+            with self.assertRaisesRegex(ValueError, "outside the scanned"):
+                plugin_seed.prepare_output(synth / "profile.toml", synth, project)
+            with self.assertRaisesRegex(ValueError, "replace the project"):
+                plugin_seed.prepare_output(project, synth, project)
+            self.assertEqual(project.read_text(), "keep\n")
+
+    def test_output_refuses_symlinks_and_publishes_atomically(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            synth = root / "Synths"
+            synth.mkdir()
+            external = root / "external.toml"
+            external.write_text("keep\n")
+            link = root / "profile.toml"
+            link.symlink_to(external)
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                plugin_seed.prepare_output(link, synth, None)
+            output = plugin_seed.prepare_output(root / "profiles/new.toml", synth, None)
+            plugin_seed.write_output(output, "plugin = \"Test\"\n")
+            self.assertEqual(output.read_text(), 'plugin = "Test"\n')
 
 
 if __name__ == "__main__":

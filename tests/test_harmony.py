@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from mpc_keygroup_builder.harmony import generate_idea, load_recipe, render_midi
+from mpc_keygroup_builder.harmony import generate_idea, load_recipe, render_midi, write_outputs
 from mpc_keygroup_builder.midi_groove import parse_midi
 
 
@@ -96,6 +96,31 @@ class HarmonyIdeaTests(unittest.TestCase):
             self.assertEqual(payload["seed"], 17)
             self.assertEqual(payload["chord_range"], [48, 76])
             self.assertEqual(payload["decisions"][0]["degree"], 1)
+
+    def test_output_preflight_protects_recipe_and_symlinks(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            recipe = root / "idea.json"
+            recipe.write_text("keep\n")
+            with self.assertRaisesRegex(ValueError, "replace the recipe"):
+                write_outputs(root / "idea", recipe, "{}\n", b"MThd", force=True)
+            external = root / "external.mid"
+            external.write_bytes(b"keep")
+            (root / "safe.mid").symlink_to(external)
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                write_outputs(root / "safe", recipe, "{}\n", b"MThd", force=True)
+            self.assertFalse((root / "safe.json").exists())
+            self.assertEqual(external.read_bytes(), b"keep")
+
+    def test_outputs_create_parents_and_require_force(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            prefix = root / "new/ideas/harmony"
+            paths = write_outputs(prefix, root / "recipe.toml", "{}\n", b"MThd", force=False)
+            self.assertEqual(paths[0].read_text(), "{}\n")
+            self.assertEqual(paths[1].read_bytes(), b"MThd")
+            with self.assertRaisesRegex(FileExistsError, "--force"):
+                write_outputs(prefix, root / "recipe.toml", "[]\n", b"new", force=False)
 
 
 if __name__ == "__main__":

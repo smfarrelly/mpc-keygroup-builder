@@ -53,6 +53,32 @@ class SessionTests(unittest.TestCase):
                 session._read_optional(linked)
             self.assertEqual(external.read_text(), '{"private": true}')
 
+    def test_report_output_cannot_replace_an_input(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "candidates.toml"
+            source.write_text("keep\n")
+            with self.assertRaisesRegex(ValueError, "may not replace an input"):
+                session.write_report(source, [source], "destroy\n")
+            self.assertEqual(source.read_text(), "keep\n")
+
+    def test_report_output_rejects_symlinks_and_creates_parents(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "source.json"
+            source.write_text("keep\n")
+            link = root / "report.json"
+            link.symlink_to(source)
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                session.write_report(link, [], "destroy\n")
+            self.assertEqual(source.read_text(), "keep\n")
+
+            output = root / "new" / "reports" / "session.json"
+            self.assertEqual(
+                session.write_report(output, [source], '{"format": 1}\n'),
+                output.resolve(),
+            )
+            self.assertEqual(output.read_text(), '{"format": 1}\n')
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -22,6 +22,10 @@ uv run mpc-program-model inventory/fg-vinyl-shots-six-bank.toml \
   --output work/program-model.json
 ```
 
+When `--output` is used, the model report is published atomically and missing
+parent directories are created. It cannot replace the source or roles file;
+symbolic-link and non-file destinations are rejected.
+
 ## Semantic roles and overrides
 
 Roles are stable identities such as `kick.primary`, `snare.primary`,
@@ -67,6 +71,10 @@ uv run mpc-layout inventory/fg-vinyl-shots-six-bank.toml \
   --format markdown \
   --output work/right-handed-map.md
 ```
+
+Layout plan outputs are published atomically and create missing parent
+directories. They cannot replace the source, roles, preset, or device files;
+symbolic-link and non-file destinations are rejected.
 
 JSON output is available with `--format json` for a future visual editor.
 

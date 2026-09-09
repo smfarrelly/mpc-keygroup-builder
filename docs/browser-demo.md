@@ -43,7 +43,8 @@ mpc-tools web-demo --output program-designer-demo.html
 
 Use `--force` only to replace that named HTML output. The generated file has no
 remote JavaScript, font, analytics, or API dependency and contains synthetic
-metadata only.
+metadata only. It is staged, flushed, and atomically promoted so a failed write
+preserves the previous usable demo.
 
 Generate a companion from installed plugin UI metadata and the declarative
 profiles:

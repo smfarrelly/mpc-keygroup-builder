@@ -28,7 +28,8 @@ mpc-reference-cache --cache-dir "/absolute/path/to/Reference Documents/Korg" \
   fetch
 ```
 
-The command downloads only HTTPS URLs in the manifest, writes atomically, and
+The command downloads only HTTPS URLs in the manifest, writes each document
+and the checksum index atomically, and
 records SHA-256 evidence. It never writes vendor documents into a Git-tracked
 location by default. Cached documents and `index.json` must be regular files;
 symbolic links are rejected before hashing or writing so the personal cache

@@ -35,6 +35,10 @@ uv run mpc-harmony-idea recipes/harmony/dusty-dorian.toml \
   --output-prefix work/ideas/dusty-dorian-37
 ```
 
+Harmony JSON and MIDI destinations are preflighted together, cannot replace
+the recipe or follow symbolic links, and are published atomically. Existing
+outputs require `--force`.
+
 The recipe declares key, scale, scale-degree progression, harmonic rhythm,
 three- or four-note chords, bass rhythm, velocities, MIDI channels, and strict
 MIDI note ranges. Chord voicings are chosen with deterministic nearest-voice
@@ -63,6 +67,10 @@ uv run mpc-melody-idea recipes/melody/dusty-answer.toml \
   --output-prefix work/ideas/dusty-answer-37
 ```
 
+Melody JSON and MIDI destinations are preflighted together, cannot replace the
+recipe or follow symbolic links, and are published atomically. Existing
+outputs require `--force`.
+
 The motif declares an onset rhythm and a contour in scale steps. The first pass
 is literal; later repetitions can substitute neighboring scale tones, move a
 note by an octave, or leave a deliberate rest. All decisions are seeded and
@@ -87,6 +95,10 @@ uv run mpc-workstation-idea recipes/workstation/dusty-scratchpad.toml \
   --seed 37 --tempo 92 \
   --output-prefix work/ideas/dusty-scratchpad-37
 ```
+
+The MIDI, JSON, and Markdown bundle paths are preflighted together before any
+write. They cannot replace recipe/program/layout inputs or follow symbolic
+links, are published atomically, and require `--force` for replacement.
 
 The bundle contains one format-1 MIDI file with named Drums, Bass, Chords, and
 Melody tracks, one complete JSON reproduction record, and one concise Markdown

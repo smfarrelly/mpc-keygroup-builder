@@ -7,7 +7,7 @@ import wave
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from mpc_keygroup_builder.catalog import build_catalog, query_catalog
+from mpc_keygroup_builder.catalog import build_catalog, query_catalog, write_output
 
 
 class CatalogTests(unittest.TestCase):
@@ -162,6 +162,29 @@ class CatalogTests(unittest.TestCase):
             [item["name"] for item in query_catalog(catalog, note_low_at_most=0, note_high_at_least=127)],
             ["Wide"],
         )
+
+    def test_output_cannot_replace_the_source_document(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "catalog.json"
+            source.write_text("keep\n")
+            with self.assertRaisesRegex(ValueError, "may not replace its input"):
+                write_output(source, source, "destroy\n")
+            self.assertEqual(source.read_text(), "keep\n")
+
+    def test_output_rejects_symlinks_and_creates_parents(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "catalog.json"
+            source.write_text("keep\n")
+            link = root / "query.json"
+            link.symlink_to(source)
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                write_output(link, source, "destroy\n")
+            self.assertEqual(source.read_text(), "keep\n")
+
+            output = root / "new" / "reports" / "query.json"
+            self.assertEqual(write_output(output, source, "[]\n"), output.resolve())
+            self.assertEqual(output.read_text(), "[]\n")
 
 
 if __name__ == "__main__":
