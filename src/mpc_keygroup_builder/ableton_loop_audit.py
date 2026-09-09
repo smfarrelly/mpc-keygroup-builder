@@ -28,6 +28,33 @@ def _contained(root: Path, relative: str) -> Path:
     return path
 
 
+def _iter_entry_zones(
+    report: dict[str, Any], entry_target: object,
+) -> list[tuple[str, dict[str, Any], dict[str, Any]]]:
+    """Return each logical zone once, retaining Drum Rack pad identity."""
+    if entry_target == "drum":
+        rows = []
+        for pad_index, pad in enumerate(report.get("drum_pads", []), 1):
+            if not isinstance(pad, dict):
+                continue
+            receiving_note = pad.get("receiving_note")
+            pad_id = f"note-{receiving_note}" if receiving_note is not None else f"pad-{pad_index}"
+            pad_meta = {
+                "pad": pad_index,
+                "pad_name": pad.get("name"),
+                "receiving_note": receiving_note,
+            }
+            for zone_index, zone in enumerate(pad.get("zones", []), 1):
+                if isinstance(zone, dict):
+                    rows.append((f"{pad_id}/zone-{zone_index}", zone, pad_meta))
+        return rows
+    return [
+        (f"zone-{zone_index}", zone, {})
+        for zone_index, zone in enumerate(report.get("zones", []), 1)
+        if isinstance(zone, dict)
+    ]
+
+
 def audit(
     backlog_path: Path, source_root: Path, *, target: str = "keygroup",
     representative_limit: int = 3, limit_presets: int | None = None,
@@ -66,8 +93,8 @@ def audit(
             issues.append({"path": relative, "error": str(error)})
             continue
         pack = display_pack(str(entry.get("pack", "")))
-        for zone_index, zone in enumerate(report.get("zones", []), 1):
-            if not isinstance(zone, dict) or zone.get("isactive") is False:
+        for zone_id, zone, pad_meta in _iter_entry_zones(report, entry.get("target")):
+            if zone.get("isactive") is False:
                 continue
             sample = zone.get("sample") if isinstance(zone.get("sample"), dict) else {}
             for kind, field in (("sustain", "sustain_loop"), ("release", "release_loop")):
@@ -83,7 +110,8 @@ def audit(
                 observations.append({
                     "preset": relative, "name": str(entry.get("name") or report.get("name") or Path(relative).stem),
                     "collection": pack, "target": entry.get("target"), "priority": entry.get("priority"),
-                    "zone": zone_index, "sample": sample.get("name"), "root_key": zone.get("rootkey"),
+                    "zone": zone_id, **pad_meta,
+                    "sample": sample.get("name"), "root_key": zone.get("rootkey"),
                     "loop_kind": kind, "mode": mode, "nonzero_mode": nonzero,
                     "start": start, "end": end, "crossfade": loop.get("crossfade"),
                     "span_frames": end - start if isinstance(start, int) and isinstance(end, int) else None,
@@ -100,7 +128,11 @@ def audit(
         seen = set()
         for row in rows:
             if row["preset"] not in seen:
-                unique_presets.append({key: row[key] for key in ("preset", "name", "collection", "priority", "zone", "sample", "root_key", "start", "end", "span_frames")})
+                unique_presets.append({key: row.get(key) for key in (
+                    "preset", "name", "collection", "priority", "zone", "pad",
+                    "pad_name", "receiving_note", "sample", "root_key", "start",
+                    "end", "span_frames",
+                )})
                 seen.add(row["preset"])
             if len(unique_presets) == representative_limit:
                 break
@@ -148,7 +180,7 @@ def render_markdown(report: dict[str, Any]) -> str:
             f"Crossfade present: {item['crossfade_present']} (values {item['crossfade_values']['min']}–{item['crossfade_values']['max']}, {item['crossfade_values']['distinct']} distinct); start zero: {item['start_zero']}; end matches sample end: {item['end_matches_sample_end']}; {item['observations']} zones across {item['presets']} presets.", "",
         ))
         for row in item["representatives"]:
-            lines.append(f"- {row['collection']} / {row['name']} — zone {row['zone']}, {row['sample']}, root {row['root_key']}, frames {row['start']}–{row['end']}.")
+            lines.append(f"- {row['collection']} / {row['name']} — {row['zone']}, {row['sample']}, root {row['root_key']}, frames {row['start']}–{row['end']}.")
         lines.append("")
     if report["issues"]:
         lines.extend(("## Inspection issues", ""))
