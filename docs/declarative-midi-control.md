@@ -5,6 +5,11 @@ implementations live in `midi/devices/`; a complete controller and routing plan
 lives in `midi/maps/`; `mpc-midi-control` validates the references and compiles
 human- and machine-readable setup artifacts.
 
+The [live-control responsibility model](live-control-strategy.md) narrows the
+performance goal: XL 3 pages should remove MPC touchscreen/Q-Link friction,
+not recreate reachable hardware panels. The complete Volca modes below remain
+optional automation and routing references rather than the default live layout.
+
 ## What can be declarative now
 
 - Exact Launch Control endpoint, message type, channel, CC/note number, range,
@@ -52,7 +57,7 @@ Channel 16 isolates the control surface from the Volcas on channels 1, 2, and
 effect-dependent targets. The project must retain **Global**, **Control**, and
 **Track** for the Launch Control input; MIDI Learn mappings save with it.
 
-### Slot 2 — Volca Bass, channel 1
+### Optional Slot 2 — Volca Bass, channel 1
 
 The mode exposes all documented CC parameters: Slide Time (5), Expression
 (11), Octave (40), LFO Rate/Intensity (41/42), three oscillator pitches
@@ -60,13 +65,13 @@ The mode exposes all documented CC parameters: Slide Time (5), Expression
 and Gate Time (49). Slide Time, Expression, and Gate Time are MIDI-only controls
 in Korg's implementation chart.
 
-### Slot 3 — Volca Keys, channel 2
+### Optional Slot 3 — Volca Keys, channel 2
 
 The mode exposes Portamento (5), Expression (11), Voice through LFO Pitch
 Intensity (40–47), LFO Cutoff Intensity through Sustain (48–51), and Delay
 Time/Feedback (52/53).
 
-### Slot 4 — Volca Drum single-channel mode, channel 10
+### Optional Slot 4 — Volca Drum single-channel mode, channel 10
 
 - Upper buttons 1–6 send the hardware-confirmed notes C3, D3, E3, F3, G3, A3
   (60, 62, 64, 65, 67, 69).
@@ -142,6 +147,10 @@ Edit TOML, recompile, and review the diff in CSV/JSON. On the first hardware
 pass, enter the four Custom Modes in Components, export their `.syx` files,
 perform the MPC Mix MIDI Learn pass, and save the baseline project. Subsequent
 changes begin in TOML rather than rediscovering channels and CCs from menus.
+
+Do not load all four modes merely because they exist. Keep MPC Mix stable;
+install a direct-hardware page only when reach, recordable automation, or a
+tested performance gesture justifies its controller footprint.
 The current comparison proves that the bridge experiment changes three Custom
 Mode outputs, three MPC routes, and topology metadata while changing **zero**
 endpoint/message/channel/number/target assignments. This isolates the physical
