@@ -62,6 +62,33 @@ class LevelTests(unittest.TestCase):
             self.assertIn("no WAV files found", error.getvalue())
             self.assertNotIn("Traceback", error.getvalue())
 
+    def test_report_may_not_replace_an_input_or_follow_a_symlink(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "source.wav"
+            write_tone(source, 0.5)
+            before = source.read_bytes()
+            with self.assertRaisesRegex(ValueError, "replace an input WAV"):
+                levels.write_report(source, [source], "report")
+            self.assertEqual(source.read_bytes(), before)
+
+            external = root / "external.json"
+            external.write_text("preserve")
+            linked = root / "report.json"
+            linked.symlink_to(external)
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                levels.write_report(linked, [source], "report")
+            self.assertEqual(external.read_text(), "preserve")
+
+    def test_report_creates_parent_and_replaces_regular_file(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            output = root / "nested" / "levels.json"
+            self.assertEqual(levels.write_report(output, [], "first"), output.resolve())
+            self.assertEqual(output.read_text(), "first")
+            levels.write_report(output, [], "second")
+            self.assertEqual(output.read_text(), "second")
+
 
 if __name__ == "__main__":
     unittest.main()
