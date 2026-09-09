@@ -82,6 +82,29 @@ class LayoutTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "one physical pad bank"):
                 layout.arrange(self.program, layout.load_preset(path), self.device)
 
+    def test_plan_output_cannot_replace_an_input(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "layout.toml"
+            source.write_text("keep\n")
+            with self.assertRaisesRegex(ValueError, "may not replace an input"):
+                layout.write_plan(source, [source], "destroy\n")
+            self.assertEqual(source.read_text(), "keep\n")
+
+    def test_plan_output_rejects_symlinks_and_creates_parents(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "layout.toml"
+            source.write_text("keep\n")
+            link = root / "map.md"
+            link.symlink_to(source)
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                layout.write_plan(link, [], "destroy\n")
+            self.assertEqual(source.read_text(), "keep\n")
+
+            output = root / "new" / "maps" / "layout.md"
+            self.assertEqual(layout.write_plan(output, [source], "# Layout\n"), output.resolve())
+            self.assertEqual(output.read_text(), "# Layout\n")
+
 
 if __name__ == "__main__":
     unittest.main()

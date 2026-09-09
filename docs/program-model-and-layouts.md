@@ -72,6 +72,10 @@ uv run mpc-layout inventory/fg-vinyl-shots-six-bank.toml \
   --output work/right-handed-map.md
 ```
 
+Layout plan outputs are published atomically and create missing parent
+directories. They cannot replace the source, roles, preset, or device files;
+symbolic-link and non-file destinations are rejected.
+
 JSON output is available with `--format json` for a future visual editor.
 
 ## Non-destructive XPM export
