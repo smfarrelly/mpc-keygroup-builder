@@ -57,6 +57,8 @@ is required for the software portion.
 - Build a redistributable six-composition showcase with deterministic
   evidence, editable recipes, and synthetic CC0 Drum audio.
 - Compile declarative MPC, Launch Control XL 3, and Volca routing plans.
+- Describe and validate audio routes and control ownership across the MPC,
+  LiveTrak L6, native instruments, and external effects.
 - Inspect Components SysEx captures and cross-check them against MPC MIDI Learn.
 - Search downloaded plugin controls and rank useful controller targets.
 - Compile role-based plugin performance pages into Components and MIDI Learn
