@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import argparse
+import os
+import tempfile
 from pathlib import Path
 
 from .designer import build_view_bundle, render_html
@@ -80,10 +82,21 @@ def build_web_demo(output: Path, *, force: bool = False) -> Path:
     if output.is_symlink():
         raise ValueError(f"browser demo output may not be a symbolic link: {output}")
     output = output.resolve()
+    if output.exists() and not output.is_file():
+        raise ValueError(f"browser demo output is not a regular file: {output}")
     if output.exists() and not force:
         raise FileExistsError(f"browser demo exists: {output}")
     output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(render_html(demo_bundle()), encoding="utf-8")
+    descriptor, temporary_name = tempfile.mkstemp(prefix=f".{output.name}.", dir=output.parent)
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as stream:
+            stream.write(render_html(demo_bundle()))
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, output)
+    finally:
+        temporary.unlink(missing_ok=True)
     return output
 
 
