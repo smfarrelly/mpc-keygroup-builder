@@ -9,6 +9,7 @@ from mpc_keygroup_builder.ideas import (
     generate_idea,
     load_recipe,
     render_midi,
+    write_outputs,
 )
 from mpc_keygroup_builder.layout import LayoutAssignment, LayoutPlan
 
@@ -131,6 +132,32 @@ class DrumIdeaTests(unittest.TestCase):
             )
             with self.assertRaisesRegex(ValueError, "required role: tom"):
                 generate_idea(load_recipe(path), self._program(), seed=1, tempo=90)
+
+    def test_outputs_preflight_inputs_and_symlinks(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "idea.json"
+            source.write_text("keep\n")
+            with self.assertRaisesRegex(ValueError, "replace an input"):
+                write_outputs(root / "idea", [source], "{}\n", b"MThd", force=True)
+            self.assertEqual(source.read_text(), "keep\n")
+
+            external = root / "external.mid"
+            external.write_bytes(b"keep")
+            (root / "safe.mid").symlink_to(external)
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                write_outputs(root / "safe", [], "{}\n", b"MThd", force=True)
+            self.assertFalse((root / "safe.json").exists())
+            self.assertEqual(external.read_bytes(), b"keep")
+
+    def test_outputs_create_parents_and_replace_only_with_force(self):
+        with tempfile.TemporaryDirectory() as directory:
+            prefix = Path(directory) / "new/ideas/beat"
+            json_path, midi_path = write_outputs(prefix, [], "{}\n", b"MThd", force=False)
+            self.assertEqual(json_path.read_text(), "{}\n")
+            self.assertEqual(midi_path.read_bytes(), b"MThd")
+            with self.assertRaisesRegex(FileExistsError, "--force"):
+                write_outputs(prefix, [], "[]\n", b"new", force=False)
 
 
 if __name__ == "__main__":

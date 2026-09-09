@@ -16,6 +16,10 @@ uv run mpc-drum-idea recipes/drums/dusty-pocket.toml \
   --output-prefix work/ideas/dusty-pocket
 ```
 
+JSON and MIDI destinations are preflighted together before either is written.
+They cannot replace recipe/program/configuration inputs or follow symbolic
+links; both files are published atomically, and replacement requires `--force`.
+
 Resolve the identical recipe and seed through a planned layout:
 
 ```bash
