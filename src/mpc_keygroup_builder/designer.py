@@ -5,7 +5,9 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import os
 import re
+import tempfile
 from collections import Counter
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -22,6 +24,29 @@ from .roles import load_role_overrides
 
 AUDIO_SUFFIXES = {".wav", ".aif", ".aiff"}
 SEVERITY_ORDER = {"error": 0, "warning": 1, "info": 2}
+
+
+def write_viewer(output: Path, inputs: list[Path], rendered: str, *, force: bool) -> Path:
+    requested = output.expanduser()
+    if requested.is_symlink():
+        raise ValueError(f"viewer output may not be a symbolic link: {requested}")
+    destination = requested.resolve()
+    if destination in {path.expanduser().resolve() for path in inputs}:
+        raise ValueError("viewer output cannot replace a source or configuration input")
+    if destination.exists() and not destination.is_file():
+        raise ValueError(f"viewer output is not a regular file: {requested}")
+    if destination.exists() and not force:
+        raise FileExistsError(f"viewer output exists; use --force to replace it: {destination}")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(prefix=f".{destination.name}.", dir=destination.parent)
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as stream:
+            stream.write(rendered); stream.flush(); os.fsync(stream.fileno())
+        os.replace(temporary, destination)
+    finally:
+        temporary.unlink(missing_ok=True)
+    return destination
 
 
 @dataclass(frozen=True)
@@ -973,13 +998,8 @@ def main() -> int:
     source_root = args.source_root.expanduser().resolve() if args.source_root else None
     compare_roots = [path.expanduser().resolve() for path in args.compare_source_root]
     roles = args.roles.expanduser().resolve() if args.roles else None
-    output = args.output.expanduser().resolve()
     if len(compare_roots) > len(compare_sources):
         parser.error("--compare-source-root requires a corresponding --compare source")
-    if output in {source, *compare_sources, *groove_paths}:
-        parser.error("viewer output cannot replace a source program or MIDI groove")
-    if output.exists() and not args.force:
-        parser.error(f"viewer output exists; use --force to replace it: {output}")
     program = load_program(source, args.source_type, source_root, roles)
     programs = [(program, infer_sample_root(program, source_root))]
     for index, compare_source in enumerate(compare_sources):
@@ -997,8 +1017,11 @@ def main() -> int:
     )
     data = build_view_bundle(programs, devices, layouts, groove)
     rendered = json.dumps(data, indent=2) + "\n" if args.format == "json" else render_html(data)
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(rendered, encoding="utf-8")
+    inputs = [args.source, *args.compare, *args.groove, *args.layout]
+    inputs.extend(Path(value) for value in args.device if value not in BUILTIN_DEVICES)
+    if args.roles:
+        inputs.append(args.roles)
+    output = write_viewer(args.output, inputs, rendered, force=args.force)
     view_list = [view for device_views in data["views"].values() for view in device_views.values()]
     error_count = sum(view["summary"]["issues"].get("error", 0) for view in view_list)
     print(f"Wrote: {output}")
