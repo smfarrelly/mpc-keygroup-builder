@@ -520,6 +520,9 @@ control.
   optional XPJ Learn evidence, exposing role/evidence gaps, redundant targets,
   unmapped plugins, and the best useful omissions without encouraging exhaustive
   parameter mapping.
+- [x] Derive eight-control OPx-4 and Jura cores from real Components/MPC Learn
+  evidence while preserving the captured channel-16 internal-mix faders. Keep
+  Fabric/Fabric XL gated until readable metadata or paired captures exist.
 
 ### Release readiness
 

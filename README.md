@@ -58,6 +58,8 @@ is required for the software portion.
   evidence, editable recipes, and synthetic CC0 Drum audio.
 - Compile declarative MPC, Launch Control XL 3, and Volca routing plans.
 - Inspect Components SysEx captures and cross-check them against MPC MIDI Learn.
+- Derive compact OPx-4/Jura control cores from captured endpoints while
+  preserving channel-isolated MPC mix faders.
 - Search downloaded plugin controls and rank useful controller targets.
 - Compile role-based plugin performance pages into Components and MIDI Learn
   worksheets with installed-content validation.

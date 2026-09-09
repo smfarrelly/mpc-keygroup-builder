@@ -182,6 +182,11 @@ the declarative controller map. The follow-on
 [`mpc-plugin-map`](plugin-mapping.md) workflow now supplies nine curated,
 installed-content-validated pages plus Components and MIDI Learn worksheets.
 
+Captured OPx-4 and Jura evidence also proves that one Custom Mode can split
+responsibilities by channel: encoders/buttons reach a plugin while the same
+mode's faders remain on channel 16 for MPC mixing. `mpc-capture-core` validates
+that hybrid structure and derives compact candidates without writing SysEx.
+
 ## Inspect real Components and MPC captures
 
 Keep `.syx`, `.xpj`, ProjectData, and licensed samples in the ignored `work/`
