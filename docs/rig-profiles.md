@@ -19,6 +19,11 @@ semantics, and hardware acceptance tests in reviewable TOML.
   single-channel mode on channel 3.
 - `rigs/fg-launch-control-xl3.toml`: MPC Internal Mix semantics for 8 faders,
   three encoder rows, and two button rows.
+- `rigs/fg-live-hardware-rig.toml`: the responsibility-first MPC, XL 3, L6,
+  Volca, PO-33, and external-effects signal plan. It preserves native-panel
+  control, one MPC stereo feed, optional L6 aux paths, conditional MPC
+  resampling, and the deferred Chroma Console without guessing physical input
+  numbers or effect-chain order.
 
 Validate or render a setup sheet:
 
@@ -30,7 +35,11 @@ uv run mpc-rig plan rigs/fg-launch-control-xl3.toml \
 
 Validation catches duplicate tracks, invalid track types or MIDI channels,
 unknown devices, mismatched track/device channels, duplicate external routes,
-and duplicate controller endpoints. Warnings deliberately retain work that
+duplicate controller endpoints, conflicting primary audio paths, invalid
+audio-route roles/signals, and unknown control owners or targets. Optional
+`[[audio_routes]]` and `[[control_domains]]` appear in the rendered setup sheet,
+so physical signal flow and panel ownership stay reviewable beside MIDI tracks.
+Warnings deliberately retain work that
 requires hardware: unselected programs and learn-mode controller messages.
 Malformed `devices`, `tracks`, and `control_groups` structures are rejected at
 load time with the section and entry number, before validation or rendering.
