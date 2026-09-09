@@ -89,6 +89,7 @@ COMMANDS = {
     "mpc-plugin-companion": _spec("plugin_companion", "Browser", "Generate an offline plugin-mapping companion", "docs/plugin-mapping.md"),
     "mpc-plugin-results": _spec("plugin_results", "Hardware", "Validate companion exports and write a durable ledger", "docs/plugin-mapping.md"),
     "mpc-plugin-seed": _spec("plugin_seed", "MIDI control", "Generate a ranked plugin performance-profile draft", "docs/plugin-mapping.md"),
+    "mpc-plugin-core": _spec("plugin_core", "MIDI control", "Derive compact performance cores from full plugin profiles", "docs/plugin-mapping.md"),
     "mpc-plugin-coverage": _spec("plugin_coverage", "MIDI control", "Measure plugin mapping coverage and rank omissions", "docs/plugin-mapping.md"),
     "mpc-controller-capacity": _spec("controller_capacity", "MIDI control", "Validate the complete Custom Mode and channel plan", "docs/declarative-midi-control.md"),
     "mpc-controller-value": _spec("controller_value", "MIDI control", "Audit whether controller layouts earn space in a live rig", "docs/declarative-midi-control.md"),

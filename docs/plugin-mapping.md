@@ -221,6 +221,30 @@ texture, envelope, source, and global controls consistently. Its output is
 explicitly a draft: review labels, roles, layout, slot/channel replacement, and
 musical value before hardware use.
 
+## Derive compact performance cores
+
+Keep the maintained full profiles as searchable reference pages while deriving
+small replacement candidates for live comparison:
+
+```bash
+uv run mpc-plugin-core midi/plugins/*.toml \
+  --limit 8 \
+  --output work/midi-control/plugin-cores
+```
+
+The builder selects declared core controls first, round-robins broad roles so a
+single effect section does not consume the page, and remaps continuous controls
+onto the three encoder rows. Faders are excluded by default to preserve their
+MPC internal-mix convention; `--allow-faders` is an explicit experiment. Button
+targets remain buttons. The transactional bundle contains reloadable profile
+TOML plus JSON and Markdown selection evidence.
+
+The generated pages are drafts with hardware status `pending`. They preserve
+the source plugin, UI parameter, role, priority, slot, and channel, but the
+selection heuristic cannot determine which control is enjoyable in a jam. Run
+the normal `mpc-plugin-map check` against installed content and compare the core
+with its full page before promoting it.
+
 ## Measure mapping coverage
 
 Profiles intentionally select a small performance surface, but omission should

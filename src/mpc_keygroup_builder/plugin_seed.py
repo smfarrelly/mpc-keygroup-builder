@@ -136,12 +136,17 @@ def seed_profile(plugin: dict[str, Any], slot: int, channel: int, limit: int = 4
 
 
 def render_toml(profile: dict[str, Any]) -> str:
+    plugin_declaration = (
+        f"plugin = {json.dumps(profile['plugin'])}"
+        if "plugin" in profile
+        else f"plugins = {json.dumps(profile['plugins'])}"
+    )
     lines = [
         "# Generated draft: validate, review, and rename before treating it as a performance page.",
         "# Hardware status remains pending.",
         "schema_version = 1",
         f"id = {json.dumps(profile['id'])}",
-        f"plugin = {json.dumps(profile['plugin'])}",
+        plugin_declaration,
         f"name = {json.dumps(profile['name'])}",
         f"description = {json.dumps(profile['description'])}",
         f"slot = {profile['slot']}",

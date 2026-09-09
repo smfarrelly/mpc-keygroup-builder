@@ -65,6 +65,8 @@ is required for the software portion.
 - Search downloaded plugin controls and rank useful controller targets.
 - Compile role-based plugin performance pages into Components and MIDI Learn
   worksheets with installed-content validation.
+- Derive fader-free, role-diverse performance-core drafts while retaining full
+  plugin pages as searchable reference evidence.
 - Generate an offline visual plugin-mapping companion with local progress,
   hardware notes, and portable JSON/CSV results.
 - Validate companion exports into a durable results ledger, generate ranked
