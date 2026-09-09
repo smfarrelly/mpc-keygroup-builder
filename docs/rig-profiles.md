@@ -32,6 +32,8 @@ Validation catches duplicate tracks, invalid track types or MIDI channels,
 unknown devices, mismatched track/device channels, duplicate external routes,
 and duplicate controller endpoints. Warnings deliberately retain work that
 requires hardware: unselected programs and learn-mode controller messages.
+Malformed `devices`, `tracks`, and `control_groups` structures are rejected at
+load time with the section and entry number, before validation or rendering.
 
 ## Launch Control XL 3 strategy
 
@@ -123,6 +125,10 @@ uv run mpc-session-report inventory/scratchpad-candidates.toml \
   --deployment-report work/sd-deploy-applied.json \
   --output work/session-report.json
 ```
+
+Optional evidence paths may be absent, in which case the report adds a next
+action. Existing paths must be regular, non-symlink files containing JSON
+objects; malformed evidence is rejected instead of being reported as missing.
 
 Search the full program ledger without editing it:
 

@@ -45,9 +45,10 @@ uv run mpc-hardware-results inventory/program-status.csv \
 ```
 
 Review the proposed rows, then add `--apply`. The command rejects unknown
-program paths, duplicate entries, invalid statuses/favorite values, incomplete
-results, and non-untested results without listening notes. Ledger replacement
-is atomic and retains its existing line-ending convention.
+program paths, duplicate result entries or ledger paths, malformed CSV rows,
+invalid statuses/favorite values, incomplete results, and non-untested results
+without listening notes. Ledger replacement is atomic and retains its existing
+line-ending convention.
 
 Initialize the seven-program Scratchpad session directly from the maintained
 candidate manifest:

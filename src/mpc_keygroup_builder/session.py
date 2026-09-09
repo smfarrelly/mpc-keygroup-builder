@@ -13,9 +13,19 @@ from .rig import validate as validate_rig
 
 
 def _read_optional(path: Path | None) -> dict[str, Any] | None:
-    if path is None or not path.is_file():
+    if path is None:
         return None
-    return json.loads(path.read_text(encoding="utf-8"))
+    path = path.expanduser()
+    if path.is_symlink():
+        raise ValueError(f"session evidence may not be a symbolic link: {path}")
+    if not path.exists():
+        return None
+    if not path.is_file():
+        raise ValueError(f"session evidence is not a regular file: {path}")
+    document = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(document, dict):
+        raise ValueError(f"session evidence must contain a JSON object: {path}")
+    return document
 
 
 def build_report(

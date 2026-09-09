@@ -26,6 +26,27 @@ ALLOWED_FAVORITES = {"", "yes", "no", "provisional"}
 RESULT_FIELDS = {"path", "hardware_status", "favorite", "scratchpad_role", "notes"}
 
 
+def _read_ledger(ledger: Path) -> tuple[list[str], list[dict[str, str]]]:
+    with ledger.open("r", encoding="utf-8", newline="") as stream:
+        reader = csv.DictReader(stream)
+        fieldnames = reader.fieldnames or []
+        missing = REQUIRED_FIELDS - set(fieldnames)
+        if missing:
+            raise ValueError(f"ledger is missing fields: {', '.join(sorted(missing))}")
+        rows = list(reader)
+    seen = set()
+    for number, row in enumerate(rows, 2):
+        if None in row or any(value is None for value in row.values()):
+            raise ValueError(f"ledger row {number} has the wrong number of columns")
+        path = row["path"]
+        if not path.strip():
+            raise ValueError(f"ledger row {number} has an empty program path")
+        if path in seen:
+            raise ValueError(f"ledger contains a duplicate program path: {path}")
+        seen.add(path)
+    return fieldnames, rows
+
+
 def load_results(path: Path) -> list[dict[str, str]]:
     with path.open("rb") as stream:
         document = tomllib.load(stream)
@@ -65,13 +86,7 @@ def update_ledger(
 ) -> list[dict[str, object]]:
     raw = ledger.read_bytes()
     line_ending = "\r\n" if b"\r\n" in raw else "\n"
-    with ledger.open("r", encoding="utf-8", newline="") as stream:
-        reader = csv.DictReader(stream)
-        fieldnames = reader.fieldnames or []
-        rows = list(reader)
-    missing = REQUIRED_FIELDS - set(fieldnames)
-    if missing:
-        raise ValueError(f"ledger is missing fields: {', '.join(sorted(missing))}")
+    fieldnames, rows = _read_ledger(ledger)
     indexes = {row["path"]: index for index, row in enumerate(rows)}
     changes = []
     for result in results:
@@ -111,8 +126,8 @@ def initialize_results(ledger: Path, manifest: Path, output: Path) -> int:
     if output.exists():
         raise FileExistsError(f"refusing to overwrite hardware-session file: {output}")
     candidates = load_manifest(manifest)["candidates"]
-    with ledger.open(newline="", encoding="utf-8") as stream:
-        rows = {row["path"]: row for row in csv.DictReader(stream)}
+    _, ledger_rows = _read_ledger(ledger)
+    rows = {row["path"]: row for row in ledger_rows}
     blocks = [
         "# Edit every result after listening on hardware. Validate with",
         "# mpc-hardware-results before applying with --apply.",

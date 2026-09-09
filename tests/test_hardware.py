@@ -125,6 +125,39 @@ class HardwareResultTests(unittest.TestCase):
                 hardware.initialize_results(ledger, manifest, output)
             self.assertFalse(external.exists())
 
+    def test_update_rejects_duplicate_ledger_paths_without_writing(self):
+        with tempfile.TemporaryDirectory() as directory:
+            ledger = Path(directory) / "status.csv"
+            self.write_ledger(ledger)
+            original = ledger.read_text()
+            ledger.write_text(original + original.splitlines()[-1] + "\n")
+            before = ledger.read_bytes()
+            with self.assertRaisesRegex(ValueError, "duplicate program path"):
+                hardware.update_ledger(
+                    ledger,
+                    [{"path": "Programs/Bass.xpm", "hardware_status": "pass"}],
+                    write=True,
+                )
+            self.assertEqual(ledger.read_bytes(), before)
+
+    def test_initialize_rejects_malformed_ledger_before_output(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            ledger, manifest, output = (
+                root / "status.csv",
+                root / "candidates.toml",
+                root / "results.toml",
+            )
+            ledger.write_text("path,hardware_status\nPrograms/Bass.xpm,untested\n")
+            manifest.write_text(
+                'schema_version = 1\n[[candidates]]\nid = "bass"\n'
+                'ledger_path = "Programs/Bass.xpm"\nsd_path = "Programs/Bass.xpm"\n'
+                'role = "bass"\nselected = true\n'
+            )
+            with self.assertRaisesRegex(ValueError, "ledger is missing fields"):
+                hardware.initialize_results(ledger, manifest, output)
+            self.assertFalse(output.exists())
+
 
 if __name__ == "__main__":
     unittest.main()

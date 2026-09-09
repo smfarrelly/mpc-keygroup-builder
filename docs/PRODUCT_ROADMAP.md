@@ -329,6 +329,10 @@ performance program.
   excluding Wave 01 and exact duplicates. All 24 build transactionally and pass
   semantic simulation; the generated 71 MB owned-audio bundle, checksums, and
   per-program hardware checklist remain ignored and hardware-deferred.
+- [x] A conservative Ableton Keygroup wave planner now turns the large source
+  backlog into diverse, bounded manifests for the existing batch builder while
+  rejecting key-range, velocity, sample-path, warp, loop, tuning, start, and
+  panorama behavior that would otherwise be silently lost.
 - [x] `mpc-ableton-risk` converts repetitive Wave build diagnostics into a
   severity-ordered, per-program hardware queue. JSON, CSV, and Markdown retain
   exact affected pads while grouping gain, sample-start, pitch, loop, warp,

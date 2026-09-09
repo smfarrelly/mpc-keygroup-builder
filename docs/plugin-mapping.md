@@ -164,6 +164,9 @@ The importer recomputes the mapping fingerprint and validates every page,
 control, plugin, target, status, and note before atomically replacing the named
 ledger. Missing, duplicated, unknown, tampered, or stale results are refused.
 `--force` applies only to the named ledger and report outputs.
+Both destinations are validated together before either is written. They must
+be distinct regular files (or new paths); symbolic links and directories are
+refused even with `--force`.
 
 ## Generate a new profile seed
 

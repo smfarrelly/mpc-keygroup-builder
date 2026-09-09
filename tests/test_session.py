@@ -24,6 +24,35 @@ class SessionTests(unittest.TestCase):
             self.assertTrue(any("hardware listening" in item for item in report["next_actions"]))
             self.assertIn("controlled routing capture is not available", report["next_actions"])
 
+    def test_optional_evidence_distinguishes_missing_from_invalid(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.assertIsNone(session._read_optional(root / "missing.json"))
+
+            report = root / "report.json"
+            report.write_text('{"format": 1}')
+            self.assertEqual(session._read_optional(report), {"format": 1})
+
+            report.write_text("[]")
+            with self.assertRaisesRegex(ValueError, "JSON object"):
+                session._read_optional(report)
+
+            evidence_dir = root / "evidence"
+            evidence_dir.mkdir()
+            with self.assertRaisesRegex(ValueError, "not a regular file"):
+                session._read_optional(evidence_dir)
+
+    def test_optional_evidence_refuses_symbolic_links(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            external = root / "external.json"
+            external.write_text('{"private": true}')
+            linked = root / "routing.json"
+            linked.symlink_to(external)
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                session._read_optional(linked)
+            self.assertEqual(external.read_text(), '{"private": true}')
+
 
 if __name__ == "__main__":
     unittest.main()

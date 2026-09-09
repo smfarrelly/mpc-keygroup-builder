@@ -1,4 +1,5 @@
 import csv
+import tempfile
 import tomllib
 import unittest
 from pathlib import Path
@@ -96,6 +97,32 @@ class PluginResultTests(unittest.TestCase):
         self.assertEqual(len({(row["profile"], row["control"]) for row in rows}), expected)
         self.assertEqual({row["status"] for row in rows}, {"pending"})
         self.assertEqual(len({row["mapping_fingerprint"] for row in rows}), 1)
+
+    def test_outputs_are_jointly_preflighted(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            ledger = root / "ledger.csv"
+            report = root / "report-directory"
+            report.mkdir()
+            with self.assertRaisesRegex(ValueError, "report must be a regular file"):
+                plugin_results._output_paths(ledger, report, force=True)
+            self.assertFalse(ledger.exists())
+
+            with self.assertRaisesRegex(ValueError, "different paths"):
+                plugin_results._output_paths(ledger, ledger, force=True)
+
+    def test_output_symlink_is_rejected_without_touching_target(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            external = root / "external.csv"
+            external.write_text("preserve")
+            ledger = root / "ledger.csv"
+            ledger.symlink_to(external)
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                plugin_results._output_paths(ledger, None, force=True)
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                plugin_results._write(ledger, "replace", force=True)
+            self.assertEqual(external.read_text(), "preserve")
 
 
 if __name__ == "__main__":
