@@ -62,6 +62,8 @@ is required for the software portion.
 - Inspect Components SysEx captures and cross-check them against MPC MIDI Learn.
 - Derive compact OPx-4/Jura control cores from captured endpoints while
   preserving channel-isolated MPC mix faders.
+- Cross-reference desired plugins with local metadata, Components modes, MPC
+  Learn targets, and compact recipes to produce one exact evidence action.
 - Search downloaded plugin controls and rank useful controller targets.
 - Compile role-based plugin performance pages into Components and MIDI Learn
   worksheets with installed-content validation.
