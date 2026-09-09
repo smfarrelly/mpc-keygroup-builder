@@ -17,6 +17,10 @@ uv run mpc-hardware-results inventory/program-status.csv \
   work/key37-hardware-results.toml --apply
 ```
 
+Applied ledger changes preserve the original line endings and permissions and
+are flushed to a temporary file before atomic replacement, which reduces the
+risk of a zero-length or partial ledger after removable-media interruption.
+
 Hardware-session initialization publishes its new TOML atomically after all
 ledger and manifest validation succeeds, so an interrupted write does not
 leave a partial result file.
