@@ -6,6 +6,8 @@ import argparse
 import gzip
 import html
 import json
+import os
+import tempfile
 import xml.etree.ElementTree as ET
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
@@ -349,6 +351,32 @@ def from_xpm(path: Path, role_overrides: dict[str, str] | None = None) -> Progra
     )
 
 
+def write_report(output: Path, inputs: list[Path], rendered: str) -> Path:
+    """Publish a model report without replacing a source document."""
+    requested = output.expanduser()
+    if requested.is_symlink():
+        raise ValueError(f"program-model output may not be a symbolic link: {requested}")
+    destination = requested.resolve()
+    if destination in {path.expanduser().resolve() for path in inputs}:
+        raise ValueError(f"program-model output may not replace an input: {requested}")
+    if destination.exists() and not destination.is_file():
+        raise ValueError(f"program-model output is not a regular file: {requested}")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{destination.name}.", dir=destination.parent
+    )
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as stream:
+            stream.write(rendered)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, destination)
+    finally:
+        temporary.unlink(missing_ok=True)
+    return destination
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("source", type=Path)
@@ -376,8 +404,10 @@ def main() -> int:
     report = {"program": program.to_dict(), "validation": program.validate()}
     rendered = json.dumps(report, indent=2) + "\n"
     if args.output:
-        args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(rendered, encoding="utf-8")
+        inputs = [args.source]
+        if args.roles:
+            inputs.append(args.roles)
+        write_report(args.output, inputs, rendered)
         print(f"Wrote: {args.output}")
     else:
         print(rendered, end="")
