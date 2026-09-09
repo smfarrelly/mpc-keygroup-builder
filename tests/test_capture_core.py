@@ -77,6 +77,11 @@ reason="main gesture"
             capture_core.write_report(report, output)
             self.assertTrue((output / "captured-controls.csv").is_file())
             self.assertTrue((output / "HARDWARE_CHECKLIST.md").is_file())
+            companion = (output / "CORE_COMPANION.html").read_text()
+            self.assertIn("Persistent MPC mix faders", companion)
+            self.assertIn("Synth Core", companion)
+            self.assertNotIn("http://", companion)
+            self.assertNotIn("https://", companion)
             with self.assertRaises(FileExistsError):
                 capture_core.write_report(report, output)
             capture_core.write_report(report, output, force=True)
