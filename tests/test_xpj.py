@@ -87,6 +87,29 @@ class XPJTests(unittest.TestCase):
             path.write_bytes(gzip.compress(header + b'{"data": {}}'))
             self.assertEqual(xpj.load(path).header.platform, "Windows")
 
+    def test_report_output_cannot_replace_an_input(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "Project.xpj"
+            source.write_text("keep\n")
+            with self.assertRaisesRegex(ValueError, "may not replace an input"):
+                xpj._write_json({}, source, (source,))
+            self.assertEqual(source.read_text(), "keep\n")
+
+    def test_report_output_rejects_symlinks_and_creates_parents(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "Project.xpj"
+            source.write_text("keep\n")
+            link = root / "report.json"
+            link.symlink_to(source)
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                xpj._write_json({}, link)
+            self.assertEqual(source.read_text(), "keep\n")
+
+            output = root / "new" / "reports" / "project.json"
+            xpj._write_json({"generation": 3}, output, (source,))
+            self.assertEqual(json.loads(output.read_text()), {"generation": 3})
+
 
 if __name__ == "__main__":
     unittest.main()
