@@ -1,0 +1,56 @@
+schema_version = 1
+id = "jura-live-core"
+name = "Jura Live Core"
+capture_name = "2 - Jura"
+description = "Eight immediately musical Jura controls while the captured channel-16 MPC mix faders remain unchanged."
+friction_removed = "keeps filter, movement, delay, reverb, and chorus gestures off the touchscreen"
+preserve_mix_faders = true
+
+[[controls]]
+endpoint = "top-encoder-5"
+expected_label = "LFO Speed"
+expected_target = "2 - Jura (Lfo Speed)"
+role = "movement"
+reason = "primary modulation-rate gesture"
+[[controls]]
+endpoint = "middle-encoder-2"
+expected_label = "VCF Cutoff"
+expected_target = "2 - Jura (VCF Cutoff)"
+role = "tone"
+reason = "primary live timbre gesture"
+[[controls]]
+endpoint = "middle-encoder-3"
+expected_label = "VCF Resonance"
+expected_target = "2 - Jura (VCF Reso)"
+role = "tone"
+reason = "paired filter-shape gesture"
+[[controls]]
+endpoint = "middle-encoder-4"
+expected_label = "VCF Env"
+expected_target = "2 - Jura (VCF Env Amount)"
+role = "envelope"
+reason = "changes filter articulation without opening the plugin"
+[[controls]]
+endpoint = "bottom-encoder-1"
+expected_label = "Delay Time"
+expected_target = "2 - Jura (Delay Time)"
+role = "space"
+reason = "performable delay-time gesture"
+[[controls]]
+endpoint = "bottom-encoder-2"
+expected_label = "Delay Feedback"
+expected_target = "2 - Jura (Delay Feedback)"
+role = "space"
+reason = "performable delay build and decay"
+[[controls]]
+endpoint = "bottom-encoder-7"
+expected_label = "Reverb Mix"
+expected_target = "2 - Jura (Reverb Dry/Wet Mix)"
+role = "space"
+reason = "direct dry-to-space transition"
+[[controls]]
+endpoint = "upper-button-1"
+expected_label = "Chrous I"
+expected_target = "2 - Jura (Chorus I)"
+role = "character"
+reason = "one-button classic chorus change; captured label typo is retained as evidence"

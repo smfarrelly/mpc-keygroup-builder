@@ -1,0 +1,56 @@
+schema_version = 1
+id = "opx4-macros-core"
+name = "OPx-4 Macro Core"
+capture_name = "1 - OPX"
+description = "Eight preset-aware OPx-4 macros on encoders while the captured channel-16 MPC mix faders remain unchanged."
+friction_removed = "reaches the plugin's intended performance macros without browsing OPx-4 pages"
+preserve_mix_faders = true
+
+[[controls]]
+endpoint = "top-encoder-5"
+expected_label = "Macro 1"
+expected_target = "1 - OPX4 (Macro 1)"
+role = "macro"
+reason = "preset-aware high-value gesture"
+[[controls]]
+endpoint = "top-encoder-6"
+expected_label = "Macro 2"
+expected_target = "1 - OPX4 (Macro 2)"
+role = "macro"
+reason = "preset-aware high-value gesture"
+[[controls]]
+endpoint = "top-encoder-7"
+expected_label = "Macro 3"
+expected_target = "1 - OPX4 (Macro 3)"
+role = "macro"
+reason = "preset-aware high-value gesture"
+[[controls]]
+endpoint = "top-encoder-8"
+expected_label = "Macro 4"
+expected_target = "1 - OPX4 (Macro 4)"
+role = "macro"
+reason = "preset-aware high-value gesture"
+[[controls]]
+endpoint = "middle-encoder-5"
+expected_label = "Macro 5"
+expected_target = "1 - OPX4 (Macro 5)"
+role = "macro"
+reason = "preset-aware high-value gesture"
+[[controls]]
+endpoint = "middle-encoder-6"
+expected_label = "Macro 6"
+expected_target = "1 - OPX4 (Macro 6)"
+role = "macro"
+reason = "preset-aware high-value gesture"
+[[controls]]
+endpoint = "middle-encoder-7"
+expected_label = "Macro 7"
+expected_target = "1 - OPX4 (Macro 7)"
+role = "macro"
+reason = "preset-aware high-value gesture"
+[[controls]]
+endpoint = "middle-encoder-8"
+expected_label = "Macro 8"
+expected_target = "1 - OPX4 (Macro 8)"
+role = "macro"
+reason = "preset-aware high-value gesture"

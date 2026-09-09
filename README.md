@@ -60,6 +60,8 @@ is required for the software portion.
 - Describe and validate audio routes and control ownership across the MPC,
   LiveTrak L6, native instruments, and external effects.
 - Inspect Components SysEx captures and cross-check them against MPC MIDI Learn.
+- Derive compact OPx-4/Jura control cores from captured endpoints while
+  preserving channel-isolated MPC mix faders.
 - Search downloaded plugin controls and rank useful controller targets.
 - Compile role-based plugin performance pages into Components and MIDI Learn
   worksheets with installed-content validation.
