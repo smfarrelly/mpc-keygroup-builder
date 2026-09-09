@@ -154,6 +154,22 @@ def analyze(audit: dict[str, Any], recipes: list[dict[str, Any]]) -> dict[str, A
                     warnings.append(
                         "mix faders without saved Learn targets: " + ", ".join(unmatched)
                     )
+            retained_endpoints = {
+                *(row["endpoint"] for row in controls),
+                *(row["endpoint"] for row in mix_faders),
+            }
+            omitted_controls = [
+                {
+                    "endpoint": row.get("control"), "label": row.get("label"),
+                    "channel": row.get("channel"), "cc": row.get("number"),
+                    "channel_source": row.get("channel_source"),
+                    "learned_targets": row.get("learned_targets", []),
+                }
+                for row in capture["controls"]
+                if isinstance(row, dict) and row.get("control") not in retained_endpoints
+            ]
+        if capture is None:
+            omitted_controls = []
         result = {
             "id": recipe["id"], "name": recipe["name"],
             "description": recipe["description"],
@@ -162,10 +178,8 @@ def analyze(audit: dict[str, Any], recipes: list[dict[str, Any]]) -> dict[str, A
             "source_capture": source_capture,
             "selected_controls": controls,
             "persistent_mix_faders": mix_faders,
-            "omitted_enabled_controls": (
-                max(0, int(capture.get("enabled_count", 0)) - len(controls) - len(mix_faders))
-                if capture is not None else None
-            ),
+            "omitted_controls": omitted_controls,
+            "omitted_enabled_controls": len(omitted_controls) if capture is not None else None,
             "errors": sorted(set(errors)), "warnings": sorted(set(warnings)),
             "hardware_status": "pending",
         }
@@ -238,6 +252,42 @@ def render_csv(report: dict[str, Any]) -> str:
     return stream.getvalue()
 
 
+def render_edit_csv(report: dict[str, Any]) -> str:
+    fields = (
+        "core", "action", "endpoint", "current_label", "channel", "cc",
+        "target", "role", "channel_evidence",
+    )
+    stream = io.StringIO()
+    writer = csv.DictWriter(stream, fieldnames=fields, lineterminator="\n")
+    writer.writeheader()
+    for core in report["cores"]:
+        for row in core["selected_controls"]:
+            writer.writerow({
+                "core": core["id"], "action": "keep-plugin-core",
+                "endpoint": row["endpoint"], "current_label": row["expected_label"],
+                "channel": row["channel"], "cc": row["cc"],
+                "target": row["expected_target"], "role": row["role"],
+                "channel_evidence": row["channel_source"],
+            })
+        for row in core["persistent_mix_faders"]:
+            writer.writerow({
+                "core": core["id"], "action": "keep-mpc-mix",
+                "endpoint": row["endpoint"], "current_label": row["label"],
+                "channel": row["channel"], "cc": row["cc"],
+                "target": "; ".join(row["learned_targets"]), "role": "mix",
+                "channel_evidence": row["channel_source"],
+            })
+        for row in core["omitted_controls"]:
+            writer.writerow({
+                "core": core["id"], "action": "omit-from-core",
+                "endpoint": row["endpoint"], "current_label": row["label"],
+                "channel": row["channel"], "cc": row["cc"],
+                "target": "; ".join(row["learned_targets"]), "role": "reference",
+                "channel_evidence": row["channel_source"],
+            })
+    return stream.getvalue()
+
+
 def render_checklist(report: dict[str, Any]) -> str:
     lines = ["# Captured core hardware checklist", ""]
     for core in report["cores"]:
@@ -266,19 +316,21 @@ def render_html(report: dict[str, Any]) -> str:
     for core in report["cores"]:
         plugin = {row["endpoint"]: row for row in core["selected_controls"]}
         mix = {row["endpoint"]: row for row in core["persistent_mix_faders"]}
+        reference = {row["endpoint"]: row for row in core["omitted_controls"]}
         rows = []
         for prefix, title in groups:
             cells = []
             for position in range(1, 9):
                 endpoint = f"{prefix}-{position}"
-                item = plugin.get(endpoint) or mix.get(endpoint)
+                item = plugin.get(endpoint) or mix.get(endpoint) or reference.get(endpoint)
                 if item is None:
                     cells.append(f'<div class="control empty"><b>{html.escape(endpoint)}</b><span>unassigned</span></div>')
                     continue
                 is_mix = endpoint in mix
+                is_reference = endpoint in reference
                 label = item.get("expected_label", item.get("label", ""))
                 target = item.get("expected_target") or "; ".join(item.get("learned_targets", [])) or "Learn pending"
-                css = "mix" if is_mix else "plugin"
+                css = "reference" if is_reference else "mix" if is_mix else "plugin"
                 cells.append(
                     f'<div class="control {css}"><b>{html.escape(endpoint)}</b>'
                     f'<strong>{html.escape(str(label))}</strong>'
@@ -302,9 +354,9 @@ def render_html(report: dict[str, Any]) -> str:
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark"><title>Captured Plugin Cores</title><style>
 :root{{font-family:Inter,system-ui,sans-serif;color-scheme:dark;--bg:#0d1110;--panel:#161d19;--line:#334038;--text:#edf4ee;--muted:#9caaa1;--plugin:#284b38;--mix:#3c375d}}
-*{{box-sizing:border-box}}body{{margin:0;background:radial-gradient(circle at 10% 0,#183324,transparent 30rem),var(--bg);color:var(--text)}}main{{max-width:1400px;margin:auto;padding:36px 22px 80px}}h1{{font-size:clamp(2.2rem,6vw,5rem);letter-spacing:-.05em;margin:.2em 0}}.intro{{color:var(--muted);max-width:760px;line-height:1.55}}article{{margin-top:28px;padding:22px;border:1px solid var(--line);border-radius:20px;background:#121815dd}}header{{display:flex;justify-content:space-between;gap:20px;align-items:start}}h2{{font-size:1.8rem;margin:.2em 0}}.eyebrow{{text-transform:uppercase;letter-spacing:.12em;font-size:.7rem;color:#9ee6b1;font-weight:800}}.counts{{text-align:right;color:var(--muted);white-space:nowrap}}.counts b{{color:var(--text);font-size:1.3rem}}.row{{margin-top:18px}}h3{{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}}.controls{{display:grid;grid-template-columns:repeat(8,minmax(90px,1fr));gap:8px;overflow:auto}}.control{{min-height:118px;border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px}}.control.plugin{{background:var(--plugin);border-color:#598469}}.control.mix{{background:var(--mix);border-color:#7770a5}}.control.empty{{opacity:.28}}.control b{{font-size:.7rem;color:var(--muted)}}.control strong{{font-size:.86rem}}.control span,.control small{{font-size:.72rem;line-height:1.3}}.control small{{color:#c0cbc4}}.friction{{margin-top:20px}}details{{color:#f1cf78}}footer{{margin-top:28px;color:var(--muted);font-size:.82rem}}@media(max-width:850px){{header{{display:block}}.counts{{text-align:left}}.controls{{grid-template-columns:repeat(8,105px)}}}}
+*{{box-sizing:border-box}}body{{margin:0;background:radial-gradient(circle at 10% 0,#183324,transparent 30rem),var(--bg);color:var(--text)}}main{{max-width:1400px;margin:auto;padding:36px 22px 80px}}h1{{font-size:clamp(2.2rem,6vw,5rem);letter-spacing:-.05em;margin:.2em 0}}.intro{{color:var(--muted);max-width:760px;line-height:1.55}}article{{margin-top:28px;padding:22px;border:1px solid var(--line);border-radius:20px;background:#121815dd}}header{{display:flex;justify-content:space-between;gap:20px;align-items:start}}h2{{font-size:1.8rem;margin:.2em 0}}.eyebrow{{text-transform:uppercase;letter-spacing:.12em;font-size:.7rem;color:#9ee6b1;font-weight:800}}.counts{{text-align:right;color:var(--muted);white-space:nowrap}}.counts b{{color:var(--text);font-size:1.3rem}}.row{{margin-top:18px}}h3{{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}}.controls{{display:grid;grid-template-columns:repeat(8,minmax(90px,1fr));gap:8px;overflow:auto}}.control{{min-height:118px;border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px}}.control.plugin{{background:var(--plugin);border-color:#598469}}.control.mix{{background:var(--mix);border-color:#7770a5}}.control.reference{{opacity:.46;border-style:dashed}}.control.empty{{opacity:.18}}.control b{{font-size:.7rem;color:var(--muted)}}.control strong{{font-size:.86rem}}.control span,.control small{{font-size:.72rem;line-height:1.3}}.control small{{color:#c0cbc4}}.friction{{margin-top:20px}}details{{color:#f1cf78}}footer{{margin-top:28px;color:var(--muted);font-size:.82rem}}@media(max-width:850px){{header{{display:block}}.counts{{text-align:left}}.controls{{grid-template-columns:repeat(8,105px)}}}}
 </style></head><body><main><p class="eyebrow">Offline · read-only review</p><h1>Captured plugin cores</h1>
-<p class="intro">Green controls are the compact plugin surface. Purple faders preserve the MPC internal mix on its isolated channel. Empty controls are intentionally omitted, not missing evidence.</p>
+<p class="intro">Green controls are the compact plugin surface. Purple faders preserve the MPC internal mix on its isolated channel. Dim controls show captured assignments intentionally omitted from the core; empty cells were not enabled in the capture.</p>
 {"".join(sections)}<footer>{html.escape(report["boundary"])}</footer></main></body></html>'''
 
 
@@ -335,6 +387,7 @@ def write_report(
         (staging / "captured-plugin-cores.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
         (staging / "CAPTURED_CORES.md").write_text(render_markdown(report), encoding="utf-8")
         (staging / "captured-controls.csv").write_text(render_csv(report), encoding="utf-8")
+        (staging / "COMPONENTS_EDIT_PLAN.csv").write_text(render_edit_csv(report), encoding="utf-8")
         (staging / "HARDWARE_CHECKLIST.md").write_text(render_checklist(report), encoding="utf-8")
         (staging / "CORE_COMPANION.html").write_text(render_html(report), encoding="utf-8")
         if output.exists():
