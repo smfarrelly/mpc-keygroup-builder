@@ -228,6 +228,9 @@ bank, export it, and load the result on hardware without manually editing XML.
   and a one-command, self-contained multi-variant hardware package.
 - [x] Improve useful-range placement with strict octave-only `root_target`
   inference while retaining explicit hardware-proven shifts.
+- [x] Make large Keygroup batch preflight durable and capacity-aware with a
+  machine-readable report covering per-program failures, roots, selected and
+  excluded samples, byte estimates, and duplicate-audio groups.
 - [x] Preserve and validate velocity layers, loops, filters, sample registries,
   unknown settings, and Q-Link mappings while changing proven envelope/filter
   values. Polyphony editing remains deliberately unsupported pending evidence.
@@ -337,6 +340,10 @@ performance program.
   severity-ordered, per-program hardware queue. JSON, CSV, and Markdown retain
   exact affected pads while grouping gain, sample-start, pitch, loop, warp,
   stereo, device, and macro differences into one actionable listening check.
+- [x] `mpc-ableton-loop-audit` inventories raw sustain/release modes,
+  crossfades, endpoint relationships, affected packs, and representative source
+  presets so future MPC loop serialization starts from bounded evidence rather
+  than guessed enum meanings.
 
 Exporter expansion beyond the implemented Drum topology remains gated on
 manual source comparison and representative MPC target captures. The Clip
@@ -486,6 +493,12 @@ control.
 
 ### Declarative hardware-control foundation delivered early
 
+The control strategy now follows one responsibility model: XL 3 controls earn
+their place by removing MPC-internal menu/Q-Link friction; its faders retain
+the internal MPC mix. The LiveTrak L6 owns physical-device mixing, and reachable
+Volcas/effects retain their native panels. Complete device maps remain reusable
+automation references, not a mandate to mirror every hardware panel.
+
 - [x] Official-chart-backed Volca Bass, Keys, and Drum single-channel device
   definitions encode receive channels, CC parameters, and the separately
   labeled hardware-confirmed Drum trigger notes.
@@ -516,6 +529,9 @@ control.
   optional XPJ Learn evidence, exposing role/evidence gaps, redundant targets,
   unmapped plugins, and the best useful omissions without encouraging exhaustive
   parameter mapping.
+- [x] Derive eight-control OPx-4 and Jura cores from real Components/MPC Learn
+  evidence while preserving the captured channel-16 internal-mix faders. Keep
+  Fabric/Fabric XL gated until readable metadata or paired captures exist.
 
 ### Release readiness
 
@@ -585,15 +601,17 @@ for release gates:
 
 ## Immediate next three increments
 
-1. **Hardware acceptance backlog:** test the five cross-library Drum candidates
-   and the portable fixture, then record comparative musical roles without
-   changing the reproducible software evidence.
+1. **Curated MPC performance pages:** rank OPx-4, Jura, Fabric/Fabric XL, and
+   internal effects by touchscreen/Q-Link friction, then compile small stable
+   control cores rather than exhaustive parameter mirrors. Preserve XL 3
+   faders for MPC track/submix balance.
 2. **Release portability:** schema documentation, native batch validation, and
    the installed-wheel portable-demo CI smoke are complete. The remaining gate
    is an independent walkthrough by another MPC owner.
-3. **Controller capture convergence:** use the now-integrated read-only XPJ and
-   Components inspectors to reconcile actual channels and controls with the
-   declarative rig; keep all project and SysEx writing hardware/vendor-owned.
+3. **Controller value evidence:** add a declarative budget/check that records
+   avoided menu steps, native-control duplication, automation need, and hardware
+   acceptance for every proposed page. Next Sequence and large step-grid work
+   remain deferred in favor of MPC pads and played-in looping.
 
 Program Designer, Keygroup variants, creative MIDI, and arrangement hardware
 acceptance remain intentionally deferred until the Key 37 is available.

@@ -5,6 +5,8 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
+import tempfile
 from io import StringIO
 from pathlib import Path
 
@@ -90,6 +92,33 @@ def render(rows: list[dict[str, str]], output_format: str) -> str:
     ) + ("\n" if rows else "")
 
 
+def write_output(path: Path, ledger: Path, contents: str) -> Path:
+    """Publish query output without risking the source ledger."""
+    requested = path.expanduser()
+    if requested.is_symlink():
+        raise ValueError("library output may not be a symbolic link")
+    output = requested.resolve()
+    if output == ledger.expanduser().resolve():
+        raise ValueError("library output may not replace the input ledger")
+    if output.exists() and not output.is_file():
+        raise ValueError("library output must be a regular file")
+
+    output.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{output.name}.", dir=output.parent
+    )
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as stream:
+            stream.write(contents)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, output)
+    finally:
+        temporary.unlink(missing_ok=True)
+    return output
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("ledger", type=Path)
@@ -111,7 +140,7 @@ def main() -> int:
     )
     output = render(rows, args.format)
     if args.output:
-        args.output.write_text(output, encoding="utf-8")
+        write_output(args.output, args.ledger, output)
     else:
         print(output, end="")
     return 0
