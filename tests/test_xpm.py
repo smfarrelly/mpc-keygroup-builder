@@ -64,6 +64,29 @@ class XpmTests(unittest.TestCase):
             self.assertEqual(report["changes"][0]["after"], 0x00FF00)
             self.assertEqual(report["structural_change_count"], 1)
 
+    def test_report_output_cannot_replace_an_input(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "Kit.xpm"
+            source.write_text("keep\n")
+            with self.assertRaisesRegex(ValueError, "may not replace an input"):
+                xpm._write_or_print({}, source, (source,))
+            self.assertEqual(source.read_text(), "keep\n")
+
+    def test_report_output_rejects_symlinks_and_creates_parents(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "Kit.xpm"
+            source.write_text("keep\n")
+            link = root / "report.json"
+            link.symlink_to(source)
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                xpm._write_or_print({}, link)
+            self.assertEqual(source.read_text(), "keep\n")
+
+            output = root / "new" / "reports" / "xpm.json"
+            xpm._write_or_print({"format": "xml"}, output, (source,))
+            self.assertEqual(json.loads(output.read_text()), {"format": "xml"})
+
 
 if __name__ == "__main__":
     unittest.main()

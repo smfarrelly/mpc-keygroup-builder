@@ -6,6 +6,8 @@ import argparse
 import gzip
 import html
 import json
+import os
+import tempfile
 import xml.etree.ElementTree as ET
 from collections import Counter
 from pathlib import Path
@@ -289,14 +291,35 @@ def compare_programs(before: Path, after: Path) -> dict[str, Any]:
     return report
 
 
-def _write_or_print(value: dict[str, Any], output: Path | None) -> None:
+def _write_or_print(
+    value: dict[str, Any], output: Path | None, inputs: tuple[Path, ...] = ()
+) -> None:
     rendered = json.dumps(value, indent=2) + "\n"
     if output is None:
         print(rendered, end="")
     else:
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text(rendered, encoding="utf-8")
-        print(f"Wrote: {output}")
+        requested = output.expanduser()
+        if requested.is_symlink():
+            raise ValueError(f"XPM report output may not be a symbolic link: {requested}")
+        destination = requested.resolve()
+        if destination in {path.expanduser().resolve() for path in inputs}:
+            raise ValueError(f"XPM report output may not replace an input: {requested}")
+        if destination.exists() and not destination.is_file():
+            raise ValueError(f"XPM report output is not a regular file: {requested}")
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        descriptor, temporary_name = tempfile.mkstemp(
+            prefix=f".{destination.name}.", dir=destination.parent
+        )
+        temporary = Path(temporary_name)
+        try:
+            with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as stream:
+                stream.write(rendered)
+                stream.flush()
+                os.fsync(stream.fileno())
+            os.replace(temporary, destination)
+        finally:
+            temporary.unlink(missing_ok=True)
+        print(f"Wrote: {requested}")
 
 
 def main() -> int:
@@ -311,11 +334,14 @@ def main() -> int:
     compare_parser.add_argument("--output", type=Path)
     args = parser.parse_args()
     if args.command == "inspect":
-        _write_or_print(inspect(args.program.expanduser().resolve()), args.output)
+        _write_or_print(
+            inspect(args.program.expanduser().resolve()), args.output, (args.program,)
+        )
     else:
         _write_or_print(
             compare_programs(args.before.expanduser().resolve(), args.after.expanduser().resolve()),
             args.output,
+            (args.before, args.after),
         )
     return 0
 
