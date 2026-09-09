@@ -61,6 +61,29 @@ evidence. Components remains the supported place to edit/export Custom Modes.
 Fabric and Fabric XL stay evidence-gated until their UI metadata or a paired
 Components/MPC Learn capture is available locally.
 
+## See the next evidence action
+
+Cross-reference the desired plugin backlog with a local parameter catalog,
+Components audit, MPC Learn evidence, and compact-core recipes:
+
+```bash
+uv run mpc-plugin-evidence midi/plugin-evidence-targets.toml \
+  --catalog work/plugin-parameter-catalog.json \
+  --capture-audit work/hardware-captures/launch-control-xl3/2026-09-03-components/boot-midi-learn-audit.json \
+  --output work/midi-control/plugin-evidence
+```
+
+The report distinguishes full-evidence cores, capture-backed cores, catalog-only
+targets, missing evidence, and invalid recipes. Each target receives one exact
+next action. The maintained result identifies OPx-4 as full-evidence core-ready,
+Jura as capture-backed core-ready, and Fabric/Fabric XL as needing a named
+Components export plus one saved Learn probe.
+
+This status is deliberately about locally inspectable evidence. Fabric can be
+installed and playable on the MPC's internal drive while still appearing as
+`evidence-missing` on a computer that has neither its metadata nor a capture.
+The tool never converts absence into an installation claim.
+
 ## Compact-effects batch
 
 - `midi/plugins/air-chorus-performance.toml`: slot 12, channel 4, all seven

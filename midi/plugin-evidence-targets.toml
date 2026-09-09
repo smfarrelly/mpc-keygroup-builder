@@ -1,0 +1,36 @@
+schema_version = 1
+name = "FG MPC Plugin Controller Evidence Backlog"
+
+[[plugins]]
+id = "opx4"
+name = "OPx-4"
+aliases = ["OPx-4", "OPX4"]
+priority = "P0"
+purpose = "preset-aware macro performance with persistent MPC mix faders"
+capture_names = ["1 - OPX"]
+core_recipe = "capture-cores/opx4-core.toml"
+
+[[plugins]]
+id = "jura"
+name = "Jura"
+aliases = ["Jura"]
+priority = "P0"
+purpose = "filter, modulation, and internal-space gestures with persistent MPC mix faders"
+capture_names = ["2 - Jura"]
+core_recipe = "capture-cores/jura-core.toml"
+
+[[plugins]]
+id = "fabric"
+name = "Fabric"
+aliases = ["Fabric"]
+priority = "P1"
+purpose = "curate a small preset-aware instrument page only after real parameter evidence exists"
+capture_names = ["Fabric"]
+
+[[plugins]]
+id = "fabric-xl"
+name = "Fabric XL"
+aliases = ["Fabric XL", "FabricXL"]
+priority = "P1"
+purpose = "identify a few live macros without mirroring the full instrument"
+capture_names = ["Fabric XL"]

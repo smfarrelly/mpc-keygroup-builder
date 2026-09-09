@@ -532,6 +532,9 @@ automation references, not a mandate to mirror every hardware panel.
 - [x] Derive eight-control OPx-4 and Jura cores from real Components/MPC Learn
   evidence while preserving the captured channel-16 internal-mix faders. Keep
   Fabric/Fabric XL gated until readable metadata or paired captures exist.
+- [x] Cross-reference plugin priorities against local catalogs, captures,
+  learned targets, and core recipes so absent metadata produces an explicit
+  capture backlog rather than an incorrect installation conclusion.
 
 ### Release readiness
 
