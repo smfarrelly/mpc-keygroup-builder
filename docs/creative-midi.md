@@ -63,6 +63,10 @@ uv run mpc-melody-idea recipes/melody/dusty-answer.toml \
   --output-prefix work/ideas/dusty-answer-37
 ```
 
+Melody JSON and MIDI destinations are preflighted together, cannot replace the
+recipe or follow symbolic links, and are published atomically. Existing
+outputs require `--force`.
+
 The motif declares an onset rhythm and a contour in scale steps. The first pass
 is literal; later repetitions can substitute neighboring scale tones, move a
 note by an octave, or leave a deliberate rest. All decisions are seeded and
