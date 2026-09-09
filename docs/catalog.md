@@ -12,6 +12,9 @@ damaged hand edit reports the header or row to repair instead of returning
 partial results. Hardware filters accept `untested`, `pass`, `warn`, or `fail`;
 favorite filters accept `yes`, `no`, or `provisional`. Unknown values are
 reported as input errors rather than successful empty queries.
+When `--output` is used, missing parent directories are created and the report
+is published atomically. The destination cannot be the input ledger, a symbolic
+link, or a non-file path.
 
 Build it from an SD card, immutable backup, or another directory whose layout
 matches the ledger paths:

@@ -35,6 +35,32 @@ on channel 9 or Jura mode in slot 2 on channel 10. Channels 1–3 remain availab
 to the current Volca routing plan, and channel 16 remains the control/mixer
 channel.
 
+## Derive evidence-backed OPx-4 and Jura cores
+
+The captured OPx-4 and Jura modes already demonstrate the preferred hybrid
+shape: plugin encoders/buttons use channels 9/10 while all eight faders remain
+isolated on channel 16 for MPC mix targets. Compile the maintained eight-control
+recipes directly against the ignored local capture audit:
+
+```bash
+uv run mpc-capture-core \
+  work/hardware-captures/launch-control-xl3/2026-09-03-components/boot-midi-learn-audit.json \
+  midi/capture-cores/*.toml \
+  --output work/midi-control/captured-plugin-cores
+```
+
+The OPx-4 core keeps its eight preset-aware macros. The Jura core keeps filter,
+LFO speed, delay, reverb, and one chorus gesture. Recipes pin the expected
+capture name, endpoint, visible label, saved Learn target, role, and reason.
+Compilation fails on drift and verifies that persistent faders use a separate
+channel; unmatched faders remain warnings rather than invented Learn evidence.
+
+The output is a review packet, not a SysEx edit: JSON, CSV, Markdown, and a
+hardware checklist preserve the original capture hash and exact channel/CC
+evidence. Components remains the supported place to edit/export Custom Modes.
+Fabric and Fabric XL stay evidence-gated until their UI metadata or a paired
+Components/MPC Learn capture is available locally.
+
 ## Compact-effects batch
 
 - `midi/plugins/air-chorus-performance.toml`: slot 12, channel 4, all seven

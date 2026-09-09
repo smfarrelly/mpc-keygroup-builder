@@ -30,6 +30,7 @@ user does not have to read the project's full history before making something.
 - [Creative MIDI](creative-midi.md)
 - [Creative batch and review](creative-wave.md)
 - [Declarative MIDI control](declarative-midi-control.md)
+- [Live-control responsibility model](live-control-strategy.md)
 - [Rig profiles](rig-profiles.md)
 - [Hardware workflow tools](hardware-workflow-tools.md)
 - [Key 37 routing capture](key37-routing-capture.md)

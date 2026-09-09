@@ -63,6 +63,32 @@ class LibraryTests(unittest.TestCase):
                 library.query(path, favorite="yse")
             self.assertEqual(len(library.query(path, hardware="PASS", favorite="YES")), 1)
 
+    def test_output_cannot_replace_the_input_ledger(self):
+        with tempfile.TemporaryDirectory() as directory:
+            ledger = Path(directory) / "status.csv"
+            original = "path,program_type,hardware_status,favorite,scratchpad_role,notes\n"
+            ledger.write_text(original)
+            with self.assertRaisesRegex(ValueError, "replace the input ledger"):
+                library.write_output(ledger, ledger, "destroyed\n")
+            self.assertEqual(ledger.read_text(), original)
+
+    def test_output_rejects_symlinks_and_publishes_into_new_parents(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            ledger = root / "status.csv"
+            ledger.write_text("ledger\n")
+            outside = root / "outside.txt"
+            outside.write_text("keep\n")
+            link = root / "report.txt"
+            link.symlink_to(outside)
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                library.write_output(link, ledger, "replace\n")
+            self.assertEqual(outside.read_text(), "keep\n")
+
+            output = root / "new" / "reports" / "query.json"
+            self.assertEqual(library.write_output(output, ledger, "[]\n"), output.resolve())
+            self.assertEqual(output.read_text(), "[]\n")
+
 
 if __name__ == "__main__":
     unittest.main()

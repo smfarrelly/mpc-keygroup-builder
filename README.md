@@ -57,7 +57,11 @@ is required for the software portion.
 - Build a redistributable six-composition showcase with deterministic
   evidence, editable recipes, and synthetic CC0 Drum audio.
 - Compile declarative MPC, Launch Control XL 3, and Volca routing plans.
+- Describe and validate audio routes and control ownership across the MPC,
+  LiveTrak L6, native instruments, and external effects.
 - Inspect Components SysEx captures and cross-check them against MPC MIDI Learn.
+- Derive compact OPx-4/Jura control cores from captured endpoints while
+  preserving channel-isolated MPC mix faders.
 - Search downloaded plugin controls and rank useful controller targets.
 - Compile role-based plugin performance pages into Components and MIDI Learn
   worksheets with installed-content validation.
@@ -142,6 +146,7 @@ for the exact boundary.
 - [Creative batch and review](docs/creative-wave.md)
 - [Ableton source inspection and conversion](docs/ableton-source-inspector.md)
 - [Declarative MIDI control](docs/declarative-midi-control.md)
+- [Live-control responsibility model](docs/live-control-strategy.md)
 - [Plugin parameter catalog](docs/plugin-parameters.md)
 - [Declarative plugin performance pages](docs/plugin-mapping.md)
 - [XPJ project inspector](docs/xpj-inspector.md)

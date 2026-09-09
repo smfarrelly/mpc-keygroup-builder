@@ -1,0 +1,307 @@
+schema_version = 1
+name = "FG MPC + L6 Live Hardware Rig"
+description = "Responsibility-first live rig: XL3 removes MPC friction, L6 mixes physical devices, and reachable hardware keeps its native panel. Physical L6 input numbers and external-effect chain order remain intentionally unassigned."
+acceptance = [
+  "The XL3 default page balances internal MPC tracks without touchscreen mixer navigation.",
+  "Every physical instrument reaches the L6 at a practical, documented gain.",
+  "Each external effect can be sent and returned without a feedback path.",
+  "A ten-minute played-in loop jam needs no unnecessary controller mode changes.",
+]
+
+[[devices]]
+id = "key37"
+name = "Akai MPC Key 37"
+kind = "host"
+clock = "send"
+
+[[devices]]
+id = "lcxl3"
+name = "Novation Launch Control XL 3"
+kind = "controller"
+clock = "none"
+
+[[devices]]
+id = "l6"
+name = "Zoom LiveTrak L6"
+kind = "mixer"
+clock = "none"
+
+[[devices]]
+id = "volca-bass"
+name = "Korg Volca Bass"
+kind = "synth"
+midi_channel = 1
+clock = "receive"
+
+[[devices]]
+id = "volca-keys"
+name = "Korg Volca Keys"
+kind = "synth"
+midi_channel = 2
+clock = "receive"
+
+[[devices]]
+id = "volca-drum"
+name = "Korg Volca Drum"
+kind = "drum-synth"
+midi_channel = 10
+clock = "receive"
+
+[[devices]]
+id = "po33"
+name = "Teenage Engineering PO-33"
+kind = "sampler"
+clock = "none"
+
+[[devices]]
+id = "ultratap"
+name = "Eventide UltraTap"
+kind = "effect"
+clock = "none"
+
+[[devices]]
+id = "qi"
+name = "Walrus Qi Etherealizer"
+kind = "effect"
+clock = "none"
+
+[[devices]]
+id = "nts3"
+name = "Korg NTS-3"
+kind = "effect"
+clock = "none"
+
+[[devices]]
+id = "chroma-console"
+name = "Hologram Chroma Console"
+kind = "future-effect"
+clock = "none"
+
+[[tracks]]
+index = 1
+name = "MPC Main Drums"
+role = "main drums"
+type = "drum"
+program = "Vinyl SP From Mars 01 FG COLORS"
+
+[[tracks]]
+index = 2
+name = "MPC Shots"
+role = "percussion/one-shots"
+type = "drum"
+program = "FG Vinyl Shots 04 Eight Bank"
+
+[[tracks]]
+index = 3
+name = "Volca Bass"
+role = "bass"
+type = "midi"
+device = "volca-bass"
+midi_channel = 1
+
+[[tracks]]
+index = 4
+name = "Volca Keys"
+role = "chords/keys"
+type = "midi"
+device = "volca-keys"
+midi_channel = 2
+
+[[tracks]]
+index = 5
+name = "Volca Drum"
+role = "alternate drums"
+type = "midi"
+device = "volca-drum"
+midi_channel = 10
+
+[[tracks]]
+index = 6
+name = "MPC Plugin"
+role = "lead/pad"
+type = "plugin"
+
+[[tracks]]
+index = 7
+name = "MPC Loop"
+role = "loop/texture"
+type = "clip"
+
+[[tracks]]
+index = 8
+name = "MPC Capture"
+role = "resample/transition"
+type = "audio"
+
+[[control_domains]]
+scope = "mpc-internal-mix"
+owner = "lcxl3"
+target = "key37"
+status = "primary"
+rationale = "the L6 receives the MPC as one stereo feed and cannot rebalance its internal programs"
+
+[[control_domains]]
+scope = "mpc-plugin-performance"
+owner = "lcxl3"
+target = "key37"
+status = "primary"
+rationale = "a compact page avoids touchscreen and Q-Link paging for selected internal controls"
+
+[[control_domains]]
+scope = "physical-device-mix"
+owner = "l6"
+target = "l6"
+status = "primary"
+rationale = "the mixer panel already provides levels, mutes, solos, aux sends, and returns"
+
+[[control_domains]]
+scope = "volca-bass-performance"
+owner = "volca-bass"
+target = "volca-bass"
+status = "primary"
+rationale = "the reachable native panel is more immediate than a mirrored controller page"
+
+[[control_domains]]
+scope = "volca-keys-performance"
+owner = "volca-keys"
+target = "volca-keys"
+status = "primary"
+rationale = "the reachable native panel is more immediate than a mirrored controller page"
+
+[[control_domains]]
+scope = "volca-drum-performance"
+owner = "volca-drum"
+target = "volca-drum"
+status = "primary"
+rationale = "the reachable native panel is more immediate than a mirrored controller page"
+
+[[control_domains]]
+scope = "external-effect-performance"
+owner = "ultratap"
+target = "ultratap"
+status = "primary"
+rationale = "native effect controls remain hands-on; other effects follow the same convention"
+
+[[control_domains]]
+scope = "next-sequence-launch"
+owner = "key37"
+target = "key37"
+status = "primary"
+rationale = "MPC pads already provide the direct sequence-launching interface"
+
+[[audio_routes]]
+id = "mpc-main"
+source = "key37"
+destination = "l6"
+signal = "stereo"
+role = "main"
+status = "primary"
+purpose = "one stereo MPC feed; internal balancing remains on the XL3"
+
+[[audio_routes]]
+id = "volca-bass-main"
+source = "volca-bass"
+destination = "l6"
+signal = "mono"
+role = "main"
+status = "primary"
+purpose = "mix the Bass from the L6 native channel strip"
+
+[[audio_routes]]
+id = "volca-keys-main"
+source = "volca-keys"
+destination = "l6"
+signal = "mono"
+role = "main"
+status = "primary"
+purpose = "mix the Keys from the L6 native channel strip"
+
+[[audio_routes]]
+id = "volca-drum-main"
+source = "volca-drum"
+destination = "l6"
+signal = "stereo"
+role = "main"
+status = "primary"
+purpose = "mix the Drum from the L6 native channel strip"
+
+[[audio_routes]]
+id = "po33-main"
+source = "po33"
+destination = "l6"
+signal = "stereo"
+role = "main"
+status = "primary"
+purpose = "keep the pocket sampler independently mixable"
+
+[[audio_routes]]
+id = "ultratap-send"
+source = "l6"
+destination = "ultratap"
+signal = "stereo"
+role = "send"
+status = "conditional"
+purpose = "external aux path; exact L6 output and chain order remain a wiring choice"
+
+[[audio_routes]]
+id = "ultratap-return"
+source = "ultratap"
+destination = "l6"
+signal = "stereo"
+role = "return"
+status = "conditional"
+purpose = "return external effect audio on a dedicated L6 input without feedback"
+
+[[audio_routes]]
+id = "qi-send"
+source = "l6"
+destination = "qi"
+signal = "stereo"
+role = "send"
+status = "conditional"
+purpose = "alternative external aux path pending a chosen chain topology"
+
+[[audio_routes]]
+id = "qi-return"
+source = "qi"
+destination = "l6"
+signal = "stereo"
+role = "return"
+status = "conditional"
+purpose = "return Qi audio to the hardware mix"
+
+[[audio_routes]]
+id = "nts3-send"
+source = "l6"
+destination = "nts3"
+signal = "stereo"
+role = "send"
+status = "conditional"
+purpose = "alternative external aux path pending a chosen chain topology"
+
+[[audio_routes]]
+id = "nts3-return"
+source = "nts3"
+destination = "l6"
+signal = "stereo"
+role = "return"
+status = "conditional"
+purpose = "return NTS-3 audio to the hardware mix"
+
+[[audio_routes]]
+id = "volca-bass-through-mpc"
+source = "volca-bass"
+destination = "key37"
+signal = "mono"
+role = "resample"
+status = "conditional"
+purpose = "deliberate Flavor Pro processing or resampling, not the default live path"
+
+[[audio_routes]]
+id = "chroma-send"
+source = "l6"
+destination = "chroma-console"
+signal = "stereo"
+role = "send"
+status = "deferred"
+purpose = "future external effect path only after the device and wiring are available"

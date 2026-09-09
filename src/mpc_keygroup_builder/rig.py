@@ -11,6 +11,9 @@ from typing import Any
 
 TRACK_TYPES = {"drum", "keygroup", "plugin", "midi", "audio", "clip"}
 CLOCK_VALUES = {"internal", "send", "receive", "none"}
+AUDIO_SIGNALS = {"mono", "stereo"}
+AUDIO_ROUTE_ROLES = {"main", "send", "return", "resample"}
+DECISION_STATUSES = {"primary", "conditional", "deferred"}
 
 
 def _tables(
@@ -43,6 +46,8 @@ def load(path: Path) -> dict[str, Any]:
     devices = _tables(document, "devices")
     tracks = _tables(document, "tracks", required=True)
     groups = _tables(document, "control_groups")
+    audio_routes = _tables(document, "audio_routes")
+    control_domains = _tables(document, "control_domains")
     for index, device in enumerate(devices, 1):
         _required_scalar(device, "id", f"device {index}", str)
         if "clock" in device:
@@ -59,6 +64,14 @@ def load(path: Path) -> dict[str, Any]:
         for field in ("controller", "controls", "semantic", "target"):
             _required_scalar(group, field, label, str)
         _required_scalar(group, "count", label, int)
+    for index, route in enumerate(audio_routes, 1):
+        label = f"audio route {index}"
+        for field in ("id", "source", "destination", "signal", "role", "status", "purpose"):
+            _required_scalar(route, field, label, str)
+    for index, domain in enumerate(control_domains, 1):
+        label = f"control domain {index}"
+        for field in ("scope", "owner", "target", "status", "rationale"):
+            _required_scalar(domain, field, label, str)
     return document
 
 
@@ -132,6 +145,51 @@ def validate(document: dict[str, Any]) -> dict[str, list[str]]:
             endpoints.add(endpoint)
         if group.get("message") == "learn":
             warnings.append(f"{controller} {group.get('controls')}: MIDI assignment requires hardware learn")
+
+    route_ids: list[object] = []
+    primary_sources: dict[str, str] = {}
+    for route in document.get("audio_routes", []):
+        route_id = route.get("id")
+        route_ids.append(route_id)
+        source, destination = route.get("source"), route.get("destination")
+        for endpoint, label in ((source, "source"), (destination, "destination")):
+            if endpoint not in device_ids:
+                errors.append(f"audio route {route_id}: unknown {label} device {endpoint!r}")
+        if source == destination:
+            errors.append(f"audio route {route_id}: source and destination must differ")
+        if route.get("signal") not in AUDIO_SIGNALS:
+            errors.append(f"audio route {route_id}: invalid signal {route.get('signal')!r}")
+        if route.get("role") not in AUDIO_ROUTE_ROLES:
+            errors.append(f"audio route {route_id}: invalid role {route.get('role')!r}")
+        if route.get("status") not in DECISION_STATUSES:
+            errors.append(f"audio route {route_id}: invalid status {route.get('status')!r}")
+        if route.get("role") == "main" and route.get("status") == "primary":
+            if source in primary_sources:
+                errors.append(
+                    f"audio source {source}: primary main route already defined by "
+                    f"{primary_sources[source]}"
+                )
+            primary_sources[str(source)] = str(route_id)
+    if len(route_ids) != len(set(route_ids)):
+        errors.append("audio route ids must be unique")
+
+    primary_domains: dict[str, str] = {}
+    for domain in document.get("control_domains", []):
+        scope = str(domain.get("scope"))
+        owner, target = domain.get("owner"), domain.get("target")
+        if owner not in device_ids:
+            errors.append(f"control domain {scope}: unknown owner device {owner!r}")
+        if target not in device_ids:
+            errors.append(f"control domain {scope}: unknown target device {target!r}")
+        if domain.get("status") not in DECISION_STATUSES:
+            errors.append(f"control domain {scope}: invalid status {domain.get('status')!r}")
+        if domain.get("status") == "primary":
+            if scope in primary_domains:
+                errors.append(
+                    f"control domain {scope}: primary owner already defined as "
+                    f"{primary_domains[scope]}"
+                )
+            primary_domains[scope] = str(owner)
     return {"errors": sorted(set(errors)), "warnings": sorted(set(warnings))}
 
 
@@ -148,6 +206,20 @@ def render_markdown(document: dict[str, Any]) -> str:
             lines.append(
                 f"- {group['controller']} `{group['controls']}` × {group['count']}: "
                 f"{group['semantic']} → `{group['target']}` ({group.get('message', 'unspecified')})"
+            )
+    if document.get("control_domains"):
+        lines.extend(["", "## Control ownership", ""])
+        for domain in document["control_domains"]:
+            lines.append(
+                f"- **{domain['scope']}** — {domain['owner']} controls {domain['target']} "
+                f"({domain['status']}): {domain['rationale']}"
+            )
+    if document.get("audio_routes"):
+        lines.extend(["", "## Audio routes", ""])
+        for route in document["audio_routes"]:
+            lines.append(
+                f"- `{route['id']}`: {route['source']} → {route['destination']} "
+                f"({route['signal']} {route['role']}, {route['status']}): {route['purpose']}"
             )
     lines.extend(["", "## Validation", ""])
     lines.append(f"- Errors: {len(validation['errors'])}")

@@ -128,6 +128,61 @@ class WorkflowTests(unittest.TestCase):
         with redirect_stdout(StringIO()):
             self.assertEqual(workflow.inspect_batch(self.settings, self.batch()), 1)
 
+    def test_inspection_report_records_storage_and_refuses_implicit_overwrite(self):
+        self.write_wav(self.source / "60 Patch C3.wav", frames=12)
+        batch = self.batch()
+        report = workflow.inspect_batch_report(self.settings, batch)
+        self.assertEqual(report["kind"], "mpc-keygroup-batch-inspection")
+        self.assertEqual(report["summary"]["instruments"], 1)
+        self.assertEqual(report["summary"]["keygroups"], 1)
+        self.assertEqual(report["summary"]["samples"], 1)
+        self.assertGreater(report["summary"]["selected_bytes"], 0)
+        destination = self.root / "reports" / "inspection.json"
+        with redirect_stdout(StringIO()):
+            self.assertEqual(workflow.inspect_batch(self.settings, batch, destination), 0)
+        saved = json.loads(destination.read_text())
+        self.assertEqual(saved["summary"], report["summary"])
+        with redirect_stdout(StringIO()), self.assertRaises(FileExistsError):
+            workflow.inspect_batch(self.settings, batch, destination)
+        with redirect_stdout(StringIO()):
+            self.assertEqual(workflow.inspect_batch(self.settings, batch, destination, force_report=True), 0)
+
+    def test_inspection_report_cannot_overwrite_inputs_or_follow_symlink(self):
+        self.write_wav(self.source / "60 Patch C3.wav")
+        manifest = self.root / "manifest.json"
+        manifest.write_text('{"keep":"manifest"}')
+        config = self.root / "config.toml"
+        config.write_text('keep="config"')
+        batch = workflow.Batch(
+            manifest, "Test From Mars", self.mpc / "Programs", self.batch().instruments,
+        )
+        with redirect_stdout(StringIO()), self.assertRaisesRegex(ValueError, "overwrite input"):
+            workflow.inspect_batch(self.settings, batch, manifest, force_report=True)
+        self.assertEqual(manifest.read_text(), '{"keep":"manifest"}')
+        with redirect_stdout(StringIO()), self.assertRaisesRegex(ValueError, "overwrite input"):
+            workflow.inspect_batch(
+                self.settings, batch, config, force_report=True,
+                protected_paths=(config,),
+            )
+        self.assertEqual(config.read_text(), 'keep="config"')
+
+        target = self.root / "target.json"
+        target.write_text('{"keep":"target"}')
+        link = self.root / "report.json"
+        link.symlink_to(target)
+        with redirect_stdout(StringIO()), self.assertRaisesRegex(ValueError, "symbolic link"):
+            workflow.inspect_batch(self.settings, batch, link, force_report=True)
+        self.assertEqual(target.read_text(), '{"keep":"target"}')
+
+    def test_inspection_report_rejects_non_regular_destination(self):
+        self.write_wav(self.source / "60 Patch C3.wav")
+        destination = self.root / "report-directory"
+        destination.mkdir()
+        with redirect_stdout(StringIO()), self.assertRaisesRegex(ValueError, "regular file"):
+            workflow.inspect_batch(
+                self.settings, self.batch(), destination, force_report=True,
+            )
+
     def test_manifest_path_escape_is_rejected(self):
         manifest = self.root / "escape.json"
         manifest.write_text(json.dumps({

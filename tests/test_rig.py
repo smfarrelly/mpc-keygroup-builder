@@ -107,6 +107,41 @@ class RigTests(unittest.TestCase):
             self.assertIn("control group 1 count", error.getvalue())
             self.assertNotIn("Traceback", error.getvalue())
 
+    def test_validates_audio_routes_and_control_ownership(self):
+        document = {
+            "schema_version": 1,
+            "name": "Bad signal plan",
+            "devices": [
+                {"id": "mpc", "kind": "host"},
+                {"id": "mixer", "kind": "mixer"},
+            ],
+            "tracks": [
+                {"index": 1, "name": "Track", "role": "lead", "type": "plugin"},
+            ],
+            "audio_routes": [
+                {"id": "main", "source": "mpc", "destination": "mixer", "signal": "stereo", "role": "main", "status": "primary", "purpose": "main"},
+                {"id": "main", "source": "mpc", "destination": "missing", "signal": "surround", "role": "main", "status": "primary", "purpose": "duplicate"},
+            ],
+            "control_domains": [
+                {"scope": "mix", "owner": "missing", "target": "mpc", "status": "primary", "rationale": "bad owner"},
+                {"scope": "mix", "owner": "mixer", "target": "mpc", "status": "primary", "rationale": "duplicate owner"},
+            ],
+        }
+        report = rig.validate(document)
+        self.assertTrue(any("route ids" in value for value in report["errors"]))
+        self.assertTrue(any("unknown destination" in value for value in report["errors"]))
+        self.assertTrue(any("invalid signal" in value for value in report["errors"]))
+        self.assertTrue(any("primary main route" in value for value in report["errors"]))
+        self.assertTrue(any("primary owner" in value for value in report["errors"]))
+
+    def test_render_includes_optional_signal_and_ownership_sections(self):
+        root = Path(__file__).parents[1]
+        document = rig.load(root / "rigs/fg-live-hardware-rig.toml")
+        rendered = rig.render_markdown(document)
+        self.assertIn("## Control ownership", rendered)
+        self.assertIn("## Audio routes", rendered)
+        self.assertIn("volca-bass-through-mpc", rendered)
+
 
 if __name__ == "__main__":
     unittest.main()
