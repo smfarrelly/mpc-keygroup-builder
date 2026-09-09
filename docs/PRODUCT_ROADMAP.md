@@ -486,6 +486,12 @@ control.
 
 ### Declarative hardware-control foundation delivered early
 
+The control strategy now follows one responsibility model: XL 3 controls earn
+their place by removing MPC-internal menu/Q-Link friction; its faders retain
+the internal MPC mix. The LiveTrak L6 owns physical-device mixing, and reachable
+Volcas/effects retain their native panels. Complete device maps remain reusable
+automation references, not a mandate to mirror every hardware panel.
+
 - [x] Official-chart-backed Volca Bass, Keys, and Drum single-channel device
   definitions encode receive channels, CC parameters, and the separately
   labeled hardware-confirmed Drum trigger notes.
@@ -585,15 +591,17 @@ for release gates:
 
 ## Immediate next three increments
 
-1. **Hardware acceptance backlog:** test the five cross-library Drum candidates
-   and the portable fixture, then record comparative musical roles without
-   changing the reproducible software evidence.
+1. **Curated MPC performance pages:** rank OPx-4, Jura, Fabric/Fabric XL, and
+   internal effects by touchscreen/Q-Link friction, then compile small stable
+   control cores rather than exhaustive parameter mirrors. Preserve XL 3
+   faders for MPC track/submix balance.
 2. **Release portability:** schema documentation, native batch validation, and
    the installed-wheel portable-demo CI smoke are complete. The remaining gate
    is an independent walkthrough by another MPC owner.
-3. **Controller capture convergence:** use the now-integrated read-only XPJ and
-   Components inspectors to reconcile actual channels and controls with the
-   declarative rig; keep all project and SysEx writing hardware/vendor-owned.
+3. **Controller value evidence:** add a declarative budget/check that records
+   avoided menu steps, native-control duplication, automation need, and hardware
+   acceptance for every proposed page. Next Sequence and large step-grid work
+   remain deferred in favor of MPC pads and played-in looping.
 
 Program Designer, Keygroup variants, creative MIDI, and arrangement hardware
 acceptance remain intentionally deferred until the Key 37 is available.

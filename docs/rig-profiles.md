@@ -17,7 +17,7 @@ semantics, and hardware acceptance tests in reviewable TOML.
 - `rigs/fg-volca-direct-123.toml`: minimal three-track hardware test matching
   the captured Custom Modes—Keys channel 1, Bass channel 2, and Drum
   single-channel mode on channel 3.
-- `rigs/fg-launch-control-xl3.toml`: Universal Mix semantics for 8 faders,
+- `rigs/fg-launch-control-xl3.toml`: MPC Internal Mix semantics for 8 faders,
   three encoder rows, and two button rows.
 
 Validate or render a setup sheet:
@@ -36,6 +36,12 @@ Malformed `devices`, `tracks`, and `control_groups` structures are rejected at
 load time with the section and entry number, before validation or rendering.
 
 ## Launch Control XL 3 strategy
+
+The XL 3 is an MPC companion, not a universal hardware replacement. Its faders
+primarily own the internal MPC mix; its encoders and buttons earn positions by
+avoiding touchscreen or Q-Link paging. The L6 owns the physical-device mix and
+reachable instruments/effects retain their native panels. See the
+[live-control responsibility model](live-control-strategy.md).
 
 The first custom mode is semantic, not effect-specific:
 
@@ -62,6 +68,9 @@ worksheet, MPC track-routing sheet, complete device MIDI reference, normalized
 JSON, and a setup guide. The current topology sends all surface MIDI over USB
 to the MPC; three monitored MIDI tracks pass Volca channels to MPC MIDI Out and
 the Thru5. This retains the current one-source passive-thru topology.
+
+Those complete Volca pages are retained as optional automation/reference modes.
+They are not required in the default live bank when the Volcas are within reach.
 
 Novation currently provides an official user guide, Programmer's Reference,
 and Components editor. Components supports editable custom modes and message

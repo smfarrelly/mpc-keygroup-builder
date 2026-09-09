@@ -139,6 +139,7 @@ for the exact boundary.
 - [Creative batch and review](docs/creative-wave.md)
 - [Ableton source inspection and conversion](docs/ableton-source-inspector.md)
 - [Declarative MIDI control](docs/declarative-midi-control.md)
+- [Live-control responsibility model](docs/live-control-strategy.md)
 - [Plugin parameter catalog](docs/plugin-parameters.md)
 - [Declarative plugin performance pages](docs/plugin-mapping.md)
 - [XPJ project inspector](docs/xpj-inspector.md)
