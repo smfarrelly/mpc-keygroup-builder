@@ -17,6 +17,10 @@ uv run mpc-hardware-results inventory/program-status.csv \
   work/key37-hardware-results.toml --apply
 ```
 
+Hardware-session initialization publishes its new TOML atomically after all
+ledger and manifest validation succeeds, so an interrupted write does not
+leave a partial result file.
+
 The first results command is a dry run. A pass or warning requires concise
 listening notes. The readiness checker keeps deployment, all-candidate hardware
 testing, selected core viability, and final favorite selection as separate
