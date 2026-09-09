@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import html
 import io
 import json
 import os
@@ -252,6 +253,61 @@ def render_checklist(report: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
+def render_html(report: dict[str, Any]) -> str:
+    sections = []
+    groups = (
+        ("top-encoder", "Top encoders"),
+        ("middle-encoder", "Middle encoders"),
+        ("bottom-encoder", "Bottom encoders"),
+        ("fader", "Persistent MPC mix faders"),
+        ("upper-button", "Upper buttons"),
+        ("lower-button", "Lower buttons"),
+    )
+    for core in report["cores"]:
+        plugin = {row["endpoint"]: row for row in core["selected_controls"]}
+        mix = {row["endpoint"]: row for row in core["persistent_mix_faders"]}
+        rows = []
+        for prefix, title in groups:
+            cells = []
+            for position in range(1, 9):
+                endpoint = f"{prefix}-{position}"
+                item = plugin.get(endpoint) or mix.get(endpoint)
+                if item is None:
+                    cells.append(f'<div class="control empty"><b>{html.escape(endpoint)}</b><span>unassigned</span></div>')
+                    continue
+                is_mix = endpoint in mix
+                label = item.get("expected_label", item.get("label", ""))
+                target = item.get("expected_target") or "; ".join(item.get("learned_targets", [])) or "Learn pending"
+                css = "mix" if is_mix else "plugin"
+                cells.append(
+                    f'<div class="control {css}"><b>{html.escape(endpoint)}</b>'
+                    f'<strong>{html.escape(str(label))}</strong>'
+                    f'<span>ch {item.get("channel")} · CC {item.get("cc")}</span>'
+                    f'<small>{html.escape(str(target))}</small></div>'
+                )
+            rows.append(
+                f'<section class="row"><h3>{html.escape(title)}</h3>'
+                f'<div class="controls">{"".join(cells)}</div></section>'
+            )
+        warnings = "".join(f"<li>{html.escape(item)}</li>" for item in core["warnings"])
+        sections.append(
+            f'<article><header><div><p class="eyebrow">Hardware pending · captured evidence</p>'
+            f'<h2>{html.escape(core["name"])}</h2><p>{html.escape(core["description"])}</p></div>'
+            f'<div class="counts"><b>{len(plugin)}</b> plugin controls<br><b>{len(mix)}</b> mix faders</div></header>'
+            f'{"".join(rows)}<p class="friction"><b>Friction removed:</b> {html.escape(core["friction_removed"])}</p>'
+            f'{f"<details><summary>{len(core["warnings"])} evidence warnings</summary><ul>{warnings}</ul></details>" if warnings else ""}'
+            f'</article>'
+        )
+    return f'''<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark"><title>Captured Plugin Cores</title><style>
+:root{{font-family:Inter,system-ui,sans-serif;color-scheme:dark;--bg:#0d1110;--panel:#161d19;--line:#334038;--text:#edf4ee;--muted:#9caaa1;--plugin:#284b38;--mix:#3c375d}}
+*{{box-sizing:border-box}}body{{margin:0;background:radial-gradient(circle at 10% 0,#183324,transparent 30rem),var(--bg);color:var(--text)}}main{{max-width:1400px;margin:auto;padding:36px 22px 80px}}h1{{font-size:clamp(2.2rem,6vw,5rem);letter-spacing:-.05em;margin:.2em 0}}.intro{{color:var(--muted);max-width:760px;line-height:1.55}}article{{margin-top:28px;padding:22px;border:1px solid var(--line);border-radius:20px;background:#121815dd}}header{{display:flex;justify-content:space-between;gap:20px;align-items:start}}h2{{font-size:1.8rem;margin:.2em 0}}.eyebrow{{text-transform:uppercase;letter-spacing:.12em;font-size:.7rem;color:#9ee6b1;font-weight:800}}.counts{{text-align:right;color:var(--muted);white-space:nowrap}}.counts b{{color:var(--text);font-size:1.3rem}}.row{{margin-top:18px}}h3{{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}}.controls{{display:grid;grid-template-columns:repeat(8,minmax(90px,1fr));gap:8px;overflow:auto}}.control{{min-height:118px;border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px}}.control.plugin{{background:var(--plugin);border-color:#598469}}.control.mix{{background:var(--mix);border-color:#7770a5}}.control.empty{{opacity:.28}}.control b{{font-size:.7rem;color:var(--muted)}}.control strong{{font-size:.86rem}}.control span,.control small{{font-size:.72rem;line-height:1.3}}.control small{{color:#c0cbc4}}.friction{{margin-top:20px}}details{{color:#f1cf78}}footer{{margin-top:28px;color:var(--muted);font-size:.82rem}}@media(max-width:850px){{header{{display:block}}.counts{{text-align:left}}.controls{{grid-template-columns:repeat(8,105px)}}}}
+</style></head><body><main><p class="eyebrow">Offline · read-only review</p><h1>Captured plugin cores</h1>
+<p class="intro">Green controls are the compact plugin surface. Purple faders preserve the MPC internal mix on its isolated channel. Empty controls are intentionally omitted, not missing evidence.</p>
+{"".join(sections)}<footer>{html.escape(report["boundary"])}</footer></main></body></html>'''
+
+
 def write_report(
     report: dict[str, Any], output: Path, *, force: bool = False,
     protected_paths: tuple[Path, ...] = (),
@@ -280,6 +336,7 @@ def write_report(
         (staging / "CAPTURED_CORES.md").write_text(render_markdown(report), encoding="utf-8")
         (staging / "captured-controls.csv").write_text(render_csv(report), encoding="utf-8")
         (staging / "HARDWARE_CHECKLIST.md").write_text(render_checklist(report), encoding="utf-8")
+        (staging / "CORE_COMPANION.html").write_text(render_html(report), encoding="utf-8")
         if output.exists():
             shutil.rmtree(output)
         os.replace(staging, output)

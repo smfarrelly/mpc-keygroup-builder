@@ -49,9 +49,12 @@ capture name, endpoint, visible label, saved Learn target, role, and reason.
 Compilation fails on drift and verifies that persistent faders use a separate
 channel; unmatched faders remain warnings rather than invented Learn evidence.
 
-The output is a review packet, not a SysEx edit: JSON, CSV, Markdown, and a
-hardware checklist preserve the original capture hash and exact channel/CC
-evidence. Components remains the supported place to edit/export Custom Modes.
+The output is a review packet, not a SysEx edit: JSON, CSV, Markdown, a hardware
+checklist, and a self-contained offline controller view preserve the original
+capture hash and exact channel/CC evidence. In the HTML companion, green cells
+show the compact plugin surface, purple faders show the persistent MPC mix, and
+empty cells make deliberate omissions visible. Components remains the supported
+place to edit/export Custom Modes.
 Fabric and Fabric XL stay evidence-gated until their UI metadata or a paired
 Components/MPC Learn capture is available locally.
 
