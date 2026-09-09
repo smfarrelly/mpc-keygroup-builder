@@ -37,6 +37,9 @@ uv run mpc-catalog build inventory/program-status.csv \
 
 Audio lookup is confined to the declared program root. Missing or unreadable
 samples are recorded per program and do not abort the scan.
+Catalog build and query outputs are published atomically, create missing parent
+directories, and cannot replace their input ledger or catalog. Symbolic-link
+and non-file destinations are rejected.
 
 Each program entry contains:
 
