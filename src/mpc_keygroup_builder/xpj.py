@@ -5,7 +5,9 @@ from __future__ import annotations
 import argparse
 import gzip
 import json
+import os
 import sys
+import tempfile
 from collections import Counter
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -261,13 +263,34 @@ def compare(left: XPJProject, right: XPJProject) -> dict[str, Any]:
     }
 
 
-def _write_json(value: Any, output: Path | None) -> None:
+def _write_json(
+    value: Any, output: Path | None, inputs: tuple[Path, ...] = ()
+) -> None:
     rendered = json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
     if output is None:
         sys.stdout.write(rendered)
     else:
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text(rendered, encoding="utf-8")
+        requested = output.expanduser()
+        if requested.is_symlink():
+            raise ValueError(f"XPJ report output may not be a symbolic link: {requested}")
+        destination = requested.resolve()
+        if destination in {path.expanduser().resolve() for path in inputs}:
+            raise ValueError(f"XPJ report output may not replace an input: {requested}")
+        if destination.exists() and not destination.is_file():
+            raise ValueError(f"XPJ report output is not a regular file: {requested}")
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        descriptor, temporary_name = tempfile.mkstemp(
+            prefix=f".{destination.name}.", dir=destination.parent
+        )
+        temporary = Path(temporary_name)
+        try:
+            with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as stream:
+                stream.write(rendered)
+                stream.flush()
+                os.fsync(stream.fileno())
+            os.replace(temporary, destination)
+        finally:
+            temporary.unlink(missing_ok=True)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -289,13 +312,17 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         if args.command == "inspect":
-            _write_json(summarize(load(args.project)), args.output)
+            _write_json(summarize(load(args.project)), args.output, (args.project,))
         elif args.command == "extract":
-            _write_json(normalized(load(args.project)), args.output)
+            _write_json(normalized(load(args.project)), args.output, (args.project,))
         elif args.command == "midi-learn":
-            _write_json(midi_learn_rows(load(args.project)), args.output)
+            _write_json(midi_learn_rows(load(args.project)), args.output, (args.project,))
         else:
-            _write_json(compare(load(args.left), load(args.right)), args.output)
+            _write_json(
+                compare(load(args.left), load(args.right)),
+                args.output,
+                (args.left, args.right),
+            )
     except (OSError, ValueError) as error:
         parser.exit(2, f"error: {error}\n")
     return 0
