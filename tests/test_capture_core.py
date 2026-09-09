@@ -15,6 +15,8 @@ class CaptureCoreTests(unittest.TestCase):
             "controls": [
                 {"control": "top-encoder-1", "label": "Cutoff", "channel": 9,
                  "number": 20, "channel_source": "encoded", "learned_targets": ["Synth (Cutoff)"]},
+                {"control": "bottom-encoder-1", "label": "Original Extra", "channel": 9,
+                 "number": 36, "channel_source": "encoded", "learned_targets": ["Synth (Extra)"]},
                 *[
                     {"control": f"fader-{index}", "label": f"Track {index}", "channel": 16,
                      "number": index + 4, "channel_source": "encoded",
@@ -51,6 +53,8 @@ reason="main gesture"
             self.assertEqual(report["summary"]["plugin_controls"], 1)
             self.assertEqual(report["summary"]["persistent_mix_faders"], 8)
             self.assertEqual(report["cores"][0]["selected_controls"][0]["cc"], 20)
+            self.assertEqual(report["cores"][0]["omitted_enabled_controls"], 1)
+            self.assertEqual(report["cores"][0]["omitted_controls"][0]["endpoint"], "bottom-encoder-1")
             self.assertIn("fader-8", report["warnings"][0])
 
     def test_detects_label_target_and_channel_drift(self):
@@ -76,10 +80,14 @@ reason="main gesture"
             output = root / "output"
             capture_core.write_report(report, output)
             self.assertTrue((output / "captured-controls.csv").is_file())
+            edit_plan = (output / "COMPONENTS_EDIT_PLAN.csv").read_text()
+            self.assertIn("keep-plugin-core", edit_plan)
+            self.assertIn("keep-mpc-mix", edit_plan)
             self.assertTrue((output / "HARDWARE_CHECKLIST.md").is_file())
             companion = (output / "CORE_COMPANION.html").read_text()
             self.assertIn("Persistent MPC mix faders", companion)
             self.assertIn("Synth Core", companion)
+            self.assertIn("omit", companion)
             self.assertNotIn("http://", companion)
             self.assertNotIn("https://", companion)
             with self.assertRaises(FileExistsError):

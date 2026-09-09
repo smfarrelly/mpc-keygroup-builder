@@ -53,8 +53,10 @@ The output is a review packet, not a SysEx edit: JSON, CSV, Markdown, a hardware
 checklist, and a self-contained offline controller view preserve the original
 capture hash and exact channel/CC evidence. In the HTML companion, green cells
 show the compact plugin surface, purple faders show the persistent MPC mix, and
-empty cells make deliberate omissions visible. Components remains the supported
-place to edit/export Custom Modes.
+dimmed cells show the original captured assignments omitted from the core.
+`COMPONENTS_EDIT_PLAN.csv` lists every captured endpoint as `keep-plugin-core`,
+`keep-mpc-mix`, or `omit-from-core`, making the manual Components edit explicit
+and reversible. Components remains the supported place to edit/export Custom Modes.
 Fabric and Fabric XL stay evidence-gated until their UI metadata or a paired
 Components/MPC Learn capture is available locally.
 
