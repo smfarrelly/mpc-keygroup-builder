@@ -177,6 +177,28 @@ class ProgramDesignerTests(unittest.TestCase):
             payload = json.loads(output.read_text())
             self.assertEqual(payload["devices"][0]["id"], "mpc-key-37")
 
+    def test_viewer_force_refuses_symlink_and_preserves_target(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            external = root / "external.html"
+            external.write_text("keep\n")
+            linked = root / "viewer.html"
+            linked.symlink_to(external)
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                designer.write_viewer(linked, [], "replace\n", force=True)
+            self.assertEqual(external.read_text(), "keep\n")
+
+    def test_viewer_protects_configuration_inputs_and_writes_atomically(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            config = root / "viewer.html"
+            config.write_text("keep\n")
+            with self.assertRaisesRegex(ValueError, "configuration input"):
+                designer.write_viewer(config, [config], "replace\n", force=True)
+            output = root / "new/viewer.html"
+            self.assertEqual(designer.write_viewer(output, [config], "viewer\n", force=False), output.resolve())
+            self.assertEqual(output.read_text(), "viewer\n")
+
     def test_bundle_renders_each_program_and_device_with_pairwise_comparisons(self):
         first = model.ProgramModel(
             1,
