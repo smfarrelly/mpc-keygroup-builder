@@ -4,6 +4,7 @@ import io
 import unittest
 import wave
 from pathlib import Path
+from unittest import mock
 
 from mpc_keygroup_builder import entrypoints, loop_inventory
 
@@ -87,3 +88,14 @@ class LoopInventoryTests(unittest.TestCase):
             self.assertEqual(status, 2)
             self.assertIn("CSV output must be a regular file", error.getvalue())
             self.assertFalse(json_path.exists())
+
+    def test_atomic_publication_failure_preserves_previous_report(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            output = root / "inventory.json"
+            output.write_text("previous\n")
+            with mock.patch.object(loop_inventory.os, "replace", side_effect=OSError("disk disconnected")):
+                with self.assertRaisesRegex(OSError, "disk disconnected"):
+                    loop_inventory.write_output(output, "replacement\n")
+            self.assertEqual(output.read_text(), "previous\n")
+            self.assertEqual(sorted(path.name for path in root.iterdir()), ["inventory.json"])

@@ -39,7 +39,9 @@ uv run mpc-loop-inventory "/path/to/loop pack" \
 
 The source must be an existing directory, and JSON and CSV must name distinct
 regular output files. Output symlinks are refused. Individual unreadable or
-poorly named WAVs remain visible as issues without hiding valid loops.
+poorly named WAVs remain visible as issues without hiding valid loops. Each
+report is staged, flushed, and atomically promoted so a failed write preserves
+the previous valid file.
 
 ## Build a coverage-aware backlog
 

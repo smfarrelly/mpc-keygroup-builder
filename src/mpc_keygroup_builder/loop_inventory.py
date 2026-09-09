@@ -6,7 +6,9 @@ import argparse
 import csv
 import io
 import json
+import os
 import re
+import tempfile
 import wave
 from collections import Counter
 from dataclasses import asdict, dataclass
@@ -143,6 +145,18 @@ def output_paths(json_path: Path, csv_path: Path) -> tuple[Path, Path]:
     return paths[0], paths[1]
 
 
+def write_output(path: Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as stream:
+            stream.write(text); stream.flush(); os.fsync(stream.fileno())
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("root", type=Path)
@@ -152,10 +166,8 @@ def main() -> int:
     root = args.root.expanduser().resolve()
     json_path, csv_path = output_paths(args.json, args.csv)
     report = scan(root)
-    json_path.parent.mkdir(parents=True, exist_ok=True)
-    csv_path.parent.mkdir(parents=True, exist_ok=True)
-    json_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
-    csv_path.write_text(render_csv(report), encoding="utf-8")
+    write_output(json_path, json.dumps(report, indent=2) + "\n")
+    write_output(csv_path, render_csv(report))
     print(
         f"loops={report['count']} bpm={report['bpm_min']}..{report['bpm_max']} "
         f"issues={len(report['issues'])} timing_warnings={len(report['timing_warnings'])}"
