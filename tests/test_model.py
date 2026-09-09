@@ -116,6 +116,29 @@ class ProgramModelTests(unittest.TestCase):
         self.assertTrue(any("unique" in value for value in report["errors"]))
         self.assertTrue(any("velocity" in value for value in report["errors"]))
 
+    def test_report_output_cannot_replace_an_input(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "Kit.xpm"
+            source.write_text("keep\n")
+            with self.assertRaisesRegex(ValueError, "may not replace an input"):
+                model.write_report(source, [source], "destroy\n")
+            self.assertEqual(source.read_text(), "keep\n")
+
+    def test_report_output_rejects_symlinks_and_creates_parents(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "Kit.xpm"
+            source.write_text("keep\n")
+            link = root / "report.json"
+            link.symlink_to(source)
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                model.write_report(link, [], "destroy\n")
+            self.assertEqual(source.read_text(), "keep\n")
+
+            output = root / "new" / "reports" / "model.json"
+            self.assertEqual(model.write_report(output, [source], "{}\n"), output.resolve())
+            self.assertEqual(output.read_text(), "{}\n")
+
 
 if __name__ == "__main__":
     unittest.main()
