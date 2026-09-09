@@ -251,6 +251,34 @@ def apply_package(
     }
 
 
+def prepare_report(path: Path, source: Path, destination: Path) -> Path:
+    requested = path.expanduser()
+    if requested.is_symlink():
+        raise ValueError(f"package report may not be a symbolic link: {requested}")
+    output = requested.resolve()
+    for label, root in (("source", source), ("destination", destination)):
+        resolved_root = root.expanduser().resolve()
+        if output == resolved_root or resolved_root in output.parents:
+            raise ValueError(f"package report may not be inside the {label} package: {requested}")
+    if output.exists() and not output.is_file():
+        raise ValueError(f"package report is not a regular file: {requested}")
+    return output
+
+
+def write_report(path: Path, result: dict[str, object]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as stream:
+            stream.write(json.dumps(result, indent=2) + "\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("source", type=Path)
@@ -268,14 +296,16 @@ def main() -> int:
     if args.resume and not args.apply:
         parser.error("--resume requires --apply")
     plan = build_plan(args.source, args.destination)
+    report_path = (
+        prepare_report(args.report, args.source, args.destination) if args.report else None
+    )
     result = plan
     if args.apply:
         result = apply_package(
             plan, resume=args.resume, probe_bytes=args.probe_mib * CHUNK_SIZE
         )
-    if args.report:
-        args.report.parent.mkdir(parents=True, exist_ok=True)
-        args.report.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+    if report_path:
+        write_report(report_path, result)
     print(
         f"{str(result.get('status', result['action'])).upper()}: "
         f"files={result['files']} bytes={result['bytes']} "
