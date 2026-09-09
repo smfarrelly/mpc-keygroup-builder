@@ -179,6 +179,32 @@ def deployment_report(plan: list[dict[str, object]], applied: bool) -> dict[str,
     }
 
 
+def prepare_report(path: Path, protected: list[Path]) -> Path:
+    requested = path.expanduser()
+    if requested.is_symlink():
+        raise ValueError(f"deployment report may not be a symbolic link: {requested}")
+    output = requested.resolve()
+    if output in {item.expanduser().resolve() for item in protected}:
+        raise ValueError(f"deployment report may not replace an input or deployed file: {requested}")
+    if output.exists() and not output.is_file():
+        raise ValueError(f"deployment report is not a regular file: {requested}")
+    return output
+
+
+def write_report(path: Path, report: dict[str, object]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as stream:
+            stream.write(json.dumps(report, indent=2) + "\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("manifest", type=Path)
@@ -190,12 +216,20 @@ def main() -> int:
     parser.add_argument("--report", type=Path)
     args = parser.parse_args()
     plan = build_plan(args.manifest, args.local_root, args.target_root, include_audio=args.include_audio)
+    report_path = None
+    if args.report:
+        protected = [args.manifest]
+        protected.extend(
+            Path(str(item[key]))
+            for item in plan
+            for key in ("source", "target")
+        )
+        report_path = prepare_report(args.report, protected)
     if args.apply:
         apply_plan(plan, args.backup_dir)
     report = deployment_report(plan, args.apply)
-    if args.report:
-        args.report.parent.mkdir(parents=True, exist_ok=True)
-        args.report.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    if report_path:
+        write_report(report_path, report)
     for item in plan:
         print(f"{str(item['action']).upper():9} {item['relative']}")
     print("Applied and verified." if args.apply else "Dry run only; no files changed.")
