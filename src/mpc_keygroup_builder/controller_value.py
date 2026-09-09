@@ -243,12 +243,14 @@ def render_csv(report: dict[str, Any]) -> str:
 
 
 def write_report(report: dict[str, Any], output: Path, *, force: bool = False) -> Path:
-    output = output.expanduser().resolve()
+    output = output.expanduser().absolute()
+    if output.is_symlink():
+        raise ValueError(f"refusing symbolic-link controller value output: {output}")
     if output.exists() and not force:
         raise FileExistsError(f"controller value output already exists: {output}")
     if output.exists():
         receipt = output / "controller-value.json"
-        if output.is_symlink() or not output.is_dir() or receipt.is_symlink() or not receipt.is_file():
+        if not output.is_dir() or receipt.is_symlink() or not receipt.is_file():
             raise ValueError(f"refusing to replace unrecognized controller value output: {output}")
         try:
             previous = json.loads(receipt.read_text(encoding="utf-8"))

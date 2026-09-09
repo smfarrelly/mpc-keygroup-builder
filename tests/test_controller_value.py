@@ -128,6 +128,13 @@ profile="../page.toml"
             with self.assertRaisesRegex(ValueError, "unrecognized"):
                 controller_value.write_report(report, unsafe, force=True)
             self.assertEqual((unsafe / "keep.txt").read_text(), "user data")
+            link = root / "output-link"
+            link.symlink_to(output, target_is_directory=True)
+            before = (output / "controller-value.json").read_bytes()
+            with self.assertRaisesRegex(ValueError, "symbolic-link"):
+                controller_value.write_report(report, link, force=True)
+            self.assertTrue(output.is_dir())
+            self.assertEqual((output / "controller-value.json").read_bytes(), before)
 
 
 if __name__ == "__main__":
