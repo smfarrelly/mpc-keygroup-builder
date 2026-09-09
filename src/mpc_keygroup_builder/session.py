@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -59,6 +61,34 @@ def build_report(
     }
 
 
+def write_report(output: Path, inputs: list[Path], rendered: str) -> Path:
+    """Publish a session report without replacing any of its inputs."""
+    requested = output.expanduser()
+    if requested.is_symlink():
+        raise ValueError(f"session report output may not be a symbolic link: {requested}")
+    destination = requested.resolve()
+    sources = {path.expanduser().resolve() for path in inputs}
+    if destination in sources:
+        raise ValueError(f"session report output may not replace an input: {requested}")
+    if destination.exists() and not destination.is_file():
+        raise ValueError(f"session report output is not a regular file: {requested}")
+
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{destination.name}.", dir=destination.parent
+    )
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as stream:
+            stream.write(rendered)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(temporary, destination)
+    finally:
+        temporary.unlink(missing_ok=True)
+    return destination
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("candidate_manifest", type=Path)
@@ -79,7 +109,13 @@ def main() -> int:
     )
     rendered = json.dumps(report, indent=2) + "\n"
     if args.output:
-        args.output.write_text(rendered, encoding="utf-8")
+        inputs = [args.candidate_manifest, args.ledger, args.rig]
+        inputs.extend(
+            path
+            for path in (args.routing_report, args.deployment_report)
+            if path is not None
+        )
+        write_report(args.output, inputs, rendered)
     else:
         print(rendered, end="")
     return 2 if report["rig"]["errors"] else 0
