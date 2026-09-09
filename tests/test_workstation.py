@@ -10,6 +10,7 @@ from mpc_keygroup_builder.workstation import (
     load_recipe,
     render_markdown,
     render_midi,
+    write_bundle,
 )
 
 
@@ -84,6 +85,31 @@ class WorkstationIdeaTests(unittest.TestCase):
             "ambient-scratchpad", "dusty-scratchpad", "electro-scratchpad",
             "funk-scratchpad", "house-scratchpad", "weird-scratchpad",
         })
+
+    def test_bundle_preflight_protects_inputs_and_symlinks(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "bundle.json"
+            source.write_text("keep\n")
+            payloads = (b"MThd", b"{}\n", b"# Idea\n")
+            with self.assertRaisesRegex(ValueError, "replace an input"):
+                write_bundle(root / "bundle", [source], payloads, force=True)
+            external = root / "external.md"
+            external.write_text("keep\n")
+            (root / "safe.md").symlink_to(external)
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                write_bundle(root / "safe", [], payloads, force=True)
+            self.assertFalse((root / "safe.mid").exists())
+            self.assertEqual(external.read_text(), "keep\n")
+
+    def test_bundle_creates_parents_and_requires_force(self):
+        with tempfile.TemporaryDirectory() as directory:
+            prefix = Path(directory) / "new/ideas/workstation"
+            payloads = (b"MThd", b"{}\n", b"# Idea\n")
+            paths = write_bundle(prefix, [], payloads, force=False)
+            self.assertEqual(tuple(path.read_bytes() for path in paths), payloads)
+            with self.assertRaisesRegex(FileExistsError, "--force"):
+                write_bundle(prefix, [], payloads, force=False)
 
 
 if __name__ == "__main__":

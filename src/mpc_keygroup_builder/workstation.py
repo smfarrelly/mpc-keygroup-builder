@@ -5,11 +5,39 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
+import tempfile
 import tomllib
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
 from .device import load_device
+
+
+def write_bundle(prefix: Path, inputs: list[Path], payloads: tuple[bytes, bytes, bytes], *, force: bool) -> tuple[Path, Path, Path]:
+    prefix = prefix.expanduser().resolve()
+    paths = (prefix.with_suffix(".mid"), prefix.with_suffix(".json"), prefix.with_suffix(".md"))
+    protected = {path.expanduser().resolve() for path in inputs}
+    for path in paths:
+        if path.is_symlink():
+            raise ValueError(f"workstation output may not be a symbolic link: {path}")
+        if path in protected:
+            raise ValueError(f"workstation output may not replace an input: {path}")
+        if path.exists() and not path.is_file():
+            raise ValueError(f"workstation output is not a regular file: {path}")
+    if not force and any(path.exists() for path in paths):
+        raise FileExistsError("output exists; pass --force to replace all bundle files")
+    prefix.parent.mkdir(parents=True, exist_ok=True)
+    for path, payload in zip(paths, payloads):
+        descriptor, temporary_name = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
+        temporary = Path(temporary_name)
+        try:
+            with os.fdopen(descriptor, "wb") as stream:
+                stream.write(payload); stream.flush(); os.fsync(stream.fileno())
+            os.replace(temporary, path)
+        finally:
+            temporary.unlink(missing_ok=True)
+    return paths
 from .harmony import (
     HarmonyIdea,
     HarmonyRecipe,
@@ -312,14 +340,13 @@ def main() -> int:
         density=args.density,
         layout=layout_id,
     )
-    prefix = args.output_prefix.expanduser().resolve()
-    paths = (prefix.with_suffix(".mid"), prefix.with_suffix(".json"), prefix.with_suffix(".md"))
-    if not args.force and any(path.exists() for path in paths):
-        parser.error("output exists; pass --force to replace all bundle files")
-    prefix.parent.mkdir(parents=True, exist_ok=True)
-    paths[0].write_bytes(render_midi(idea, loaded, midi_format=args.midi_format))
-    paths[1].write_text(json.dumps(idea.to_dict(), indent=2) + "\n", encoding="utf-8")
-    paths[2].write_text(render_markdown(idea, loaded), encoding="utf-8")
+    inputs = [args.recipe, args.program]
+    inputs.extend(path for path in (args.preset, args.device, args.roles) if path)
+    paths = write_bundle(args.output_prefix, inputs, (
+        render_midi(idea, loaded, midi_format=args.midi_format),
+        (json.dumps(idea.to_dict(), indent=2) + "\n").encode(),
+        render_markdown(idea, loaded).encode(),
+    ), force=args.force)
     for path in paths:
         print(f"Wrote: {path}")
     print(f"Tracks: Drums, Bass, Chords, Melody; seed={idea.seed}")

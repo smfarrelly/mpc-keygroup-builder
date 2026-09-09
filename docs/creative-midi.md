@@ -88,6 +88,10 @@ uv run mpc-workstation-idea recipes/workstation/dusty-scratchpad.toml \
   --output-prefix work/ideas/dusty-scratchpad-37
 ```
 
+The MIDI, JSON, and Markdown bundle paths are preflighted together before any
+write. They cannot replace recipe/program/layout inputs or follow symbolic
+links, are published atomically, and require `--force` for replacement.
+
 The bundle contains one format-1 MIDI file with named Drums, Bass, Chords, and
 Melody tracks, one complete JSON reproduction record, and one concise Markdown
 MPC loading guide. Short drum recipes repeat exactly to the harmonic length.
