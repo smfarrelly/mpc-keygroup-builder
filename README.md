@@ -69,6 +69,9 @@ is required for the software portion.
   hardware notes, and portable JSON/CSV results.
 - Validate companion exports into a durable results ledger, generate ranked
   profile seeds, print mode cards, and audit all controller slots and channels.
+- Audit whether controller pages earn live-rig space, enforce device ownership,
+  flag exhaustive mappings against compact budgets, and generate a hardware
+  value checklist.
 - Catalog programs and their hardware-listening status.
 - Plan additive, checksum-verified SD deployments.
 - Create a self-contained browser Program Designer for a prepared program set.

@@ -1,5 +1,11 @@
 # Declarative plugin performance pages
 
+Complete control discovery and a good live page are different products. Use
+`mpc-controller-value midi/controller-value-policy.toml` after compiling pages
+to identify oversized profiles and generate a short live-friction checklist.
+The default working budget is 16 mapped controls with no more than eight marked
+core; exceeding it is a review warning, not data loss or an automatic failure.
+
 `mpc-plugin-map` converts small, reviewable TOML profiles into Launch Control
 XL 3 Components worksheets and MPC MIDI Learn worksheets. It is the bridge
 between the read-only plugin parameter catalog and the one-time hardware Learn

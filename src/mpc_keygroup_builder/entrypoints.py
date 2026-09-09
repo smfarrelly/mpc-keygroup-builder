@@ -91,6 +91,7 @@ COMMANDS = {
     "mpc-plugin-seed": _spec("plugin_seed", "MIDI control", "Generate a ranked plugin performance-profile draft", "docs/plugin-mapping.md"),
     "mpc-plugin-coverage": _spec("plugin_coverage", "MIDI control", "Measure plugin mapping coverage and rank omissions", "docs/plugin-mapping.md"),
     "mpc-controller-capacity": _spec("controller_capacity", "MIDI control", "Validate the complete Custom Mode and channel plan", "docs/declarative-midi-control.md"),
+    "mpc-controller-value": _spec("controller_value", "MIDI control", "Audit whether controller layouts earn space in a live rig", "docs/declarative-midi-control.md"),
     "mpc-capture-core": _spec("capture_core", "MIDI control", "Compile compact plugin cores from captured controller evidence", "docs/plugin-mapping.md"),
     "mpc-schema": _spec("schema", "Reference", "Discover schemas and validate declarative files", "docs/schemas.md"),
     "mpc-showcase": _spec("showcase", "Start here", "Build six reproducible composition evidence bundles", "docs/composition-showcase.md"),
