@@ -35,6 +35,10 @@ uv run mpc-harmony-idea recipes/harmony/dusty-dorian.toml \
   --output-prefix work/ideas/dusty-dorian-37
 ```
 
+Harmony JSON and MIDI destinations are preflighted together, cannot replace
+the recipe or follow symbolic links, and are published atomically. Existing
+outputs require `--force`.
+
 The recipe declares key, scale, scale-degree progression, harmonic rhythm,
 three- or four-note chords, bass rhythm, velocities, MIDI channels, and strict
 MIDI note ranges. Chord voicings are chosen with deterministic nearest-voice
