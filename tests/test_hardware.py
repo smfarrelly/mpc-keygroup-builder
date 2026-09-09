@@ -3,6 +3,7 @@ import tempfile
 import unittest
 import tomllib
 from pathlib import Path
+from unittest import mock
 
 from mpc_keygroup_builder import hardware
 
@@ -59,6 +60,23 @@ class HardwareResultTests(unittest.TestCase):
             self.assertEqual(row["scratchpad_role"], "bass")
             self.assertEqual(row["notes"], "Even response across the keybed.")
             self.assertEqual(ledger.read_bytes().count(b"\r\n"), 2)
+
+    def test_apply_flushes_the_replacement_before_promotion(self):
+        with tempfile.TemporaryDirectory() as directory:
+            ledger = Path(directory) / "status.csv"
+            self.write_ledger(ledger)
+            events = []
+            real_fsync = hardware.os.fsync
+            real_replace = hardware.os.replace
+            with mock.patch.object(hardware.os, "fsync", side_effect=lambda fd: (events.append("fsync"), real_fsync(fd))[1]), mock.patch.object(
+                hardware.os, "replace", side_effect=lambda source, target: (events.append("replace"), real_replace(source, target))[1]
+            ):
+                hardware.update_ledger(
+                    ledger,
+                    [{"path": "Programs/Bass.xpm", "hardware_status": "pass"}],
+                    write=True,
+                )
+            self.assertEqual(events, ["fsync", "replace"])
 
     def test_dry_run_does_not_change_ledger(self):
         with tempfile.TemporaryDirectory() as directory:

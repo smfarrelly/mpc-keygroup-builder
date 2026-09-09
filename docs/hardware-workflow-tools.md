@@ -17,6 +17,10 @@ uv run mpc-hardware-results inventory/program-status.csv \
   work/key37-hardware-results.toml --apply
 ```
 
+Applied ledger changes preserve the original line endings and permissions and
+are flushed to a temporary file before atomic replacement, which reduces the
+risk of a zero-length or partial ledger after removable-media interruption.
+
 The first results command is a dry run. A pass or warning requires concise
 listening notes. The readiness checker keeps deployment, all-candidate hardware
 testing, selected core viability, and final favorite selection as separate

@@ -110,6 +110,8 @@ def update_ledger(
                 writer = csv.DictWriter(stream, fieldnames=fieldnames, lineterminator=line_ending)
                 writer.writeheader()
                 writer.writerows(rows)
+                stream.flush()
+                os.fsync(stream.fileno())
             temporary.chmod(mode)
             os.replace(temporary, ledger)
         except Exception:
