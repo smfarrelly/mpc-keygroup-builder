@@ -6,10 +6,13 @@ import argparse
 import csv
 import gzip
 import json
+import os
+import tempfile
 import wave
 import xml.etree.ElementTree as ET
 from collections import Counter
 from dataclasses import asdict, dataclass, field
+from io import StringIO
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -343,6 +346,21 @@ def run_suite(root: Path) -> list[ProgramTest]:
 
 
 def write_reports(results: list[ProgramTest], root: Path, json_path: Path, csv_path: Path) -> dict[str, Any]:
+    protected = {root.joinpath(item.path).resolve() for item in results}
+    outputs = []
+    for label, path in (("JSON", json_path), ("CSV", csv_path)):
+        requested = path.expanduser()
+        if requested.is_symlink():
+            raise ValueError(f"{label} test report may not be a symbolic link: {requested}")
+        destination = requested.resolve()
+        if destination in protected:
+            raise ValueError(f"{label} test report may not replace an input program: {requested}")
+        if destination.exists() and not destination.is_file():
+            raise ValueError(f"{label} test report is not a regular file: {requested}")
+        outputs.append(destination)
+    if outputs[0] == outputs[1]:
+        raise ValueError("JSON and CSV test reports must use different paths")
+
     verdicts = Counter(item.verdict for item in results)
     production_verdicts = Counter(item.verdict for item in results if item.scope == "production")
     testing_verdicts = Counter(item.verdict for item in results if item.scope == "testing")
@@ -357,49 +375,57 @@ def write_reports(results: list[ProgramTest], root: Path, json_path: Path, csv_p
         "dead_trigger_cells": sum(item.dead_trigger_cells for item in results),
         "stacked_trigger_cells": sum(item.stacked_trigger_cells for item in results),
     }
-    json_path.parent.mkdir(parents=True, exist_ok=True)
-    json_path.write_text(
-        json.dumps(
-            {
-                "summary": summary,
-                "programs": [
-                    {**asdict(item), "issues": [asdict(issue) for issue in item.issues]}
-                    for item in results
-                ],
-            },
-            indent=2,
-        )
-        + "\n",
-        encoding="utf-8",
+    rendered_json = json.dumps(
+        {
+            "summary": summary,
+            "programs": [
+                {**asdict(item), "issues": [asdict(issue) for issue in item.issues]}
+                for item in results
+            ],
+        },
+        indent=2,
+    ) + "\n"
+    csv_stream = StringIO(newline="")
+    fields = (
+        "verdict", "scope", "program_type", "format", "sample_references", "playable_notes",
+        "dead_trigger_cells", "stacked_trigger_cells", "errors", "warnings", "path",
     )
-    csv_path.parent.mkdir(parents=True, exist_ok=True)
-    with csv_path.open("w", encoding="utf-8", newline="") as stream:
-        fields = (
-            "verdict", "scope", "program_type", "format", "sample_references", "playable_notes",
-            "dead_trigger_cells", "stacked_trigger_cells", "errors", "warnings", "path",
+    writer = csv.DictWriter(csv_stream, fieldnames=fields)
+    writer.writeheader()
+    for item in results:
+        writer.writerow(
+            {
+                "verdict": item.verdict,
+                "scope": item.scope,
+                "program_type": item.program_type,
+                "format": item.format,
+                "sample_references": item.sample_references,
+                "playable_notes": item.playable_notes,
+                "dead_trigger_cells": item.dead_trigger_cells,
+                "stacked_trigger_cells": item.stacked_trigger_cells,
+                "errors": " | ".join(
+                    f"{issue.code}: {issue.message}" for issue in item.issues if issue.severity == "error"
+                ),
+                "warnings": " | ".join(
+                    f"{issue.code}: {issue.message}" for issue in item.issues if issue.severity == "warning"
+                ),
+                "path": item.path,
+            }
         )
-        writer = csv.DictWriter(stream, fieldnames=fields)
-        writer.writeheader()
-        for item in results:
-            writer.writerow(
-                {
-                    "verdict": item.verdict,
-                    "scope": item.scope,
-                    "program_type": item.program_type,
-                    "format": item.format,
-                    "sample_references": item.sample_references,
-                    "playable_notes": item.playable_notes,
-                    "dead_trigger_cells": item.dead_trigger_cells,
-                    "stacked_trigger_cells": item.stacked_trigger_cells,
-                    "errors": " | ".join(
-                        f"{issue.code}: {issue.message}" for issue in item.issues if issue.severity == "error"
-                    ),
-                    "warnings": " | ".join(
-                        f"{issue.code}: {issue.message}" for issue in item.issues if issue.severity == "warning"
-                    ),
-                    "path": item.path,
-                }
-            )
+    for destination, rendered in zip(outputs, (rendered_json, csv_stream.getvalue())):
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        descriptor, temporary_name = tempfile.mkstemp(
+            prefix=f".{destination.name}.", dir=destination.parent
+        )
+        temporary = Path(temporary_name)
+        try:
+            with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as stream:
+                stream.write(rendered)
+                stream.flush()
+                os.fsync(stream.fileno())
+            os.replace(temporary, destination)
+        finally:
+            temporary.unlink(missing_ok=True)
     return summary
 
 

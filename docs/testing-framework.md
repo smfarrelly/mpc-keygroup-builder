@@ -12,6 +12,10 @@ uv run mpc-program-test "/path/to/SD mirror" \
   --csv work/semantic-test-report.csv
 ```
 
+The JSON and CSV reports must use distinct paths. Both destinations are
+preflighted before writing, cannot replace an input XPM or target a symbolic
+link/non-file path, and are published atomically into created parent folders.
+
 ## What a local production pass means
 
 - The XPM parses and has the expected container structure.

@@ -81,6 +81,36 @@ class TestingFrameworkTests(unittest.TestCase):
             self.assertEqual(result.scope, "testing")
             self.assertEqual(result.verdict, "fail")
 
+    def test_reports_must_use_distinct_safe_destinations(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            program = write_keygroup(root)
+            results = testing.run_suite(root)
+            with self.assertRaisesRegex(ValueError, "different paths"):
+                testing.write_reports(results, root, root / "report", root / "report")
+            original = program.read_bytes()
+            with self.assertRaisesRegex(ValueError, "replace an input program"):
+                testing.write_reports(results, root, program, root / "report.csv")
+            self.assertEqual(program.read_bytes(), original)
+
+    def test_reports_reject_symlinks_and_create_parents(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            results = testing.run_suite(root)
+            external = root / "external.json"
+            external.write_text("keep\n")
+            linked = root / "report.json"
+            linked.symlink_to(external)
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                testing.write_reports(results, root, linked, root / "report.csv")
+            self.assertEqual(external.read_text(), "keep\n")
+
+            json_path = root / "new" / "reports" / "result.json"
+            csv_path = root / "new" / "reports" / "result.csv"
+            testing.write_reports(results, root, json_path, csv_path)
+            self.assertEqual(json.loads(json_path.read_text())["summary"]["programs"], 0)
+            self.assertTrue(csv_path.read_text().startswith("verdict,scope,"))
+
 
 if __name__ == "__main__":
     unittest.main()
