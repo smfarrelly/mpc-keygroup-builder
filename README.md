@@ -19,6 +19,8 @@ Choose the path that matches what you want to do:
   [nondeveloper getting-started guide](docs/getting-started.md).
 - **Build one pitched instrument:** follow
   [Build a Keygroup](docs/keygroup-building.md).
+- **Color an existing XML drum kit without relocating samples:** use
+  [`mpc-program-color --colocated`](docs/program-model-and-layouts.md#color-an-existing-xml-drum-without-moving-its-samples).
 - **Explore every command:** run `mpc-tools commands` or read the
   [CLI reference](docs/cli-reference.md).
 - **Understand the whole project:** use the [documentation map](docs/index.md)

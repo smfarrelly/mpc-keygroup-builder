@@ -26,6 +26,35 @@ When `--output` is used, the model report is published atomically and missing
 parent directories are created. It cannot replace the source or roles file;
 symbolic-link and non-file destinations are rejected.
 
+## Color an existing XML Drum without moving its samples
+
+For a working vendor XML Drum program, prefer a colocated color-only copy:
+
+```bash
+uv run mpc-program-color "/path/to/samples/Original Kit.xpm" --colocated --dry-run
+uv run mpc-program-color "/path/to/samples/Original Kit.xpm" --colocated
+```
+
+This creates `Original Kit FG COLORS.xpm` in the same folder, copies no audio,
+and preserves every original byte outside the unversioned `ProgramPads` block.
+Sample names, empty sample-file fields, instrument settings, program name, and
+versioned pad metadata are unchanged. Existing outputs and symlink sources or
+outputs are refused. `--output` may select another `.xpm` filename in that same
+folder; `--name` is deliberately incompatible with this preservation mode.
+
+For older XMLs missing a color map, add
+`--color-template "/path/to/working-colored-or-uncolored-drum.xpm"`. Only its
+color-map structure is borrowed; unused pad colors are reset, and no instrument
+or sample fields are copied. Custom colors and exact filename classifications
+still use `--palette` with `[colors]` and `[overrides]` tables.
+
+This mode is XML Drum only, not compressed Drum/Keygroup conversion. A Cassette
+Drums color-only pilot beside its WAVs passed on the Key 37; two relocated XML
+variants with relative sample paths loaded without samples. Therefore, keep
+these new copies beside the source WAVs. Software checks preserve source
+behavior, including existing broken references; they do not establish audio
+loading or acceptance of every program. Hardware testing can remain deferred.
+
 ## Semantic roles and overrides
 
 Roles are stable identities such as `kick.primary`, `snare.primary`,
