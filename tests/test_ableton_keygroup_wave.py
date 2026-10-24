@@ -71,6 +71,83 @@ class AbletonKeygroupWaveTests(unittest.TestCase):
             with self.assertRaises(FileExistsError):
                 ableton_keygroup_wave.plan(backlog, root, output, count=2, max_per_pack=1)
 
+    def test_can_focus_a_wave_on_one_pack(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            entries = []
+            for pack in ("alpha_from_mars", "beta_from_mars"):
+                preset = self.fixture(root, pack, f"Keys {pack}")
+                entries.append({
+                    "path": preset.relative_to(root).as_posix(), "name": preset.stem,
+                    "pack": pack, "target": "keygroup", "priority": "P1",
+                    "score": 80, "duplicate_of": None,
+                })
+            backlog = root / "backlog.json"
+            backlog.write_text(json.dumps({"entries": entries}))
+            output = root / "focused-plan"
+            report = ableton_keygroup_wave.plan(
+                backlog, root, output, count=1, max_per_pack=1,
+                include_pack="beta_from_mars", exclude_names=("Keys alpha_from_mars",),
+            )
+            self.assertEqual(report["include_pack"], "beta_from_mars")
+            self.assertEqual(report["excluded_names"], ["Keys alpha_from_mars"])
+            self.assertEqual(report["programs"][0]["collection"], "Beta")
+
+    def test_assigns_browsable_instrument_categories(self):
+        self.assertEqual(ableton_keygroup_wave._category("Presets/01. Guitars/Nylon Guitar.adg"), "Guitars")
+        self.assertEqual(ableton_keygroup_wave._category("Presets/02. Strings/Cello.adg"), "Strings")
+        self.assertEqual(
+            ableton_keygroup_wave._category("Presets/04. Brass & Woodwind/Clarinet.adg"),
+            "Brass & Woodwinds",
+        )
+        self.assertEqual(ableton_keygroup_wave._category("Presets/06. Perc/Timpani.adg"), "Percussion")
+        self.assertEqual(ableton_keygroup_wave._category("Presets/07. Percussion/Bongos.adg"), "Percussion")
+        self.assertEqual(ableton_keygroup_wave._category("Presets/05. Vocal/Choir.adg"), "Vocals")
+        self.assertEqual(ableton_keygroup_wave._category("Presets/08. FX/Dive.adg"), "FX")
+        self.assertEqual(
+            ableton_keygroup_wave._category("Presets/02. Keys & Pads/Glass.adg"),
+            "Keys & Pads",
+        )
+        self.assertEqual(ableton_keygroup_wave._category("Presets/04. Chords/Stab.adg"), "Chords")
+        self.assertEqual(
+            ableton_keygroup_wave._category("Presets/05. Percussive/Hit.adg"),
+            "Percussive",
+        )
+
+    def test_unknown_or_path_like_pack_is_actionable_and_writes_nothing(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            backlog = root / 'backlog.json'
+            backlog.write_text(json.dumps({'entries': [{'pack': 'known_from_mars'}]}))
+            for pack, message in [('typo', 'known_from_mars'), ('../outside', 'not a path')]:
+                with self.assertRaisesRegex(ValueError, message):
+                    ableton_keygroup_wave.plan(backlog, root, root / 'output', count=1, include_pack=pack)
+                self.assertFalse((root / 'output').exists())
+
+    def test_colliding_output_names_are_refused_before_plan_publication(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            entries = []
+            for pack in ('alpha', 'beta'):
+                preset = self.fixture(root, pack, 'Same Keys')
+                entries.append({'path': str(preset.relative_to(root)), 'name': 'Same Keys',
+                                'pack': pack, 'target': 'keygroup', 'priority': 'P1'})
+            backlog = root / 'backlog.json'
+            backlog.write_text(json.dumps({'entries': entries}))
+            with self.assertRaisesRegex(ValueError, 'collide'):
+                ableton_keygroup_wave.plan(backlog, root, root / 'output', count=2)
+            self.assertFalse((root / 'output').exists())
+
+    def test_keyrange_loss_does_not_admit_invalid_midi_ranges(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            preset = self.fixture(root, 'range_from_mars', 'Invalid')
+            raw = gzip.decompress(preset.read_bytes()).replace(
+                b'<KeyRange><Min Value="0"/>', b'<KeyRange><Min Value="128"/>')
+            preset.write_bytes(gzip.compress(raw))
+            with self.assertRaisesRegex(ValueError, 'invalid source key ranges'):
+                ableton_keygroup_wave.preflight({'path': str(preset.relative_to(root))}, root, allow_keyrange_loss=True)
+
     def test_rejects_warp_and_insufficient_compatible_count(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -115,6 +192,22 @@ class AbletonKeygroupWaveTests(unittest.TestCase):
             result = ableton_keygroup_wave.preflight(entry, root, allow_endpoint_loss=True)
             self.assertEqual(result["fidelity"], "review-required")
             self.assertIn("comparison uses WAV end=19", result["warnings"][0])
+
+    def test_source_key_range_loss_requires_explicit_opt_in(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            preset = self.fixture(root, "range_from_mars", "Ranged")
+            raw = gzip.decompress(preset.read_bytes()).replace(
+                b'<KeyRange><Min Value="0"/>', b'<KeyRange><Min Value="12"/>',
+            )
+            with gzip.open(preset, "wb") as stream:
+                stream.write(raw)
+            entry = {"path": preset.relative_to(root).as_posix(), "name": "Ranged", "pack": "range_from_mars"}
+            with self.assertRaisesRegex(ValueError, "key range"):
+                ableton_keygroup_wave.preflight(entry, root)
+            result = ableton_keygroup_wave.preflight(entry, root, allow_keyrange_loss=True)
+            self.assertEqual(result["fidelity"], "review-required")
+            self.assertTrue(any("replaced by builder range" in warning for warning in result["warnings"]))
 
 
 if __name__ == "__main__":
