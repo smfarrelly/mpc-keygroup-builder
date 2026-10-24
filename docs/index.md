@@ -5,6 +5,8 @@ user does not have to read the project's full history before making something.
 
 ## New to the project
 
+Start with [one musical task](start-here.md), without reconstructing the history.
+
 1. [Getting started](getting-started.md) — install or try the browser demo.
 2. [CLI reference](cli-reference.md) — discover commands and conventions.
 3. [Declarative schemas](schemas.md) — integrate or validate reusable files.

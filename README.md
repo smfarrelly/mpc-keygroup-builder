@@ -12,6 +12,9 @@ own or may legally use, and generated programs stay on your own storage.
 
 Choose the path that matches what you want to do:
 
+- **Returning after a break:** run `mpc-tools start` or read
+  [Start with one musical task](docs/start-here.md). No card is needed.
+
 - **Try it without installing anything:** open
   [`site/index.html`](site/index.html) in a browser, then launch the synthetic
   Program Designer demo. It contains no licensed audio and never uploads data.

@@ -16,6 +16,7 @@ from .entrypoints import COMMANDS, invoke, version
 from .portable_demo import build_demo, verify_demo
 from .scaffold import KINDS, create as create_scaffold
 from .web_demo import build_web_demo
+from .start import WORKFLOWS, show as show_start
 
 
 def _find_checkpoint(explicit: Path | None) -> Path:
@@ -167,6 +168,9 @@ def main() -> int:
     )
     parser.add_argument("--version", action="version", version=f"%(prog)s {version()}")
     subparsers = parser.add_subparsers(dest="command", required=True)
+    start = subparsers.add_parser("start", help="choose one workflow without inspecting drives or running commands")
+    start.add_argument("goal", nargs="?", choices=tuple(WORKFLOWS))
+    start.add_argument("--json", action="store_true")
     commands = subparsers.add_parser("commands", help="list tools by workflow category")
     commands.add_argument("--category", help="show one category, such as Build or Creative MIDI")
     commands.add_argument("--json", action="store_true", help="emit machine-readable JSON")
@@ -205,6 +209,8 @@ def main() -> int:
         help="workstation recipe family (default for workstations: dusty)",
     )
     args = parser.parse_args()
+    if args.command == "start":
+        return show_start(args.goal, args.json)
     if args.command == "commands":
         return _commands(args.category, args.json)
     if args.command == "help":
