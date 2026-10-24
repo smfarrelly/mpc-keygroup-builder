@@ -6,3 +6,7 @@ ledger = "inventory/program-status.csv"
 # program_root = "/path/to/local/library"
 # recipe_root = "recipes"
 bundles = []
+# For a different local folder layout, select explicit roots instead of guessing
+# a program_root. Matches remain candidates, not proof of deployed identity.
+library_roots = []
+# verify_samples = true

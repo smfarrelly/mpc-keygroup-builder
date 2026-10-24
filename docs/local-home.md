@@ -13,6 +13,28 @@ mpc-tools home --output work/reports/home-01.html \
 
 All inputs are optional; omit unavailable ones. Only `--output` is required.
 
+## When your laptop folders differ from the SD layout
+
+Use `--library-root` instead of guessing a `--program-root`:
+
+```bash
+mpc-tools home --ledger inventory/program-status.csv \
+  --library-root "/path/to/generated/instruments" \
+  --library-root "/path/to/vendor/MPC/presets" \
+  --verify-samples --output work/reports/home-local-01.html
+```
+
+The page keeps the historical SD navigation path separate from local candidates.
+It displays every candidate (up to the documented scan limit), ambiguity, and
+exact recheck commands. Matching names or folders are not proof that a candidate
+is identical to the version you tested on hardware. See
+[library reconciliation](library-reconciliation.md) for matching rules and bounds.
+
+`--verify-samples` checks references for found recorded-layout programs and/or
+local candidates. It is opt-in, requires one of those library inputs, and never
+decodes audio or updates hardware verdicts. Missing or ambiguous sample paths
+make the page's status `attention`; finding the XPM alone is insufficient.
+
 ## Save your input selection
 
 Copy `home.example.toml` to a private `home.local.toml`, edit its paths, then use:
@@ -28,13 +50,19 @@ Keep the config private because it identifies personal storage locations.
 The output is deliberately not saved in the config: choose a new report filename
 each time to avoid replacing a useful earlier view.
 
+The equivalent config fields are `library_roots = ["../instruments"]` and
+`verify_samples = true`. Paths follow the config file; the flag must be an actual
+TOML boolean. `program_root` remains useful when the local tree exactly mirrors
+the ledger. It can coexist with candidate roots; their evidence stays separate.
+
 ## Input and output boundaries
 
 `--bundle` may be repeated. `--program-root` requires a ledger and `--recipe-root`
 requires a bundle. The output must be a new filename outside the selected input
 libraries, bundles, and recipe trees. It never changes those inputs.
 
-Open the generated HTML in your browser. The page has four linked sections:
+Open the generated HTML in your browser. The page starts with an evidence summary
+and favorite sounds, followed by saved ideas, workflow guidance, and readiness:
 
 - One-task workflow instructions, with commands to run yourself.
 - Confirmed favorites from the listening ledger. With a program root, it shows
