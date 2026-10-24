@@ -47,6 +47,7 @@ Start with [one musical task](start-here.md), without reconstructing the history
 - [Ableton source inspector](ableton-source-inspector.md)
 - [MPC ecosystem survey](mpc-ecosystem-survey.md)
 - [Testing framework](testing-framework.md)
+- [Local readiness and recovery](local-readiness.md)
 - [Declarative schemas](schemas.md)
 - [MPC Key 37 field review](MPC_KEY37_FIELD_REVIEW.md)
 
