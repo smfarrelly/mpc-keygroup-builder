@@ -117,6 +117,87 @@ class HomeTests(unittest.TestCase):
         self.assertEqual(report['status'], 'attention')
         self.assertIn('fail', self.output.read_text())
 
+    def candidate_program(self, name='Collection/Kit.xpm', sample=True):
+        path = self.programs / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text('<MPCVObject><Program type="Drum"><ProgramName>Kit</ProgramName><Instruments><Instrument number="1"><Layers><Layer><SampleFile>kick.wav</SampleFile></Layer></Layers></Instrument></Instruments></Program></MPCVObject>')
+        if sample:
+            (path.parent / 'kick.wav').write_bytes(b'fixture')
+        return path
+
+    def test_different_layout_candidates_and_sample_evidence(self):
+        self.ledger_file('Programs/Collection/Kit.xpm')
+        path = self.candidate_program()
+        report = home.build(self.output, ledger=self.ledger, library_roots=[self.programs], verify_samples=True)
+        self.assertEqual(report['status'], 'pass')
+        self.assertEqual(report['favorites'][0]['local_status'], 'not-checked')
+        candidate = report['reconciliation']['rows'][0]['candidates'][0]
+        self.assertEqual(candidate['sample_status'], 'pass')
+        html = self.output.read_text()
+        for text in (str(path), 'Local location matching: candidate', 'Historical hardware status: pass',
+                     'Recorded library / SD navigation path', 'not proven identical', 'Sample-reference checks do not decode audio'):
+            self.assertIn(text, html)
+
+    def test_sample_failure_remains_attention_with_found_candidate(self):
+        self.ledger_file('Programs/Collection/Kit.xpm')
+        self.candidate_program(sample=False)
+        report = home.build(self.output, ledger=self.ledger, library_roots=[self.programs], verify_samples=True)
+        self.assertEqual(report['status'], 'attention')
+        self.assertIn('sample references: fail', self.output.read_text())
+
+    def test_recorded_layout_sample_check_is_opt_in(self):
+        self.ledger_file('Collection/Kit.xpm')
+        self.candidate_program(sample=False)
+        report = home.collect(ledger=self.ledger, program_root=self.programs)
+        self.assertEqual(report['favorites'][0]['sample_status'], 'not-checked')
+        report = home.collect(ledger=self.ledger, program_root=self.programs, verify_samples=True)
+        self.assertEqual(report['status'], 'attention')
+        self.assertEqual(report['favorites'][0]['sample_status'], 'fail')
+
+    def test_ambiguous_candidates_are_all_shown_without_a_selected_winner(self):
+        self.ledger_file('Programs/Collection/Kit.xpm')
+        one = self.candidate_program()
+        two = self.candidate_program('Other/Kit.xpm')
+        report = home.build(self.output, ledger=self.ledger, library_roots=[self.programs])
+        self.assertEqual(report['status'], 'attention')
+        html = self.output.read_text()
+        self.assertIn(str(one), html)
+        self.assertIn(str(two), html)
+        self.assertIn('Local location matching: ambiguous', html)
+
+    def test_library_output_and_unused_options_are_rejected(self):
+        self.ledger_file()
+        with self.assertRaises(ValueError):
+            home.build(self.programs / 'report.html', ledger=self.ledger, library_roots=[self.programs])
+        for options in ({'library_roots': [self.programs]}, {'verify_samples': True},
+                        {'ledger': self.ledger, 'verify_samples': True}):
+            with self.subTest(options=options), self.assertRaises(ValueError):
+                home.build(self.output, **options)
+        self.assertFalse(self.output.exists())
+
+    def test_candidate_names_are_escaped_and_commands_are_shell_quoted(self):
+        name = "Collection/Kit <&> ' name.xpm"
+        self.ledger_file('Programs/' + name)
+        self.candidate_program(name)
+        home.build(self.output, ledger=self.ledger, library_roots=[self.programs])
+        html = self.output.read_text()
+        self.assertNotIn('<&>', html)
+        self.assertIn('&lt;&amp;&gt;', html)
+        self.assertIn('mpc-tools check --program', html)
+
+    def test_page_prioritizes_personal_sounds_over_generic_commands(self):
+        home.build(self.output)
+        html = self.output.read_text()
+        self.assertLess(html.index('<section id="favorites">'), html.index('<section id="workflows">'))
+
+    def test_home_public_cli_reconciles_explicit_library(self):
+        self.ledger_file('Programs/Collection/Kit.xpm')
+        self.candidate_program()
+        with contextlib.redirect_stdout(io.StringIO()):
+            code = invoke('mpc-tools', ['home', '--ledger', str(self.ledger), '--library-root', str(self.programs), '--verify-samples', '--output', str(self.output)])
+        self.assertEqual(code, 0)
+        self.assertIn('sample references: pass', self.output.read_text())
+
     def test_invalid_arguments_fail_before_creating_output(self):
         for inputs in ({'program_root': self.programs}, {'recipe_root': self.root}, {'ledger': self.ledger}):
             with self.assertRaises((ValueError, FileNotFoundError)):

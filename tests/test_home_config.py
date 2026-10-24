@@ -45,6 +45,25 @@ class HomeConfigTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             load_config(alias)
 
+    def test_library_config_paths_and_sample_flag(self):
+        self.config.write_text('format=1\nlibrary_roots=["instruments", "../other"]\nverify_samples=true\n')
+        result = load_config(self.config)
+        self.assertEqual(result['library_roots'], [self.root / 'instruments', self.root / '../other'])
+        self.assertIs(result['verify_samples'], True)
+
+    def test_library_config_rejects_wrong_types(self):
+        for field in ('library_roots="library"', 'library_roots=[1]', 'verify_samples=1', 'verify_samples="true"'):
+            with self.subTest(field=field):
+                self.config.write_text('format=1\n' + field)
+                with self.assertRaises(ValueError):
+                    load_config(self.config)
+
+    def test_config_cannot_mix_with_library_or_sample_flags(self):
+        self.config.write_text('format=1\n')
+        for flags in (['--library-root', str(self.root)], ['--verify-samples']):
+            with self.subTest(flags=flags), contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+                invoke('mpc-tools', ['home', '--config', str(self.config), '--output', str(self.root / 'home.html'), *flags])
+
     def test_ambiguous_cli_config_overrides_rejected(self):
         self.config.write_text('format=1\n')
         output = self.root / 'home.html'

@@ -196,6 +196,8 @@ def main() -> int:
     home.add_argument("--program-root", type=Path)
     home.add_argument("--bundle", type=Path, action="append", default=[])
     home.add_argument("--recipe-root", type=Path)
+    home.add_argument("--library-root", type=Path, action="append", default=[], help="find local favorites in a different folder layout; repeat for separate libraries")
+    home.add_argument("--verify-samples", action="store_true", help="check sample references for favorite locations; no hardware acceptance")
     reconcile = subparsers.add_parser("reconcile", help="find local XPM candidates for ledger paths without changing them")
     reconcile.add_argument("--ledger", required=True, type=Path)
     reconcile.add_argument("--library-root", required=True, type=Path, action="append", help="explicit local library; repeat for separate, non-overlapping roots")
@@ -254,12 +256,13 @@ def main() -> int:
     if args.command == "home":
         from .home import build, load_config
         if args.config is not None:
-            if any((args.archive_library, args.ledger, args.program_root, args.bundle, args.recipe_root)):
+            if any((args.archive_library, args.ledger, args.program_root, args.bundle, args.recipe_root, args.library_root, args.verify_samples)):
                 parser.error('--config cannot be combined with home input flags')
             inputs = load_config(args.config)
         else:
             inputs = dict(archive_library=args.archive_library, ledger=args.ledger,
-                          program_root=args.program_root, bundles=args.bundle, recipe_root=args.recipe_root)
+                          program_root=args.program_root, bundles=args.bundle, recipe_root=args.recipe_root,
+                          library_roots=args.library_root, verify_samples=args.verify_samples)
         report = build(args.output, **inputs)
         print(f"Local starting page: {args.output.expanduser().resolve()}")
         print('Point-in-time report only; no hardware acceptance inferred.')
