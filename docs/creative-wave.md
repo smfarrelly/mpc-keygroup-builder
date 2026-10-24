@@ -7,6 +7,10 @@ pretending that software metrics can judge musical taste.
 
 ## Generate a portable wave
 
+New waves include a build-time recipe fingerprint. Use
+`mpc-tools check --bundle work/my-wave --recipe-root recipes` to distinguish
+intact outputs from current recipe inputs. See [local readiness](local-readiness.md).
+
 This command audits every recipe, generates eight unique candidates per family,
 and creates a redistributable synthetic Drum Program:
 
