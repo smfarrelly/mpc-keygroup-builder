@@ -5,6 +5,7 @@ Only disposable synthetic project bytes are written, inside TemporaryDirectory.
 """
 
 import argparse
+import csv
 import json
 import os
 from pathlib import Path
@@ -71,6 +72,19 @@ def smoke(bin_dir: Path) -> int:
         run('mpc-project-capture', '--verify', archive)
         run('mpc-tools', 'home', '--archive-library', archive.parent,
             '--output', root / 'home.html')
+        instruments = root / 'instruments'
+        (instruments / 'Collection').mkdir(parents=True)
+        (instruments / 'Collection' / 'Kit.xpm').write_text('<MPCVObject><Program type="Drum"><ProgramName>Kit</ProgramName><Instruments><Instrument number="1"><Layers><Layer><SampleFile>kick.wav</SampleFile></Layer></Layers></Instrument></Instruments></Program></MPCVObject>')
+        (instruments / 'Collection' / 'kick.wav').write_bytes(b'synthetic-path-check-only')
+        ledger = root / 'ledger.csv'
+        with ledger.open('w', newline='') as stream:
+            writer = csv.writer(stream)
+            writer.writerow(['path', 'program_type', 'hardware_status', 'favorite', 'scratchpad_role', 'notes'])
+            writer.writerow(['Programs/Collection/Kit.xpm', 'Drum', 'untested', 'yes', 'drums', 'Synthetic fixture'])
+        reconciled = json.loads(run('mpc-tools', 'reconcile', '--ledger', ledger,
+                                    '--library-root', instruments, '--verify-samples', '--json').stdout)
+        if reconciled['rows'][0]['match_status'] != 'candidate' or reconciled['hardware_status'] != 'not-evaluated':
+            raise RuntimeError('reconciliation did not preserve evidence boundaries')
     print(f'PASS: {count} installed command checks; capture/restore/recovery exercised with synthetic data only.')
     return 0
 

@@ -196,6 +196,13 @@ def main() -> int:
     home.add_argument("--program-root", type=Path)
     home.add_argument("--bundle", type=Path, action="append", default=[])
     home.add_argument("--recipe-root", type=Path)
+    reconcile = subparsers.add_parser("reconcile", help="find local XPM candidates for ledger paths without changing them")
+    reconcile.add_argument("--ledger", required=True, type=Path)
+    reconcile.add_argument("--library-root", required=True, type=Path, action="append", help="explicit local library; repeat for separate, non-overlapping roots")
+    reconcile.add_argument("--favorite", choices=("yes", "no", "provisional"))
+    reconcile.add_argument("--verify-samples", action="store_true", help="resolve candidates' sample references within each library; no audio decoding")
+    reconcile.add_argument("--json", action="store_true")
+    reconcile.add_argument("--output", type=Path, help="write a new private JSON report outside input libraries")
     check = subparsers.add_parser("check", help="read-only readiness checks for explicitly selected local files")
     check.add_argument("--archive", type=Path, action="append", default=[])
     check.add_argument("--bundle", type=Path, action="append", default=[])
@@ -257,6 +264,9 @@ def main() -> int:
         print(f"Local starting page: {args.output.expanduser().resolve()}")
         print('Point-in-time report only; no hardware acceptance inferred.')
         return 1 if report['status'] == 'attention' else 0
+    if args.command == "reconcile":
+        from .reconcile import show
+        return show(args.ledger, args.library_root, args.favorite, args.verify_samples, args.json, args.output)
     if args.command == "check":
         return show_readiness(args.archive, args.bundle, args.program, args.sample_root, args.json, args.recipe_root)
     if args.command == "commands":
