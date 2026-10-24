@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import copy
 import gzip
+import hashlib
 import json
 import os
 import re
@@ -472,18 +473,88 @@ def validate_written_program(output: Path) -> dict[str, int]:
 
 
 def write_program(
-    header: str, program: dict, samples: list[SampleGroup], output: Path, *, force: bool
+    header: str, program: dict, samples: list[SampleGroup], output: Path, *, force: bool,
+    audio_storage: str = "copy",
 ) -> None:
+    if audio_storage not in {"copy", "hardlink"}:
+        raise ValueError(f"unsupported audio storage mode: {audio_storage}")
     data_dir = output.with_name(f"{output.stem}_[ProgramData]")
     targets = [output, data_dir]
+    for target, directory in ((output, False), (data_dir, True)):
+        if target.is_symlink() or (target.exists() and target.is_dir() != directory):
+            raise ValueError(f"unsafe output target: {target}")
     if not force and any(target.exists() for target in targets):
         raise FileExistsError("output exists; pass --force to replace it")
+    selected = all_samples(samples)
+    names = [sample.path.name.casefold() for sample in selected]
+    if len(names) != len(set(names)):
+        raise ValueError("sample filenames collide in ProgramData")
+    for sample in selected:
+        resolved = sample.path.resolve()
+        if resolved == output.resolve() or resolved.is_relative_to(data_dir.resolve()):
+            raise ValueError(f"source audio overlaps output being replaced: {sample.path}")
+        if not sample.path.is_file() or (audio_storage == "hardlink" and sample.path.is_symlink()):
+            raise ValueError(f"{audio_storage} source must be a regular file: {sample.path}")
     output.parent.mkdir(parents=True, exist_ok=True)
-    data_dir.mkdir(parents=True, exist_ok=True)
-    for sample in all_samples(samples):
-        copy_file_durable(sample.path, data_dir / sample.path.name)
-    write_xpm(header, program, output)
-    validate_written_program(output)
+    if audio_storage == "hardlink":
+        for sample in selected:
+            if sample.path.stat().st_dev != output.parent.stat().st_dev:
+                raise ValueError(f"hardlink source and output must share a filesystem: {sample.path}")
+    staging = Path(tempfile.mkdtemp(prefix=f".{output.stem}.build-", dir=output.parent))
+    staged_program = staging / output.name
+    staged_data = staging / data_dir.name
+    staged_data.mkdir()
+    backups: list[tuple[Path, Path]] = []
+    published: list[Path] = []
+    preserve_staging = False
+    try:
+        for sample in selected:
+            target = staged_data / sample.path.name
+            with sample.path.open('rb') as stream:
+                expected_hash = hashlib.file_digest(stream, 'sha256').digest()
+            if audio_storage == "hardlink":
+                os.link(sample.path, target, follow_symlinks=False)
+            else:
+                copy_file_durable(sample.path, target)
+            with target.open('rb') as stream:
+                if hashlib.file_digest(stream, 'sha256').digest() != expected_hash:
+                    raise OSError(f"staged audio checksum mismatch: {sample.path}")
+        write_xpm(header, program, staged_program)
+        validate_written_program(staged_program)
+        # Keep old artifacts until the entire new pair has been validated.
+        for target in targets:
+            if target.is_symlink():
+                raise ValueError(f"output changed to a symbolic link: {target}")
+            if target.exists():
+                if not force:
+                    raise FileExistsError(f"output appeared during build: {target}")
+                backup = staging / ('previous-' + target.name)
+                os.replace(target, backup)
+                backups.append((target, backup))
+        for source, target in ((staged_data, data_dir), (staged_program, output)):
+            os.replace(source, target)
+            published.append(target)
+        directory_fd = os.open(output.parent, os.O_RDONLY)
+        try:
+            os.fsync(directory_fd)
+        finally:
+            os.close(directory_fd)
+    except BaseException:
+        try:
+            for target in reversed(published):
+                if target.is_dir():
+                    shutil.rmtree(target)
+                else:
+                    target.unlink()
+            for target, backup in reversed(backups):
+                os.replace(backup, target)
+        except OSError as recovery_error:
+            preserve_staging = True
+            raise OSError(f"build rollback incomplete; recovery files retained at {staging}") from recovery_error
+        raise
+    finally:
+        if not preserve_staging:
+            shutil.rmtree(staging)
 
 
 def write_xpm(header: str, program: dict, output: Path) -> None:
@@ -591,6 +662,13 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if args.output is None:
         raise ValueError("--output is required unless --dry-run is used")
+    data_dir = args.output.with_name(f"{args.output.stem}_[ProgramData]").resolve()
+    for source_input in (args.template, args.velocity_preset):
+        if source_input is not None and (
+            source_input.resolve() == args.output.resolve()
+            or source_input.resolve().is_relative_to(data_dir)
+        ):
+            raise ValueError(f"output overlaps protected input: {source_input}")
     name = args.name or source.name
     header, program = build_program(args.template, samples, name)
     write_program(header, program, samples, args.output, force=args.force)
