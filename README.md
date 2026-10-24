@@ -14,6 +14,8 @@ Choose the path that matches what you want to do:
 
 - **Returning after a break:** run `mpc-tools start` or read
   [Start with one musical task](docs/start-here.md). No card is needed.
+- **Bring your local evidence together:** generate a private
+  [local starting page](docs/local-home.md) with favorites, ideas, and readiness.
 
 - **Try it without installing anything:** open
   [`site/index.html`](site/index.html) in a browser, then launch the synthetic

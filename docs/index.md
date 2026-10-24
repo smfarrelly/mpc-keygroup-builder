@@ -6,6 +6,7 @@ user does not have to read the project's full history before making something.
 ## New to the project
 
 Start with [one musical task](start-here.md), without reconstructing the history.
+Combine explicitly selected evidence in a [local starting page](local-home.md).
 
 1. [Getting started](getting-started.md) — install or try the browser demo.
 2. [CLI reference](cli-reference.md) — discover commands and conventions.
