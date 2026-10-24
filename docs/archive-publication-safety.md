@@ -40,3 +40,22 @@ This is not a power-loss durability or hostile-filesystem security guarantee.
 It does not lock the original project against concurrent saves. Keep the source
 and destination parents stable during capture/restore. Checksums validate the
 copied file bytes, not external sample/plugin completeness or MPC playback.
+
+## Reproducible recovery stress tests
+
+```bash
+python scripts/archive_recovery_matrix.py --output work/recovery-quick.json
+python scripts/archive_recovery_matrix.py --full --output work/recovery-full.json
+```
+
+The quick run exercises seven scenarios. The full run has 840 combinations:
+0/1/16/128/1024 companion files per project, three payload sizes, one/two projects,
+four filename styles, and seven healthy/fault modes. It verifies source retention,
+independent variations, exact comparisons, interruption cleanup, tamper refusal,
+and preservation of concurrent destinations. No actual musical projects or audio
+are read. Each disposable case is removed before the next; low temporary disk
+space stops the run with an incomplete report rather than claiming success.
+
+Reports checkpoint every 20 cases and separate completeness from pass/fail counts.
+Choose a new report filename; reports contain synthetic test evidence, not new
+hardware listening results. A failed case must be investigated, not relabeled.
