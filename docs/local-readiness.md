@@ -37,9 +37,33 @@ command usage. JSON has per-input details, overall status, and a separate
 `hardware_status: not-evaluated`. A malformed input does not hide other results.
 
 This does not decode audio, check plugin licenses, prove XPJ external-dependency
-completeness, or prove generated output matches the latest recipe. A checksum
-receipt only proves consistency with that receipt. Regenerate and compare when
-recipe freshness matters. Hardware listening remains a separate decision.
+completeness. A checksum receipt only proves consistency with that receipt.
+Hardware listening remains a separate decision.
+
+## Are the recipes still current?
+
+New `mpc-workstation-wave` bundles record `recipe-inputs.json` at build time,
+covered by bundle checksums. Compare with an explicitly selected current tree:
+
+```bash
+mpc-tools check --bundle work/my-wave --recipe-root recipes --json
+```
+
+Integrity and freshness are separate. Intact outputs can be `stale` when recipe
+files were added, removed, or changed. Both `stale` and `unknown` return status 1;
+`current` returns 0 if all other selected checks pass. Older bundles without a
+build-time receipt report `unknown`. Do not retrofit receipts onto old builds:
+regenerate into a new output folder instead.
+
+The scope is exact bytes of top-level `*.toml` files in drums, harmony, melody,
+kits, and workstation categories, including unselected families. Comments and
+whitespace changes count. Moving an unchanged tree does not. Nested files and
+other categories are outside this scope. Source changes detected during a build
+abort publication and clean up staging. This is not a filesystem lock.
+
+This is conservative recipe-input freshness, not a claim about changed tool
+versions, command-line options, source audio, or plugin installations. Checks
+without `--recipe-root` retain their integrity-only behavior.
 
 ## Recover without destroying the evidence
 

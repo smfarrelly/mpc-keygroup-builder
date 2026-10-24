@@ -21,6 +21,7 @@ from .model import ProgramModel, from_xpm
 from .recipe_audit import audit
 from .roles import role_matches
 from .showcase import COMPOSITIONS
+from .freshness import snapshot as recipe_snapshot, receipt as recipe_receipt
 
 
 DEFAULTS = {
@@ -262,6 +263,7 @@ def build_wave(
     locked_tracks: tuple[str, ...] = (),
     name: str = "MPC Creative Wave",
 ) -> dict[str, Any]:
+    recipe_inputs = recipe_snapshot(recipe_root)
     recipe_root = recipe_root.expanduser().resolve()
     output = output.expanduser().resolve()
     if output.exists():
@@ -307,6 +309,8 @@ def build_wave(
     staging = Path(tempfile.mkdtemp(prefix=f".{output.name}.staging-", dir=output.parent))
     try:
         _copy_recipes(recipe_root, staging, source_audit)
+        if recipe_snapshot(staging / 'Recipes') != recipe_inputs:
+            raise ValueError('recipe inputs changed during copy; retry from stable sources')
         portable = program_path is None
         if portable:
             fixture = staging / ".portable-fixture"
@@ -437,6 +441,11 @@ def build_wave(
             _hardware_checklist(report, output.name), encoding="utf-8"
         )
         (staging / "review.html").write_text(render_html(report), encoding="utf-8")
+        if recipe_snapshot(recipe_root) != recipe_inputs:
+            raise ValueError('recipe inputs changed during generation; no wave published')
+        (staging / 'recipe-inputs.json').write_text(
+            json.dumps(recipe_receipt(recipe_inputs), indent=2) + '\n', encoding='utf-8'
+        )
         (staging / "COPY_MANIFEST.txt").write_text(_copy_manifest(staging), encoding="utf-8")
         checksums = {
             str(path.relative_to(staging)): _sha256(path)

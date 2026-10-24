@@ -8,6 +8,7 @@ from pathlib import Path
 from .bundle_verify import verify_bundle
 from .capture import verify_capture
 from .model import from_xpm
+from .freshness import check_bundle
 
 
 def sample_status(program: Path, reference: str, root: Path) -> dict:
@@ -53,14 +54,17 @@ def inspect_program(path: Path, root: Path | None) -> dict:
             'sample_root': str(root), 'name': model.name}
 
 
-def check(*, archives=(), bundles=(), programs=(), sample_root: Path | None = None) -> dict:
+def check(*, archives=(), bundles=(), programs=(), sample_root: Path | None = None, recipe_root: Path | None = None) -> dict:
     if not any((archives, bundles, programs)):
         raise ValueError('choose at least one --archive, --bundle, or --program; no drives are scanned automatically')
     if sample_root is not None and not programs:
         raise ValueError('--sample-root requires at least one --program')
+    if recipe_root is not None and not bundles:
+        raise ValueError('--recipe-root requires at least one --bundle')
     rows = []
     for kind, paths, inspector in (
-        ('archive', archives, verify_capture), ('bundle', bundles, verify_bundle),
+        ('archive', archives, verify_capture),
+        ('bundle', bundles, lambda path: check_bundle(path, recipe_root) if recipe_root is not None else verify_bundle(path)),
         ('program', programs, lambda path: inspect_program(path, sample_root)),
     ):
         for requested in paths:
@@ -82,9 +86,10 @@ def check(*, archives=(), bundles=(), programs=(), sample_root: Path | None = No
             'boundary': 'Read-only checks of selected local inputs, not hardware acceptance, audio decoding, plugin licensing, or proof that generated outputs match current recipes. Sample lookup checks program-relative and companion ProgramData paths only; no basename search or reference repair.'}
 
 
-def show(archives, bundles, programs, sample_root, as_json) -> int:
+def show(archives, bundles, programs, sample_root, as_json, recipe_root=None) -> int:
     report = check(archives=archives, bundles=bundles, programs=programs,
-                   sample_root=sample_root.expanduser() if sample_root else None)
+                   sample_root=sample_root.expanduser() if sample_root else None,
+                   recipe_root=recipe_root.expanduser() if recipe_root else None)
     if as_json:
         print(json.dumps(report, indent=2))
     else:
@@ -92,6 +97,12 @@ def show(archives, bundles, programs, sample_root, as_json) -> int:
             print(f"{row['status'].upper()}: {row['kind']} {row['path']}")
             if 'error' in row:
                 print('  ' + row['error'])
+            detail = row.get('detail', {})
+            if 'freshness' in detail:
+                print('  Recipe freshness: ' + detail['freshness'])
+                for category in ('added', 'removed', 'changed'):
+                    for name in detail.get(category, []):
+                        print(f'  {category}: {name}')
             for message in row.get('detail', {}).get('errors', []) + row.get('detail', {}).get('warnings', []):
                 print('  ' + message)
             for sample in row.get('detail', {}).get('samples', []):
