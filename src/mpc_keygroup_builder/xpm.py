@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import argparse
-import gzip
 import html
 import json
 import os
@@ -15,6 +14,7 @@ from typing import Any
 
 from .programs import classify_sample
 from .structural import compare
+from .program_io import read_payload, serialized_document, xml_root, parse_json
 
 
 TYPE_NAMES = {0: "Drum", 1: "Keygroup"}
@@ -28,7 +28,7 @@ def _xml_value(element: ET.Element) -> Any:
     if text:
         if element.tag == "ProgramPads":
             try:
-                value["#json"] = json.loads(html.unescape(text))
+                value["#json"] = parse_json(html.unescape(text))
             except json.JSONDecodeError:
                 value["#text"] = text
         else:
@@ -41,20 +41,20 @@ def _xml_value(element: ET.Element) -> Any:
     return value
 
 
-def _read_compressed(path: Path) -> tuple[list[str], dict[str, Any]]:
-    raw = gzip.decompress(path.read_bytes())
-    start = raw.find(b"{")
-    if not raw.startswith(b"ACVS\n") or start < 0:
-        raise ValueError(f"unsupported compressed MPC program: {path}")
-    header = raw[:start].decode("utf-8").rstrip("\n").splitlines()
-    return header, json.loads(raw[start:])
+def _read_compressed(path: Path, raw=None) -> tuple[list[str], dict[str, Any]]:
+    if raw is None:
+        raw, compressed = read_payload(path)
+        if not compressed:
+            raise ValueError(f'expected a compressed XPM: {path}')
+    return serialized_document(raw)
 
 
 def load_normalized(path: Path) -> dict[str, Any]:
-    if path.read_bytes()[:2] == b"\x1f\x8b":
-        header, document = _read_compressed(path)
+    raw, compressed = read_payload(path)
+    if compressed:
+        header, document = _read_compressed(path, raw)
         return {"container": "gzip-json", "header": header, "document": document}
-    root = ET.parse(path).getroot()
+    root = xml_root(raw)
     return {"container": "xml", "document": {root.tag: _xml_value(root)}}
 
 
@@ -62,8 +62,8 @@ def _sample_stem(name: object) -> str:
     return Path(str(name)).stem if name else ""
 
 
-def _xml_semantic(path: Path) -> dict[str, Any]:
-    root = ET.parse(path).getroot()
+def _xml_semantic(path: Path, raw) -> dict[str, Any]:
+    root = xml_root(raw)
     program = root.find("Program")
     if program is None:
         raise ValueError(f"missing Program element: {path}")
@@ -71,7 +71,7 @@ def _xml_semantic(path: Path) -> dict[str, Any]:
     node = program.find("ProgramPads")
     if node is not None and node.text:
         try:
-            settings = _pad_settings(json.loads(html.unescape(node.text)))
+            settings = _pad_settings(parse_json(html.unescape(node.text)))
         except json.JSONDecodeError:
             pass
     instruments = []
@@ -111,8 +111,8 @@ def _xml_semantic(path: Path) -> dict[str, Any]:
     }
 
 
-def _serialized_semantic(path: Path) -> dict[str, Any]:
-    _, document = _read_compressed(path)
+def _serialized_semantic(path: Path, raw) -> dict[str, Any]:
+    _, document = _read_compressed(path, raw)
     data = document.get("data", {})
     settings = _pad_settings(data.get("programPads"))
     instruments = []
@@ -159,7 +159,8 @@ def _serialized_semantic(path: Path) -> dict[str, Any]:
 
 
 def load_semantic(path: Path) -> dict[str, Any]:
-    return _serialized_semantic(path) if path.read_bytes()[:2] == b"\x1f\x8b" else _xml_semantic(path)
+    raw, compressed = read_payload(path)
+    return _serialized_semantic(path, raw) if compressed else _xml_semantic(path, raw)
 
 
 def _xml_samples(program: ET.Element) -> list[str]:
@@ -190,7 +191,10 @@ def _serialized_samples(data: dict[str, Any]) -> list[str]:
 def _pad_settings(value: Any) -> dict[str, Any]:
     if not isinstance(value, dict):
         return {}
-    return value.get("ProgramPads", value)
+    settings = value.get("ProgramPads", value)
+    if not isinstance(settings, dict):
+        raise ValueError('XPM ProgramPads must be an object')
+    return settings
 
 
 def _color_summary(settings: dict[str, Any]) -> dict[str, int]:
@@ -206,9 +210,9 @@ def _color_summary(settings: dict[str, Any]) -> dict[str, int]:
 
 
 def inspect(path: Path) -> dict[str, Any]:
-    compressed = path.read_bytes()[:2] == b"\x1f\x8b"
+    raw, compressed = read_payload(path)
     if compressed:
-        header, document = _read_compressed(path)
+        header, document = _read_compressed(path, raw)
         data = document.get("data", {})
         program_type = TYPE_NAMES.get(data.get("type"), f"Unknown ({data.get('type')})")
         samples = _serialized_samples(data)
@@ -226,7 +230,7 @@ def inspect(path: Path) -> dict[str, Any]:
         firmware = header[1] if len(header) > 1 else ""
         name = str(data.get("name", ""))
     else:
-        root = ET.parse(path).getroot()
+        root = xml_root(raw)
         program = root.find("Program")
         if program is None:
             raise ValueError(f"missing Program element: {path}")

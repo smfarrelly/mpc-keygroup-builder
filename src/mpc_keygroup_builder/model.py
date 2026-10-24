@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import argparse
-import gzip
 import html
 import json
 import os
@@ -16,6 +15,7 @@ from typing import Any, Literal
 from .drum_builder import load_manifest
 from .programs import classify_sample, load_palette
 from .roles import infer_role, load_role_overrides
+from .program_io import read_payload, serialized_document, xml_root, parse_json
 
 
 ProgramKind = Literal["drum", "keygroup", "clip"]
@@ -187,8 +187,8 @@ def _xml_layer(layer: ET.Element) -> SampleLayer | None:
     )
 
 
-def _xml_model(path: Path, role_overrides: dict[str, str] | None = None) -> ProgramModel:
-    root = ET.parse(path).getroot()
+def _xml_model(path: Path, role_overrides: dict[str, str] | None = None, *, raw: bytes) -> ProgramModel:
+    root = xml_root(raw)
     program = root.find("Program")
     if program is None:
         raise ValueError(f"missing Program element: {path}")
@@ -200,7 +200,7 @@ def _xml_model(path: Path, role_overrides: dict[str, str] | None = None) -> Prog
     pads_node = program.find("ProgramPads")
     if pads_node is not None and pads_node.text:
         try:
-            settings = json.loads(html.unescape(pads_node.text)).get("ProgramPads", {})
+            settings = parse_json(html.unescape(pads_node.text)).get("ProgramPads", {})
             colors = settings.get("pads", {}) if isinstance(settings.get("pads"), dict) else {}
         except json.JSONDecodeError:
             pass
@@ -266,12 +266,9 @@ def _json_layer(layer: dict[str, Any]) -> SampleLayer | None:
     )
 
 
-def _json_model(path: Path, role_overrides: dict[str, str] | None = None) -> ProgramModel:
-    raw = gzip.decompress(path.read_bytes())
-    start = raw.find(b"{")
-    if not raw.startswith(b"ACVS\n") or start < 0:
-        raise ValueError(f"unsupported compressed MPC program: {path}")
-    data = json.loads(raw[start:]).get("data", {})
+def _json_model(path: Path, role_overrides: dict[str, str] | None = None, *, raw: bytes) -> ProgramModel:
+    _, document = serialized_document(raw)
+    data = document.get('data', {})
     kind_value = data.get("type")
     if kind_value not in {0, 1}:
         raise ValueError(f"unsupported compressed program type: {kind_value!r}")
@@ -344,11 +341,12 @@ def _json_model(path: Path, role_overrides: dict[str, str] | None = None) -> Pro
 
 
 def from_xpm(path: Path, role_overrides: dict[str, str] | None = None) -> ProgramModel:
-    return (
-        _json_model(path, role_overrides)
-        if path.read_bytes()[:2] == b"\x1f\x8b"
-        else _xml_model(path, role_overrides)
-    )
+    raw, compressed = read_payload(path)
+    try:
+        return (_json_model(path, role_overrides, raw=raw) if compressed
+                else _xml_model(path, role_overrides, raw=raw))
+    except (AttributeError, TypeError, IndexError, KeyError, RecursionError) as error:
+        raise ValueError(f'invalid XPM structure: {path}: {error}') from error
 
 
 def write_report(output: Path, inputs: list[Path], rendered: str) -> Path:

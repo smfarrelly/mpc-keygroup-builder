@@ -50,6 +50,17 @@ This does not decode audio, check plugin licenses, prove XPJ external-dependency
 completeness. A checksum receipt only proves consistency with that receipt.
 Hardware listening remains a separate decision.
 
+### Program inspection bounds
+
+The XPM model and inspector read at most 32 MiB of source bytes and expand at
+most 64 MiB of gzip data. XML is limited to 128 levels and 200,000 elements;
+document types/entities are rejected. JSON is limited to 128 levels and 500,000
+values. Duplicate serialized JSON fields and
+invalid top-level/container shapes are rejected rather than interpreted with
+last-value-wins behavior. These are inspection safety limits, not MPC format
+capacity claims. Inputs exceeding them fail with a readable error; other selected
+readiness inputs remain visible. No input is modified to fit a limit.
+
 ## Are the recipes still current?
 
 New `mpc-workstation-wave` bundles record `recipe-inputs.json` at build time,
