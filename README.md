@@ -16,6 +16,8 @@ Choose the path that matches what you want to do:
   [Start with one musical task](docs/start-here.md). No card is needed.
 - **Bring your local evidence together:** generate a private
   [local starting page](docs/local-home.md) with favorites, ideas, and readiness.
+  If your laptop and SD folders differ, [reconcile local instruments](docs/library-reconciliation.md)
+  without changing programs or historical listening verdicts.
 
 - **Try it without installing anything:** open
   [`site/index.html`](site/index.html) in a browser, then launch the synthetic
