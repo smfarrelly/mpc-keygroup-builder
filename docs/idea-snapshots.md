@@ -37,7 +37,7 @@ folder belonging to a similarly named project is not substituted.
 
 The output contains unchanged XPJs/ProjectData and `capture-manifest.json`,
 including the note, source locations, capture time, file sizes, and SHA-256
-checksums. Nonempty destinations, symlinks, missing companions, and failed
+checksums. Existing destinations (including empty directories), symlinks, missing companions, and failed
 copies are rejected. Copies are prepared and verified in staging before the
 archive is published; failed copies leave the source untouched.
 
