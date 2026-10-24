@@ -21,8 +21,23 @@ from .cli import wav_frames
 def _category(path: str) -> str:
     lowered = path.casefold()
     for category, words in (
-        ("Bass", ("/bass/", " bass")), ("Keys", ("/keys/", "piano", "organ", "wurli", "keys")),
-        ("Pads", ("/pad/", "/pads/", " pad")), ("Leads", ("/lead/", "/leads/", " lead")),
+        ("Keys & Pads", ("keys & pads",)),
+        ("Chords", ("/chords/", " chords")),
+        ("Percussive", ("/percussive/", " percussive")),
+        ("Bass", ("/bass/", " bass")),
+        ("Keys", ("/keys/", "piano", "organ", "wurli", "keys", "clav")),
+        ("Guitars", ("/guitar/", "/guitars/", " guitar")),
+        ("Strings", ("/string/", "/strings/", " string", "cello")),
+        ("Brass & Woodwinds", (
+            "/brass", "woodwind", "trumpet", "trombone", "horn", "clarinet",
+            "flute", "oboe", "saxophone",
+        )),
+        ("Percussion", ("/perc/", "percussion", "timpani", "vibes", "mallet")),
+        ("Vocals", ("/vocal/", " vocal", "choir", "voice")),
+        ("Orchestral", ("orchestral",)),
+        ("FX", ("/fx/", " fx")),
+        ("Pads", ("/pad/", "/pads/", " pad")),
+        ("Leads", ("/lead/", "/leads/", " lead")),
     ):
         if any(word in lowered for word in words):
             return category
@@ -37,7 +52,7 @@ def _range_for(roots: list[int], index: int) -> tuple[int, int]:
 
 def preflight(
     entry: dict[str, Any], source_root: Path, *, allow_loop_loss: bool = False,
-    allow_endpoint_loss: bool = False,
+    allow_endpoint_loss: bool = False, allow_keyrange_loss: bool = False,
 ) -> dict[str, Any]:
     relative = entry.get("path")
     if not isinstance(relative, str) or not relative:
@@ -112,9 +127,18 @@ def preflight(
             (zone.get("key_range", {}).get("min"), zone.get("key_range", {}).get("max"))
             for zone in root_zones
         }
+        if any(
+            type(low) is not int or type(high) is not int or not 0 <= low <= high <= 127
+            for low, high in key_ranges
+        ):
+            raise ValueError(f"root {root} has invalid source key ranges")
         expected = _range_for(roots, root_index)
         if key_ranges != {expected}:
-            raise ValueError(f"root {root} key range {sorted(key_ranges)} differs from builder range {expected}")
+            if not allow_keyrange_loss:
+                raise ValueError(f"root {root} key range {sorted(key_ranges)} differs from builder range {expected}")
+            warnings.append(
+                f"root {root} source key range {sorted(key_ranges)} is replaced by builder range {expected}"
+            )
         ranges = sorted(
             (0 if zone.get("velocity_range", {}).get("min") == 1 else zone.get("velocity_range", {}).get("min"), zone.get("velocity_range", {}).get("max"))
             for zone in root_zones
@@ -143,7 +167,7 @@ def preflight(
 def _batch(selected: list[dict[str, Any]], name: str) -> dict[str, Any]:
     return {
         "version": 1, "library": name, "source_root": ".",
-        "destination": "Programs/Keygroups/SFM Ableton Wave",
+        "destination": f"Programs/Keygroups/{name}",
         "instruments": [
             {
                 "name": item["name"], "category": item["category"],
@@ -159,7 +183,8 @@ def _batch(selected: list[dict[str, Any]], name: str) -> dict[str, Any]:
 def plan(
     backlog_path: Path, source_root: Path, output: Path, *, count: int = 24,
     max_per_pack: int = 2, allow_loop_loss: bool = False,
-    allow_endpoint_loss: bool = False,
+    allow_endpoint_loss: bool = False, include_pack: str | None = None,
+    exclude_names: tuple[str, ...] = (), allow_keyrange_loss: bool = False,
 ) -> dict[str, Any]:
     if count < 1 or max_per_pack < 1:
         raise ValueError("count and max-per-pack must be positive")
@@ -170,11 +195,19 @@ def plan(
     entries = raw.get("entries")
     if not isinstance(entries, list):
         raise ValueError("backlog entries must be a list")
+    if include_pack is not None:
+        if not include_pack.strip() or any(c in include_pack for c in ('/', '\\', '\0')) or include_pack in {'.', '..'}:
+            raise ValueError("include-pack must be one non-empty backlog pack identifier, not a path")
+        available = {entry.get('pack') for entry in entries if isinstance(entry, dict) and isinstance(entry.get('pack'), str)}
+        if include_pack not in available:
+            raise ValueError(f"unknown pack {include_pack!r}; available examples: {', '.join(sorted(available)[:8])}")
     groups: dict[str, deque[dict[str, Any]]] = defaultdict(deque)
     for entry in entries:
         if (
             isinstance(entry, dict) and entry.get("target") == "keygroup"
             and entry.get("priority") in {"P1", "P2"} and not entry.get("duplicate_of")
+            and (include_pack is None or entry.get("pack") == include_pack)
+            and entry.get("name") not in exclude_names
         ):
             groups[str(entry.get("pack", ""))].append(entry)
     selected = []
@@ -188,6 +221,7 @@ def plan(
                     selected.append(preflight(
                         entry, source_root, allow_loop_loss=allow_loop_loss,
                         allow_endpoint_loss=allow_endpoint_loss,
+                        allow_keyrange_loss=allow_keyrange_loss,
                     ))
                     accepted = True
                 except (ValueError, FileNotFoundError, TypeError) as error:
@@ -201,12 +235,22 @@ def plan(
     if len(selected) < count:
         raise ValueError(f"only {len(selected)} compatible diverse presets found; requested {count}")
     selected = selected[:count]
-    name = "Samples From Mars Ableton Keygroup Wave"
+    identities = [(item['category'].casefold(), item['name'].casefold()) for item in selected]
+    if len(identities) != len(set(identities)):
+        raise ValueError("selected presets collide on output category/name; use --exclude-name or a narrower pack selection")
+    name = (
+        f"{display_pack(include_pack)} MPC Instrument"
+        if include_pack is not None
+        else "Samples From Mars Ableton Keygroup Wave"
+    )
     report = {
         "schema_version": 1, "kind": "mpc-ableton-keygroup-wave-plan", "name": name,
         "software_status": "preflight-pass", "hardware_status": "deferred",
         "allow_loop_loss": allow_loop_loss,
         "allow_endpoint_loss": allow_endpoint_loss,
+        "allow_keyrange_loss": allow_keyrange_loss,
+        "include_pack": include_pack,
+        "excluded_names": list(exclude_names),
         "summary": {
             "programs": len(selected), "packs": len({item["collection"] for item in selected}),
             "zones": sum(item["zones"] for item in selected),
@@ -234,6 +278,8 @@ def plan(
         for item in selected:
             loop_warnings = sum("omitted from the comparison build" in warning for warning in item["warnings"])
             lines.extend((f"## {item['collection']} / {item['name']}", "", f"Category: {item['category']}; roots: {item['roots']}; zones: {item['zones']}; fidelity: {item['fidelity']}; omitted loop diagnostics: {loop_warnings}.", "", "- [ ] Default Key 37 register triggers expected notes.", "- [ ] Pitch, layer transitions, level, tone, and save/reload checked.", "- [ ] Compare held/released notes with Ableton where loops were omitted.", "", "Verdict: [ ] pass  [ ] warn  [ ] fail", "Notes:", ""))
+            if item['warnings']:
+                lines.extend(['Conversion changes requiring review:', '', *[f'- {warning}' for warning in item['warnings']], ''])
         (staging / "HARDWARE_CHECKLIST.md").write_text("\n".join(lines), encoding="utf-8")
         (staging / "README.md").write_text(
             "# Ableton Keygroup comparison wave\n\n"
@@ -241,7 +287,9 @@ def plan(
             "2. Run `mpc-keygroup-batch --config SETTINGS inspect keygroup-batch.json`.\n"
             "3. Run the same command with `build`, then `validate keygroup-batch.json`.\n"
             "4. Keep generated programs and licensed WAVs in ignored/external storage.\n\n"
-            "This plan may explicitly omit Ableton loops. Read `keygroup-wave.json` and the hardware checklist before auditioning.\n",
+            "Explicit comparison options may omit loops, extend sample endpoints, or replace key ranges. "
+            "Every admitted change is recorded in `keygroup-wave.json` and the hardware checklist. "
+            "Hardware acceptance remains deferred; a successful build is not a listening pass.\n",
             encoding="utf-8",
         )
         os.replace(staging, output)
@@ -259,6 +307,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--count", type=int, default=24)
     parser.add_argument("--max-per-pack", type=int, default=2)
     parser.add_argument(
+        "--include-pack",
+        help="limit selection to one exact backlog pack identifier",
+    )
+    parser.add_argument(
+        "--exclude-name", action="append", default=[],
+        help="exclude one exact preset name; repeat for multiple names",
+    )
+    parser.add_argument(
         "--allow-loop-loss", action="store_true",
         help="build an explicit comparison wave that omits unsupported Ableton loops",
     )
@@ -266,11 +322,17 @@ def main(argv: list[str] | None = None) -> int:
         "--allow-endpoint-loss", action="store_true",
         help="build an explicit comparison wave that extends shortened zones to the WAV end",
     )
+    parser.add_argument(
+        "--allow-keyrange-loss", action="store_true",
+        help="build a comparison wave that may sound outside Ableton's source key ranges",
+    )
     args = parser.parse_args(argv or sys.argv[1:])
     report = plan(
         args.backlog, args.source_root, args.output, count=args.count,
         max_per_pack=args.max_per_pack, allow_loop_loss=args.allow_loop_loss,
-        allow_endpoint_loss=args.allow_endpoint_loss,
+        allow_endpoint_loss=args.allow_endpoint_loss, include_pack=args.include_pack,
+        exclude_names=tuple(args.exclude_name),
+        allow_keyrange_loss=args.allow_keyrange_loss,
     )
     print(f"Wrote: {args.output.resolve()}")
     print(f"Programs: {report['summary']['programs']}; packs: {report['summary']['packs']}; hardware: deferred")

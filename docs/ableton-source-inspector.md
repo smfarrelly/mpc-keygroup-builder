@@ -198,6 +198,18 @@ Likewise, `--allow-endpoint-loss` explicitly admits a source zone whose
 the WAV end and records both endpoints as a warning. Non-default sample starts,
 tuning, panorama, and warp remain hard rejections.
 
+`--allow-keyrange-loss` is a separate comparison-only option. It records every
+source root range replaced by the builder's nearest-root range; notes outside
+the original range may therefore trigger. Keep those programs distinct from
+the conservative tier until hardware listening confirms their usefulness.
+`--include-pack PACK_ID` focuses a plan on one backlog pack, while repeatable
+`--exclude-name NAME` omits exact preset names such as redundant aggregates.
+Unknown pack identifiers report available examples. Path-like pack identifiers,
+invalid MIDI key ranges (even with loss allowed), and selected presets that
+would collide on category/name are rejected before publishing a plan. Generated
+review notes list every admitted loop, endpoint, and key-range change rather
+than hiding those differences behind a successful build.
+
 The output also includes `keygroup-batch.json`, a settings template, and a
 hardware checklist. Fill the absolute paths in `settings-example.toml`, inspect
 with `mpc-keygroup-batch --config SETTINGS inspect keygroup-batch.json`, and
