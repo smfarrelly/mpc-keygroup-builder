@@ -3,6 +3,7 @@ name = "mpc-keygroup-builder"
 version = "0.1.0"
 description = "Build, inspect, organize, and validate MPC 3 instruments and creative workflows"
 license = "MIT"
+license-files = ["LICENSE"]
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = []

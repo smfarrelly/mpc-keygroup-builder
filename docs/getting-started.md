@@ -26,7 +26,7 @@ Open a new terminal, then install this project and its isolated Python 3.12
 runtime:
 
 ```bash
-uv tool install --python 3.12 git+https://github.com/smfarrelly/mpc-keygroup-builder.git
+uv tool install --python 3.12 git+https://github.com/smfarrelly/mpc-keygroup-builder.git@v0.1.0
 mpc-tools doctor
 ```
 
@@ -41,7 +41,7 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 Open a new PowerShell window, then run:
 
 ```powershell
-uv tool install --python 3.12 git+https://github.com/smfarrelly/mpc-keygroup-builder.git
+uv tool install --python 3.12 git+https://github.com/smfarrelly/mpc-keygroup-builder.git@v0.1.0
 mpc-tools doctor
 ```
 
@@ -138,6 +138,11 @@ For Drum Programs and semantic layouts, start with
 samples and generated instruments outside this Git checkout.
 
 ## Upgrade or uninstall
+
+The installation above is pinned to a tested software-preview tag. To switch
+an existing installation to it, run the install command with `--force`. For a
+future release, choose its explicit tag rather than assuming a pinned install
+will follow `main`. See [release notes](releases/v0.1.0.md).
 
 ```bash
 uv tool upgrade mpc-keygroup-builder

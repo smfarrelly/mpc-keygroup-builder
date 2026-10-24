@@ -104,12 +104,16 @@ claim a hardware pass without a person listening on the device.
 ## Installation in brief
 
 Install [`uv`](https://docs.astral.sh/uv/), then install the released command
-set directly from GitHub:
+set from the tested software-preview tag:
 
 ```bash
-uv tool install --python 3.12 git+https://github.com/smfarrelly/mpc-keygroup-builder.git
+uv tool install --python 3.12 git+https://github.com/smfarrelly/mpc-keygroup-builder.git@v0.1.0
 mpc-tools doctor
 ```
+
+See [v0.1.0 release and upgrade notes](docs/releases/v0.1.0.md) for the tested
+scope and remaining hardware/browser limitations. Use an unpinned Git URL only
+when you intentionally want the moving development branch.
 
 If the terminal cannot find `mpc-tools`, run `uv tool update-shell`, close the
 terminal, and open a new one. Windows, macOS, upgrades, uninstalling, and a

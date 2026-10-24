@@ -58,3 +58,5 @@ only guidance and explicit not-checked messages.
 Browser visual/runtime acceptance remains separate from software generation and
 markup safety tests. The toolkit does not launch projects, execute displayed
 commands, or mark MPC hardware tests passed from this page.
+Use the [browser acceptance checklist](browser-acceptance.md) for the remaining
+visual/runtime checks; static tests alone do not mark these complete.

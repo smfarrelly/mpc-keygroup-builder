@@ -208,6 +208,9 @@ def read_capture_manifest(directory: Path) -> dict:
     manifest = json.loads((directory / 'capture-manifest.json').read_text(encoding='utf-8'), object_pairs_hook=unique)
     if not isinstance(manifest, dict) or type(manifest.get('format')) is not int or manifest['format'] != 1 or not isinstance(manifest.get('files'), list):
         raise ValueError('unsupported capture manifest; expected format 1 and files list')
+    if 'projects' in manifest and (not isinstance(manifest['projects'], list)
+                                   or any(not isinstance(name, str) for name in manifest['projects'])):
+        raise ValueError('capture manifest projects must be a list of strings')
     return manifest
 
 
