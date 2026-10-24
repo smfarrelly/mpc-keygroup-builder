@@ -1,15 +1,56 @@
 import contextlib
 import io
+import json
 import sys
 import tempfile
 import tomllib
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from mpc_keygroup_builder import entrypoints, ux
 
 
 class EntrypointTests(unittest.TestCase):
+    def _checkpoint(self, root, baseline='Projects/Boot.xpj'):
+        path = root / 'checkpoint.toml'
+        path.write_text('title = "Test"\nbaseline_relative = ' + json.dumps(baseline) + '\n'
+                        'working_relative = "Projects/Work.xpj"\ntarget_relative = "Projects/Next.xpj"\n'
+                        'next_action = "Review software."\n')
+        return path
+
+    def test_offline_resume_never_discovers_or_inspects_storage(self):
+        with tempfile.TemporaryDirectory() as directory:
+            checkpoint = self._checkpoint(Path(directory))
+            with patch.object(ux, '_find_sd_root', side_effect=AssertionError('storage discovery')), patch.object(ux.os, 'statvfs', side_effect=AssertionError('storage inspection')), contextlib.redirect_stdout(io.StringIO()) as output:
+                self.assertEqual(ux._resume(checkpoint, None, True, offline=True), 0)
+            report = json.loads(output.getvalue())
+            self.assertEqual(report['sd_status'], 'not-checked')
+            self.assertTrue(all(item['exists'] is None for item in report['projects'].values()))
+
+    def test_resume_rejects_unsafe_checkpoint_paths_even_offline(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for name in ('../outside.xpj', '/outside.xpj', 'C:/outside.xpj', 'Projects\\outside.xpj', 'Projects/not-a-project.txt'):
+                with self.subTest(name=name), self.assertRaises(ValueError):
+                    ux._resume(self._checkpoint(root, name), None, True, offline=True)
+
+    def test_resume_refuses_symlink_escape(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            sd = root / 'sd'
+            sd.mkdir()
+            outside = root / 'outside'
+            outside.mkdir()
+            (outside / 'Boot.xpj').write_bytes(b'private')
+            (sd / 'Projects').symlink_to(outside, target_is_directory=True)
+            with self.assertRaisesRegex(ValueError, 'escapes SD root'):
+                ux._resume(self._checkpoint(root), sd, True)
+
+    def test_offline_and_explicit_sd_are_incompatible(self):
+        with self.assertRaisesRegex(ValueError, '--offline'):
+            ux._resume(None, Path('/unused'), True, offline=True)
+
     def test_windows_console_launcher_suffix_is_supported(self):
         previous = sys.argv
         output = io.StringIO()

@@ -9,8 +9,15 @@ mpc-tools commands --category "Creative MIDI"
 mpc-tools help mpc-drum-build
 mpc-tools doctor
 mpc-tools resume
+mpc-tools resume --offline
 mpc-tools --version
 ```
+
+`resume --offline` reads the local checkpoint without discovering or inspecting
+SD storage. Project existence is reported as **NOT CHECKED** (`null` in JSON),
+not as missing. Combine with `--json` for scripts; do not combine with
+`--sd-root`. Checkpoint project paths must remain within the SD root, including
+through symlinks when storage is checked.
 
 Every installed command accepts `-h`, `--help`, and `--version`. Help exits with
 status 0. Expected path, permission, parse, and validation errors return status
