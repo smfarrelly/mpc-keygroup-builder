@@ -10,7 +10,7 @@ import sys
 import tempfile
 import tomllib
 from collections import defaultdict
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 
 from .entrypoints import COMMANDS, invoke, version
 from .portable_demo import build_demo, verify_demo
@@ -31,6 +31,13 @@ def _find_checkpoint(explicit: Path | None) -> Path:
     )
 
 
+def _checkpoint_target(root: Path, relative: str) -> Path:
+    target = root / relative
+    if not target.resolve().is_relative_to(root.resolve()):
+        raise ValueError(f"checkpoint project escapes SD root (possibly through a symlink): {relative}")
+    return target
+
+
 def _find_sd_root(explicit: Path | None, baseline_relative: str) -> Path | None:
     if explicit is not None:
         root = explicit.expanduser().resolve()
@@ -44,28 +51,37 @@ def _find_sd_root(explicit: Path | None, baseline_relative: str) -> Path | None:
         (
             path.resolve()
             for path in media.iterdir()
-            if path.is_dir() and (path / baseline_relative).is_file()
+            if path.is_dir() and _checkpoint_target(path, baseline_relative).is_file()
         ),
         None,
     )
 
 
-def _resume(checkpoint_path: Path | None, sd_root: Path | None, as_json: bool) -> int:
+def _resume(checkpoint_path: Path | None, sd_root: Path | None, as_json: bool, *, offline: bool = False) -> int:
+    if offline and sd_root is not None:
+        raise ValueError("--offline cannot be combined with --sd-root")
     checkpoint_file = _find_checkpoint(checkpoint_path)
     checkpoint = tomllib.loads(checkpoint_file.read_text(encoding="utf-8"))
     required = ("title", "baseline_relative", "working_relative", "target_relative", "next_action")
-    missing = [name for name in required if not checkpoint.get(name)]
+    missing = [name for name in required if not isinstance(checkpoint.get(name), str) or not checkpoint[name].strip()]
     if missing:
         raise ValueError(f"checkpoint lacks required fields: {', '.join(missing)}")
-    root = _find_sd_root(sd_root, checkpoint["baseline_relative"])
+    for role in ('baseline', 'working', 'target'):
+        relative = checkpoint[f'{role}_relative']
+        path = Path(relative)
+        if path.is_absolute() or PureWindowsPath(relative).drive or '\\' in relative or '\0' in relative or '..' in path.parts:
+            raise ValueError(f"{role}_relative must stay within the SD root: {relative}")
+        if path.suffix.casefold() != '.xpj':
+            raise ValueError(f"{role}_relative must name an .xpj project: {relative}")
+    root = None if offline else _find_sd_root(sd_root, checkpoint["baseline_relative"])
     paths = {}
     for role in ("baseline", "working", "target"):
         relative = checkpoint[f"{role}_relative"]
-        absolute = root / relative if root else None
+        absolute = _checkpoint_target(root, relative) if root else None
         paths[role] = {
             "relative": relative,
             "path": str(absolute) if absolute else None,
-            "exists": bool(absolute and absolute.is_file()),
+            "exists": None if offline else bool(absolute and absolute.is_file()),
         }
     read_only = bool(root and os.statvfs(root).f_flag & getattr(os, "ST_RDONLY", 1))
     report = {
@@ -74,7 +90,7 @@ def _resume(checkpoint_path: Path | None, sd_root: Path | None, as_json: bool) -
         "updated": checkpoint.get("updated"),
         "title": checkpoint["title"],
         "sd_root": str(root) if root else None,
-        "sd_status": "read-only" if read_only else "read-write" if root else "not-found",
+        "sd_status": "not-checked" if offline else "read-only" if read_only else "read-write" if root else "not-found",
         "projects": paths,
         "routes": checkpoint.get("routes", []),
         "next_action": checkpoint["next_action"],
@@ -85,10 +101,10 @@ def _resume(checkpoint_path: Path | None, sd_root: Path | None, as_json: bool) -
         return 0
     print(f"RESUME: {report['title']}")
     print(f"Checkpoint: {checkpoint_file} ({report['updated'] or 'date unknown'})")
-    print(f"SD: {report['sd_status']} — {root or 'no matching mounted card found'}")
+    print(f"SD: {report['sd_status']} — {root or ('offline mode; storage not inspected' if offline else 'no matching mounted card found')}")
     for role in ("baseline", "working", "target"):
         item = paths[role]
-        state = "FOUND" if item["exists"] else "MISSING"
+        state = "NOT CHECKED" if offline else "FOUND" if item["exists"] else "MISSING"
         print(f"{role.title():<8} {state:<7} {item['path'] or item['relative']}")
     routes = "; ".join(
         f"T{row['track']} {row['name']} ch{row['channel']}" for row in report["routes"]
@@ -188,6 +204,7 @@ def main() -> int:
         help="mounted MPC SD-card root; otherwise detect under /media",
     )
     resume.add_argument("--json", action="store_true", help="emit machine-readable JSON")
+    resume.add_argument("--offline", action="store_true", help="read only the local checkpoint; do not discover or inspect SD storage")
     demo = subparsers.add_parser("demo", help="build the complete redistributable workflow fixture")
     demo_destination = demo.add_mutually_exclusive_group(required=True)
     demo_destination.add_argument("--output", type=Path, help="new directory for the generated demo")
@@ -215,7 +232,7 @@ def main() -> int:
     if args.command == "doctor":
         return _doctor(args.json)
     if args.command == "resume":
-        return _resume(args.checkpoint, args.sd_root, args.json)
+        return _resume(args.checkpoint, args.sd_root, args.json, offline=args.offline)
     if args.command == "demo":
         if args.verify is not None:
             report = verify_demo(args.verify)

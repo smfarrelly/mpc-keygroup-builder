@@ -113,6 +113,10 @@ mpc-tools resume
 ```
 
 If the SD card is mounted somewhere unusual, add `--sd-root /absolute/path`.
+For software work without touching mounted storage, use `mpc-tools resume
+--offline`. It still shows the checkpoint and next action, but reports project
+files as **NOT CHECKED**, not missing. `--offline --json` uses `null` for their
+existence status. Offline mode and `--sd-root` are mutually exclusive.
 The command reads `inventory/session-checkpoint.toml` and prints the current
 objective, exact baseline/working/target project paths, mounted-card status,
 routing summary, and one next action. Update the small checkpoint when the
