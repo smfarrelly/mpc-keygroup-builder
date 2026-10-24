@@ -34,6 +34,54 @@ class ReadinessTests(unittest.TestCase):
         (data / 'kick.wav').write_bytes(b'sample')
         self.assertEqual(inspect_program(self.program, None)['samples'][0]['status'], 'found')
 
+    def test_uppercase_vendor_extension_and_sample_name_with_dots(self):
+        for reference in ('Kick', 'Kick.808'):
+            with self.subTest(reference=reference):
+                self.program_file(reference)
+                (self.root / (reference + '.WAV')).write_bytes(b'fixture')
+                report = inspect_program(self.program, None)
+                self.assertEqual(report['status'], 'pass')
+                self.assertEqual(report['samples'][0]['resolution'], 'case-insensitive')
+
+    def test_case_insensitive_named_directories(self):
+        self.program_file('audio/kick.wav')
+        (self.root / 'Audio').mkdir()
+        target = self.root / 'Audio/KICK.WAV'
+        target.write_bytes(b'fixture')
+        self.assertEqual(inspect_program(self.program, None)['samples'][0]['path'], str(target))
+
+    def test_case_collisions_are_not_silently_selected(self):
+        self.program_file()
+        for name in ('kick.wav', 'KICK.WAV'):
+            (self.root / name).write_bytes(b'fixture')
+        report = inspect_program(self.program, None)
+        self.assertEqual(report['status'], 'fail')
+        self.assertEqual(report['samples'][0]['status'], 'ambiguous')
+        self.assertEqual(len(report['samples'][0]['candidates']), 2)
+
+    def test_companion_and_sibling_duplicates_are_ambiguous(self):
+        self.program_file()
+        (self.root / 'kick.wav').write_bytes(b'first')
+        data = self.root / 'Kit_[ProgramData]'
+        data.mkdir()
+        (data / 'kick.wav').write_bytes(b'second')
+        self.assertEqual(inspect_program(self.program, None)['samples'][0]['status'], 'ambiguous')
+
+    def test_sample_directory_symlink_is_not_followed_even_inside_root(self):
+        self.program_file('alias/kick.wav')
+        target = self.root / 'actual'
+        target.mkdir()
+        (target / 'kick.wav').write_bytes(b'fixture')
+        (self.root / 'alias').symlink_to(target, target_is_directory=True)
+        self.assertEqual(inspect_program(self.program, None)['samples'][0]['status'], 'external')
+
+    def test_directory_case_collisions_are_ambiguous(self):
+        self.program_file('audio/kick.wav')
+        for folder in ('audio', 'Audio'):
+            (self.root / folder).mkdir()
+            (self.root / folder / 'kick.wav').write_bytes(b'fixture')
+        self.assertEqual(inspect_program(self.program, None)['samples'][0]['status'], 'ambiguous')
+
     def test_external_reference_is_unknown_not_missing(self):
         for ref in ('/private/kick.wav', 'C:\\audio\\kick.wav', '../../outside.wav'):
             self.program_file(ref)

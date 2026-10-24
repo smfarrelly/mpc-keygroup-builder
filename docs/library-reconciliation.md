@@ -35,6 +35,9 @@ Each candidate separately records sample status: `not-checked`, `pass`, `warn`,
 or `fail`. A sample pass means the bounded program-relative / companion lookup
 resolved the references and the normalized model validated. It does not mean
 the sound was heard, that WAV audio is valid, or that the MPC can load it.
+Unique case-insensitive paths are supported, including vendor `.WAV` files
+referenced by extensionless sample names. Multiple matching files are reported
+as ambiguous, including duplicates between sibling and companion folders.
 Historical listening notes are retained verbatim, not applied to a new copy.
 
 ## Reports and limits

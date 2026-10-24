@@ -24,12 +24,22 @@ to each program's parent folder. Paths with spaces must be quoted.
   is for that receipt format, not every generated folder in the toolkit.
 - **Program:** parse the normalized model, check its structure, and look for
   each sample relative to the XPM or its `Name_[ProgramData]` directory. A
-  reference without a suffix also tries `.wav`. No recursive basename search
+  sample name without a recognized audio suffix also tries an appended `.wav`
+  (dots inside sample names are preserved). Unique case-insensitive matches
+  support vendor `.WAV` files and directory casing. No recursive basename search
   is used because that could silently choose the wrong sample.
 - **External:** absolute, Windows-style, or escaping paths are not accessed.
   Their availability is unknown, not evidence that the audio was deleted.
 - **Missing:** no regular file exists in the allowed lookup locations. MPC
   search behavior may differ; the tool does not claim to emulate the firmware.
+- **Ambiguous:** more than one allowed path matches, including case collisions
+  or duplicates between sibling and companion folders. Nothing is selected;
+  inspect the files before deciding what the MPC should use.
+
+Sample symlinks are not followed, including links inside the selected root.
+They report external/unknown when no regular candidate resolves. The JSON
+records whether a found path needed case-insensitive lookup; this does not
+rename files or repair the XPM.
 
 Exit codes: 0 means all selected software checks passed; 1 means at least one
 failed or needs attention (including external references); 2 means invalid
