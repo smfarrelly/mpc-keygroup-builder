@@ -188,6 +188,13 @@ def main() -> int:
     start = subparsers.add_parser("start", help="choose one workflow without inspecting drives or running commands")
     start.add_argument("goal", nargs="?", choices=tuple(WORKFLOWS))
     start.add_argument("--json", action="store_true")
+    home = subparsers.add_parser("home", help="generate a private local starting page from explicit inputs")
+    home.add_argument("--output", required=True, type=Path)
+    home.add_argument("--archive-library", type=Path)
+    home.add_argument("--ledger", type=Path)
+    home.add_argument("--program-root", type=Path)
+    home.add_argument("--bundle", type=Path, action="append", default=[])
+    home.add_argument("--recipe-root", type=Path)
     check = subparsers.add_parser("check", help="read-only readiness checks for explicitly selected local files")
     check.add_argument("--archive", type=Path, action="append", default=[])
     check.add_argument("--bundle", type=Path, action="append", default=[])
@@ -236,6 +243,13 @@ def main() -> int:
     args = parser.parse_args()
     if args.command == "start":
         return show_start(args.goal, args.json)
+    if args.command == "home":
+        from .home import build
+        report = build(args.output, archive_library=args.archive_library, ledger=args.ledger,
+                       program_root=args.program_root, bundles=args.bundle, recipe_root=args.recipe_root)
+        print(f"Local starting page: {args.output.expanduser().resolve()}")
+        print('Point-in-time report only; no hardware acceptance inferred.')
+        return 1 if report['status'] == 'attention' else 0
     if args.command == "check":
         return show_readiness(args.archive, args.bundle, args.program, args.sample_root, args.json, args.recipe_root)
     if args.command == "commands":

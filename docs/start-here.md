@@ -5,6 +5,10 @@ plan before making music. Run `mpc-tools start` from any directory for a small
 menu of workflows. It only prints guidance: no drive discovery, writes, or
 commands are executed. `--json` exposes the same guidance to other interfaces.
 
+For one browser page with favorites, saved ideas, and readiness evidence, use
+[the local home-page generator](local-home.md). You explicitly choose its inputs;
+it never searches connected drives automatically.
+
 ## Find a sound
 
 `mpc-tools start find` starts with favorites in the local listening ledger.

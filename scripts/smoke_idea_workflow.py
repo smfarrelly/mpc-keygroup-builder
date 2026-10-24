@@ -69,6 +69,8 @@ def smoke(bin_dir: Path) -> int:
         if failed_output.exists():
             raise RuntimeError('invalid archive restore published output')
         run('mpc-project-capture', '--verify', archive)
+        run('mpc-tools', 'home', '--archive-library', archive.parent,
+            '--output', root / 'home.html')
     print(f'PASS: {count} installed command checks; capture/restore/recovery exercised with synthetic data only.')
     return 0
 
