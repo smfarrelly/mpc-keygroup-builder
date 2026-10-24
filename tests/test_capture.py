@@ -130,6 +130,16 @@ class CaptureTests(unittest.TestCase):
         with patch('sys.argv', ['mpc-project-capture', '--verify', str(self.output)]):
             self.assertEqual(capture.main(), 0)
 
+    def test_explicit_project_selection_does_not_invent_routing_experiment(self):
+        for name in capture.DEFAULT_PROJECTS:
+            self.make_pair(self.source, Path(name).stem, b'idea')
+        with patch('sys.argv', ['mpc-project-capture', str(self.source), '--output', str(self.output),
+                               '--project', capture.DEFAULT_PROJECTS[0], '--project', capture.DEFAULT_PROJECTS[1]]):
+            self.assertEqual(capture.main(), 0)
+        manifest = json.loads((self.output / 'capture-manifest.json').read_text())
+        self.assertEqual(manifest['changed_setting'], '')
+        self.assertEqual(manifest['capture_kind'], 'idea-snapshot')
+
     def test_refuses_missing_project_data(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

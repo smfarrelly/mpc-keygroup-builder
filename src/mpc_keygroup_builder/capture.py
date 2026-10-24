@@ -224,7 +224,7 @@ def main() -> int:
         args.source,
         args.output,
         names,
-        changed_setting=args.changed_setting,
+        changed_setting=(args.changed_setting or "") if args.project else args.changed_setting,
         note=args.note,
     )
     print(
