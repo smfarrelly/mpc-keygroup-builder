@@ -12,6 +12,24 @@ mpc-tools home --output work/reports/home-01.html \
 ```
 
 All inputs are optional; omit unavailable ones. Only `--output` is required.
+
+## Save your input selection
+
+Copy `home.example.toml` to a private `home.local.toml`, edit its paths, then use:
+
+```bash
+mpc-tools home --config home.local.toml --output work/reports/home-02.html
+```
+
+Paths are relative to the config file, not your current directory. The file is
+strictly declarative: unknown fields, invalid types, and executable command
+fields are rejected. Do not combine `--config` with individual input flags.
+Keep the config private because it identifies personal storage locations.
+The output is deliberately not saved in the config: choose a new report filename
+each time to avoid replacing a useful earlier view.
+
+## Input and output boundaries
+
 `--bundle` may be repeated. `--program-root` requires a ledger and `--recipe-root`
 requires a bundle. The output must be a new filename outside the selected input
 libraries, bundles, and recipe trees. It never changes those inputs.

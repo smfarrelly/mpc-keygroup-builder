@@ -5,11 +5,39 @@ from html import escape
 import json
 from pathlib import Path
 import shlex
+import tomllib
 
 from .idea_archive import list_archives
 from .library import query
 from .readiness import check
 from .start import WORKFLOWS
+
+
+def load_config(path: Path) -> dict:
+    """Read a declarative local input selection; paths are relative to the config."""
+    path = path.expanduser()
+    if path.is_symlink() or not path.is_file():
+        raise ValueError(f'home config must be a regular non-symlink file: {path}')
+    with path.open('rb') as stream:
+        raw = tomllib.load(stream)
+    allowed = {'format', 'archive_library', 'ledger', 'program_root', 'bundles', 'recipe_root'}
+    unknown = raw.keys() - allowed
+    if unknown:
+        raise ValueError('unknown home config fields: ' + ', '.join(sorted(unknown)))
+    if type(raw.get('format')) is not int or raw['format'] != 1:
+        raise ValueError('home config requires format = 1')
+    base = path.absolute().parent
+    def configured_path(value):
+        if not isinstance(value, str) or not value.strip() or '\0' in value:
+            raise ValueError('home config paths must be nonempty strings')
+        item = Path(value).expanduser()
+        return item if item.is_absolute() else base / item
+    result = {key: configured_path(raw[key]) for key in allowed - {'format', 'bundles'} if key in raw}
+    bundles = raw.get('bundles', [])
+    if not isinstance(bundles, list):
+        raise ValueError('home config bundles must be an array of paths')
+    result['bundles'] = [configured_path(value) for value in bundles]
+    return result
 
 
 def collect(*, archive_library=None, ledger=None, program_root=None, bundles=(), recipe_root=None):
