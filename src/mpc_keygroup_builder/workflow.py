@@ -314,6 +314,10 @@ def inspect_batch_report(settings: Settings, batch: Batch) -> dict[str, Any]:
                 "source": str(instrument.source), "error": str(error),
             })
     duplicates = [sorted(paths) for paths in hashes.values() if len(paths) > 1]
+    cross_program_duplicates = [
+        paths for paths in duplicates
+        if len({path.rsplit("/", 1)[0] for path in paths}) > 1
+    ]
     failures = sum(item["status"] == "fail" for item in programs)
     return {
         "schema_version": 1, "kind": "mpc-keygroup-batch-inspection",
@@ -324,6 +328,8 @@ def inspect_batch_report(settings: Settings, batch: Batch) -> dict[str, Any]:
             "samples": sum(item.get("samples", 0) for item in programs),
             "selected_bytes": sum(item.get("selected_bytes", 0) for item in programs),
             "unique_audio": len(hashes), "duplicate_groups": len(duplicates),
+            "cross_program_duplicate_groups": len(cross_program_duplicates),
+            "intra_program_duplicate_groups": len(duplicates) - len(cross_program_duplicates),
         },
         "programs": programs, "duplicate_audio_groups": sorted(duplicates),
     }
@@ -375,10 +381,12 @@ def inspect_batch(
                 raise FileExistsError(f"inspection report exists; pass --force-report to replace: {destination}")
         _write_json_atomic(destination, report)
         print(f"REPORT\t{destination}")
-    return 1 if summary["failures"] or summary["duplicate_groups"] else 0
+    return 1 if summary["failures"] or summary["cross_program_duplicate_groups"] else 0
 
 
-def build_batch(settings: Settings, batch: Batch, *, force: bool) -> None:
+def build_batch(
+    settings: Settings, batch: Batch, *, force: bool, audio_storage: str = "copy"
+) -> None:
     for index, instrument in enumerate(batch.instruments, 1):
         selected = selected_wav_map(instrument)
         groups, _ = place_sample_groups(
@@ -389,16 +397,24 @@ def build_batch(settings: Settings, batch: Batch, *, force: bool) -> None:
             root_target=instrument.root_target,
         )
         program_path, data_path = artifact_paths(settings, batch, instrument)
-        if force:
-            program_path.unlink(missing_ok=True)
-            if data_path.exists():
-                shutil.rmtree(data_path)
+        for source in (settings.template, batch.manifest_path, instrument.velocity_preset):
+            if source is not None and (
+                source.resolve() == program_path.resolve()
+                or source.resolve().is_relative_to(data_path.resolve())
+            ):
+                raise ValueError(f"build output overlaps protected input: {source}")
         header, program = build_program(settings.template, groups, instrument.name)
-        write_program(header, program, groups, program_path, force=force)
+        write_program(
+            header, program, groups, program_path, force=force,
+            audio_storage=audio_storage,
+        )
         print(f"BUILT\t{index}/{len(batch.instruments)}\t{instrument.category}/{instrument.name}")
 
 
-def validate_batch(settings: Settings, batch: Batch, *, location: str) -> None:
+def validate_batch(
+    settings: Settings, batch: Batch, *, location: str,
+    allow_cross_program_duplicates: bool = False,
+) -> None:
     seen: dict[str, list[str]] = {}
     total = 0
     for instrument in batch.instruments:
@@ -418,8 +434,19 @@ def validate_batch(settings: Settings, batch: Batch, *, location: str) -> None:
             f"keygroups={counts['keygroups']}\tsamples={counts['samples']}"
         )
     duplicates = [paths for paths in seen.values() if len(paths) > 1]
-    if duplicates:
-        raise ValueError(f"batch contains {len(duplicates)} duplicate audio groups")
+    cross_program_duplicates = [
+        paths for paths in duplicates
+        if len({path.rsplit("/", 1)[0] for path in paths}) > 1
+    ]
+    if cross_program_duplicates and not allow_cross_program_duplicates:
+        raise ValueError(
+            f"batch contains {len(cross_program_duplicates)} cross-program duplicate audio groups"
+        )
+    if cross_program_duplicates:
+        print(f"WARNING\tcross_program_duplicate_groups={len(cross_program_duplicates)}")
+    intra_program_duplicate_groups = len(duplicates) - len(cross_program_duplicates)
+    if intra_program_duplicate_groups:
+        print(f"WARNING\tintra_program_duplicate_groups={intra_program_duplicate_groups}")
     print(
         f"SUMMARY\tlocation={location}\tprograms={len(batch.instruments)}\t"
         f"samples={total}\tunique_audio={len(seen)}"
@@ -597,9 +624,17 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         child.add_argument("manifest", type=Path)
         if command == "build":
             child.add_argument("--force", action="store_true")
+            child.add_argument(
+                "--audio-storage", choices=("copy", "hardlink"), default="copy",
+                help="hardlink reuses same-filesystem source WAV bytes for local staging only",
+            )
         elif command == "validate":
             child.add_argument(
                 "--location", choices=("artifacts", "installed"), default="artifacts"
+            )
+            child.add_argument(
+                "--allow-cross-program-duplicates", action="store_true",
+                help="report intentional cross-program sample reuse instead of rejecting the batch",
             )
         elif command == "install":
             child.add_argument("--execute", action="store_true")
@@ -621,9 +656,12 @@ def main(argv: list[str] | None = None) -> int:
             protected_paths=(args.config.resolve(),),
         )
     if args.command == "build":
-        build_batch(settings, batch, force=args.force)
+        build_batch(settings, batch, force=args.force, audio_storage=args.audio_storage)
     elif args.command == "validate":
-        validate_batch(settings, batch, location=args.location)
+        validate_batch(
+            settings, batch, location=args.location,
+            allow_cross_program_duplicates=args.allow_cross_program_duplicates,
+        )
     elif args.command == "install":
         install_batch(settings, batch, execute=args.execute)
     elif args.command == "clean":

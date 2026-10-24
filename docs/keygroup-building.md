@@ -47,6 +47,27 @@ mpc-keygroup-batch --config config.local.toml inspect MANIFEST.json
 mpc-keygroup-batch --config config.local.toml build MANIFEST.json
 ```
 
+For a large private corpus on the same local filesystem, `build` also accepts
+`--audio-storage hardlink`. This creates regular ProgramData WAV directory
+entries backed by the original WAV inodes, avoiding a second audio allocation.
+It is local staging only: editing either path edits the same audio, and an SD
+deployment must copy and checksum-verify the files. The default remains a
+durable copy; hardlink mode refuses cross-filesystem or symbolic-link sources.
+
+Both copy and hardlink builds stage the XPM and ProgramData together, checksum
+the staged WAVs, and validate the staged instrument before replacing an existing
+build. `--force` no longer deletes the old build up front. Ordinary publication
+failures roll back the old pair; if rollback itself fails, the error reports
+the retained staging/recovery folder. Symlink outputs and source audio inside
+the output ProgramData are rejected. This is a per-instrument transaction,
+not an all-or-nothing batch or a guarantee against power loss between the two
+filesystem renames. Do not unplug storage during a build.
+
+Identical audio within one instrument is reported as a warning, since multiple
+notes can deliberately reuse a sound. Cross-program duplicate audio still fails
+validation unless explicitly admitted with `validate --allow-cross-program-duplicates`.
+That option reports the duplicates rather than silently removing samples.
+
 Manifest-driven builds make it possible to reproduce the program without
 checking licensed audio into Git. Keep paths environment-specific and record
 the source product, license, download date, and hashes separately.
