@@ -7,11 +7,14 @@ import errno
 import hashlib
 import json
 import os
+import re
 import shutil
 import tempfile
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
+
+from .publication import publish_directory
 
 
 CHUNK_SIZE = 1024 * 1024
@@ -32,22 +35,36 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def inventory(root: Path) -> tuple[FileRecord, ...]:
+def inventory(root: Path, *, allow_empty: bool = False) -> tuple[FileRecord, ...]:
+    if root.is_symlink():
+        raise ValueError(f'package root may not be a symbolic link: {root}')
     if not root.is_dir():
         raise NotADirectoryError(f"package directory is missing: {root}")
     records = []
+    folded = set()
     for path in sorted(root.rglob("*")):
         if path.is_symlink():
             raise ValueError(f"package may not contain symbolic links: {path}")
+        relative = path.relative_to(root).as_posix()
+        if relative.casefold() in folded:
+            raise ValueError(f'package filenames collide after case folding: {relative}')
+        folded.add(relative.casefold())
         if path.is_file():
+            before = path.stat()
+            digest = sha256(path)
+            after = path.stat()
+            if (before.st_size, before.st_mtime_ns, before.st_ino) != (after.st_size, after.st_mtime_ns, after.st_ino):
+                raise ValueError(f'package source changed during inventory: {path}')
             records.append(
                 FileRecord(
-                    relative=path.relative_to(root).as_posix(),
-                    bytes=path.stat().st_size,
-                    sha256=sha256(path),
+                    relative=relative,
+                    bytes=before.st_size,
+                    sha256=digest,
                 )
             )
-    if not records:
+        elif not path.is_dir():
+            raise ValueError(f'unsupported package filesystem entry: {path}')
+    if not records and not allow_empty:
         raise ValueError(f"package contains no files: {root}")
     return tuple(records)
 
@@ -97,11 +114,12 @@ def build_plan(source: Path, destination: Path) -> dict[str, object]:
             f"package source and staging path must not overlap: {source} and {stage}"
         )
     source_files = inventory(source)
+    _records_from_plan({'inventory': [asdict(record) for record in source_files]})
     if destination.exists():
         action = (
             "unchanged"
             if destination.is_dir()
-            and _same_inventory(source_files, inventory(destination))
+            and _same_inventory(source_files, inventory(destination, allow_empty=True))
             else "conflict"
         )
     else:
@@ -120,6 +138,10 @@ def build_plan(source: Path, destination: Path) -> dict[str, object]:
 
 
 def _fsync_directory(path: Path) -> None:
+    if os.name == 'nt':
+        # Python has no portable directory-fsync operation on Windows. File data
+        # is still flushed; do not claim power-loss durability on any platform.
+        return
     descriptor = os.open(path, os.O_RDONLY)
     try:
         try:
@@ -181,25 +203,54 @@ def copy_file_verified(source: Path, target: Path, expected_sha256: str) -> None
 
 
 def _records_from_plan(plan: dict[str, object]) -> tuple[FileRecord, ...]:
-    values = plan["inventory"]
-    if not isinstance(values, list):
-        raise TypeError("invalid package plan inventory")
-    return tuple(FileRecord(**value) for value in values)
+    values = plan.get('inventory')
+    if not isinstance(values, list) or not values:
+        raise ValueError('invalid package plan inventory')
+    records, seen = [], set()
+    for value in values:
+        if not isinstance(value, dict) or set(value) != {'relative', 'bytes', 'sha256'}:
+            raise ValueError('invalid package plan file record')
+        name, size, digest = value['relative'], value['bytes'], value['sha256']
+        if not isinstance(name, str) or not name or any(char in name for char in ('\\', ':', '\0')):
+            raise ValueError('invalid package plan relative path')
+        relative = Path(name)
+        if relative.is_absolute() or '..' in relative.parts or relative.as_posix() != name or not relative.parts:
+            raise ValueError(f'unsafe package plan relative path: {name}')
+        if name.casefold() in seen:
+            raise ValueError(f'duplicate package plan relative path: {name}')
+        if type(size) is not int or size < 0 or not isinstance(digest, str) or not re.fullmatch('[0-9a-f]{64}', digest):
+            raise ValueError(f'invalid package plan size/checksum: {name}')
+        seen.add(name.casefold())
+        records.append(FileRecord(name, size, digest))
+    return tuple(records)
 
 
 def apply_package(
     plan: dict[str, object], *, resume: bool = False, probe_bytes: int = 64 * CHUNK_SIZE
 ) -> dict[str, object]:
-    if plan["action"] == "unchanged":
-        return {**plan, "applied": False, "status": "unchanged"}
-    if plan["action"] != "create":
+    if not isinstance(plan, dict) or type(plan.get('format')) is not int or plan['format'] != 1:
+        raise ValueError('unsupported package plan')
+    if any(not isinstance(plan.get(key), str) or not plan[key] for key in ('source', 'destination', 'staging', 'action')):
+        raise ValueError('package plan requires source, destination, staging and action strings')
+    records = _records_from_plan(plan)
+    if (type(plan.get('files')) is not int or plan['files'] != len(records)
+            or type(plan.get('bytes')) is not int or plan['bytes'] != sum(record.bytes for record in records)):
+        raise ValueError('package plan counts do not match its inventory')
+    source = Path(plan['source'])
+    destination = Path(plan['destination'])
+    stage = Path(plan['staging'])
+    if stage != staging_path(destination):
+        raise ValueError('package plan staging path does not match its destination')
+    current = build_plan(source, destination)
+    if records != _records_from_plan(current) or plan.get('package_sha256') != current['package_sha256']:
+        raise ValueError('package source changed since planning; create and review a fresh plan')
+    if plan['action'] == 'unchanged' and current['action'] == 'unchanged':
+        return {**current, 'applied': False, 'status': 'unchanged'}
+    if plan['action'] != 'create':
         raise FileExistsError(
             f"destination exists with different content: {plan['destination']}"
         )
-    source = Path(str(plan["source"]))
-    destination = Path(str(plan["destination"]))
-    stage = Path(str(plan["staging"]))
-    if destination.exists():
+    if destination.exists() or destination.is_symlink():
         raise FileExistsError(f"destination appeared after planning: {destination}")
     if stage.exists() and not resume:
         raise FileExistsError(
@@ -211,7 +262,6 @@ def apply_package(
         raise FileExistsError(f"staging path is not a directory: {stage}")
     write_probe(destination.parent, probe_bytes)
     stage.mkdir(exist_ok=resume)
-    records = _records_from_plan(plan)
     for path in stage.rglob("*"):
         if path.is_symlink():
             raise ValueError(f"staging directory may not contain symbolic links: {path}")
@@ -237,8 +287,10 @@ def apply_package(
     staged = inventory(stage)
     if not _same_inventory(records, staged):
         raise OSError(f"staged package verification failed: {stage}")
+    if not _same_inventory(records, inventory(source)):
+        raise ValueError('package source changed during copy; staged files retained, no destination published')
     _fsync_directory(stage)
-    os.replace(stage, destination)
+    publish_directory(stage, destination)
     _fsync_directory(destination.parent)
     deployed = inventory(destination)
     if not _same_inventory(records, deployed):

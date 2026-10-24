@@ -1,4 +1,5 @@
 import tempfile
+import os
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -27,6 +28,128 @@ class PackageDeployTests(unittest.TestCase):
             self.assertEqual(plan["files"], 3)
             self.assertFalse(destination.exists())
             self.assertEqual(len(plan["package_sha256"]), 64)
+
+    def test_stale_source_is_rejected_before_probe_or_staging(self):
+        for change in ('modify', 'add', 'remove'):
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                source = self.package(root)
+                destination = root / 'target'
+                plan = package_deploy.build_plan(source, destination)
+                if change == 'modify':
+                    (source / 'FG Kit.xpm').write_bytes(b'changed')
+                elif change == 'add':
+                    (source / 'new.txt').write_text('new')
+                else:
+                    (source / 'audio/Kick.wav').unlink()
+                with mock.patch.object(package_deploy, 'write_probe') as probe:
+                    with self.assertRaisesRegex(ValueError, 'changed since planning'):
+                        package_deploy.apply_package(plan)
+                    probe.assert_not_called()
+                self.assertFalse(destination.exists())
+                self.assertFalse(package_deploy.staging_path(destination).exists())
+
+    def test_empty_destination_is_a_conflict_not_a_replacement(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = self.package(root)
+            destination = root / 'target'
+            destination.mkdir()
+            plan = package_deploy.build_plan(source, destination)
+            self.assertEqual(plan['action'], 'conflict')
+            with self.assertRaises(FileExistsError):
+                package_deploy.apply_package(plan, probe_bytes=0)
+            self.assertEqual(list(destination.iterdir()), [])
+
+    def test_last_moment_empty_destination_is_preserved_with_stage(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = self.package(root)
+            destination = root / 'target'
+            plan = package_deploy.build_plan(source, destination)
+            publish = package_deploy.publish_directory
+            def conflict(stage, target):
+                target.mkdir()
+                return publish(stage, target)
+            with mock.patch.object(package_deploy, 'publish_directory', side_effect=conflict):
+                with self.assertRaises(FileExistsError):
+                    package_deploy.apply_package(plan, probe_bytes=0)
+            self.assertEqual(list(destination.iterdir()), [])
+            self.assertEqual(package_deploy.inventory(source), package_deploy.inventory(package_deploy.staging_path(destination)))
+
+    def test_source_addition_during_copy_refuses_publication(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = self.package(root)
+            destination = root / 'target'
+            plan = package_deploy.build_plan(source, destination)
+            copy = package_deploy.copy_file_verified
+            def mutate(*args):
+                result = copy(*args)
+                (source / 'new.txt').write_text('concurrent save')
+                return result
+            with mock.patch.object(package_deploy, 'copy_file_verified', side_effect=mutate):
+                with self.assertRaisesRegex(ValueError, 'changed during copy'):
+                    package_deploy.apply_package(plan, probe_bytes=0)
+            self.assertFalse(destination.exists())
+            self.assertTrue(package_deploy.staging_path(destination).exists())
+
+    def test_malformed_plan_paths_counts_and_stage_do_not_write(self):
+        for change in ('path', 'stage', 'count', 'duplicate', 'checksum'):
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                source = self.package(root)
+                destination = root / 'target'
+                plan = package_deploy.build_plan(source, destination)
+                if change == 'path':
+                    plan['inventory'][0]['relative'] = '../outside'
+                elif change == 'stage':
+                    plan['staging'] = str(root / 'unrelated')
+                elif change == 'count':
+                    plan['bytes'] += 1
+                elif change == 'duplicate':
+                    plan['inventory'].append(plan['inventory'][0])
+                else:
+                    plan['inventory'][0]['sha256'] = 'invalid'
+                with self.assertRaises(ValueError):
+                    package_deploy.apply_package(plan, probe_bytes=0)
+                self.assertEqual(list(root.iterdir()), [source])
+
+    def test_previously_unchanged_plan_is_rechecked(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = self.package(root)
+            target = root / 'target'
+            package_deploy.apply_package(package_deploy.build_plan(source, target), probe_bytes=0)
+            plan = package_deploy.build_plan(source, target)
+            (target / 'FG Kit.xpm').write_bytes(b'changed')
+            with self.assertRaises(FileExistsError):
+                package_deploy.apply_package(plan, probe_bytes=0)
+            self.assertEqual((target / 'FG Kit.xpm').read_bytes(), b'changed')
+
+    def test_case_colliding_directories_are_not_merged(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = self.package(Path(directory))
+            try:
+                (source / 'Audio').mkdir()
+            except FileExistsError:
+                self.skipTest('filesystem is case-insensitive')
+            (source / 'Audio/Other.wav').write_bytes(b'other')
+            with self.assertRaisesRegex(ValueError, 'case folding'):
+                package_deploy.inventory(source)
+
+    @unittest.skipUnless(hasattr(os, 'mkfifo'), 'requires FIFO support')
+    def test_special_files_are_refused(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source = self.package(Path(directory))
+            os.mkfifo(source / 'pipe')
+            with self.assertRaisesRegex(ValueError, 'unsupported package'):
+                package_deploy.inventory(source)
+
+    def test_windows_does_not_attempt_unsupported_directory_fsync(self):
+        with mock.patch.object(package_deploy.os, 'name', 'nt'), mock.patch.object(package_deploy.os, 'open') as open_file:
+            package_deploy._fsync_directory(None)
+            open_file.assert_not_called()
 
     def test_apply_probes_stages_promotes_and_verifies(self):
         with tempfile.TemporaryDirectory() as directory:

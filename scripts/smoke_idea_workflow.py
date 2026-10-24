@@ -86,6 +86,15 @@ def smoke(bin_dir: Path) -> int:
                                     '--library-root', instruments, '--verify-samples', '--json').stdout)
         if reconciled['rows'][0]['match_status'] != 'candidate' or reconciled['hardware_status'] != 'not-evaluated':
             raise RuntimeError('reconciliation did not preserve evidence boundaries')
+        run('mpc-tools', 'home', '--ledger', ledger, '--library-root', instruments,
+            '--verify-samples', '--output', root / 'favorite-home.html')
+        package_copy = root / 'package-copy'
+        run('mpc-package-deploy', archive, package_copy)
+        if package_copy.exists():
+            raise RuntimeError('package dry run unexpectedly wrote output')
+        run('mpc-package-deploy', archive, package_copy, '--apply', '--probe-mib', '0')
+        run('mpc-project-capture', '--verify', package_copy)
+        run('mpc-package-deploy', archive, package_copy, '--apply', '--probe-mib', '0')
     print(f'PASS: {count} installed command checks; capture/restore/recovery exercised with synthetic data only.')
     return 0
 
