@@ -59,4 +59,8 @@ jobs:
           /tmp/mpc-installed/bin/mpc-showcase --output /tmp/mpc-showcase-smoke
           test -f /tmp/mpc-portable-smoke/HARDWARE_CHECKLIST.md
           test -f /tmp/mpc-showcase-smoke/Compositions/electro/Sequences/outro.mid
+      - name: Inspect release distribution inventories
+        run: |
+          uv build --out-dir /tmp/mpc-release-assets
+          uv run python scripts/check_release_artifacts.py --version 0.1.0 /tmp/mpc-release-assets/mpc_keygroup_builder-0.1.0-py3-none-any.whl /tmp/mpc-release-assets/mpc_keygroup_builder-0.1.0.tar.gz
       - run: uv run mpc-repository-guard

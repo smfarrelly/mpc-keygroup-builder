@@ -54,6 +54,9 @@ Combine explicitly selected evidence in a [local starting page](local-home.md).
 
 ## Direction and history
 
+- [v0.1.0 software-preview release](releases/v0.1.0.md) — pinned installation,
+  upgrade guidance, and explicit acceptance boundaries.
+
 - [Software handoff, 2026-10-24](software-handoff.md) — review dependencies and
   explicitly deferred acceptance; a dated checkpoint, not live merge status.
 

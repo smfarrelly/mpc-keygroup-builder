@@ -8,6 +8,9 @@ mpc-tools commands
 mpc-tools commands --category "Creative MIDI"
 mpc-tools help mpc-drum-build
 mpc-tools doctor
+mpc-tools start
+mpc-tools home --config home.local.toml --output work/reports/home-01.html
+mpc-tools check --bundle work/my-wave --recipe-root recipes
 mpc-tools resume
 mpc-tools resume --offline
 mpc-tools --version
