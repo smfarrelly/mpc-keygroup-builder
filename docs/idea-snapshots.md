@@ -47,6 +47,20 @@ captured. This is not a replacement for a separate backup of your library.
 
 ## Experiment safely
 
+Compare two verified archives without changing either:
+
+```bash
+uv run mpc-project-capture --compare work/ideas/take-01 work/ideas/take-02
+uv run mpc-project-capture --compare work/ideas/take-01 work/ideas/take-02 --json
+```
+
+Both archives must pass verification first. The report lists added, removed,
+changed, and unchanged files by exact relative path, and JSON includes each
+take's note. Different filenames appear as additions/removals, not inferred
+renames. This is a byte-level inventory comparison, not an interpretation of
+MPC tracks, notes, or sound. Different capture notes alone do not mark project
+content as changed. Reports go to stdout; no archive files are edited.
+
 1. Preserve the take you like as a snapshot.
 2. Use Save As on the MPC for the next variation; do not overwrite your favorite.
 3. Capture that new save to another folder with a note describing the change.

@@ -1,4 +1,6 @@
 import json
+from contextlib import redirect_stdout
+from io import StringIO
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -130,6 +132,44 @@ class CaptureTests(unittest.TestCase):
         with patch('sys.argv', ['mpc-project-capture', '--verify', str(self.output)]):
             self.assertEqual(capture.main(), 0)
 
+    def test_comparison_reports_changes_and_preserves_archives(self):
+        self._capture_idea()
+        before = {p.relative_to(self.output): p.read_bytes() for p in self.output.rglob('*') if p.is_file()}
+        (self.source / 'Idea.xpj').write_bytes(b'new take')
+        data = self.source / 'Idea_[ProjectData]'
+        (data / 'Programs.db').unlink()
+        (data / 'new.db').write_bytes(b'new')
+        after = self.root / 'take-two'
+        capture.capture_projects(self.source, after, ('Idea.xpj',), note='Less busy')
+        report = capture.compare_captures(self.output, after)
+        self.assertEqual(report['changed'], ['Idea.xpj'])
+        self.assertEqual(report['removed'], ['Idea_[ProjectData]/Programs.db'])
+        self.assertEqual(report['added'], ['Idea_[ProjectData]/new.db'])
+        self.assertFalse(report['content_identical'])
+        self.assertEqual(report['after']['note'], 'Less busy')
+        self.assertTrue(all((self.output / p).read_bytes() == content for p, content in before.items()))
+
+    def test_identical_content_with_different_notes_is_not_a_file_change(self):
+        self._capture_idea()
+        after = self.root / 'take-two'
+        capture.capture_projects(self.source, after, ('Idea.xpj',), note='Keep this')
+        report = capture.compare_captures(self.output, after)
+        self.assertTrue(report['content_identical'])
+        self.assertEqual(len(report['unchanged']), 2)
+
+    def test_comparison_refuses_unverified_take(self):
+        self._capture_idea()
+        after = self.root / 'take-two'
+        capture.capture_projects(self.source, after, ('Idea.xpj',))
+        (after / 'Idea.xpj').write_bytes(b'tampered')
+        with self.assertRaisesRegex(ValueError, 'content changed'):
+            capture.compare_captures(self.output, after)
+
+    def test_compare_cli_json_is_parseable_and_read_only(self):
+        self._capture_idea()
+        with patch('sys.argv', ['mpc-project-capture', '--compare', str(self.output), str(self.output), '--json']), redirect_stdout(StringIO()) as output:
+            self.assertEqual(capture.main(), 0)
+        self.assertTrue(json.loads(output.getvalue())['content_identical'])
     def test_explicit_project_selection_does_not_invent_routing_experiment(self):
         for name in capture.DEFAULT_PROJECTS:
             self.make_pair(self.source, Path(name).stem, b'idea')

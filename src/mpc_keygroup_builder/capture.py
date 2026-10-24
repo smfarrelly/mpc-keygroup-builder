@@ -198,6 +198,31 @@ def verify_capture(directory: Path) -> dict[str, object]:
             'boundary': 'File integrity only; not project completeness, authenticity, or hardware acceptance.'}
 
 
+def compare_captures(before: Path, after: Path) -> dict[str, object]:
+    """Compare verified inventories by exact relative filename, without writes."""
+    inventories = []
+    metadata = []
+    for directory in (before, after):
+        verified = verify_capture(directory)
+        manifest = json.loads((directory / 'capture-manifest.json').read_text(encoding='utf-8'))
+        inventories.append({entry['destination']: entry for entry in manifest['files']})
+        metadata.append({'path': str(directory.resolve()), 'note': manifest.get('note', ''),
+                         'projects': manifest.get('projects', []), 'bytes': verified['bytes']})
+    left, right = inventories
+    common = left.keys() & right.keys()
+    changed = sorted(name for name in common if
+                     (left[name]['bytes'], left[name]['sha256']) !=
+                     (right[name]['bytes'], right[name]['sha256']))
+    added, removed = sorted(right.keys() - left.keys()), sorted(left.keys() - right.keys())
+    return {
+        'format': 1, 'kind': 'mpc-capture-comparison', 'before': metadata[0], 'after': metadata[1],
+        'added': added, 'removed': removed, 'changed': changed,
+        'unchanged': sorted(common - set(changed)),
+        'content_identical': not (added or removed or changed),
+        'boundary': 'Exact-path file comparison, not musical or XPJ semantic comparison. Renamed files appear as added/removed; capture notes are metadata, not content changes.',
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("source", type=Path, nargs='?', help="folder containing the saved projects")
@@ -207,14 +232,29 @@ def main() -> int:
     parser.add_argument("--changed-setting")
     parser.add_argument("--project", action='append', help="capture this .xpj filename; repeat for more projects")
     parser.add_argument("--note", default='', help="musical intention or experiment note stored with the capture")
-    parser.add_argument("--verify", type=Path, help="verify an existing capture without needing the source card")
+    read_only = parser.add_mutually_exclusive_group()
+    read_only.add_argument("--verify", type=Path, help="verify an existing capture without needing the source card")
+    read_only.add_argument("--compare", nargs=2, type=Path, metavar=('BEFORE', 'AFTER'), help="verify and compare two archived takes without changing them")
+    parser.add_argument('--json', action='store_true', help='machine-readable output for --verify or --compare')
     args = parser.parse_args()
-    if args.verify is not None:
+    if args.verify is not None or args.compare is not None:
         if any((args.source, args.output, args.baseline, args.changed, args.changed_setting, args.project, args.note)):
-            parser.error('--verify cannot be combined with capture arguments')
-        report = verify_capture(args.verify)
-        print(f"Verified {report['files']} files ({report['bytes']} bytes). {report['boundary']}")
+            parser.error('--verify/--compare cannot be combined with capture arguments')
+        report = compare_captures(*args.compare) if args.compare else verify_capture(args.verify)
+        if args.json:
+            print(json.dumps(report, indent=2))
+        elif args.compare:
+            for kind in ('added', 'removed', 'changed', 'unchanged'):
+                print(f"{kind.capitalize()}: {len(report[kind])}")
+                if kind != 'unchanged':
+                    for name in report[kind]:
+                        print(f"  {name}")
+            print(report['boundary'])
+        else:
+            print(f"Verified {report['files']} files ({report['bytes']} bytes). {report['boundary']}")
         return 0
+    if args.json:
+        parser.error('--json requires --verify or --compare')
     if args.source is None or args.output is None:
         parser.error('capture requires SOURCE and --output; or use --verify CAPTURE_FOLDER')
     if args.project and (args.baseline or args.changed):
