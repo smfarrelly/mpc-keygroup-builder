@@ -1,4 +1,5 @@
 import contextlib
+import errno
 import io
 import json
 import sys
@@ -12,6 +13,30 @@ from mpc_keygroup_builder import entrypoints, ux
 
 
 class EntrypointTests(unittest.TestCase):
+    def test_storage_failures_offer_context_without_tracebacks(self):
+        for code, phrase in ((errno.ENOSPC, 'Storage is full'), (errno.EROFS, 'read-only'),
+                             (errno.ENOTSUP, 'unsafe fallback'), (errno.EXDEV, 'same filesystem'),
+                             (errno.EIO, 'inspect any output/staging')):
+            with self.subTest(code=code), patch.object(ux, 'main', side_effect=OSError(code, 'synthetic storage error')), contextlib.redirect_stderr(io.StringIO()) as stream:
+                status = entrypoints.invoke('mpc-tools', [])
+            self.assertEqual(status, 2)
+            self.assertIn(phrase, stream.getvalue())
+            self.assertNotIn('Traceback', stream.getvalue())
+
+    def test_interrupt_is_clear_and_restores_argument_state(self):
+        previous = sys.argv
+        with patch.object(ux, 'main', side_effect=KeyboardInterrupt), contextlib.redirect_stderr(io.StringIO()) as stream:
+            self.assertEqual(entrypoints.invoke('mpc-tools', []), 130)
+        self.assertIs(sys.argv, previous)
+        self.assertIn('verify it before retrying', stream.getvalue())
+        self.assertNotIn('Traceback', stream.getvalue())
+
+    def test_debug_and_nonfriendly_modes_still_raise_original_errors(self):
+        with patch.object(ux, 'main', side_effect=OSError(errno.EIO, 'synthetic')), self.assertRaises(OSError):
+            entrypoints.invoke('mpc-tools', [], friendly=False)
+        with patch.object(ux, 'main', side_effect=KeyboardInterrupt), self.assertRaises(KeyboardInterrupt):
+            entrypoints.invoke('mpc-tools', [], friendly=False)
+
     def _checkpoint(self, root, baseline='Projects/Boot.xpj'):
         path = root / 'checkpoint.toml'
         path.write_text('title = "Test"\nbaseline_relative = ' + json.dumps(baseline) + '\n'

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib
 import importlib.metadata
+import errno
 import json
 import os
 import sys
@@ -107,6 +108,7 @@ COMMANDS = {
 
 EXPECTED_ERRORS = (
     ValueError,
+    OSError,
     FileNotFoundError,
     FileExistsError,
     PermissionError,
@@ -140,6 +142,16 @@ def _hint(error: Exception, command: str) -> str:
         return "Check directory permissions and confirm removable media is mounted read-write."
     if isinstance(error, FileExistsError):
         return f"Choose a new output path, or run `{command} -h` to see whether safe replacement is supported."
+    if isinstance(error, OSError):
+        if error.errno in {errno.ENOSPC, errno.EDQUOT}:
+            return 'Storage is full or its quota is exhausted. Preserve the source, inspect any staging/output, and free space before retrying.'
+        if error.errno == errno.EROFS:
+            return 'The selected destination is read-only. Confirm the correct storage and its health; no automatic remount or repair was attempted.'
+        if error.errno in {errno.ENOTSUP, errno.ENOSYS}:
+            return 'This filesystem cannot perform the required operation. Choose supported local storage; an unsafe fallback was not attempted.'
+        if error.errno == errno.EXDEV:
+            return 'Publication requires staging and destination on the same filesystem. Review the selected paths before retrying.'
+        return 'The storage operation did not complete. Preserve the source and inspect any output/staging before retrying; do not delete unknown files.'
     if isinstance(error, (json.JSONDecodeError, tomllib.TOMLDecodeError, ET.ParseError)):
         return "The input document is malformed. The error location above identifies where parsing stopped."
     return f"The input failed validation. Review the named field or path, then run `{command} -h` for accepted values."
@@ -168,6 +180,11 @@ def invoke(command: str, arguments: list[str] | None = None, *, friendly: bool =
         print(f"NEXT: {_hint(error, command)}", file=sys.stderr)
         print("DEBUG: Re-run with MPC_DEBUG=1 to show the Python traceback.", file=sys.stderr)
         return 2
+    except KeyboardInterrupt:
+        if not friendly or os.environ.get('MPC_DEBUG') == '1':
+            raise
+        print('INTERRUPTED: no automatic retry. A completed output may already exist; verify it before retrying. Preserve sources and inspect staging rather than deleting unknown folders.', file=sys.stderr)
+        return 130
     finally:
         sys.argv = previous
 
