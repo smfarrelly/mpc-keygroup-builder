@@ -17,12 +17,13 @@ def _native_publish(source: Path, destination: Path) -> None:
         # Python documents that Windows rename refuses an existing destination.
         os.rename(source, destination)
         return
-    library = ctypes.CDLL(None, use_errno=True)
     if sys.platform.startswith('linux'):
+        library = ctypes.CDLL(None, use_errno=True)
         function = getattr(library, 'renameat2', None)
         args = (-100, os.fsencode(source), -100, os.fsencode(destination), 1)
         signature = (ctypes.c_int, ctypes.c_char_p, ctypes.c_int, ctypes.c_char_p, ctypes.c_uint)
     elif sys.platform == 'darwin':
+        library = ctypes.CDLL(None, use_errno=True)
         function = getattr(library, 'renamex_np', None)
         args = (os.fsencode(source), os.fsencode(destination), 0x4)
         signature = (ctypes.c_char_p, ctypes.c_char_p, ctypes.c_uint)
