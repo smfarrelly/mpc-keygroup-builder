@@ -34,6 +34,7 @@ COMMANDS = {
     "mpc-bundle-verify": _spec("bundle_verify", "Inspect", "Verify a complete checksummed workflow bundle", "docs/testing-framework.md"),
     "mpc-program-color": _spec("programs", "Build", "Apply semantic colors to a Drum Program", "docs/program-model-and-layouts.md"),
     "mpc-project-capture": _spec("capture", "Hardware", "Capture and verify MPC ideas or paired project evidence", "docs/idea-snapshots.md"),
+    "mpc-idea-archive": _spec("idea_archive", "Inspect", "Find, inspect, and restore verified musical idea snapshots", "docs/idea-snapshots.md"),
     "mpc-hardware-results": _spec("hardware", "Hardware", "Validate or apply hardware listening results", "docs/hardware-workflow-tools.md"),
     "mpc-hardware-init": _spec("hardware", "Hardware", "Initialize a hardware listening ledger", "docs/hardware-workflow-tools.md", "init_main"),
     "mpc-drum-audit": _spec("drum_audit", "Inspect", "Audit pads, roles, and mute groups", "docs/testing-framework.md"),
