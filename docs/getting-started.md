@@ -106,6 +106,11 @@ installed-plugin parameter evidence. Every starter records this boundary in
 
 ## Return after time away
 
+For a goal-based menu that works outside the checkout and does not inspect
+drives, run `mpc-tools start`. Choose `find`, `capture`, `experiment`, `prepare`,
+or `demo`. See [Start with one musical task](start-here.md). You do not need to
+finish hardware testing before using the local idea archive workflow.
+
 In a project checkout, run:
 
 ```bash
@@ -152,6 +157,23 @@ uv run python -m unittest discover -s tests -v
 
 Run tools as `uv run COMMAND ...` inside the checkout. The lock file makes the
 development environment reproducible.
+
+### Check an installed wheel, not just the checkout
+
+The CI workflow installs a built wheel into a fresh environment and runs
+`scripts/smoke_idea_workflow.py --bin-dir /path/to/venv/bin`. On Windows use the
+environment's `Scripts` directory instead. The script invokes the actual
+installed commands from a disposable directory outside the repository, removes
+`PYTHONPATH` from their environment, and checks every published command's help
+and version. It then exercises capture, restore, variation comparison, and
+refusal of damaged archives or existing destinations. It uses synthetic project
+bytes only; this is an installation/recovery test, not an MPC playback fixture.
+
+To reproduce it, build with `uv build`, create a fresh environment with
+`uv venv /path/to/new-venv`, and install the wheel from `dist/` into that
+environment using `uv pip install --python /path/to/new-venv/bin/python
+dist/mpc_keygroup_builder-0.1.0-py3-none-any.whl`. Run the smoke script with that
+environment's Python and bin directory. No SD card or licensed samples are used.
 
 ## Before copying to an SD card
 

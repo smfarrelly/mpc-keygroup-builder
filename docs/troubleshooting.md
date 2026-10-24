@@ -58,6 +58,11 @@ routing-capture guides preserve those observations.
 
 ## I need the Python traceback
 
+For missing sample references, damaged archives, and interrupted idea copies,
+start with [local readiness and recovery](local-readiness.md). Never regenerate
+a checksum manifest simply to make a damaged archive appear verified. Preserve
+the evidence and retry from a known-good source into a new folder.
+
 Friendly errors suppress tracebacks for expected user mistakes. Re-run exactly
 the same command with debugging enabled:
 
