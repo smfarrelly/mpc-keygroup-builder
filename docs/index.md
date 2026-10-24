@@ -53,6 +53,9 @@ Start with [one musical task](start-here.md), without reconstructing the history
 
 ## Direction and history
 
+- [Software handoff, 2026-10-24](software-handoff.md) — review dependencies and
+  explicitly deferred acceptance; a dated checkpoint, not live merge status.
+
 - [Product roadmap](PRODUCT_ROADMAP.md)
 - [Project evolution plan](MPC_Project_Evolution_Plan.md)
 

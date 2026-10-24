@@ -45,6 +45,7 @@ jobs:
           /tmp/mpc-installed/bin/python -m pip install /tmp/mpc-wheel/*.whl
           cd /tmp
           /tmp/mpc-installed/bin/mpc-tools doctor
+          /tmp/mpc-installed/bin/python "$GITHUB_WORKSPACE/scripts/smoke_idea_workflow.py" --bin-dir /tmp/mpc-installed/bin
           /tmp/mpc-installed/bin/mpc-schema show plugin-profile --output /tmp/plugin-profile.schema.json
           /tmp/mpc-installed/bin/mpc-schema init workstation --family ambient --output /tmp/mpc-recipe-starter
           /tmp/mpc-installed/bin/mpc-recipe-audit /tmp/mpc-recipe-starter --output /tmp/mpc-installed-recipe-audit
