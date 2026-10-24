@@ -66,3 +66,13 @@ class ArchiveBrowserTests(unittest.TestCase):
         self.assertEqual(status, 1)
         self.assertIn('1 invalid across the full scan', output.read_text())
         self.assertIn('0 archive cards', output.read_text())
+
+    def test_invalid_project_metadata_is_reported_without_crashing_render(self):
+        manifest_path = self.archive / 'capture-manifest.json'
+        manifest = json.loads(manifest_path.read_text())
+        for projects in (None, 'not-a-list', [42], {'name': 'Idea.xpj'}):
+            manifest['projects'] = projects
+            manifest_path.write_text(json.dumps(manifest))
+            report = list_archives(self.library)
+            self.assertEqual(report['invalid_archives'], 1)
+            self.assertIn('projects must be a list of strings', render(report))
