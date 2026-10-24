@@ -125,8 +125,11 @@ The report path is checked before the probe or copy begins, must remain outside
 both package trees, and is published atomically. Symbolic-link and non-file
 report destinations are rejected.
 Files are copied and fsynced into a hidden sibling staging directory, verified
-individually, then promoted with one same-filesystem rename. A disconnect
-leaves the final destination absent and the stage available for inspection.
+individually, then promoted with one exclusive same-filesystem rename. An
+interruption before publication leaves the final destination absent and the
+stage available for inspection; after publication, verify the final package
+before retrying. This is not a power-loss durability guarantee. Directory fsync
+is best-effort where supported and is not attempted through Python on Windows.
 After reconnecting and repairing the filesystem, rerun the same command with
 `--apply --resume`; verified staged files are reused and incomplete files are
 replaced. Unexpected stage files, symbolic links, and changed final
@@ -134,6 +137,15 @@ destinations are refused rather than deleted or overwritten.
 The canonical source, hidden staging directory, and final destination must be
 separate trees. The command rejects identical or nested paths before creating
 any deployment files, preventing recursive copies into the source package.
+
+Apply re-inventories the source before any write probe and again before
+publication. Changed files, additions/removals, stale "unchanged" plans,
+unsafe plan paths, case-colliding filenames/directories, and special files are
+refused. An existing empty destination is a conflict, not permission to replace
+it. If a destination appears during copy, it survives and the verified stage
+remains available for inspection. Never remove someone else's destination just
+to make a resume succeed. Review a fresh plan when the source changes.
+See [publication safety and platform limits](archive-publication-safety.md).
 
 ## Controlled Key 37 routing capture
 
