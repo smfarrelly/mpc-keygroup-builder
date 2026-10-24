@@ -24,6 +24,9 @@ copy into another new archive. See [Idea snapshots](idea-snapshots.md).
 
 ## Prepare an update later
 
+First use [local readiness checks](local-readiness.md) to verify selected
+archives, bundles, and program sample references without touching a card.
+
 `mpc-tools start prepare` prints a deployment-plan command, not an apply command.
 Do not guess a device name from an old chat. Identify the actual mounted card
 and verify the intended package first. Hardware listening remains deferred

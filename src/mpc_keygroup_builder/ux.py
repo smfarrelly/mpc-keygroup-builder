@@ -17,6 +17,7 @@ from .portable_demo import build_demo, verify_demo
 from .scaffold import KINDS, create as create_scaffold
 from .web_demo import build_web_demo
 from .start import WORKFLOWS, show as show_start
+from .readiness import show as show_readiness
 
 
 def _find_checkpoint(explicit: Path | None) -> Path:
@@ -187,6 +188,12 @@ def main() -> int:
     start = subparsers.add_parser("start", help="choose one workflow without inspecting drives or running commands")
     start.add_argument("goal", nargs="?", choices=tuple(WORKFLOWS))
     start.add_argument("--json", action="store_true")
+    check = subparsers.add_parser("check", help="read-only readiness checks for explicitly selected local files")
+    check.add_argument("--archive", type=Path, action="append", default=[])
+    check.add_argument("--bundle", type=Path, action="append", default=[])
+    check.add_argument("--program", type=Path, action="append", default=[])
+    check.add_argument("--sample-root", type=Path, help="bound sample lookup to this directory; default is each program's parent")
+    check.add_argument("--json", action="store_true")
     commands = subparsers.add_parser("commands", help="list tools by workflow category")
     commands.add_argument("--category", help="show one category, such as Build or Creative MIDI")
     commands.add_argument("--json", action="store_true", help="emit machine-readable JSON")
@@ -228,6 +235,8 @@ def main() -> int:
     args = parser.parse_args()
     if args.command == "start":
         return show_start(args.goal, args.json)
+    if args.command == "check":
+        return show_readiness(args.archive, args.bundle, args.program, args.sample_root, args.json)
     if args.command == "commands":
         return _commands(args.category, args.json)
     if args.command == "help":
