@@ -12,6 +12,8 @@ import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
+from .publication import publish_directory
+
 
 DEFAULT_PROJECTS = ("Key37_Routing_Baseline.xpj", "Key37_Routing_Changed.xpj")
 
@@ -143,8 +145,8 @@ def capture_projects(
         raise ValueError(f"capture source is not a directory: {source}")
     if destination == source or destination.is_relative_to(source):
         raise ValueError("capture destination must be outside the source directory")
-    if destination.exists() and (not destination.is_dir() or any(destination.iterdir())):
-        raise FileExistsError(f"capture destination must not exist or must be empty: {destination}")
+    if destination.exists():
+        raise FileExistsError(f"capture requires a new destination directory: {destination}")
 
     artifacts = []
     for name in project_names:
@@ -188,11 +190,9 @@ def capture_projects(
             json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
         )
         verify_capture(staging)
-        if destination.exists():
-            destination.rmdir()
-        os.replace(staging, destination)
+        publish_directory(staging, destination)
         return manifest
-    except Exception:
+    except BaseException:
         shutil.rmtree(staging, ignore_errors=True)
         raise
 
@@ -289,7 +289,7 @@ def compare_captures(before: Path, after: Path) -> dict[str, object]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("source", type=Path, nargs='?', help="folder containing the saved projects")
-    parser.add_argument("--output", type=Path, help="new or empty local capture folder")
+    parser.add_argument("--output", type=Path, help="new local capture folder; existing directories are never replaced")
     parser.add_argument("--baseline")
     parser.add_argument("--changed")
     parser.add_argument("--changed-setting")

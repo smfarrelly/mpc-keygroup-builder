@@ -125,6 +125,40 @@ class CaptureTests(unittest.TestCase):
         self.assertEqual(list(self.root.glob('.archive-*')), [])
         self.assertEqual((self.source / 'Idea.xpj').read_bytes(), b'idea')
 
+    def test_keyboard_interrupt_cleans_only_owned_staging(self):
+        self.make_pair(self.source, 'Idea', b'idea')
+        unrelated = self.root / '.archive-unrelated'
+        unrelated.mkdir()
+        (unrelated / 'keep').write_text('keep')
+        with patch.object(capture.shutil, 'copy2', side_effect=KeyboardInterrupt):
+            with self.assertRaises(KeyboardInterrupt):
+                capture.capture_projects(self.source, self.output, ('Idea.xpj',))
+        self.assertFalse(self.output.exists())
+        self.assertEqual(list(self.root.glob('.archive-*')), [unrelated])
+        self.assertEqual((self.source / 'Idea.xpj').read_bytes(), b'idea')
+
+    def test_empty_preexisting_capture_directory_is_preserved(self):
+        self.make_pair(self.source, 'Idea', b'idea')
+        self.output.mkdir()
+        inode = self.output.stat().st_ino
+        with self.assertRaises(FileExistsError):
+            capture.capture_projects(self.source, self.output, ('Idea.xpj',))
+        self.assertEqual(self.output.stat().st_ino, inode)
+        self.assertEqual(list(self.output.iterdir()), [])
+
+    def test_destination_appearing_at_publication_is_not_replaced(self):
+        self.make_pair(self.source, 'Idea', b'idea')
+        publish = capture.publish_directory
+        def conflict(stage, destination):
+            destination.mkdir()
+            return publish(stage, destination)
+        with patch.object(capture, 'publish_directory', side_effect=conflict):
+            with self.assertRaises(FileExistsError):
+                capture.capture_projects(self.source, self.output, ('Idea.xpj',))
+        self.assertEqual(list(self.output.iterdir()), [])
+        self.assertEqual(list(self.root.glob('.archive-*')), [])
+        self.assertEqual((self.source / 'Idea.xpj').read_bytes(), b'idea')
+
     def test_cli_single_project_and_verification(self):
         self.make_pair(self.source, 'Idea', b'idea')
         with patch('sys.argv', ['mpc-project-capture', str(self.source), '--project', 'Idea.xpj', '--note', 'Try sparse drums', '--output', str(self.output)]):

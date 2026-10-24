@@ -10,6 +10,7 @@ import tempfile
 from pathlib import Path
 
 from .capture import read_capture_manifest, verify_capture
+from .publication import publish_directory
 
 
 def inspect_archive(path: Path) -> dict:
@@ -81,7 +82,7 @@ def restore_archive(source: Path, output: Path, *, dry_run: bool = False) -> dic
             raise ValueError('capture manifest changed during restore')
         if output.is_symlink() or output.exists():
             raise FileExistsError(f'restore destination appeared during copy: {output}')
-        os.rename(stage, output)
+        publish_directory(stage, output)
     except BaseException:
         shutil.rmtree(stage, ignore_errors=True)
         raise

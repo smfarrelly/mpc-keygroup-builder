@@ -194,6 +194,30 @@ class IdeaArchiveTests(unittest.TestCase):
                 idea_archive.restore_archive(self.archive, target)
         self.assertFalse(target.exists())
 
+    def test_restore_keyboard_interrupt_cleans_staging_and_preserves_archive(self):
+        self.snapshot()
+        target = self.root / 'experiment'
+        with patch.object(idea_archive.shutil, 'copytree', side_effect=KeyboardInterrupt):
+            with self.assertRaises(KeyboardInterrupt):
+                idea_archive.restore_archive(self.archive, target)
+        self.assertFalse(target.exists())
+        self.assertEqual(list(self.root.glob('.experiment.restore-*')), [])
+        self.assertEqual(capture.verify_capture(self.archive)['status'], 'verified')
+
+    def test_restore_destination_appearing_at_publication_survives(self):
+        self.snapshot()
+        target = self.root / 'experiment'
+        publish = idea_archive.publish_directory
+        def conflict(stage, destination):
+            destination.mkdir()
+            return publish(stage, destination)
+        with patch.object(idea_archive, 'publish_directory', side_effect=conflict):
+            with self.assertRaises(FileExistsError):
+                idea_archive.restore_archive(self.archive, target)
+        self.assertEqual(list(target.iterdir()), [])
+        self.assertEqual(list(self.root.glob('.experiment.restore-*')), [])
+        self.assertEqual(capture.verify_capture(self.archive)['status'], 'verified')
+
     def test_restore_rechecks_destination_after_copy(self):
         self.snapshot()
         target = self.root / 'experiment'
