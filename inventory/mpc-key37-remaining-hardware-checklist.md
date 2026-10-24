@@ -1,5 +1,13 @@
 # MPC Key 37 remaining hardware master checklist
 
+**October 23 navigation update:** use [SD navigation](../docs/sd-navigation.md)
+and `SD / 00 FG Hardware Tests / 00 ACTIVE TESTS.txt` for current entry points.
+The 88 colocated `FG COLORS` vendor drum copies are deployed and software-verified;
+only the Cassette color-only pilot is hardware-confirmed. Relocated XML versions
+failed sample loading and were removed. The historical checklist below has not
+been fully reconciled with subsequent listening sessions; unchecked boxes must
+not be interpreted as proof that a test has never passed.
+
 **Snapshot:** August 27, 2026
 **Scope:** Every explicitly planned MPC hardware gate that is not already
 closed. This is the active project queue, not a requirement to audition every

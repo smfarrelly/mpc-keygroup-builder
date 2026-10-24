@@ -253,7 +253,26 @@ def main() -> int:
     parser.add_argument("--name", help="program name stored inside the output XPM")
     parser.add_argument("--output", type=Path)
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--colocated", action="store_true", help="XML Drum only: create a color-only sibling copy without changing sample fields")
+    parser.add_argument("--color-template", type=Path, help="with --colocated: borrow only a missing ProgramPads map from an XML Drum XPM")
     args = parser.parse_args()
+    if args.color_template and not args.colocated:
+        parser.error("--color-template requires --colocated")
+    if args.colocated:
+        if args.name:
+            parser.error("--colocated preserves ProgramName; omit --name")
+        from .colocated_colors import colorize_colocated
+        resolve_program_type(args.program, args.program_type)
+        destination = args.output or args.program.with_name(args.program.stem + " FG COLORS.xpm")
+        counts = colorize_colocated(
+            args.program, destination, load_palette(args.palette),
+            overrides=load_overrides(args.palette), color_template=args.color_template,
+            dry_run=args.dry_run,
+        )
+        print("Classifications: " + ", ".join(f"{key}={value}" for key, value in counts.items()))
+        print("Dry run only; no program written." if args.dry_run else f"Wrote: {destination}")
+        print("Sample fields unchanged; no audio copied. Keep this XPM beside its source samples.")
+        return 0
     program_type = resolve_program_type(args.program, args.program_type)
     print(f"Program type: {program_type}")
     if program_type != "drum":
