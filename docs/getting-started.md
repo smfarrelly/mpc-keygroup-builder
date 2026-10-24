@@ -169,11 +169,18 @@ and version. It then exercises capture, restore, variation comparison, and
 refusal of damaged archives or existing destinations. It uses synthetic project
 bytes only; this is an installation/recovery test, not an MPC playback fixture.
 
-To reproduce it, build with `uv build`, create a fresh environment with
-`uv venv /path/to/new-venv`, and install the wheel from `dist/` into that
-environment using `uv pip install --python /path/to/new-venv/bin/python
-dist/mpc_keygroup_builder-0.1.0-py3-none-any.whl`. Run the smoke script with that
-environment's Python and bin directory. No SD card or licensed samples are used.
+To reproduce it on Linux/macOS, choose a new environment path and run from the
+checkout (adjust the wheel filename if the package version changes):
+
+```bash
+uv build
+uv venv /path/to/new-venv
+uv pip install --python /path/to/new-venv/bin/python dist/mpc_keygroup_builder-0.1.0-py3-none-any.whl
+/path/to/new-venv/bin/python scripts/smoke_idea_workflow.py --bin-dir /path/to/new-venv/bin
+```
+
+No SD card or licensed samples are used. The script cleans only its own
+temporary fixtures; the environment remains available for inspection.
 
 ## Before copying to an SD card
 
