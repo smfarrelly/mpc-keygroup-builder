@@ -32,7 +32,8 @@ conflicts on PRs 62–68. No PR was merged as part of this batch.
 - Start/readiness chain after #68:
   [#69](https://github.com/smfarrelly/mpc-keygroup-builder/pull/69)
   → [#70](https://github.com/smfarrelly/mpc-keygroup-builder/pull/70)
-  → the `codex/install-recovery-check` branch.
+  → [#72](https://github.com/smfarrelly/mpc-keygroup-builder/pull/72)
+  (installed workflow/recovery checks).
 - [#71](https://github.com/smfarrelly/mpc-keygroup-builder/pull/71)
   (archive browser) depends directly on #68, independently of #69/#70.
 
