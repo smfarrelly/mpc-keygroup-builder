@@ -1,0 +1,8 @@
+# Copy to a private *.local.toml file. Paths resolve relative to that file,
+# not the shell's current directory. No commands are executed from this file.
+format = 1
+ledger = "inventory/program-status.csv"
+# archive_library = "work/ideas"
+# program_root = "/path/to/local/library"
+# recipe_root = "recipes"
+bundles = []

@@ -2,21 +2,27 @@
 
 ## Current focus — software hardening, hardware deferred
 
-Updated October 23, 2026. No new hardware acceptance session is required now.
+Updated October 24, 2026. No new hardware acceptance session is required now.
 
-The next development action is to review the open changes below, address any
-feedback, and integrate them only after review. They are separate PRs, not
-features already merged into `main`:
+PRs #62–#74 are merged into `main`. Start with one musical task rather than
+reconstructing that development history:
 
-- [#62: colocated XML drum coloring](https://github.com/smfarrelly/mpc-keygroup-builder/pull/62)
-  preserves sample fields and avoids relocating sample-dependent programs.
-- [#63: safer rebuilds and local hardlink staging](https://github.com/smfarrelly/mpc-keygroup-builder/pull/63)
-  validates replacements before publishing and protects previous instruments.
-- [#64: focused Ableton conversion plans](https://github.com/smfarrelly/mpc-keygroup-builder/pull/64)
-  exposes conversion losses and rejects output-name collisions.
-- [#65: musical idea snapshots](https://github.com/smfarrelly/mpc-keygroup-builder/pull/65)
-  captures named projects with notes, verifies archives offline, and compares
-  saved takes without editing them.
+```bash
+uv run mpc-tools start
+uv run mpc-tools resume --offline
+```
+
+For a personal browser landing page, use [the local home guide](docs/local-home.md).
+It combines your explicit favorites ledger, verified local archives, and selected
+bundle checks. A saved `*.local.toml` input selection keeps the command short;
+choose a new output filename each time. No drive is discovered automatically.
+
+New creative waves record build-time recipe fingerprints. Use
+`mpc-tools check --bundle PATH --recipe-root recipes` to distinguish intact
+files from current recipe inputs. Older bundles remain freshness-unknown.
+Existing archives with extra inspection reports should be preserved, not
+silently relabeled as verified exact archives. Capture a clean copy into a new
+folder when needed, keeping the historical source and reports untouched.
 
 For everyday music making, keep using the existing Scratchpad instruments.
 The colored vendor drum copies are under
@@ -28,7 +34,7 @@ The SD cleanup removed failed relocated colored copies and abandoned staging
 trees with local recovery records. No further SD cleanup, sync, or project
 rewrite is required to continue the software work.
 
-After these reviews, favor tests, capture integrity, and useful experiment
+For continued development, favor tests, capture integrity, and useful experiment
 comparison over generating another hardware audition backlog. For controller
 work, prioritize MPC internal mixing and buried plugin parameters; prefer the
 Volcas' and external effects' native controls for hands-on performance.
@@ -38,7 +44,7 @@ Volcas' and external effects' native controls for hands-on performance.
 Run this first after time away:
 
 ```bash
-uv run mpc-tools resume --sd-root /media/steve-farrelly/3561-6538
+uv run mpc-tools resume --offline
 ```
 
 ## Retained hardware plan — deferred

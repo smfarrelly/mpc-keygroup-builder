@@ -1,10 +1,10 @@
 schema_version = 1
-updated = "2026-10-23"
+updated = "2026-10-24"
 title = "Software hardening and musical idea capture; hardware deferred"
 baseline_relative = "Projects/Boot.xpj"
 working_relative = "Projects/Volca/Base.xpj"
 target_relative = "Projects/FG Volca Direct 123.xpj"
-next_action = "Review PRs #62-65 and their CI, then integrate reviewed software changes. See RESUME_HERE.md. No SD card, new instrument generation, or hardware acceptance is required for this step."
+next_action = "PRs #62-74 are merged. Run mpc-tools start to choose one musical task, or use the local-home guide to regenerate a private landing page from explicitly selected evidence. Keep hardware acceptance deferred."
 notes = "Hardware testing is deferred. The project paths and routes below retain the earlier Volca target plan, not verified current device state. Current priorities are source preservation, safe rebuilds, explicit conversion losses, and capture/verification/comparison of musical ideas. Use XL3 for MPC internal mixing and buried plugin controls, not to duplicate good native hardware panels."
 
 [[routes]]

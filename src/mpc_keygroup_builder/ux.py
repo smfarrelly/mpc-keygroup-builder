@@ -190,6 +190,7 @@ def main() -> int:
     start.add_argument("--json", action="store_true")
     home = subparsers.add_parser("home", help="generate a private local starting page from explicit inputs")
     home.add_argument("--output", required=True, type=Path)
+    home.add_argument("--config", type=Path, help="saved local input selection; cannot be combined with input flags")
     home.add_argument("--archive-library", type=Path)
     home.add_argument("--ledger", type=Path)
     home.add_argument("--program-root", type=Path)
@@ -244,9 +245,15 @@ def main() -> int:
     if args.command == "start":
         return show_start(args.goal, args.json)
     if args.command == "home":
-        from .home import build
-        report = build(args.output, archive_library=args.archive_library, ledger=args.ledger,
-                       program_root=args.program_root, bundles=args.bundle, recipe_root=args.recipe_root)
+        from .home import build, load_config
+        if args.config is not None:
+            if any((args.archive_library, args.ledger, args.program_root, args.bundle, args.recipe_root)):
+                parser.error('--config cannot be combined with home input flags')
+            inputs = load_config(args.config)
+        else:
+            inputs = dict(archive_library=args.archive_library, ledger=args.ledger,
+                          program_root=args.program_root, bundles=args.bundle, recipe_root=args.recipe_root)
+        report = build(args.output, **inputs)
         print(f"Local starting page: {args.output.expanduser().resolve()}")
         print('Point-in-time report only; no hardware acceptance inferred.')
         return 1 if report['status'] == 'attention' else 0
