@@ -2,6 +2,7 @@
 
 import json
 import xml.etree.ElementTree as ET
+import zlib
 from pathlib import Path
 
 from .bundle_verify import verify_bundle
@@ -72,7 +73,7 @@ def check(*, archives=(), bundles=(), programs=(), sample_root: Path | None = No
                 row.update(status=detail.get('status', 'pass'), detail=detail)
                 if row['status'] == 'verified':
                     row['status'] = 'pass'
-            except (OSError, ValueError, ET.ParseError, KeyError, TypeError, AttributeError) as error:
+            except (OSError, ValueError, ET.ParseError, KeyError, TypeError, AttributeError, EOFError, zlib.error) as error:
                 row.update(status='fail', error=str(error))
             rows.append(row)
     return {'format': 1, 'kind': 'mpc-local-readiness', 'checks': rows,

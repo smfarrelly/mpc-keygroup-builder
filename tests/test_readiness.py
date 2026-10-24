@@ -93,6 +93,12 @@ class ReadinessTests(unittest.TestCase):
         alias.symlink_to(self.root, target_is_directory=True)
         self.assertEqual(check(bundles=[alias])['status'], 'fail')
 
+    def test_truncated_compressed_program_does_not_abort_report(self):
+        self.program.write_bytes(b'\x1f\x8b\x08\x00')
+        report = check(programs=[self.program, self.root / 'missing.xpm'])
+        self.assertEqual(len(report['checks']), 2)
+        self.assertEqual(report['status'], 'fail')
+
     def test_cli_exit_code_and_read_only_behavior(self):
         self.program_file()
         original = self.program.read_bytes()
