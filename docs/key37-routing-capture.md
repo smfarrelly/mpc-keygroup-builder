@@ -1,5 +1,10 @@
 # Key 37 two-track routing capture
 
+For ordinary musical ideas rather than a controlled routing pair, see
+[Idea snapshots](idea-snapshots.md). `mpc-project-capture --project NAME.xpj`
+captures a single saved project, and `--verify FOLDER` checks a local archive
+without the source SD card.
+
 This is the controlled MPC 3 experiment for simultaneous melodic keys and
 physical drum pads. It follows Akai's standalone Key-series procedure while
 keeping the two project saves identical except for one Key Ranges action.

@@ -23,6 +23,8 @@ Choose the path that matches what you want to do:
   [CLI reference](docs/cli-reference.md).
 - **Understand the whole project:** use the [documentation map](docs/index.md)
   and [product roadmap](docs/PRODUCT_ROADMAP.md).
+- **Preserve a musical idea before experimenting:** follow
+  [Idea snapshots](docs/idea-snapshots.md) for verified project archives and notes.
 
 After installation, this is the quickest confidence check:
 
