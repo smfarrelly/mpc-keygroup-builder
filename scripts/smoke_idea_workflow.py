@@ -10,6 +10,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sysconfig
 import tempfile
 
 
@@ -91,5 +92,6 @@ def smoke(bin_dir: Path) -> int:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--bin-dir', required=True, type=Path)
+    parser.add_argument('--bin-dir', type=Path, default=Path(sysconfig.get_path('scripts')),
+                        help='installed command directory; defaults to this Python interpreter\'s script directory')
     raise SystemExit(smoke(parser.parse_args().bin_dir))

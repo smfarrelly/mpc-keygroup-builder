@@ -30,6 +30,12 @@ adapters have mocked contract tests, not live platform acceptance. Filesystems
 or platforms without exclusive rename support fail closed with an error;
 there is no fallback to an overwriting rename. Choose supported local storage.
 
+The `archive-platforms` GitHub Actions workflow installs a built package on
+Linux, macOS, and Windows and exercises native publication plus the installed
+capture/restore/recovery commands using disposable synthetic data. Read its
+actual results before claiming platform coverage. A passing job covers that
+runner's local filesystem, not an SD card, network share, or every command.
+
 This is not a power-loss durability or hostile-filesystem security guarantee.
 It does not lock the original project against concurrent saves. Keep the source
 and destination parents stable during capture/restore. Checksums validate the

@@ -1,0 +1,42 @@
+name: archive-platforms
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/archive-platforms.yml'
+      - 'src/mpc_keygroup_builder/**'
+      - 'scripts/smoke_idea_workflow.py'
+      - 'tests/test_publication.py'
+      - 'pyproject.toml'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/archive-platforms.yml'
+      - 'src/mpc_keygroup_builder/**'
+      - 'scripts/smoke_idea_workflow.py'
+      - 'tests/test_publication.py'
+      - 'pyproject.toml'
+
+permissions:
+  contents: read
+
+jobs:
+  installed-workflow:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Install a built package, not an editable checkout
+        run: python -m pip install .
+      - name: Exercise native exclusive directory publication
+        run: python -m unittest discover -s tests -p test_publication.py -v
+      - name: Exercise installed commands outside the checkout with synthetic data
+        run: python scripts/smoke_idea_workflow.py
