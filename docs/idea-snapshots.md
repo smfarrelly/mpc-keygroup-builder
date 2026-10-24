@@ -74,6 +74,21 @@ using synthetic project bytes; it does not imply MPC load/playback acceptance.
 
 ### Find and inspect saved ideas
 
+Generate a private offline browser index when you prefer browsing notes visually:
+
+```bash
+uv run mpc-idea-archive list work/ideas --html work/reports/ideas-01.html
+```
+
+Open the resulting HTML locally. It provides a search field, notes, paths,
+fingerprints, scan warnings, and a recheck command per archive. Nothing is
+uploaded; the page cannot inspect your disk or restore files. Verification is
+dated at generation time, not live. Regenerate into a new filename after changes.
+The output must be outside the archive library and cannot replace an existing
+file. Treat it as private because it includes local paths and personal notes.
+An invalid archive still produces a report but returns exit status 1. The
+browser filter does not hide the full-scan invalid count or scan notices.
+
 ```bash
 uv run mpc-idea-archive list work/ideas --query "swung hats"
 uv run mpc-idea-archive inspect work/ideas/take-01 --json

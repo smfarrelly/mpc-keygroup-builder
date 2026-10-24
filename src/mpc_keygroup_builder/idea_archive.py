@@ -94,6 +94,7 @@ def main() -> int:
     listing = commands.add_parser('list', help='verify archives below a local folder and search notes/project names')
     listing.add_argument('root', type=Path)
     listing.add_argument('--query', default='')
+    listing.add_argument('--html', type=Path, help='write a new private offline report outside the archive library')
     inspection = commands.add_parser('inspect', help='verify one archive and show its note and content fingerprint')
     inspection.add_argument('archive', type=Path)
     restore = commands.add_parser('restore', help='copy a verified archive into a new experiment directory')
@@ -105,6 +106,9 @@ def main() -> int:
     args = parser.parse_args()
     if args.command == 'list':
         report = list_archives(args.root, query=args.query)
+        if args.html is not None:
+            from .archive_browser import write
+            report['html_report'] = str(write(report, args.html, args.root))
     elif args.command == 'inspect':
         report = inspect_archive(args.archive)
     else:
@@ -112,6 +116,8 @@ def main() -> int:
     if args.json:
         print(json.dumps(report, indent=2))
     elif args.command == 'list':
+        if 'html_report' in report:
+            print('Browser report: ' + report['html_report'])
         print(f"Scanned {report['archives_scanned']} archives; {report['invalid_archives']} invalid; {len(report['matches'])} matches.")
         for row in report['matches']:
             print(f"{row['status'].upper()} {row['path']}")
