@@ -3,13 +3,13 @@
 from __future__ import annotations
 
 import argparse
-import csv
 import json
 import tomllib
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 from .testing import test_program
+from .ledger import read_ledger
 
 
 REQUIREMENTS = ("deployed", "hardware", "core", "final")
@@ -39,6 +39,10 @@ def load_manifest(path: Path) -> dict[str, Any]:
                 raise ValueError(
                     f"candidate {index} {field} must be a nonempty string"
                 )
+        sd_path = candidate["sd_path"]
+        parts = PurePosixPath(sd_path)
+        if parts.is_absolute() or ".." in parts.parts or not parts.parts or any(c in sd_path for c in "\\:\0"):
+            raise ValueError(f"candidate {index} sd_path must be a relative path inside the SD root")
         if not isinstance(candidate["selected"], bool):
             raise ValueError(f"candidate {index} selected must be true or false")
         if candidate["id"] in ids or candidate["ledger_path"] in ledger_paths:
@@ -49,8 +53,8 @@ def load_manifest(path: Path) -> dict[str, Any]:
 
 
 def _ledger_rows(path: Path) -> dict[str, dict[str, str]]:
-    with path.open(newline="", encoding="utf-8") as stream:
-        return {row["path"]: row for row in csv.DictReader(stream)}
+    _, rows = read_ledger(path)
+    return {row["path"]: row for row in rows}
 
 
 def check_candidates(
@@ -70,6 +74,8 @@ def check_candidates(
         sd_verdict = None
         if sd_root is not None:
             program = sd_root / candidate["sd_path"]
+            if not program.resolve().is_relative_to(sd_root.resolve()):
+                raise ValueError(f"candidate {candidate['id']} resolves outside the SD root: {program}")
             deployed = program.is_file()
             if deployed:
                 test = test_program(program, sd_root)
@@ -113,6 +119,7 @@ def check_candidates(
     core_ready = (
         bool(selected)
         and not missing_roles
+        and not duplicate_roles
         and all(item["hardware_status"] in {"pass", "warn"} for item in selected)
     )
     final_ready = core_ready and all(item["favorite"] == "yes" for item in selected)
