@@ -72,6 +72,7 @@ def check_candidates(
             raise ValueError(f"candidate is missing from ledger: {candidate['ledger_path']}")
         deployed = None
         sd_verdict = None
+        sd_issues = []
         if sd_root is not None:
             program = sd_root / candidate["sd_path"]
             if not program.resolve().is_relative_to(sd_root.resolve()):
@@ -80,6 +81,7 @@ def check_candidates(
             if deployed:
                 test = test_program(program, sd_root)
                 sd_verdict = test.verdict
+                sd_issues = [dict(severity=issue.severity, code=issue.code, message=issue.message) for issue in test.issues]
             else:
                 sd_verdict = "missing"
                 issues.append(f"{candidate['id']}: missing from SD deployment")
@@ -101,6 +103,7 @@ def check_candidates(
                 "notes": ledger_row["notes"],
                 "sd_present": deployed,
                 "sd_verdict": sd_verdict,
+                "sd_issues": sd_issues,
             }
         )
     selected = [item for item in results if item["selected"]]
@@ -164,6 +167,8 @@ def main() -> int:
                 f"{item['id']}: hardware={item['hardware_status']} "
                 f"favorite={item['favorite'] or '-'} sd={item['sd_verdict'] or 'not checked'}"
             )
+            for detail in item["sd_issues"]:
+                print(f"  {detail['severity'].upper()} {detail['code']}: {detail['message']}")
         for issue in report["issues"]:
             print(f"PENDING: {issue}")
     return 0 if report["readiness"][args.require] is True else 2

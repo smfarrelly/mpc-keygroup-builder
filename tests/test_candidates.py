@@ -4,6 +4,7 @@ import io
 import tempfile
 import unittest
 from unittest.mock import patch
+from types import SimpleNamespace
 from pathlib import Path
 
 from mpc_keygroup_builder import candidates, entrypoints
@@ -89,6 +90,28 @@ class CandidateTests(unittest.TestCase):
                     ledger.write_text(contents)
                     with self.assertRaisesRegex(ValueError, message):
                         candidates.check_candidates(manifest, ledger)
+
+    def test_sd_warnings_retain_actionable_details_in_json_and_cli(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            manifest, ledger = root/'candidates.toml', root/'status.csv'
+            self.write_manifest(manifest)
+            self.write_ledger(ledger)
+            (root/'Programs').mkdir()
+            for name in ('Drums.xpm', 'Bass.xpm'):
+                (root/'Programs'/name).touch()
+            detail = SimpleNamespace(severity='warning', code='extreme_key_extrapolation', message='notes 0-24 use root 24')
+            with patch.object(candidates, 'test_program', return_value=SimpleNamespace(verdict='warn', issues=[detail])):
+                report = candidates.check_candidates(manifest, ledger, root)
+                self.assertTrue(report['readiness']['deployed'])
+                self.assertEqual(report['candidates'][0]['sd_issues'][0]['message'], detail.message)
+                output = io.StringIO()
+                with contextlib.redirect_stdout(output):
+                    status = entrypoints.invoke('mpc-scratchpad-check', [str(manifest), '--ledger', str(ledger), '--sd-root', str(root)])
+                self.assertEqual(status, 0)
+                self.assertIn('WARNING extreme_key_extrapolation: notes 0-24 use root 24', output.getvalue())
+            unchecked = candidates.check_candidates(manifest, ledger)
+            self.assertEqual(unchecked['candidates'][0]['sd_issues'], [])
 
     def test_reports_independent_readiness_gates(self):
         with tempfile.TemporaryDirectory() as directory:
