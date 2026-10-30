@@ -1,6 +1,9 @@
+import gzip
+import json
 import tempfile
 import unittest
 import wave
+from unittest.mock import patch
 from pathlib import Path
 
 from mpc_keygroup_builder import audition
@@ -8,6 +11,60 @@ from tests.test_testing_framework import write_keygroup
 
 
 class AuditionTests(unittest.TestCase):
+    def test_trim_bounds_are_inclusive_and_reject_invalid_offsets(self):
+        samples = [0.1, 0.2, 0.3, 0.4]
+        self.assertEqual(audition.trim_sample(samples, "1", "2"), ([0.2, 0.3], 1, 2))
+        self.assertEqual(audition.trim_sample(samples, 0, 0), ([0.1], 0, 0))
+        self.assertEqual(audition.trim_sample(samples, None, None), (samples, 0, 3))
+        for start, end in [(-1, 2), (2, 1), (0, 4), (True, 2), (1.5, 2), (0, "bad")]:
+            with self.subTest(start=start, end=end), self.assertRaises(ValueError):
+                audition.trim_sample(samples, start, end)
+        with self.assertRaises(ValueError):
+            audition.trim_sample([], None, None)
+
+    def test_keygroup_slices_before_resampling_and_records_bounds(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            program = write_keygroup(root)
+            data = audition._json_program(program)
+            layer = data['drum']['instruments'][1]['layersv'][0]
+            layer.update(sampleStart=0, sampleEnd=0, sliceInfo={'Start': 7, 'End': 12})
+            with gzip.open(program, 'wt') as stream:
+                json.dump({'data': data}, stream)
+            with patch.object(audition, 'KEYGROUP_NOTES', (60,)), \
+                 patch.object(audition, 'read_pcm_mono', return_value=(list(range(32)), 44100)), \
+                 patch.object(audition, 'resample', side_effect=lambda samples, rate, pitch: samples) as resample, \
+                 patch.object(audition, 'shape', side_effect=lambda samples, velocity: samples):
+                events, audio = audition.keygroup_events(program)
+            self.assertEqual(audio, [list(range(7, 13))])
+            self.assertEqual(resample.call_args.args[0], list(range(7, 13)))
+            self.assertEqual((events[0].sample_start, events[0].sample_end), (7, 12))
+
+    def test_drum_uses_slice_bounds_before_pitch_preview(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / 'sample.wav').touch()
+            program = root / 'Drum.xpm'
+            program.write_text('<MPCVObject><Program><Instrument number="1"><Layer>'
+                              '<SampleFile>sample.wav</SampleFile><SliceStart>2</SliceStart>'
+                              '<SliceEnd>4</SliceEnd><SampleStart>0</SampleStart>'
+                              '<SampleEnd>0</SampleEnd></Layer></Instrument></Program></MPCVObject>')
+            with patch.object(audition, 'read_pcm_mono', return_value=(list(range(10)), 44100)), \
+                 patch.object(audition, 'resample', side_effect=lambda samples, rate, pitch: samples), \
+                 patch.object(audition, 'shape', side_effect=lambda samples, velocity: samples):
+                events, audio = audition.drum_events(program)
+            self.assertEqual(audio, [[2, 3, 4]])
+            self.assertEqual((events[0].sample_start, events[0].sample_end), (2, 4))
+
+    def test_invalid_bounds_do_not_publish_preview(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            program = write_keygroup(root, sample_end=99999)
+            with self.assertRaisesRegex(ValueError, 'sample bounds'):
+                audition.render(program, root / 'preview.wav')
+            self.assertFalse((root / 'preview.wav').exists())
+            self.assertFalse((root / 'preview.json').exists())
+
     def test_keygroup_render_writes_audio_and_manifest(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

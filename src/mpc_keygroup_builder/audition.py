@@ -29,6 +29,25 @@ class AuditionEvent:
     sample: str
     root_note: int
     pitch_semitones: float
+    sample_start: int = 0
+    sample_end: int | None = None
+
+
+def trim_sample(samples: list[float], start: object, end: object) -> tuple[list[float], int, int]:
+    """Apply inclusive source-frame bounds before pitch/rate conversion."""
+    def frame(value: object, default: int) -> int:
+        if value is None:
+            return default
+        if type(value) is int:
+            return value
+        if isinstance(value, str) and value.strip().lstrip('-').isdigit():
+            return int(value)
+        raise ValueError(f"sample bounds must be integer frame offsets, got {value!r}")
+
+    first, last = frame(start, 0), frame(end, len(samples) - 1)
+    if not 0 <= first <= last < len(samples):
+        raise ValueError(f"sample bounds {first}..{last} are invalid for {len(samples)} frames")
+    return samples[first:last + 1], first, last
 
 
 def read_pcm_mono(path: Path) -> tuple[list[float], int]:
@@ -173,8 +192,15 @@ def keygroup_events(path: Path) -> tuple[list[AuditionEvent], list[list[float]]]
             + float(instrument.get("fineTune", 0.0)) / 100.0
         )
         samples, rate = read_pcm_mono(paths[0])
+        bounds = layer.get("sliceInfo") or {}
+        if not isinstance(bounds, dict):
+            raise ValueError("sliceInfo must contain source-frame bounds")
+        samples, first, last = trim_sample(
+            samples, bounds.get("Start", layer.get("sampleStart")),
+            bounds.get("End", layer.get("sampleEnd")),
+        )
         audio.append(shape(resample(samples, rate, pitch), velocity))
-        events.append(AuditionEvent(index, note, velocity, reference, root_note, pitch))
+        events.append(AuditionEvent(index, note, velocity, reference, root_note, pitch, first, last))
     return events, audio
 
 
@@ -201,12 +227,16 @@ def drum_events(path: Path) -> tuple[list[AuditionEvent], list[list[float]]]:
         if len(paths) != 1:
             raise ValueError(f"sample resolution returned {len(paths)} files: {reference}")
         samples, rate = read_pcm_mono(paths[0])
+        samples, first, last = trim_sample(
+            samples, layer.findtext("SliceStart", layer.findtext("SampleStart")),
+            layer.findtext("SliceEnd", layer.findtext("SampleEnd")),
+        )
         pitch = _integer(layer.findtext("TuneCoarse"), 0) + _integer(
             layer.findtext("TuneFine"), 0
         ) / 100.0
         audio.append(shape(resample(samples, rate, pitch), 100))
         pad = _integer(instrument.get("number"), len(events) + 1)
-        events.append(AuditionEvent(len(events), pad, 100, reference, 0, pitch))
+        events.append(AuditionEvent(len(events), pad, 100, reference, 0, pitch, first, last))
     if not events:
         raise ValueError("drum program has no populated layers")
     return events, audio
@@ -234,7 +264,7 @@ def render(program: Path, output: Path) -> dict[str, Any]:
         "sample_rate": OUTPUT_RATE,
         "duration_seconds": len(rendered) / OUTPUT_RATE,
         "events": [asdict(event) for event in events],
-        "limitations": "Approximate dry sample selection and pitch preview; MPC envelopes, filters, effects, warp, and voice behavior are not rendered.",
+        "limitations": "Approximate dry sample selection, inclusive source-frame trim, and pitch preview; MPC loops, envelopes, filters, effects, warp, and voice behavior are not rendered. Each event is capped at 1.25 seconds with a synthetic fade.",
     }
     descriptor, temporary_name = tempfile.mkstemp(
         prefix=f".{manifest_path.name}.", dir=manifest_path.parent
