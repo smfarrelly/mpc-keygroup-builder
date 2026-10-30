@@ -2,15 +2,23 @@
 
 ## Current focus — software hardening, hardware deferred
 
-Updated October 24, 2026. No new hardware acceptance session is required now.
+Updated October 30, 2026. No new hardware acceptance session is required now.
 
-PRs #62–#74 are merged into `main`. Start with one musical task rather than
+PRs #62–#85 are merged into `main`. Start with one musical task rather than
 reconstructing that development history:
 
 ```bash
 uv run mpc-tools start
 uv run mpc-tools resume --offline
 ```
+
+The SD handoff is complete: the seven Scratchpad entry points pass bounded
+sample-reference checks, and the optional twelve-candidate MIDI/synthetic wave
+is deployed without replacing existing instruments or projects. Use
+[SD navigation](docs/sd-navigation.md) for full loading paths. No new listening
+verdicts were recorded. Laptop library reconciliation, safer capture/restore and
+package publication, bounded XPM inspection, and contextual storage errors are
+available on current `main`; they are newer than the pinned v0.1.0 release.
 
 For a personal browser landing page, use [the local home guide](docs/local-home.md).
 It combines your explicit favorites ledger, verified local archives, and selected
