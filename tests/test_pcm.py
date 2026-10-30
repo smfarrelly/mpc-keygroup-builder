@@ -2,10 +2,12 @@ import contextlib
 import io
 from pathlib import Path
 import tempfile
+import struct
 import unittest
 import wave
 
 from mpc_keygroup_builder import audition, entrypoints
+from mpc_keygroup_builder.wave_io import complete_riff_view
 
 
 def wav_bytes(width=2, channels=2, empty=False):
@@ -31,6 +33,48 @@ class PCMTests(unittest.TestCase):
                 self.assertEqual(rate, 44100)
                 self.assertEqual(channels, [[-1.0, 0.0, 0.5]] * 2)
                 self.assertEqual(audition.read_pcm_mono(io.BytesIO(raw)), (channels[0], rate))
+
+    def test_stale_riff_length_preserves_complete_pcm_without_mutating_source(self):
+        raw = wav_bytes()
+        # Simulate metadata inserted before data without updating the outer RIFF size.
+        metadata = b'atem' + struct.pack('<I', 4) + b'abcd'
+        malformed = raw[:36] + metadata + raw[36:]
+        source = io.BytesIO(malformed)
+        self.assertEqual(audition.read_pcm_channels(source), audition.read_pcm_channels(io.BytesIO(raw)))
+        self.assertFalse(source.closed)
+        self.assertEqual(source.getvalue(), malformed)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)/'vendor.wav'
+            path.write_bytes(malformed)
+            self.assertEqual(audition.read_pcm_channels(path)[0], [[-1.0, 0.0, 0.5]]*2)
+            self.assertEqual(path.read_bytes(), malformed)
+
+    def test_stale_riff_does_not_hide_truncated_chunk(self):
+        raw = wav_bytes()
+        metadata = b'atem' + struct.pack('<I', 4) + b'abcd'
+        malformed = (raw[:36] + metadata + raw[36:])[:-4]
+        with self.assertRaisesRegex(ValueError, 'truncated WAV'):
+            audition.read_pcm_channels(io.BytesIO(malformed))
+
+    def test_riff_view_handles_padded_metadata_and_fragmented_header_reads(self):
+        raw = wav_bytes()
+        metadata = b'JUNK' + struct.pack('<I', 3) + b'abc\0'
+        source = io.BytesIO(raw[:36] + metadata + raw[36:])
+        view = complete_riff_view(source)
+        header = b''.join(view.read(1) for _ in range(12))
+        self.assertEqual(struct.unpack_from('<I', header, 4)[0], len(source.getvalue())-8)
+        view.seek(0)
+        with wave.open(view) as stream:
+            self.assertEqual(len(stream.readframes(3)), 12)
+        self.assertFalse(source.closed)
+
+    def test_unexplained_trailing_bytes_and_duplicate_data_are_not_repaired(self):
+        raw = wav_bytes()
+        for suffix in (b'junk', b'data'+struct.pack('<I', 4)+b'xxxx'):
+            with self.subTest(suffix=suffix):
+                source = io.BytesIO(raw+suffix)
+                self.assertIs(complete_riff_view(source), source)
+                self.assertEqual(source.tell(), 0)
 
     def test_incomplete_frames_and_missing_frames_are_rejected(self):
         raw = wav_bytes()

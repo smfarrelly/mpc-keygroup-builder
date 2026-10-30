@@ -102,6 +102,12 @@ Auditions are intentionally dry and approximate. They help detect silence,
 wrong source selection, extreme pitch mapping, corrupt PCM data, and obvious
 level differences; they do not emulate the MPC audio engine.
 
+Some vendor MPC WAVs contain complete audio but an outdated outer RIFF size
+following inserted metadata. The PCM reader validates the physical chunk
+boundaries and corrects only that outer length in its read-only view. Original
+WAV bytes remain untouched. Missing audio or incomplete chunks still fail;
+this compatibility handling never pads or synthesizes missing samples.
+
 Measure one or more WAV files or directories before listening:
 
 ```bash
