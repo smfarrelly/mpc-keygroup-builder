@@ -1,6 +1,38 @@
 """Read-only compatibility for WAVs with stale outer RIFF lengths."""
 
 import struct
+import hashlib
+from pathlib import Path
+import wave
+
+
+def inspect_pcm_file(path: Path) -> dict:
+    """Read every declared PCM byte with bounded memory, without float decoding."""
+    try:
+        with path.open('rb') as source:
+            view = complete_riff_view(source)
+            adjusted = view is not source
+            with wave.open(view, 'rb') as stream:
+                channels, width, rate, frames, _, _ = stream.getparams()
+                if channels not in (1, 2) or width not in (1, 2, 3, 4):
+                    raise ValueError('PCM verification supports mono/stereo 8/16/24/32-bit WAVs')
+                if rate <= 0 or frames <= 0:
+                    raise ValueError('empty WAV or invalid sample rate')
+                expected = frames * channels * width
+                digest = hashlib.sha256()
+                size = 0
+                while chunk := stream.readframes(8192):
+                    size += len(chunk)
+                    if size > expected:
+                        raise ValueError('WAV data contains an incomplete PCM frame')
+                    digest.update(chunk)
+                if size != expected:
+                    raise ValueError(f'truncated WAV: expected {expected} PCM bytes, got {size}')
+    except (wave.Error, EOFError) as error:
+        raise ValueError(f'unreadable WAV: {error or "truncated header"}') from error
+    return {'status': 'pass', 'channels': channels, 'sample_width_bytes': width,
+            'sample_rate': rate, 'frames': frames, 'pcm_bytes': size,
+            'pcm_sha256': digest.hexdigest(), 'riff_length_adjusted': adjusted}
 
 
 class _RiffLengthView:

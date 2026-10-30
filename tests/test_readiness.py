@@ -4,6 +4,8 @@ import io
 import json
 import tempfile
 import unittest
+import struct
+from tests.test_pcm import wav_bytes
 from pathlib import Path
 
 from mpc_keygroup_builder.capture import capture_projects
@@ -20,6 +22,60 @@ class ReadinessTests(unittest.TestCase):
 
     def program_file(self, reference='kick.wav'):
         self.program.write_text('<MPCVObject><Program type="Drum"><ProgramName>Kit</ProgramName><Instruments><Instrument number="1"><Layers><Layer><SampleFile>' + reference + '</SampleFile></Layer></Layers></Instrument></Instruments></Program></MPCVObject>')
+
+    def test_optional_audio_verification_detects_truncation_without_mutating_samples(self):
+        self.program_file()
+        sample = self.root/'kick.wav'
+        raw = wav_bytes()
+        sample.write_bytes(raw)
+        report = check(programs=[self.program], verify_audio=True)
+        detail = report['checks'][0]['detail']
+        self.assertEqual(report['status'], 'pass')
+        self.assertEqual(report['hardware_status'], 'not-evaluated')
+        self.assertEqual(detail['audio_verification'], 'pass')
+        self.assertEqual(detail['samples'][0]['audio']['pcm_bytes'], 12)
+        sample.write_bytes(raw[:-4])
+        self.assertEqual(check(programs=[self.program])['status'], 'pass')
+        report = check(programs=[self.program], verify_audio=True)
+        self.assertEqual(report['status'], 'fail')
+        self.assertIn('truncated WAV', report['checks'][0]['detail']['errors'][0])
+        self.assertEqual(sample.read_bytes(), raw[:-4])
+
+    def test_audio_verification_records_vendor_riff_adjustment(self):
+        self.program_file()
+        raw = wav_bytes()
+        malformed = raw[:36]+b'atem'+struct.pack('<I',4)+b'abcd'+raw[36:]
+        sample = self.root/'kick.wav'
+        sample.write_bytes(malformed)
+        report = inspect_program(self.program, None, verify_audio=True)
+        self.assertEqual(report['audio_verification'], 'pass')
+        self.assertTrue(report['samples'][0]['audio']['riff_length_adjusted'])
+        self.assertEqual(sample.read_bytes(), malformed)
+
+    def test_audio_verification_does_not_claim_unsupported_or_missing_sources(self):
+        self.program_file('kick.aif')
+        (self.root/'kick.aif').write_bytes(b'unsupported')
+        detail = inspect_program(self.program, None, verify_audio=True)
+        self.assertEqual(detail['status'], 'warn')
+        self.assertEqual(detail['audio_verification'], 'incomplete')
+        self.assertEqual(detail['samples'][0]['audio']['status'], 'unsupported')
+        (self.root/'kick.aif').unlink()
+        detail = inspect_program(self.program, None, verify_audio=True)
+        self.assertEqual(detail['status'], 'fail')
+        self.assertNotIn('audio', detail['samples'][0])
+        with self.assertRaisesRegex(ValueError, 'requires at least one --program'):
+            check(bundles=[self.root], verify_audio=True)
+
+    def test_verify_audio_cli_is_explicit_and_reports_failure(self):
+        self.program_file()
+        (self.root/'kick.wav').write_bytes(wav_bytes()[:-4])
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            status = invoke('mpc-tools', ['check', '--program', str(self.program), '--verify-audio', '--json'])
+        report = json.loads(out.getvalue())
+        self.assertEqual(status, 1)
+        self.assertTrue(report['audio_verification_requested'])
+        self.assertEqual(report['checks'][0]['detail']['audio_verification'], 'fail')
 
     def test_local_sample_and_missing_reference(self):
         self.program_file()

@@ -7,7 +7,7 @@ import unittest
 import wave
 
 from mpc_keygroup_builder import audition, entrypoints
-from mpc_keygroup_builder.wave_io import complete_riff_view
+from mpc_keygroup_builder.wave_io import complete_riff_view, inspect_pcm_file
 
 
 def wav_bytes(width=2, channels=2, empty=False):
@@ -82,6 +82,19 @@ class PCMTests(unittest.TestCase):
         malformed = raw[:36] + metadata + raw[36:]
         self.assertEqual(audition.read_pcm_channels(io.BytesIO(malformed)),
                          audition.read_pcm_channels(io.BytesIO(raw)))
+
+    def test_stream_verification_rejects_partial_frame_in_data_chunk(self):
+        raw = bytearray(wav_bytes())
+        raw += b'x'
+        struct.pack_into('<I', raw, 4, len(raw)-8)
+        struct.pack_into('<I', raw, 40, 13)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)/'partial-frame.wav'
+            path.write_bytes(raw)
+            with self.assertRaisesRegex(ValueError, 'incomplete PCM frame'):
+                inspect_pcm_file(path)
+            with self.assertRaisesRegex(ValueError, 'incomplete PCM frame'):
+                audition.read_pcm_channels(path)
 
     def test_incomplete_frames_and_missing_frames_are_rejected(self):
         raw = wav_bytes()

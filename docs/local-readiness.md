@@ -17,6 +17,29 @@ is rejected rather than scanning your drives. `--sample-root` only applies to
 programs and must contain each selected program. Without it, lookup is confined
 to each program's parent folder. Paths with spaces must be quoted.
 
+## Check the audio bytes too
+
+Reference checks alone do not read the audio payload. Opt in when preparing a
+program for transfer or investigating a file that exists but does not play:
+
+```bash
+mpc-tools check --program "/path/to/Kit.xpm" --verify-audio --json
+```
+
+This streams every resolved PCM WAV in small blocks, checking declared frame
+counts and recording a PCM checksum, channel count, width, rate, and frame
+count. It supports mono/stereo 8/16/24/32-bit PCM WAV. Incomplete audio fails;
+other file formats remain explicitly unsupported rather than receiving a pass.
+A vendor WAV with complete chunks but a stale outer RIFF length is read through
+an adjusted view and marked `riff_length_adjusted`; its bytes are not rewritten.
+
+Only samples already resolved within the selected root are opened. Missing,
+ambiguous, and external references are not searched elsewhere. This option
+requires `--program`; it does not inspect audio inside archives or bundles.
+Reports distinguish `not-requested`, `pass`, `fail`, and `incomplete` audio
+verification. A readable PCM payload can still be silent, wrong for the part,
+or programmed poorly. Listening and MPC acceptance remain separate.
+
 ## What the results mean
 
 - **Archive:** validate the capture manifest, inventory and checksums.
