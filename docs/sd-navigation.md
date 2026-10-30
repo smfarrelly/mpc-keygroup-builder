@@ -66,10 +66,14 @@ failed to load samples; their files have been removed with local backups.
 
 ## Current test entry point
 
-For a small instrument-focused session, use the
-[expression, texture, and keys review](../inventory/instrument-review-next.md).
-It gives exact paths and specific listening questions for existing Layered
-Banks, Breaks Texture, and Wurli candidates, avoiding another duplicate batch.
+The [expression, texture, and keys review](../inventory/instrument-review-next.md)
+passed on October 30. It is a completed record, not a request to repeat that
+session. The [software review checkpoint](../inventory/instrument-software-review-2026-10-30.md)
+records the wider reference audit, vendor alias repair, and twelve bank previews.
+
+New optional material remains under `00 FG Hardware Tests/Found Transitions 01`
+and `00 FG Hardware Tests/Mechanical Layers 01`. Hardware acceptance is pending;
+no new testing is required to continue software work.
 
 Use `00 FG Hardware Tests/00 ACTIVE TESTS.txt`. The historical master checklist
 is [here](../inventory/mpc-key37-remaining-hardware-checklist.md); its older

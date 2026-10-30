@@ -10,6 +10,16 @@
 
 **Operational plan:** `docs/MPC_Project_Evolution_Plan.md`
 
+## Current instrument checkpoint — October 30, 2026
+
+The active focus is instrument creation, organization, and reliable software
+review, with further hardware acceptance deferred. The
+[software checkpoint](../inventory/instrument-software-review-2026-10-30.md)
+records the wider SD audit, repaired vendor reference, bank/velocity previews,
+and the current Scratchpad manifest. The focused Layered Banks, Breaks Texture,
+and Wurli Clean/Warm/Pad hardware review passed; other variants are not thereby
+accepted. Keep the selected main kit and melodic palette unchanged.
+
 ## North star
 
 Build a reusable, hardware-first instrument factory that turns owned sample
@@ -33,8 +43,8 @@ working and tested:
   comparison.
 - Drum Program classification, fixed pad colors, pad maps, mute-group auditing,
   and a manifest-driven 128-slot one-shot Drum Program builder.
-- Hardware-deployed 32-, 64-, and 96-pad `FG Vinyl Shots` candidates generated
-  from inherited reusable manifests. Version 03 fills Banks A–F.
+- Hardware-accepted 128-pad `FG Vinyl Shots 04 Eight Bank`, generated from
+  inherited reusable manifests. Earlier versions remain historical steps.
 - Safe SD deployment, checksum verification, licensed-artifact repository
   guards, program inventory, and hardware-result ledgers.
 - Reusable Scratchpad, Volca, and Launch Control rig definitions.
@@ -586,8 +596,8 @@ specific SD card, sample library, or development history.
 Hardware work continues alongside software milestones and provides the truth
 for release gates:
 
-- Finalize the Scratchpad lead/pad and Track 2 shots choices; primary bass and
-  Bass Pad are selected.
+- Preserve the selected Dark FM lead, Glass Howl pad, Eight Bank shots,
+  Pluck Bass, Wurli, and Sub Smooth roles while evaluating optional alternates.
 - Record and reload an actual MPC-authored Volca MIDI sequence.
 - Complete three-device Volca isolation and sync after the CME MIDI Thru5 WC
   arrives.

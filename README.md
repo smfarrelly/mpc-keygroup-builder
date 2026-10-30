@@ -14,6 +14,9 @@ Choose the path that matches what you want to do:
 
 - **Returning after a break:** run `mpc-tools start` or read
   [Start with one musical task](docs/start-here.md). No card is needed.
+- **Find the current Key 37 rig’s instruments:** use the
+  [instrument role guide](docs/instrument-role-guide.md) and
+  [SD navigation](docs/sd-navigation.md), with full on-card paths.
 - **Bring your local evidence together:** generate a private
   [local starting page](docs/local-home.md) with favorites, ideas, and readiness.
   If your laptop and SD folders differ, [reconcile local instruments](docs/library-reconciliation.md)
