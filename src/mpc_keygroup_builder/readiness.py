@@ -119,13 +119,31 @@ def inspect_program(path: Path, root: Path | None, *, verify_audio: bool = False
                 errors.append(f"audio verification failed for {item['reference']}: {item['audio']['error']}")
             elif item['audio']['status'] == 'unsupported':
                 warnings.append(f"audio not verified for {item['reference']}: {item['audio']['error']}")
+    regions_checked = 0
+    region_issues = []
+    if verify_audio:
+        by_reference = {item['reference']: item for item in samples}
+        for zone in model.zones:
+            for index, layer in enumerate(zone.layers, 1):
+                audio = by_reference[layer.sample].get('audio', {})
+                if audio.get('status') != 'pass':
+                    continue
+                frames = audio['frames']
+                end = frames - 1 if layer.sample_end is None else layer.sample_end
+                regions_checked += 1
+                if not 0 <= layer.sample_start <= end < frames:
+                    region_issues.append({'zone': zone.index, 'layer': index, 'sample': layer.sample,
+                                          'start': layer.sample_start, 'end': end, 'frames': frames})
+                    errors.append(f"sample bounds outside PCM for zone {zone.index} layer {index}: "
+                                  f"{layer.sample} uses {layer.sample_start}..{end} with {frames} frames")
     audio_status = ('not-requested' if not verify_audio else
                     'fail' if any(item.get('audio', {}).get('status') == 'fail' for item in samples) else
                     'pass' if samples and all(item.get('audio', {}).get('status') == 'pass' for item in samples)
                     else 'incomplete')
     return {'status': 'fail' if errors else 'warn' if warnings else 'pass',
             'errors': errors, 'warnings': warnings, 'samples': samples,
-            'sample_root': str(root), 'name': model.name, 'audio_verification': audio_status}
+            'sample_root': str(root), 'name': model.name, 'audio_verification': audio_status,
+            'regions_checked': regions_checked, 'region_issues': region_issues}
 
 
 def check(*, archives=(), bundles=(), programs=(), sample_root: Path | None = None, recipe_root: Path | None = None, verify_audio: bool = False) -> dict:
