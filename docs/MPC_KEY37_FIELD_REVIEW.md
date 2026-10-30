@@ -297,8 +297,10 @@ will be reopened only if a real composition loses plugin state.
 
 Deferral means "not currently worth interrupting development for," not failure.
 
-- Hardware acceptance of Drum Alternates 06–09.
-- Detailed boundary and choke testing for the expanded layered program.
+- Hardware acceptance of Drum Alternates 06–07. Alternates 08–09 passed the
+  October 30 focused review.
+- Exhaustive velocity-boundary measurements for the expanded layered program;
+  focused velocity/choke listening passed October 30.
 - Final NR3 chromatic Keygroup register acceptance; NR2 received a seven-key
   default-position warning, and the +48 NR3 package is now deployed.
 - Cold-start timing.
@@ -326,6 +328,17 @@ larger uncurated library. The ongoing software work should continue making
 those states visible and reproducible.
 
 ## How future observations are added
+
+### October 30, 2026 — focused instrument review passed
+
+The user reported "alll passed" after the review of FG Vinyl Layered Banks 03,
+FG Breaks Texture Banks 01, Wurli Clean, Wurli Warm, and Wurli Pad. Record these
+five as hardware passes for that review, including its save/reload finish.
+The review covered expressive drum response and hat choke listening, texture
+banks, and comparison of the three Wurli voices. No individual pad observations,
+measured boundaries, or favorite rankings were supplied. Vinyl SP remains the
+main kit; layered drums remain an expressive alternate. Other Wurli variations
+and the broader vendor library are outside this result.
 
 Each new test should add a dated paragraph to the relevant section containing:
 

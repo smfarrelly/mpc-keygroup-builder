@@ -63,6 +63,11 @@ failed to load samples; their files have been removed with local backups.
 
 ## Current test entry point
 
+For a small instrument-focused session, use the
+[expression, texture, and keys review](../inventory/instrument-review-next.md).
+It gives exact paths and specific listening questions for existing Layered
+Banks, Breaks Texture, and Wurli candidates, avoiding another duplicate batch.
+
 Use `00 FG Hardware Tests/00 ACTIVE TESTS.txt`. The historical master checklist
 is [here](../inventory/mpc-key37-remaining-hardware-checklist.md); its older
 unchecked boxes are not automatically current failures or untested work.

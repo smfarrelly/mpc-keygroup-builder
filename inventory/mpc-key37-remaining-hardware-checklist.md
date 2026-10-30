@@ -75,6 +75,11 @@ Load:
 
 ### 08 FG Breaks Texture Banks 01
 
+**October 30, 2026: hardware pass** in the focused instrument review. User
+reported all five review instruments passed, including the save/reload finish.
+No preferred bank was specified. Older exhaustive per-pad checks below are
+retained as optional detail, not blockers to this acceptance.
+
 Load:
 
 `SD Card / 01 FG Favorites / 04 Drum Alternates / 08 FG Breaks Texture Banks 01 / FG Breaks Texture Banks 01.xpm`
@@ -87,6 +92,12 @@ Load:
   source behavior, not a new composer failure.
 
 ### 09 FG Vinyl Layered Banks 03
+
+**October 30, 2026: hardware pass** in the focused instrument review, including
+its velocity/choke listening and save/reload finish. Remains an expressive
+alternate, not the main kit. No individual velocity-boundary measurements or
+favorite bank were reported; the stricter exhaustive checks below are optional
+follow-up rather than blockers to this acceptance.
 
 Load:
 
@@ -747,9 +758,13 @@ Deployment proof: 446 files, 428,423,434 bytes, no remaining staging directory,
 and package SHA-256
 `082b51106a1b575a2e82c5b746d70d77aadd9a445da2d0e4ad175d15be74a8f2`.
 
-- [ ] Load `Wurli Clean.xpm` as the level-matched source reference.
-- [ ] Compare `Wurli Warm.xpm`: darkness, resonance, attack, and release.
-- [ ] Compare `Wurli Pad.xpm`: chord onset, held texture, release tail, and
+**October 30, 2026:** Clean, Warm, and Pad passed the focused review, including
+its save/reload finish. No new favorite was selected. Bass, Pluck, and Lo-Fi
+were outside that review and remain pending.
+
+- [x] Load `Wurli Clean.xpm` as the level-matched source reference.
+- [x] Compare `Wurli Warm.xpm`: darkness, resonance, attack, and release.
+- [x] Compare `Wurli Pad.xpm`: chord onset, held texture, release tail, and
   voice buildup.
 - [ ] Compare `Wurli Pluck.xpm`: transient clarity, decay, useful note length,
   and repeated-note behavior.
