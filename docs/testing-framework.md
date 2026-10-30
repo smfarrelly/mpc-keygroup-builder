@@ -124,6 +124,12 @@ in dB; exact cancellation reports null mono RMS/difference rather than infinity.
 This is a compatibility warning, not proof of damaged audio: audition stereo
 material and its mono mix before deciding whether it needs a change.
 
+Audio decoding rejects empty WAVs, malformed headers, unsupported channel
+counts, and missing PCM frames. It does not drop a damaged trailing frame or
+publish a plausible-looking report for truncated audio. Restore a known-good
+source before repeating the check. PCM widths of 8, 16, 24, and 32 bits are
+supported for mono and stereo; these checks do not repair files.
+
 When `--output` is used, parent directories are created and the report is
 replaced atomically. The output may not be a symlink or one of the input WAVs.
 

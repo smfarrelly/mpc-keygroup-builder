@@ -51,17 +51,24 @@ def trim_sample(samples: list[float], start: object, end: object) -> tuple[list[
 
 
 def read_pcm_channels(path: Path | BinaryIO) -> tuple[list[list[float]], int]:
-    with wave.open(str(path) if isinstance(path, Path) else path, "rb") as stream:
-        channels = stream.getnchannels()
-        width = stream.getsampwidth()
-        rate = stream.getframerate()
-        frames = stream.readframes(stream.getnframes())
-    if width not in (1, 2, 3, 4):
-        raise ValueError(f"unsupported sample width {width}: {path}")
-    if channels not in (1, 2):
-        raise ValueError(f"unsupported channel count {channels}: {path}")
+    try:
+        with wave.open(str(path) if isinstance(path, Path) else path, "rb") as stream:
+            channels = stream.getnchannels()
+            width = stream.getsampwidth()
+            rate = stream.getframerate()
+            count = stream.getnframes()
+            if width not in (1, 2, 3, 4):
+                raise ValueError(f"unsupported sample width {width}: {path}")
+            if channels not in (1, 2):
+                raise ValueError(f"unsupported channel count {channels}: {path}")
+            if rate <= 0 or count <= 0:
+                raise ValueError(f"empty WAV or invalid sample rate: {path}")
+            frames = stream.readframes(count)
+    except (wave.Error, EOFError) as error:
+        raise ValueError(f"unreadable WAV: {error or 'truncated header'}: {path}") from error
     frame_width = width * channels
-    frames = frames[: len(frames) - (len(frames) % frame_width)]
+    if len(frames) != count * frame_width:
+        raise ValueError(f"truncated WAV: expected {count * frame_width} PCM bytes, got {len(frames)}: {path}")
     if width == 1:
         decoded = [(value - 128) / 128.0 for value in frames]
     elif width == 2:
