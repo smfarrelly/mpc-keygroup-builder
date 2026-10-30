@@ -21,6 +21,11 @@ records include `sample_start` and `sample_end`. This is not an MPC emulation:
 loops, envelopes, filters, effects, warp, and voice behavior are omitted, and
 each event is capped at 1.25 seconds with a synthetic fade.
 
+For XML Drum previews, add `--drum-bank H` to select a physical bank and
+`--drum-velocities 48 108` to hear soft/hard layers. See the
+[preview guide](testing-framework.md#deterministic-audition-rendering) for
+limits, event manifests, and examples.
+
 For reproducible Drum Program colors, see
 [declaring pad colors in recipes](drum-recipe-colors.md). `mpc-drum-build`
 accepts per-pad `color_category` values in the manifest; no extra CLI flag or
