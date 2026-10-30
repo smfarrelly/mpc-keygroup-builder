@@ -10,6 +10,7 @@ from .bundle_verify import verify_bundle
 from .capture import verify_capture
 from .model import from_xpm
 from .freshness import check_bundle
+from .wave_io import inspect_pcm_file
 
 
 def _case_matches(path: Path, root: Path, cache: dict) -> tuple[list[Path], bool]:
@@ -78,7 +79,7 @@ def sample_status(program: Path, reference: str, root: Path, *, directory_cache=
     return {'reference': reference, 'status': 'missing', 'path': None}
 
 
-def inspect_program(path: Path, root: Path | None) -> dict:
+def inspect_program(path: Path, root: Path | None, *, verify_audio: bool = False) -> dict:
     if path.is_symlink() or not path.is_file():
         raise ValueError(f'program must be a regular non-symlink file: {path}')
     path = path.resolve()
@@ -99,23 +100,48 @@ def inspect_program(path: Path, root: Path | None) -> dict:
         errors.append('multiple local files match a sample reference; no file was silently selected')
     if any(item['status'] == 'external' for item in samples):
         warnings.append('external or nonportable references were not accessed; their availability is unknown')
+    audio_cache = {}
+    if verify_audio:
+        for item in samples:
+            if item['status'] != 'found':
+                continue
+            source = Path(item['path'])
+            if source not in audio_cache:
+                if source.suffix.casefold() != '.wav':
+                    audio_cache[source] = {'status': 'unsupported', 'error': 'PCM verification supports WAV files only'}
+                else:
+                    try:
+                        audio_cache[source] = inspect_pcm_file(source)
+                    except (OSError, ValueError) as error:
+                        audio_cache[source] = {'status': 'fail', 'error': str(error)}
+            item['audio'] = audio_cache[source]
+            if item['audio']['status'] == 'fail':
+                errors.append(f"audio verification failed for {item['reference']}: {item['audio']['error']}")
+            elif item['audio']['status'] == 'unsupported':
+                warnings.append(f"audio not verified for {item['reference']}: {item['audio']['error']}")
+    audio_status = ('not-requested' if not verify_audio else
+                    'fail' if any(item.get('audio', {}).get('status') == 'fail' for item in samples) else
+                    'pass' if samples and all(item.get('audio', {}).get('status') == 'pass' for item in samples)
+                    else 'incomplete')
     return {'status': 'fail' if errors else 'warn' if warnings else 'pass',
             'errors': errors, 'warnings': warnings, 'samples': samples,
-            'sample_root': str(root), 'name': model.name}
+            'sample_root': str(root), 'name': model.name, 'audio_verification': audio_status}
 
 
-def check(*, archives=(), bundles=(), programs=(), sample_root: Path | None = None, recipe_root: Path | None = None) -> dict:
+def check(*, archives=(), bundles=(), programs=(), sample_root: Path | None = None, recipe_root: Path | None = None, verify_audio: bool = False) -> dict:
     if not any((archives, bundles, programs)):
         raise ValueError('choose at least one --archive, --bundle, or --program; no drives are scanned automatically')
     if sample_root is not None and not programs:
         raise ValueError('--sample-root requires at least one --program')
     if recipe_root is not None and not bundles:
         raise ValueError('--recipe-root requires at least one --bundle')
+    if verify_audio and not programs:
+        raise ValueError("--verify-audio requires at least one --program")
     rows = []
     for kind, paths, inspector in (
         ('archive', archives, verify_capture),
         ('bundle', bundles, lambda path: check_bundle(path, recipe_root) if recipe_root is not None else verify_bundle(path)),
-        ('program', programs, lambda path: inspect_program(path, sample_root)),
+        ('program', programs, lambda path: inspect_program(path, sample_root, verify_audio=verify_audio)),
     ):
         for requested in paths:
             path = requested.expanduser()
@@ -132,14 +158,14 @@ def check(*, archives=(), bundles=(), programs=(), sample_root: Path | None = No
             rows.append(row)
     return {'format': 1, 'kind': 'mpc-local-readiness', 'checks': rows,
             'status': 'fail' if any(row['status'] == 'fail' for row in rows) else 'warn' if any(row['status'] == 'warn' for row in rows) else 'pass',
-            'hardware_status': 'not-evaluated',
-            'boundary': 'Read-only checks of selected local inputs, not hardware acceptance, audio decoding, plugin licensing, or proof that generated outputs match current recipes. Sample lookup checks program-relative and companion ProgramData paths only, including unique case-insensitive paths; collisions are not silently selected. No basename search or reference repair.'}
+            'hardware_status': 'not-evaluated', 'audio_verification_requested': verify_audio,
+            'boundary': 'Read-only checks of selected local inputs, not hardware acceptance, listening, plugin licensing, or proof that generated outputs match current recipes. Sample lookup checks program-relative and companion ProgramData paths only, including unique case-insensitive paths; collisions are not silently selected. Optional PCM verification reads complete mono/stereo WAV data with bounded memory; it is not listening or MPC playback. No basename search or reference repair.'}
 
 
-def show(archives, bundles, programs, sample_root, as_json, recipe_root=None) -> int:
+def show(archives, bundles, programs, sample_root, as_json, recipe_root=None, verify_audio=False) -> int:
     report = check(archives=archives, bundles=bundles, programs=programs,
                    sample_root=sample_root.expanduser() if sample_root else None,
-                   recipe_root=recipe_root.expanduser() if recipe_root else None)
+                   recipe_root=recipe_root.expanduser() if recipe_root else None, verify_audio=verify_audio)
     if as_json:
         print(json.dumps(report, indent=2))
     else:
@@ -148,6 +174,8 @@ def show(archives, bundles, programs, sample_root, as_json, recipe_root=None) ->
             if 'error' in row:
                 print('  ' + row['error'])
             detail = row.get('detail', {})
+            if detail.get('audio_verification') not in (None, 'not-requested'):
+                print('  PCM verification: ' + detail['audio_verification'])
             if 'freshness' in detail:
                 print('  Recipe freshness: ' + detail['freshness'])
                 for category in ('added', 'removed', 'changed'):

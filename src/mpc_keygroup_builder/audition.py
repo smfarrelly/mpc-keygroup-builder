@@ -66,10 +66,12 @@ def read_pcm_channels(path: Path | BinaryIO) -> tuple[list[list[float]], int]:
                 raise ValueError(f"unsupported channel count {channels}: {path}")
             if rate <= 0 or count <= 0:
                 raise ValueError(f"empty WAV or invalid sample rate: {path}")
-            frames = stream.readframes(count)
+            frames = stream.readframes(count + 1)
     except (wave.Error, EOFError) as error:
         raise ValueError(f"unreadable WAV: {error or 'truncated header'}: {path}") from error
     frame_width = width * channels
+    if len(frames) > count * frame_width:
+        raise ValueError(f"WAV data contains an incomplete PCM frame: {path}")
     if len(frames) != count * frame_width:
         raise ValueError(f"truncated WAV: expected {count * frame_width} PCM bytes, got {len(frames)}: {path}")
     if width == 1:

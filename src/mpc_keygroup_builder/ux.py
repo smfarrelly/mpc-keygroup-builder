@@ -211,6 +211,7 @@ def main() -> int:
     check.add_argument("--program", type=Path, action="append", default=[])
     check.add_argument("--sample-root", type=Path, help="bound sample lookup to this directory; default is each program's parent")
     check.add_argument("--json", action="store_true")
+    check.add_argument("--verify-audio", action="store_true", help="read complete referenced PCM WAV data with bounded memory; no listening verdict")
     check.add_argument("--recipe-root", type=Path, help="compare bundle build-time recipe inputs with this current recipe tree")
     commands = subparsers.add_parser("commands", help="list tools by workflow category")
     commands.add_argument("--category", help="show one category, such as Build or Creative MIDI")
@@ -271,7 +272,7 @@ def main() -> int:
         from .reconcile import show
         return show(args.ledger, args.library_root, args.favorite, args.verify_samples, args.json, args.output)
     if args.command == "check":
-        return show_readiness(args.archive, args.bundle, args.program, args.sample_root, args.json, args.recipe_root)
+        return show_readiness(args.archive, args.bundle, args.program, args.sample_root, args.json, args.recipe_root, args.verify_audio)
     if args.command == "commands":
         return _commands(args.category, args.json)
     if args.command == "help":
