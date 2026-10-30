@@ -82,6 +82,16 @@ class SourceRegionTests(unittest.TestCase):
                     source_regions.compare(preset, source, root/'out')
             self.assertFalse((root/'out').exists())
 
+    def test_corrupt_header_is_a_friendly_failure_before_publication(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            source, preset, report = self.fixture(root)
+            (source/'pack/WAV/Voice C1.wav').write_bytes(b'damaged header')
+            with patch.object(source_regions.ableton, 'inspect', return_value=report):
+                with self.assertRaisesRegex(ValueError, 'unreadable WAV header'):
+                    source_regions.compare(preset, source, root/'out')
+            self.assertFalse((root/'out').exists())
+
     def test_zone_limit_and_inactive_zone_handling(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)

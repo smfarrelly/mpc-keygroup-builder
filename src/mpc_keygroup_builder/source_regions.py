@@ -20,6 +20,14 @@ LIMITATIONS = (
 )
 
 
+def _wave_shape(source) -> tuple[int, int]:
+    try:
+        with wave.open(str(source) if isinstance(source, Path) else source, 'rb') as stream:
+            return stream.getnframes(), stream.getframerate()
+    except (wave.Error, EOFError) as error:
+        raise ValueError(f"unreadable WAV header: {error or 'truncated file'}") from error
+
+
 def review_html(report: dict) -> str:
     cards = []
     for zone in report['zones']:
@@ -81,10 +89,9 @@ def compare(preset: Path, source_root: Path, output: Path) -> dict:
             raise ValueError(f"zone {index} sample escapes the source library")
         if sample.suffix.lower() != '.wav' or sample.stat().st_size > 32 * 1024 * 1024:
             raise ValueError(f"zone {index} requires a WAV no larger than 32 MiB")
-        with wave.open(str(sample)) as stream:
-            frames, rate = stream.getnframes(), stream.getframerate()
-            if not 1 <= frames <= 2_000_000:
-                raise ValueError(f"zone {index} exceeds the 2,000,000-frame preview limit")
+        frames, rate = _wave_shape(sample)
+        if not 1 <= frames <= 2_000_000:
+            raise ValueError(f"zone {index} requires 1..2,000,000 frames for preview")
         prepared.append((index, zone, sample, frames, rate))
     output.parent.mkdir(parents=True, exist_ok=True)
     records = []
@@ -95,9 +102,8 @@ def compare(preset: Path, source_root: Path, output: Path) -> dict:
                 snapshot = stream.read(32 * 1024 * 1024 + 1)
             if len(snapshot) > 32 * 1024 * 1024:
                 raise ValueError(f"zone {index} WAV grew beyond the 32 MiB preview limit")
-            with wave.open(BytesIO(snapshot), 'rb') as stream:
-                if stream.getnframes() != frames or stream.getframerate() != rate:
-                    raise ValueError(f"zone {index} WAV changed before preview decoding")
+            if _wave_shape(BytesIO(snapshot)) != (frames, rate):
+                raise ValueError(f"zone {index} WAV changed before preview decoding")
             samples, decoded_rate = read_pcm_mono(BytesIO(snapshot))
             if len(samples) != frames or decoded_rate != rate:
                 raise ValueError(f"zone {index} WAV is truncated or changed during preview")
