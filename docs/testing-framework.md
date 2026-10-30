@@ -114,6 +114,19 @@ hit's pad, velocity, selected sample, and trim bounds. Preview gain follows
 velocity approximately; this is not a level-matched timbre comparison or an
 emulation of MPC velocity response. This option applies only to XML Drums.
 
+Select a specific bank in a large kit without moving samples:
+
+```bash
+uv run mpc-program-audition "/path/to/Eight Bank Kit.xpm" \
+  --output work/auditions/bank-h.wav --drum-bank H --drum-velocities 48 108
+```
+
+Bank selection follows physical instrument numbers (A=1–16, H=113–128),
+not the order of populated samples. Empty banks fail with a clear message;
+they do not produce a silent success. The manifest retains absolute pad
+numbers and the selected bank. Without `--drum-bank`, the original first-16
+populated-pad behavior remains available.
+
 Program parsing uses the same bounded readers as inspection: at most 32 MiB
 on disk and 64 MiB after gzip expansion, with JSON/XML structure limits.
 Malformed containers, duplicate JSON fields, XML entities, and unsupported
