@@ -89,6 +89,33 @@ class AuditionTests(unittest.TestCase):
                 audition.render(program, root/'preview.wav', drum_velocities=(48, 108))
             self.assertFalse((root/'preview.wav').exists())
 
+    def test_bank_selection_uses_physical_pad_numbers_and_reports_empty_banks(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root/'hit.wav').touch()
+            program = root/'Banks.xpm'
+            program.write_text('<MPCVObject><Program type="Drum">'+''.join(
+                f'<Instrument number="{pad}"><Layer><SampleFile>hit.wav</SampleFile>'
+                '</Layer></Instrument>' for pad in (1, 16, 17, 32, 113, 128))+'</Program></MPCVObject>')
+            with patch.object(audition, 'read_pcm_mono', return_value=([0.2]*32, 44100)):
+                for bank, expected in [('A', [1,16]), ('B', [17,32]), ('H', [113,128])]:
+                    result = audition.render(program, root/f'{bank}.wav', drum_bank=bank)
+                    self.assertEqual(result['drum_bank'], bank)
+                    self.assertEqual([e['note_or_pad'] for e in result['events']], expected)
+                with self.assertRaisesRegex(ValueError, 'no populated layers in bank G'):
+                    audition.render(program, root/'G.wav', drum_bank='G')
+                self.assertFalse((root/'G.wav').exists())
+
+    def test_invalid_bank_and_unidentified_pad_are_rejected(self):
+        with self.assertRaisesRegex(ValueError, 'bank must be A–H'):
+            audition.drum_events(Path('not-read.xpm'), bank='I')
+        with tempfile.TemporaryDirectory() as directory:
+            program = Path(directory)/'Unknown.xpm'
+            program.write_text('<MPCVObject><Instrument><Layer><SampleFile>hit.wav</SampleFile>'
+                               '</Layer></Instrument></MPCVObject>')
+            with self.assertRaisesRegex(ValueError, 'instrument numbers'):
+                audition.drum_events(program, bank='A')
+
     def test_trim_bounds_are_inclusive_and_reject_invalid_offsets(self):
         samples = [0.1, 0.2, 0.3, 0.4]
         self.assertEqual(audition.trim_sample(samples, "1", "2"), ([0.2, 0.3], 1, 2))

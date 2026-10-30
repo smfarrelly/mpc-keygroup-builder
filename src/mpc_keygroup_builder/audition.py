@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+from contextlib import ExitStack
 import json
 import os
 import struct
@@ -12,6 +13,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, BinaryIO
 
+from .wave_io import complete_riff_view
 from .program_io import read_payload, serialized_document, xml_root
 from .testing import _audio_index, _boolean, _integer, _resolve
 
@@ -51,7 +53,9 @@ def trim_sample(samples: list[float], start: object, end: object) -> tuple[list[
 
 def read_pcm_channels(path: Path | BinaryIO) -> tuple[list[list[float]], int]:
     try:
-        with wave.open(str(path) if isinstance(path, Path) else path, "rb") as stream:
+        with ExitStack() as stack:
+            source = stack.enter_context(path.open("rb")) if isinstance(path, Path) else path
+            stream = stack.enter_context(wave.open(complete_riff_view(source), "rb"))
             channels = stream.getnchannels()
             width = stream.getsampwidth()
             rate = stream.getframerate()
@@ -231,8 +235,11 @@ def _drum_velocities(values) -> tuple[int, ...]:
 
 
 def drum_events(path: Path, *, raw: bytes | None = None,
-                velocities: tuple[int, ...] = (100,)) -> tuple[list[AuditionEvent], list[list[float]]]:
+                velocities: tuple[int, ...] = (100,), bank: str | None = None) -> tuple[list[AuditionEvent], list[list[float]]]:
     velocities = _drum_velocities(velocities)
+    if bank is not None and bank not in tuple("ABCDEFGH"):
+        raise ValueError("Drum audition bank must be A–H")
+    first_pad = 1 + 16 * "ABCDEFGH".index(bank) if bank is not None else None
     if raw is None:
         raw, compressed = read_payload(path)
         if compressed:
@@ -246,6 +253,12 @@ def drum_events(path: Path, *, raw: bytes | None = None,
     audio = []
     populated = 0
     for instrument in root.iter("Instrument"):
+        number = _integer(instrument.get("number"), None)
+        if first_pad is not None:
+            if number is None or not 1 <= number <= 128:
+                raise ValueError("bank selection requires instrument numbers from 1 to 128")
+            if not first_pad <= number < first_pad + 16:
+                continue
         layers = [(layer, (layer.findtext("SampleFile") or layer.findtext("SampleName") or "").strip())
                   for layer in instrument.iter("Layer")]
         layers = [(layer, reference) for layer, reference in layers if reference]
@@ -276,20 +289,21 @@ def drum_events(path: Path, *, raw: bytes | None = None,
             audio.append(shape(resample(samples, rate, pitch), velocity))
             events.append(AuditionEvent(len(events), pad, velocity, reference, 0, pitch, first, last))
     if not events:
-        raise ValueError("drum program has no populated layers")
+        raise ValueError(f"drum program has no populated layers{' in bank ' + bank if bank else ''}")
     return events, audio
 
 
-def render(program: Path, output: Path, *, drum_velocities: tuple[int, ...] | None = None) -> dict[str, Any]:
+def render(program: Path, output: Path, *, drum_velocities: tuple[int, ...] | None = None,
+           drum_bank: str | None = None) -> dict[str, Any]:
     output, manifest_path = output_paths(program, output)
     raw, compressed = read_payload(program)
     if compressed:
-        if drum_velocities is not None:
-            raise ValueError("--drum-velocities applies only to XML Drum programs")
+        if drum_velocities is not None or drum_bank is not None:
+            raise ValueError("--drum-velocities and --drum-bank apply only to XML Drum programs")
         events, clips = keygroup_events(program, raw=raw)
         program_type = "Keygroup"
     else:
-        events, clips = drum_events(program, raw=raw, velocities=(100,) if drum_velocities is None else drum_velocities)
+        events, clips = drum_events(program, raw=raw, velocities=(100,) if drum_velocities is None else drum_velocities, bank=drum_bank)
         program_type = "Drum"
     silence = [0.0] * int(OUTPUT_RATE * 0.12)
     rendered = []
@@ -307,6 +321,8 @@ def render(program: Path, output: Path, *, drum_velocities: tuple[int, ...] | No
         "events": [asdict(event) for event in events],
         "limitations": "Approximate dry sample selection, inclusive source-frame trim, and pitch preview; MPC loops, envelopes, filters, effects, warp, and voice behavior are not rendered. Each event is capped at 1.25 seconds with a synthetic fade.",
     }
+    if program_type == "Drum":
+        manifest["drum_bank"] = drum_bank
     descriptor, temporary_name = tempfile.mkstemp(
         prefix=f".{manifest_path.name}.", dir=manifest_path.parent
     )
@@ -328,9 +344,11 @@ def main() -> int:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--drum-velocities", nargs="+", type=int, metavar="VELOCITY",
                         help="XML Drum only: 1–8 velocities (1–127) played in order on each of the first 16 populated pads; default: 100")
+    parser.add_argument("--drum-bank", type=str.upper, choices=tuple("ABCDEFGH"),
+                        help="XML Drum only: preview populated pads in one bank A–H")
     args = parser.parse_args()
     print(json.dumps(render(args.program.expanduser().resolve(), args.output.expanduser().resolve(),
-                            drum_velocities=args.drum_velocities), indent=2))
+                            drum_velocities=args.drum_velocities, drum_bank=args.drum_bank), indent=2))
     return 0
 
 
