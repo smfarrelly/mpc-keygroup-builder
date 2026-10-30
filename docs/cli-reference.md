@@ -1,5 +1,9 @@
 # CLI reference
 
+For kits drawing from several folders, use
+[explicit Drum source maps](drum-source-maps.md) instead of manually flattening
+WAV directories.
+
 For source-side sample-region research, use
 [mpc-source-regions](source-region-comparisons.md) to create full-WAV versus
 trimmed-region audio pairs without exporting an instrument.
