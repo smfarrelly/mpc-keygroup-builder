@@ -3,6 +3,7 @@ import contextlib
 import io
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 from mpc_keygroup_builder import candidates, entrypoints
@@ -27,6 +28,67 @@ class CandidateTests(unittest.TestCase):
             writer.writeheader()
             writer.writerow({"path": "Drums.xpm", "hardware_status": "pass", "favorite": "yes", "scratchpad_role": "main drums", "notes": "Good."})
             writer.writerow({"path": "Bass.xpm", "hardware_status": "untested", "favorite": "provisional", "scratchpad_role": "bass", "notes": "Pending."})
+
+    def test_duplicate_selected_roles_block_core_and_final(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            manifest, ledger = root/'candidates.toml', root/'status.csv'
+            self.write_manifest(manifest)
+            manifest.write_text(manifest.read_text().replace('role = "bass"', 'role = "main drums"'))
+            self.write_ledger(ledger)
+            ledger.write_text(ledger.read_text().replace('untested', 'pass').replace('provisional', 'yes'))
+            report = candidates.check_candidates(manifest, ledger)
+            self.assertTrue(report['readiness']['hardware'])
+            self.assertFalse(report['readiness']['core'])
+            self.assertFalse(report['readiness']['final'])
+            self.assertIn('selected core duplicates roles: main drums', report['issues'])
+
+    def test_sd_paths_cannot_escape_or_use_host_path_syntax(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)/'candidates.toml'
+            self.write_manifest(path)
+            original = path.read_text()
+            for replacement in ('../Drums.xpm', '/tmp/Drums.xpm', 'C:/Drums.xpm', '.'):
+                with self.subTest(path=replacement):
+                    path.write_text(original.replace('Programs/Drums.xpm', replacement))
+                    with self.assertRaisesRegex(ValueError, 'relative path inside the SD root'):
+                        candidates.load_manifest(path)
+
+    def test_external_symlink_is_not_counted_as_sd_deployment(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            manifest, ledger = root/'candidates.toml', root/'status.csv'
+            self.write_manifest(manifest)
+            self.write_ledger(ledger)
+            sd = root/'sd'
+            sd.mkdir()
+            try:
+                (sd/'Programs').symlink_to(root, target_is_directory=True)
+            except OSError:
+                self.skipTest('symlinks unavailable')
+            with patch.object(candidates, 'test_program') as inspect:
+                with self.assertRaisesRegex(ValueError, 'outside the SD root'):
+                    candidates.check_candidates(manifest, ledger, sd)
+                inspect.assert_not_called()
+
+    def test_ambiguous_and_invalid_ledgers_fail_before_readiness(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            manifest, ledger = root/'candidates.toml', root/'status.csv'
+            self.write_manifest(manifest)
+            self.write_ledger(ledger)
+            original = ledger.read_text()
+            cases = [
+                (original + original.splitlines()[1]+'\n', 'duplicate program path'),
+                (original.replace('untested', 'unknown'), 'invalid hardware_status'),
+                (original.replace('provisional', 'maybe'), 'invalid favorite'),
+                ('path,notes\nDrums.xpm,Good\n', 'missing fields'),
+            ]
+            for contents, message in cases:
+                with self.subTest(message=message):
+                    ledger.write_text(contents)
+                    with self.assertRaisesRegex(ValueError, message):
+                        candidates.check_candidates(manifest, ledger)
 
     def test_reports_independent_readiness_gates(self):
         with tempfile.TemporaryDirectory() as directory:

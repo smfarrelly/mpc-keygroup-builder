@@ -31,6 +31,13 @@ testing, selected core viability, and final favorite selection as separate
 gates. Deployment is reported as `NOT CHECKED` unless `--sd-root` is supplied;
 an omitted card path is never treated as a pass.
 
+Readiness rejects ambiguous ledger paths, malformed rows, unknown status or
+favorite values, and SD paths that escape the selected root (including symlink
+escapes). Duplicate selected roles block both core and final readiness instead
+of merely appearing in the issues list. The hardware gate means every listed
+candidate has been tested, not that every candidate passed; the core and final
+gates assess the selected instruments separately.
+
 ## Maps, program diffs, and audio triage
 
 ```bash
