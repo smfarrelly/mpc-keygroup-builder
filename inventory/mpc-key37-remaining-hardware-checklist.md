@@ -1,5 +1,14 @@
 # MPC Key 37 remaining hardware master checklist
 
+**October 30 handoff:** software work through PR #85 is merged. The seven
+Scratchpad entry-point instruments pass on-card sample-reference checks, not
+new listening acceptance. An optional twelve-candidate synthetic/MIDI wave is
+deployed at `SD / creative-wave-2026-10-24`; see the exact paths in
+[SD navigation](../docs/sd-navigation.md#october-30-software-handoff-and-optional-new-ideas).
+Its MIDI import, track assignment, playback, and save/reload tests are pending.
+Existing projects/instruments were preserved; there is no requirement to repeat
+previously completed listening tests.
+
 **October 23 navigation update:** use [SD navigation](../docs/sd-navigation.md)
 and `SD / 00 FG Hardware Tests / 00 ACTIVE TESTS.txt` for current entry points.
 The 88 colocated `FG COLORS` vendor drum copies are deployed and software-verified;

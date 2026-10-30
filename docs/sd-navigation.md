@@ -1,6 +1,6 @@
 # Finding instruments on the MPC SD card
 
-Updated October 23, 2026. Paths below start at the SD card in the MPC Browser.
+Updated October 30, 2026. Paths below start at the SD card in the MPC Browser.
 They were checked on the mounted card, not accepted through new hardware tests.
 
 ## Start with a project
@@ -13,6 +13,32 @@ They were checked on the mounted card, not accepted through new hardware tests.
 Save variations under a new name. Do not overwrite these baselines. Old guides
 disagree on Volca channels; inspect the loaded project's routing and verify on
 hardware rather than relying on an old folder index.
+
+## October 30 software handoff and optional new ideas
+
+The laptop toolkit work through PR #85 is merged. On-card sample-reference
+checks passed for all seven Scratchpad instruments listed below; this is not a
+new hardware listening pass. Boot, Scratchpad Master, and Volca Base were
+preserved, with unchanged hashes during the navigation-guide update.
+
+A separate optional package was added at `creative-wave-2026-10-24` (151 files,
+2,985,549 payload bytes), with verified checksums and current recipe receipts.
+It contains twelve MIDI candidates across six families and a synthetic demo
+drum kit, not another Samples From Mars main-kit replacement.
+
+Full paths from Browser > Places > SD Card:
+
+- Drum kit: `creative-wave-2026-10-24/Instrument/FG Portable Cross Kit.xpm`
+- First idea: `creative-wave-2026-10-24/Candidates/dusty/seed-1/idea.mid`
+- Main section: `creative-wave-2026-10-24/Candidates/dusty/seed-1/Sequences/main.mid`
+- Laptop-readable checklist: `creative-wave-2026-10-24/HARDWARE_CHECKLIST.md`
+- Laptop review page: `creative-wave-2026-10-24/review.html`
+
+Import/playback, track assignments, and save/reload remain pending human tests.
+Use an independent project and existing favorite melodic sounds. No hardware
+acceptance is inferred from software verification. No existing programs were
+replaced. The two changed text guides have private local backups and deployment
+receipts under `work/sd-update-2026-10-30`; these are not public repository assets.
 
 ## Load an individual Scratchpad instrument
 
