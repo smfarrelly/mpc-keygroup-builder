@@ -42,6 +42,9 @@ receipts under `work/sd-update-2026-10-30`; these are not public repository asse
 
 ## Load an individual Scratchpad instrument
 
+Use the [instrument role guide](instrument-role-guide.md) to choose between
+the selected voices and the newly accepted expressive/texture alternates.
+
 - Main drums: `00 FG Scratchpad/01 Main Drums/Vinyl SP From Mars 01 FG COLORS.xpm`
 - Shots: `00 FG Scratchpad/02 Vinyl Shots/FG Vinyl Shots 04 Eight Bank.xpm`
 - Bass: `00 FG Scratchpad/03 Bass/Pluck Bass.xpm`
