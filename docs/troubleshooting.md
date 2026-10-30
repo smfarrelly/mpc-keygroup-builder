@@ -38,6 +38,13 @@ hardware checks.
 
 ## A sample name is not recognized
 
+For Drum packages, the program name also becomes the XPM filename. Use a
+single portable name, not a path: `Warm Kit 01` is valid, while `../Warm Kit`
+and reserved device names such as `CON` are rejected. A sample cannot have the
+same filename as the generated XPM, even with different capitalization. These
+checks run before the builder creates a package and also apply to programmatic
+builds and composed kits.
+
 Pitched Keygroups need parseable note labels in the file names. Drum color and
 role inference uses semantic words such as kick, snare, clap, closed hat, and
 tom. Rename a working copy or use the workflow's explicit override/manifest
