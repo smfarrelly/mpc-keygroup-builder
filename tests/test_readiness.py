@@ -77,6 +77,28 @@ class ReadinessTests(unittest.TestCase):
         self.assertTrue(report['audio_verification_requested'])
         self.assertEqual(report['checks'][0]['detail']['audio_verification'], 'fail')
 
+    def test_audio_check_bounds_are_inclusive_and_keep_pcm_success_separate(self):
+        sample = self.root/'kick.wav'
+        sample.write_bytes(wav_bytes())  # Three complete frames.
+        for start, end, expected in [(0,2,'pass'), (2,2,'pass'), (0,3,'fail'), (3,4,'fail')]:
+            with self.subTest(start=start,end=end):
+                self.program_file()
+                self.program.write_text(self.program.read_text().replace('</Layer>',
+                    f'<SliceStart>{start}</SliceStart><SliceEnd>{end}</SliceEnd></Layer>'))
+                detail = inspect_program(self.program, None, verify_audio=True)
+                self.assertEqual(detail['audio_verification'], 'pass')
+                self.assertEqual(detail['status'], expected)
+                self.assertEqual(detail['regions_checked'], 1)
+                if expected == 'fail':
+                    self.assertEqual(detail['region_issues'][0]['frames'], 3)
+                    self.assertIn('outside PCM', detail['errors'][-1])
+        self.program_file()
+        detail = inspect_program(self.program, None, verify_audio=True)
+        self.assertEqual(detail['regions_checked'], 1)
+        self.assertEqual(detail['region_issues'], [])
+        unchecked = inspect_program(self.program, None)
+        self.assertEqual(unchecked['regions_checked'], 0)
+
     def test_local_sample_and_missing_reference(self):
         self.program_file()
         self.assertEqual(inspect_program(self.program, None)['status'], 'fail')
