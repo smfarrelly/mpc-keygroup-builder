@@ -32,6 +32,7 @@ COMMANDS = {
     "mpc-keygroup-batch": _spec("workflow", "Build", "Run manifest-driven Keygroup batches", "docs/keygroup-building.md"),
     "mpc-program-test": _spec("testing", "Inspect", "Semantically simulate XPM programs", "docs/testing-framework.md"),
     "mpc-program-audition": _spec("audition", "Inspect", "Render a local Keygroup audition", "docs/testing-framework.md"),
+    "mpc-source-regions": _spec("source_regions", "Inspect", "Compare full and trimmed source audio without conversion", "docs/source-region-comparisons.md"),
     "mpc-bundle-verify": _spec("bundle_verify", "Inspect", "Verify a complete checksummed workflow bundle", "docs/testing-framework.md"),
     "mpc-program-color": _spec("programs", "Build", "Apply semantic colors to a Drum Program", "docs/program-model-and-layouts.md"),
     "mpc-project-capture": _spec("capture", "Hardware", "Capture and verify MPC ideas or paired project evidence", "docs/idea-snapshots.md"),

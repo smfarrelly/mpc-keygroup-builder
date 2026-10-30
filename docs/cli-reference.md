@@ -1,5 +1,9 @@
 # CLI reference
 
+For source-side sample-region research, use
+[mpc-source-regions](source-region-comparisons.md) to create full-WAV versus
+trimmed-region audio pairs without exporting an instrument.
+
 `mpc-tools` is the stable front door for discovery. It keeps the specialist
 commands independently scriptable without asking a new user to memorize them.
 
