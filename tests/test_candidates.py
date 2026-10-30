@@ -9,6 +9,17 @@ from mpc_keygroup_builder import candidates, entrypoints
 
 
 class CandidateTests(unittest.TestCase):
+    def test_current_core_manifest_references_existing_ledger_identities(self):
+        root = Path(__file__).resolve().parents[1]
+        manifest = candidates.load_manifest(root/'inventory/scratchpad-current.toml')
+        ledger = candidates._ledger_rows(root/'inventory/program-status.csv')
+        selected = [item for item in manifest['candidates'] if item['selected']]
+        self.assertEqual(len(selected), 6)
+        self.assertEqual(set(manifest['required_roles']), {item['role'] for item in selected})
+        for item in selected:
+            self.assertIn(item['ledger_path'], ledger)
+            self.assertTrue(item['sd_path'].startswith('00 FG Scratchpad/'))
+
     def write_manifest(self, path: Path) -> None:
         path.write_text(
             'schema_version = 1\nname = "Test Rig"\n'

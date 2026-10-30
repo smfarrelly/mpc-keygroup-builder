@@ -1,0 +1,47 @@
+# Current ledger-backed core; see docs/instrument-role-guide.md for accepted
+# expanded shots and expressive alternates tracked in separate review notes.
+schema_version = 1
+name = "FG Scratchpad current core"
+required_roles = ["main drums", "bass", "keys", "lead", "pad", "bass pad"]
+
+[[candidates]]
+id = "vinyl-sp-01"
+ledger_path = "Samples/Samples From Mars/Vinyl SP From Mars/Vinyl SP From Mars 01.xpm"
+sd_path = "00 FG Scratchpad/01 Main Drums/Vinyl SP From Mars 01 FG COLORS.xpm"
+role = "main drums"
+selected = true
+
+[[candidates]]
+id = "mirage-pluck-bass"
+ledger_path = "Programs/Keygroups/Samples From Mars/Mirage From Mars/Bass/Pluck Bass.xpm"
+sd_path = "00 FG Scratchpad/03 Bass/Pluck Bass.xpm"
+role = "bass"
+selected = true
+
+[[candidates]]
+id = "mirage-wurli"
+ledger_path = "Programs/Keygroups/Samples From Mars/Mirage From Mars/Keys/Wurli.xpm"
+sd_path = "00 FG Scratchpad/04 Keys/Wurli.xpm"
+role = "keys"
+selected = true
+
+[[candidates]]
+id = "emulator-dark-fm"
+ledger_path = "Programs/Keygroups/Samples From Mars/Emulator From Mars/Leads/Dark FM.xpm"
+sd_path = "00 FG Scratchpad/05 Lead/Dark FM.xpm"
+role = "lead"
+selected = true
+
+[[candidates]]
+id = "kawaii-glass-howl"
+ledger_path = "Programs/Keygroups/Samples From Mars/Kawaii Dreams From Mars/Pads/Glass Howl.xpm"
+sd_path = "00 FG Scratchpad/06 Pad/Glass Howl.xpm"
+role = "pad"
+selected = true
+
+[[candidates]]
+id = "junos-sub-smooth"
+ledger_path = "Programs/Keygroups/Samples From Mars/Junos From Mars/Bass/Sub Smooth.xpm"
+sd_path = "00 FG Scratchpad/07 Bass Pad/Sub Smooth.xpm"
+role = "bass pad"
+selected = true
