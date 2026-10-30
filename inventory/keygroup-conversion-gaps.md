@@ -27,6 +27,11 @@ preflight is not proof that the downstream builder or the MPC will reproduce it.
 
 ## Next implementation priorities
 
+The [source-region comparison tool](../docs/source-region-comparisons.md)
+prepares private full/trimmed audio pairs with original loop and tuning metadata.
+It does not bypass conversion guards or publish an instrument. This is useful
+for assessing sample-offset behavior while hardware capture is deferred.
+
 Prerequisite completed: the local audition renderer now honors existing XPM
 source-frame start/end bounds instead of previewing the whole WAV. It records
 the selected bounds and refuses invalid ranges. This makes offset comparisons
