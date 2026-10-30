@@ -11,7 +11,7 @@ import statistics
 import tempfile
 from pathlib import Path
 
-from .audition import read_pcm_mono
+from .audition import read_pcm_channels
 
 
 def _db(value: float) -> float | None:
@@ -19,31 +19,39 @@ def _db(value: float) -> float | None:
 
 
 def analyze_file(path: Path) -> dict[str, object]:
-    samples, rate = read_pcm_mono(path)
-    count = len(samples)
-    peak = max((abs(value) for value in samples), default=0.0)
-    rms = math.sqrt(sum(value * value for value in samples) / count) if count else 0.0
+    channels, rate = read_pcm_channels(path)
+    count = len(channels[0])
+    channel_count = len(channels)
+    # Per-frame energy cannot cancel when stereo channels have opposing polarity.
+    energy = [sum(value * value for value in frame) / channel_count for frame in zip(*channels)]
+    frame_peaks = [max(abs(value) for value in frame) for frame in zip(*channels)]
+    peak = max(frame_peaks, default=0.0)
+    rms = math.sqrt(sum(energy) / count) if count else 0.0
+    mono = [sum(frame) / channel_count for frame in zip(*channels)]
+    mono_rms = math.sqrt(sum(value * value for value in mono) / count) if count else 0.0
     onset_count = min(count, max(1, round(rate * 0.05)))
     onset_rms = (
-        math.sqrt(sum(value * value for value in samples[:onset_count]) / onset_count)
+        math.sqrt(sum(energy[:onset_count]) / onset_count)
         if count
         else 0.0
     )
-    body = samples[onset_count:]
+    body = energy[onset_count:]
     body_rms = (
-        math.sqrt(sum(value * value for value in body) / len(body))
+        math.sqrt(sum(body) / len(body))
         if body
         else rms
     )
     peak_threshold = peak * 0.95
     peak_index = next(
-        (index for index, value in enumerate(samples) if abs(value) >= peak_threshold),
+        (index for index, value in enumerate(frame_peaks) if value >= peak_threshold),
         0,
     )
+    dc_offsets = [sum(channel) / count if count else 0.0 for channel in channels]
     return {
         "path": str(path.resolve()),
         "sample_rate": rate,
         "duration_seconds": count / rate,
+        "channels": channel_count,
         "peak_dbfs": _db(peak),
         "rms_dbfs": _db(rms),
         "crest_db": _db(peak / rms) if rms else None,
@@ -55,9 +63,12 @@ def analyze_file(path: Path) -> dict[str, object]:
             else 120.0 if onset_rms else None
         ),
         "attack_milliseconds": peak_index / rate * 1000,
-        "dc_offset": sum(samples) / count if count else 0.0,
-        "clipped_fraction": sum(abs(value) >= 0.999 for value in samples) / count if count else 0.0,
-        "silent_fraction": sum(abs(value) < 0.0001 for value in samples) / count if count else 1.0,
+        "dc_offset": max(dc_offsets, key=abs),
+        "mono_rms_dbfs": _db(mono_rms),
+        "mono_cancellation_db": _db(rms / mono_rms) if mono_rms else None,
+        "mono_cancellation": channel_count > 1 and rms > 0 and mono_rms < rms * 0.25,
+        "clipped_fraction": sum(value >= 0.999 for value in frame_peaks) / count if count else 0.0,
+        "silent_fraction": sum(value < 0.0001 for value in frame_peaks) / count if count else 1.0,
         "flags": [],
     }
 
@@ -79,6 +90,8 @@ def analyze(paths: list[Path], tolerance_db: float = 6.0) -> list[dict[str, obje
             flags.append("clipping")
         if abs(float(row["dc_offset"])) > 0.01:
             flags.append("dc-offset")
+        if row["mono_cancellation"]:
+            flags.append("mono-cancellation")
     return rows
 
 

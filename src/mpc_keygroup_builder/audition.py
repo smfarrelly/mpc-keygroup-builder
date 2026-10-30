@@ -50,7 +50,7 @@ def trim_sample(samples: list[float], start: object, end: object) -> tuple[list[
     return samples[first:last + 1], first, last
 
 
-def read_pcm_mono(path: Path | BinaryIO) -> tuple[list[float], int]:
+def read_pcm_channels(path: Path | BinaryIO) -> tuple[list[list[float]], int]:
     with wave.open(str(path) if isinstance(path, Path) else path, "rb") as stream:
         channels = stream.getnchannels()
         width = stream.getsampwidth()
@@ -75,12 +75,14 @@ def read_pcm_mono(path: Path | BinaryIO) -> tuple[list[float], int]:
     else:
         values = struct.unpack(f"<{len(frames) // 4}i", frames)
         decoded = [value / 2_147_483_648.0 for value in values]
-    if channels == 1:
-        return decoded, rate
-    return [
-        (decoded[index] + decoded[index + 1]) * 0.5
-        for index in range(0, len(decoded), 2)
-    ], rate
+    return [decoded[channel::channels] for channel in range(channels)], rate
+
+
+def read_pcm_mono(path: Path | BinaryIO) -> tuple[list[float], int]:
+    channels, rate = read_pcm_channels(path)
+    if len(channels) == 1:
+        return channels[0], rate
+    return [(left + right) * 0.5 for left, right in zip(*channels)], rate
 
 
 def resample(samples: list[float], source_rate: int, pitch_semitones: float) -> list[float]:
