@@ -98,6 +98,12 @@ velocities, select the corresponding layer, and apply approximate root-note
 pitching. Drum programs trigger the first 16 populated instruments. Source
 clips are capped and faded for quick comparison.
 
+Program parsing uses the same bounded readers as inspection: at most 32 MiB
+on disk and 64 MiB after gzip expansion, with JSON/XML structure limits.
+Malformed containers, duplicate JSON fields, XML entities, and unsupported
+program types fail before creating preview output. Compressed Drum programs
+are not auditioned as Keygroups; use an XML Drum program for this renderer.
+
 Auditions are intentionally dry and approximate. They help detect silence,
 wrong source selection, extreme pitch mapping, corrupt PCM data, and obvious
 level differences; they do not emulate the MPC audio engine.
