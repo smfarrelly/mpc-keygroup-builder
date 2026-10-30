@@ -49,6 +49,13 @@ of merely appearing in the issues list. The hardware gate means every listed
 candidate has been tested, not that every candidate passed; the core and final
 gates assess the selected instruments separately.
 
+When SD validation reports `warn`, the checker prints each warning's code and
+explanation below that instrument. JSON reports retain the same detail under
+`sd_issues`. For example, `extreme_key_extrapolation` describes notes far from
+a sample's recorded root; it is distinct from missing samples or failed hardware
+listening. A deployment gate can remain ready with warnings, so review these
+details before deciding whether a change is useful.
+
 ## Maps, program diffs, and audio triage
 
 ```bash
