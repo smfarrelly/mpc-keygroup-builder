@@ -6,11 +6,22 @@ listening on the MPC Key 37.
 
 ## Candidate and listening session
 
+Use `inventory/scratchpad-current.toml` for the six selected, ledger-backed
+core instruments at their current SD locations. The original
+`scratchpad-candidates.toml` preserves the historical v0.1 shortlist and retired
+paths; it is not the current deployment plan. The [instrument role guide](instrument-role-guide.md)
+also covers expanded shots and expressive alternates whose acceptance lives
+in separate review notes. They are outside this six-instrument check.
+
+These checks do not load or inspect the Scratchpad XPJ, establish its routing,
+or prove that a program is attached to a saved track. Without `--sd-root`,
+only existing ledger evidence is assessed.
+
 ```bash
-uv run mpc-scratchpad-check inventory/scratchpad-candidates.toml \
+uv run mpc-scratchpad-check inventory/scratchpad-current.toml \
   --ledger inventory/program-status.csv --json
 uv run mpc-hardware-init inventory/program-status.csv \
-  inventory/scratchpad-candidates.toml --output work/key37-hardware-results.toml
+  inventory/scratchpad-current.toml --output work/key37-hardware-results.toml
 uv run mpc-hardware-results inventory/program-status.csv \
   work/key37-hardware-results.toml
 uv run mpc-hardware-results inventory/program-status.csv \
@@ -67,7 +78,7 @@ candidate number and field before any SD-card operation begins.
 Always preview first:
 
 ```bash
-uv run mpc-sd-deploy inventory/scratchpad-candidates.toml \
+uv run mpc-sd-deploy inventory/scratchpad-current.toml \
   --local-root "/path/to/local/sd-image" \
   --target-root "/media/$USER/MPC_SD" \
   --report work/sd-deploy-plan.json
@@ -78,7 +89,7 @@ copied. Apply with both `--apply` and a backup directory whenever any target
 would be replaced:
 
 ```bash
-uv run mpc-sd-deploy inventory/scratchpad-candidates.toml \
+uv run mpc-sd-deploy inventory/scratchpad-current.toml \
   --local-root "/path/to/local/sd-image" \
   --target-root "/media/$USER/MPC_SD" \
   --include-audio --backup-dir "/path/to/dated-backup" --apply \

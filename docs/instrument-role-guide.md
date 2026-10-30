@@ -53,3 +53,16 @@ Its eight pads switch between Clean and Tube mechanical percussion at velocity
 the layout and level warning. It is software-verified, not hardware accepted.
 
 For project loading and broader navigation, see [SD navigation](sd-navigation.md).
+
+## Check the current core from the laptop
+
+```bash
+uv run mpc-scratchpad-check inventory/scratchpad-current.toml \
+  --ledger inventory/program-status.csv --sd-root "/path/to/mounted-sd"
+```
+
+This checks the six ledger-backed selected instruments above. It does not
+retest hardware or inspect saved XPJ routing. Expanded shots and accepted
+expressive alternates remain documented in their separate review notes.
+The original `scratchpad-candidates.toml` is a historical shortlist with retired
+locations, not the current check or deployment plan.
