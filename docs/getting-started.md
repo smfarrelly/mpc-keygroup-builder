@@ -137,6 +137,12 @@ For Drum Programs and semantic layouts, start with
 [Program model and layouts](program-model-and-layouts.md). Keep commercial
 samples and generated instruments outside this Git checkout.
 
+## Storage errors and interruptions
+
+If storage operations fail, follow the [storage recovery guide](storage-recovery.md)
+before retrying or removing staging folders. Errors do not authorize an automatic
+repair, remount, or overwrite.
+
 ## Upgrade or uninstall
 
 The installation above is pinned to a tested software-preview tag. To switch
