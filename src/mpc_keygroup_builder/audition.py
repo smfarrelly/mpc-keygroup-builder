@@ -12,7 +12,7 @@ import wave
 import xml.etree.ElementTree as ET
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, BinaryIO
 
 from .testing import _audio_index, _boolean, _integer, _resolve
 
@@ -50,8 +50,8 @@ def trim_sample(samples: list[float], start: object, end: object) -> tuple[list[
     return samples[first:last + 1], first, last
 
 
-def read_pcm_mono(path: Path) -> tuple[list[float], int]:
-    with wave.open(str(path), "rb") as stream:
+def read_pcm_mono(path: Path | BinaryIO) -> tuple[list[float], int]:
+    with wave.open(str(path) if isinstance(path, Path) else path, "rb") as stream:
         channels = stream.getnchannels()
         width = stream.getsampwidth()
         rate = stream.getframerate()
