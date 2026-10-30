@@ -129,7 +129,7 @@ def from_drum_manifest(
                 raise FileNotFoundError(
                     f"missing sample for pad {spec.pad}: {source_root / layer.sample}"
                 )
-        category = classify_sample(resolved_layers[0].sample)
+        category = spec.color_category or classify_sample(resolved_layers[0].sample)
         zones.append(
             Zone(
                 index=spec.pad,

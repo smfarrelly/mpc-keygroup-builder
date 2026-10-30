@@ -27,6 +27,7 @@ class PadSpec:
     sample: str | None = None
     mute_group: int = 0
     layers: tuple[LayerSpec, ...] = ()
+    color_category: str | None = None
 
     def resolved_layers(self) -> tuple[LayerSpec, ...]:
         if self.layers:
@@ -73,6 +74,14 @@ def _load_manifest(path: Path, loading: set[Path]) -> DrumManifest:
         sample = raw.get("sample")
         raw_layers = raw.get("layers")
         mute_group = raw.get("mute_group", 0)
+        color_category = raw.get("color_category")
+        if color_category is not None and (
+            not isinstance(color_category, str) or color_category not in load_palette()
+        ):
+            raise ValueError(
+                f"pads entry {index} has invalid color_category {color_category!r}; "
+                f"choose one of {', '.join(load_palette())} or omit for filename detection"
+            )
         if not isinstance(pad, int) or not 1 <= pad <= 128:
             raise ValueError(f"pads entry {index} has invalid pad {pad!r}")
         if pad in seen:
@@ -129,7 +138,8 @@ def _load_manifest(path: Path, loading: set[Path]) -> DrumManifest:
         if not isinstance(mute_group, int) or not 0 <= mute_group <= 32:
             raise ValueError(f"pads entry {index} has invalid mute_group {mute_group!r}")
         seen.add(pad)
-        pads.append(PadSpec(pad=pad, sample=sample, mute_group=mute_group, layers=layers))
+        pads.append(PadSpec(pad=pad, sample=sample, mute_group=mute_group, layers=layers,
+                            color_category=color_category))
     if not pads:
         raise ValueError("manifest must contain at least one [[pads]] table")
     loading.remove(path)
@@ -271,7 +281,8 @@ def build_drum_program(
             _set_layer(layer, layer_spec, frames)
         for layer in layers[len(source_layers):]:
             _clear_layer(layer)
-        colors[f"value{pad - 1}"] = palette[classify_sample(source_layers[0][0].sample)]
+        category = specs[pad].color_category or classify_sample(source_layers[0][0].sample)
+        colors[f"value{pad - 1}"] = palette[category]
         one_shot = instrument.find("OneShot")
         if one_shot is not None:
             one_shot.text = "True"
