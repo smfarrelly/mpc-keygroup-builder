@@ -49,6 +49,23 @@ Use an XPM saved by the target MPC software family and verify that its program
 type matches the requested build. Type selection is validation, not a way to
 turn a Keygroup schema into a Drum Program schema.
 
+## An Ableton Keygroup reports unsupported settings
+
+Detune changes pitch, sample start changes the attack, and panorama changes
+stereo placement. The current Keygroup-wave builder does not preserve these
+nonzero settings, so it rejects the preset rather than silently dropping them.
+Preflight now lists coexisting blockers across active zones, up to twelve
+settings plus an additional-count summary. Fixing the first listed setting
+alone may not make the source convertible.
+
+Loop, endpoint, and key-range comparison flags do not permit dropping detune,
+sample-start, or panorama settings. Do not zero those values in an owned preset
+just to make validation pass. Keep the source as a reference and choose an
+already supported instrument, or develop explicit preservation with separate
+software and hardware checks. Read the
+[deferred conversion review](../inventory/keygroup-conversion-gaps.md) before
+starting another bulk export.
+
 ## Software passes but hardware behaves differently
 
 Record a warning in the listening ledger rather than changing software evidence

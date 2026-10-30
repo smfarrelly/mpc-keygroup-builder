@@ -98,6 +98,18 @@ def preflight(
     names = [path.name for _, path in samples]
     if len(names) != len(set(names)):
         raise ValueError("referenced WAV basenames are not unique")
+    unsupported = [
+        f"zone {index} uses unsupported {field}={zone.get(field)}"
+        for index, (zone, _) in enumerate(samples, 1)
+        for field in ("detune", "samplestart", "panorama")
+        if zone.get(field) not in (None, 0, 0.0)
+    ]
+    if unsupported:
+        # Show coexisting blockers without flooding CLI output for large racks.
+        detail = "; ".join(unsupported[:12])
+        if len(unsupported) > 12:
+            detail += f"; {len(unsupported) - 12} additional unsupported settings"
+        raise ValueError(detail)
     grouped: dict[int, list[dict[str, Any]]] = defaultdict(list)
     for index, (zone, _) in enumerate(samples, 1):
         root = zone.get("rootkey")
@@ -105,9 +117,6 @@ def preflight(
             raise ValueError(f"zone {index} has invalid root key")
         if zone.get("warped") is True:
             raise ValueError(f"zone {index} uses warp")
-        for field in ("detune", "samplestart", "panorama"):
-            if zone.get(field) not in (None, 0, 0.0):
-                raise ValueError(f"zone {index} uses unsupported {field}={zone.get(field)}")
         for field in ("sustain_loop", "release_loop"):
             loop = zone.get(field)
             if isinstance(loop, dict) and loop.get("mode") not in (None, 0):

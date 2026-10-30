@@ -1,7 +1,9 @@
+import copy
 import gzip
 import json
 import tempfile
 import unittest
+from unittest.mock import patch
 import wave
 from pathlib import Path
 
@@ -21,6 +23,42 @@ def xml(sample: str, *, warped: bool = False) -> bytes:
 
 
 class AbletonKeygroupWaveTests(unittest.TestCase):
+    def test_reports_coexisting_unsupported_settings_without_accepting_loss(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            preset = self.fixture(root, "test", "Voice")
+            report = ableton_keygroup_wave.ableton.inspect(preset)
+            report['zones'][0].update(detune=11, samplestart=7, panorama=-0.2)
+            with patch.object(ableton_keygroup_wave.ableton, 'inspect', return_value=report):
+                with self.assertRaises(ValueError) as caught:
+                    ableton_keygroup_wave.preflight(
+                        {'path': str(preset.relative_to(root))}, root,
+                        allow_loop_loss=True, allow_endpoint_loss=True, allow_keyrange_loss=True,
+                    )
+            message = str(caught.exception)
+            for field in ('detune=11', 'samplestart=7', 'panorama=-0.2'):
+                self.assertIn('zone 1 uses unsupported ' + field, message)
+
+    def test_large_unsupported_setting_report_is_bounded(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            preset = self.fixture(root, "test", "Voice")
+            report = ableton_keygroup_wave.ableton.inspect(preset)
+            zone = report['zones'][0]
+            report['zones'] = []
+            for index in range(6):
+                item = copy.deepcopy(zone)
+                sample = f'Zone{index}.wav'
+                (root / 'test' / 'WAV' / sample).write_bytes((root / 'test' / 'WAV' / 'Voice C1.wav').read_bytes())
+                item['sample']['relative_path'] = 'WAV/' + sample
+                item.update(detune=11, samplestart=7, panorama=0.2)
+                report['zones'].append(item)
+            with patch.object(ableton_keygroup_wave.ableton, 'inspect', return_value=report):
+                with self.assertRaises(ValueError) as caught:
+                    ableton_keygroup_wave.preflight({'path': str(preset.relative_to(root))}, root)
+            self.assertEqual(str(caught.exception).count('uses unsupported'), 12)
+            self.assertIn('6 additional unsupported settings', str(caught.exception))
+
     @staticmethod
     def fixture(root: Path, pack: str, name: str, *, warped: bool = False) -> Path:
         directory = root / pack
