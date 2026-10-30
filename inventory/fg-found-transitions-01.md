@@ -89,5 +89,10 @@ All copied WAV bytes match the source; full PCM reads are nonempty and complete.
 Source peaks are approximately -6 dBFS; no normalization or processing was
 applied. Simultaneous voices can still sum above that level. These checks do
 not establish perceived loudness, musical quality, or hardware choke behavior.
+Channel-aware level review found no silence, clipping, or mono-cancellation
+flags in the eight source WAVs. Pipe Impact and Reverse Glass received
+level-outlier warnings against the eight-file median at the default 6 dB
+tolerance. They remain listening questions, not reasons to normalize distinct
+effects automatically; the original audio and program levels are unchanged.
 Private validation evidence is in
 `work/instrument-audit-2026-10-30/transitions-validation.json`.

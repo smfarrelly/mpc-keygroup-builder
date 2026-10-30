@@ -20,6 +20,45 @@ def write_tone(path: Path, amplitude: float, dc: float = 0.0) -> None:
 
 
 class LevelTests(unittest.TestCase):
+    def write_stereo(self, path, left, right):
+        with wave.open(str(path), 'wb') as stream:
+            stream.setparams((2, 2, 44100, 0, 'NONE', 'not compressed'))
+            stream.writeframes(b''.join(struct.pack('<hh', a, b) for a, b in zip(left, right)))
+
+    def test_opposite_polarity_stereo_is_audible_but_cancels_in_mono(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)/'stereo.wav'
+            left = [16384, -16384] * 100
+            self.write_stereo(path, left, [-value for value in left])
+            row = levels.analyze([path])[0]
+            self.assertEqual(row['channels'], 2)
+            self.assertAlmostEqual(row['rms_dbfs'], -6.0206, places=4)
+            self.assertEqual(row['silent_fraction'], 0)
+            self.assertNotIn('silent', row['flags'])
+            self.assertIn('mono-cancellation', row['flags'])
+            self.assertIsNone(row['mono_rms_dbfs'])
+
+    def test_clipping_on_one_stereo_channel_is_not_hidden(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)/'clip.wav'
+            self.write_stereo(path, [32767, -32767]*100, [0]*200)
+            row = levels.analyze([path])[0]
+            self.assertEqual(row['clipped_fraction'], 1)
+            self.assertIn('clipping', row['flags'])
+            self.assertNotIn('mono-cancellation', row['flags'])
+
+    def test_identical_channels_and_stereo_silence_are_not_cancellation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)/'coherent.wav'
+            self.write_stereo(path, [16384, -16384]*100, [16384, -16384]*100)
+            row = levels.analyze([path])[0]
+            self.assertAlmostEqual(row['mono_cancellation_db'], 0)
+            self.assertEqual(row['flags'], [])
+            self.write_stereo(path, [0]*200, [0]*200)
+            row = levels.analyze([path])[0]
+            self.assertIn('silent', row['flags'])
+            self.assertNotIn('mono-cancellation', row['flags'])
+
     def test_flags_level_outlier_silence_and_dc(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

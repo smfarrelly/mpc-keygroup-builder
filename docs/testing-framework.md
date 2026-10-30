@@ -111,6 +111,19 @@ uv run mpc-audio-levels work/auditions --tolerance-db 6
 Directory discovery accepts `.wav` in any letter case and fails clearly when
 no WAV files are present. The tolerance must be finite and nonnegative; it is
 the allowed distance from the batch median before a level-outlier flag.
+Stereo measurements use energy from both channels rather than an averaged mono
+signal. Peaks and clipping include either channel, and a frame is silent only
+when both channels are quiet. `dc_offset` reports the signed channel offset
+with the greatest magnitude. Mono inputs retain their previous measurements.
+
+`mono_rms_dbfs` measures the averaged mono signal separately. A stereo signal
+that drops by more than approximately 12 dB when averaged receives a
+`mono-cancellation` flag, not a false `silent` verdict. The report includes the
+channel count, a cancellation boolean, and the finite cancellation difference
+in dB; exact cancellation reports null mono RMS/difference rather than infinity.
+This is a compatibility warning, not proof of damaged audio: audition stereo
+material and its mono mix before deciding whether it needs a change.
+
 When `--output` is used, parent directories are created and the report is
 replaced atomically. The output may not be a symlink or one of the input WAVs.
 
