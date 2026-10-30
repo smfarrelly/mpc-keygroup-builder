@@ -40,6 +40,13 @@ but the program report retains a warning. Other trailing partial frames still
 fail. This rule also lets dry auditions read those full frames without altering
 the original file; it does not synthesize missing audio.
 
+After verifying PCM, the checker compares each normalized layer's inclusive
+start/end region with that file's frame count. Out-of-range regions identify
+the zone, layer, sample, and bounds in `region_issues`. Missing end markers use
+the full file. `regions_checked` records coverage, while `audio_verification`
+continues to describe PCM integrity: readable audio can coexist with an invalid
+program region. Loop playback and musical intent are not inferred.
+
 Only samples already resolved within the selected root are opened. Missing,
 ambiguous, and external references are not searched elsewhere. This option
 requires `--program`; it does not inspect audio inside archives or bundles.
