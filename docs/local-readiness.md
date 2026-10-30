@@ -33,6 +33,13 @@ other file formats remain explicitly unsupported rather than receiving a pass.
 A vendor WAV with complete chunks but a stale outer RIFF length is read through
 an adjusted view and marked `riff_length_adjusted`; its bytes are not rewritten.
 
+A second known vendor quirk counts the RIFF alignment byte inside the data
+chunk. For odd-length mono 24-bit PCM only, one extra zero byte is treated as
+padding and recorded as `data_padding_ignored`. The complete frames verify,
+but the program report retains a warning. Other trailing partial frames still
+fail. This rule also lets dry auditions read those full frames without altering
+the original file; it does not synthesize missing audio.
+
 Only samples already resolved within the selected root are opened. Missing,
 ambiguous, and external references are not searched elsewhere. This option
 requires `--program`; it does not inspect audio inside archives or bundles.

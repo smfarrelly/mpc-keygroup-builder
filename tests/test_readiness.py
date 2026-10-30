@@ -77,6 +77,18 @@ class ReadinessTests(unittest.TestCase):
         self.assertTrue(report['audio_verification_requested'])
         self.assertEqual(report['checks'][0]['detail']['audio_verification'], 'fail')
 
+    def test_counted_pcm_padding_is_reported_as_warning_not_silent_success(self):
+        self.program_file()
+        raw = bytearray(wav_bytes(width=3, channels=1)+b'\0')
+        struct.pack_into('<I', raw, 4, len(raw)-8)
+        struct.pack_into('<I', raw, 40, 10)
+        (self.root/'kick.wav').write_bytes(raw)
+        detail = inspect_program(self.program, None, verify_audio=True)
+        self.assertEqual(detail['audio_verification'], 'pass')
+        self.assertEqual(detail['status'], 'warn')
+        self.assertIn('zero alignment byte', detail['warnings'][0])
+        self.assertEqual(detail['errors'], [])
+
     def test_local_sample_and_missing_reference(self):
         self.program_file()
         self.assertEqual(inspect_program(self.program, None)['status'], 'fail')

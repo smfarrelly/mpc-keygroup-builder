@@ -115,6 +115,9 @@ def inspect_program(path: Path, root: Path | None, *, verify_audio: bool = False
                     except (OSError, ValueError) as error:
                         audio_cache[source] = {'status': 'fail', 'error': str(error)}
             item['audio'] = audio_cache[source]
+            if item['audio'].get('data_padding_ignored'):
+                warnings.append(f"vendor WAV counts a zero alignment byte as PCM: {item['reference']}; "
+                                "verified complete frames only, source unchanged")
             if item['audio']['status'] == 'fail':
                 errors.append(f"audio verification failed for {item['reference']}: {item['audio']['error']}")
             elif item['audio']['status'] == 'unsupported':

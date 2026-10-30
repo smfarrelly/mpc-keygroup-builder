@@ -96,6 +96,29 @@ class PCMTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'incomplete PCM frame'):
                 audition.read_pcm_channels(path)
 
+    def test_counted_zero_pad_in_odd_mono_24bit_data_is_explicit(self):
+        raw = wav_bytes(width=3, channels=1)
+        padded = bytearray(raw+b'\0')
+        struct.pack_into('<I', padded, 4, len(padded)-8)
+        struct.pack_into('<I', padded, 40, 10)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)/'vendor.wav'
+            path.write_bytes(padded)
+            result = inspect_pcm_file(path)
+            self.assertTrue(result['data_padding_ignored'])
+            self.assertEqual(result['pcm_bytes'], 9)
+            self.assertEqual(audition.read_pcm_channels(path), audition.read_pcm_channels(io.BytesIO(raw)))
+            self.assertEqual(path.read_bytes(), padded)
+            for body in (raw[44:]+b'x', raw[44:]+b'\0\0', raw[44:50]+b'\0'):
+                malformed = bytearray(raw[:44]+body)
+                struct.pack_into('<I', malformed, 4, len(malformed)-8)
+                struct.pack_into('<I', malformed, 40, len(body))
+                path.write_bytes(malformed)
+                with self.assertRaisesRegex(ValueError, 'incomplete PCM frame'):
+                    inspect_pcm_file(path)
+                with self.assertRaisesRegex(ValueError, 'incomplete PCM frame'):
+                    audition.read_pcm_channels(path)
+
     def test_incomplete_frames_and_missing_frames_are_rejected(self):
         raw = wav_bytes()
         for removed in (1, 4):

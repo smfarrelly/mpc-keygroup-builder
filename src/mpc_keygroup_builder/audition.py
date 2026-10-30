@@ -13,7 +13,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, BinaryIO
 
-from .wave_io import complete_riff_view
+from .wave_io import complete_riff_view, counted_zero_padding
 from .program_io import read_payload, serialized_document, xml_root
 from .testing import _audio_index, _boolean, _integer, _resolve
 
@@ -71,7 +71,10 @@ def read_pcm_channels(path: Path | BinaryIO) -> tuple[list[list[float]], int]:
         raise ValueError(f"unreadable WAV: {error or 'truncated header'}: {path}") from error
     frame_width = width * channels
     if len(frames) > count * frame_width:
-        raise ValueError(f"WAV data contains an incomplete PCM frame: {path}")
+        if counted_zero_padding(channels, width, count, frames[count * frame_width:]):
+            frames = frames[:count * frame_width]
+        else:
+            raise ValueError(f"WAV data contains an incomplete PCM frame: {path}")
     if len(frames) != count * frame_width:
         raise ValueError(f"truncated WAV: expected {count * frame_width} PCM bytes, got {len(frames)}: {path}")
     if width == 1:

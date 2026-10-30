@@ -6,6 +6,11 @@ from pathlib import Path
 import wave
 
 
+def counted_zero_padding(channels: int, width: int, frames: int, extra: bytes) -> bool:
+    """Recognize one RIFF alignment byte counted inside odd mono 24-bit data."""
+    return channels == 1 and width == 3 and frames % 2 == 1 and extra == b'\0'
+
+
 def inspect_pcm_file(path: Path) -> dict:
     """Read every declared PCM byte with bounded memory, without float decoding."""
     try:
@@ -21,10 +26,16 @@ def inspect_pcm_file(path: Path) -> dict:
                 expected = frames * channels * width
                 digest = hashlib.sha256()
                 size = 0
+                padding_ignored = False
                 while chunk := stream.readframes(8192):
+                    remaining = expected - size
+                    if len(chunk) > remaining:
+                        if counted_zero_padding(channels, width, frames, chunk[remaining:]) and not padding_ignored:
+                            chunk = chunk[:remaining]
+                            padding_ignored = True
+                        else:
+                            raise ValueError('WAV data contains an incomplete PCM frame')
                     size += len(chunk)
-                    if size > expected:
-                        raise ValueError('WAV data contains an incomplete PCM frame')
                     digest.update(chunk)
                 if size != expected:
                     raise ValueError(f'truncated WAV: expected {expected} PCM bytes, got {size}')
@@ -32,7 +43,8 @@ def inspect_pcm_file(path: Path) -> dict:
         raise ValueError(f'unreadable WAV: {error or "truncated header"}') from error
     return {'status': 'pass', 'channels': channels, 'sample_width_bytes': width,
             'sample_rate': rate, 'frames': frames, 'pcm_bytes': size,
-            'pcm_sha256': digest.hexdigest(), 'riff_length_adjusted': adjusted}
+            'pcm_sha256': digest.hexdigest(), 'riff_length_adjusted': adjusted,
+            'data_padding_ignored': padding_ignored}
 
 
 class _RiffLengthView:
