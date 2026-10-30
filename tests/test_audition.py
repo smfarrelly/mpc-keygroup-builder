@@ -45,6 +45,50 @@ class AuditionTests(unittest.TestCase):
                         audition.render(program, root/'preview'/'test.wav')
                     self.assertFalse((root/'preview').exists())
 
+    def test_drum_velocity_sweep_selects_layers_and_keeps_sixteen_pad_limit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for name in ('soft.wav', 'hard.wav'):
+                (root/name).touch()
+            program = root/'Drum.xpm'
+            instruments = ''.join(
+                f'<Instrument number="{pad}"><Layer><SampleFile>soft.wav</SampleFile>'
+                '<VelStart>0</VelStart><VelEnd>63</VelEnd></Layer>'
+                '<Layer><SampleFile>hard.wav</SampleFile><VelStart>64</VelStart>'
+                '<VelEnd>127</VelEnd></Layer></Instrument>' for pad in range(1, 19))
+            program.write_text('<MPCVObject><Program type="Drum">'+instruments+'</Program></MPCVObject>')
+            with patch.object(audition, 'read_pcm_mono', return_value=([0.2]*32, 44100)):
+                result = audition.render(program, root/'preview.wav', drum_velocities=(63, 64))
+            events = result['events']
+            self.assertEqual(len(events), 32)
+            self.assertEqual([event['index'] for event in events], list(range(32)))
+            self.assertEqual([event['note_or_pad'] for event in events], [pad for pad in range(1, 17) for _ in range(2)])
+            self.assertEqual([event['sample'] for event in events], ['soft.wav', 'hard.wav']*16)
+            self.assertEqual([event['velocity'] for event in events], [63, 64]*16)
+            self.assertEqual(json.loads((root/'preview.json').read_text())['events'], events)
+
+    def test_drum_velocity_gaps_fail_without_output(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            program = root/'Drum.xpm'
+            program.write_text('<MPCVObject><Program type="Drum"><Instrument number="7">'
+                               '<Layer><SampleFile>soft.wav</SampleFile><VelEnd>63</VelEnd>'
+                               '</Layer></Instrument></Program></MPCVObject>')
+            with self.assertRaisesRegex(ValueError, 'pad 7 velocity 64'):
+                audition.render(program, root/'preview.wav', drum_velocities=(64,))
+            self.assertFalse((root/'preview.wav').exists())
+
+    def test_drum_velocity_options_are_bounded_and_type_specific(self):
+        for values in [(), (0,), (128,), (True,), (1.5,), tuple(range(1, 10))]:
+            with self.subTest(values=values), self.assertRaisesRegex(ValueError, '1–8'):
+                audition.drum_events(Path('not-read.xpm'), velocities=values)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            program = write_keygroup(root)
+            with self.assertRaisesRegex(ValueError, 'only to XML Drum'):
+                audition.render(program, root/'preview.wav', drum_velocities=(48, 108))
+            self.assertFalse((root/'preview.wav').exists())
+
     def test_trim_bounds_are_inclusive_and_reject_invalid_offsets(self):
         samples = [0.1, 0.2, 0.3, 0.4]
         self.assertEqual(audition.trim_sample(samples, "1", "2"), ([0.2, 0.3], 1, 2))

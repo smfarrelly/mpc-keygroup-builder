@@ -58,3 +58,17 @@ A01-A08, check the 63/64 switch for useful contrast, record a short percussion
 part over the main kit, and save/reload in a new project. The main kit and
 existing favorites remain unchanged. Private validation evidence is in
 `work/instrument-audit-2026-10-30/mechanical-validation.json`.
+
+## Laptop soft/hard preview
+
+A dry preview can exercise both layers before hardware listening:
+
+```bash
+uv run mpc-program-audition \
+  "work/generated-drum-programs/FG Mechanical Layers 01/FG Mechanical Layers 01.xpm" \
+  --output work/auditions/mechanical-soft-hard.wav --drum-velocities 48 108
+```
+
+Listen in pad order A01–A08, two hits per pad. Use `63 64` instead to check
+selection at the switch. This checks source selection; it does not establish
+hardware playback, choke/retrigger behavior, or equal perceived loudness.

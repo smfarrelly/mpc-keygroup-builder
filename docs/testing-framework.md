@@ -98,6 +98,22 @@ velocities, select the corresponding layer, and apply approximate root-note
 pitching. Drum programs trigger the first 16 populated instruments. Source
 clips are capped and faded for quick comparison.
 
+For layered Drum kits, hear a soft and hard hit on each pad:
+
+```bash
+uv run mpc-program-audition "/path/to/Layered Kit.xpm" \
+  --output work/auditions/layered-soft-hard.wav --drum-velocities 48 108
+```
+
+The ordered velocities repeat on each of the first 16 populated pads (including
+pads beyond Bank A if earlier pads are empty). Specify 1–8 values from 1–127;
+the default remains one hit at 100. Use `63 64` to examine a layer boundary.
+A populated pad with no layer at a requested velocity reports its pad and
+velocity instead of silently disappearing. The JSON manifest records every
+hit's pad, velocity, selected sample, and trim bounds. Preview gain follows
+velocity approximately; this is not a level-matched timbre comparison or an
+emulation of MPC velocity response. This option applies only to XML Drums.
+
 Program parsing uses the same bounded readers as inspection: at most 32 MiB
 on disk and 64 MiB after gzip expansion, with JSON/XML structure limits.
 Malformed containers, duplicate JSON fields, XML entities, and unsupported

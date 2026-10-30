@@ -223,7 +223,16 @@ def keygroup_events(path: Path, *, raw: bytes | None = None) -> tuple[list[Audit
     return events, audio
 
 
-def drum_events(path: Path, *, raw: bytes | None = None) -> tuple[list[AuditionEvent], list[list[float]]]:
+def _drum_velocities(values) -> tuple[int, ...]:
+    values = tuple(values)
+    if not 1 <= len(values) <= 8 or any(type(v) is not int or not 1 <= v <= 127 for v in values):
+        raise ValueError("choose 1–8 Drum audition velocities, each an integer from 1 to 127")
+    return values
+
+
+def drum_events(path: Path, *, raw: bytes | None = None,
+                velocities: tuple[int, ...] = (100,)) -> tuple[list[AuditionEvent], list[list[float]]]:
+    velocities = _drum_velocities(velocities)
     if raw is None:
         raw, compressed = read_payload(path)
         if compressed:
@@ -235,47 +244,52 @@ def drum_events(path: Path, *, raw: bytes | None = None) -> tuple[list[AuditionE
     indexes = _audio_index(path.parent, recursive=True)
     events = []
     audio = []
+    populated = 0
     for instrument in root.iter("Instrument"):
-        if len(events) >= 16:
-            break
-        selected = None
-        for layer in instrument.iter("Layer"):
-            reference = (layer.findtext("SampleFile") or layer.findtext("SampleName") or "").strip()
-            start = _integer(layer.findtext("VelStart"), 0)
-            end = _integer(layer.findtext("VelEnd"), 127)
-            if reference and start <= 100 <= end:
-                selected = (layer, reference)
-                break
-        if selected is None:
+        layers = [(layer, (layer.findtext("SampleFile") or layer.findtext("SampleName") or "").strip())
+                  for layer in instrument.iter("Layer")]
+        layers = [(layer, reference) for layer, reference in layers if reference]
+        if not layers:
             continue
-        layer, reference = selected
-        paths = _resolve(reference, indexes)
-        if len(paths) != 1:
-            raise ValueError(f"sample resolution returned {len(paths)} files: {reference}")
-        samples, rate = read_pcm_mono(paths[0])
-        samples, first, last = trim_sample(
-            samples, layer.findtext("SliceStart", layer.findtext("SampleStart")),
-            layer.findtext("SliceEnd", layer.findtext("SampleEnd")),
-        )
-        pitch = _integer(layer.findtext("TuneCoarse"), 0) + _integer(
-            layer.findtext("TuneFine"), 0
-        ) / 100.0
-        audio.append(shape(resample(samples, rate, pitch), 100))
-        pad = _integer(instrument.get("number"), len(events) + 1)
-        events.append(AuditionEvent(len(events), pad, 100, reference, 0, pitch, first, last))
+        if populated >= 16:
+            break
+        populated += 1
+        pad = _integer(instrument.get("number"), populated)
+        for velocity in velocities:
+            selected = next(((layer, reference) for layer, reference in layers
+                             if _integer(layer.findtext("VelStart"), 0) <= velocity
+                             <= _integer(layer.findtext("VelEnd"), 127)), None)
+            if selected is None:
+                raise ValueError(f"no layer for pad {pad} velocity {velocity}")
+            layer, reference = selected
+            paths = _resolve(reference, indexes)
+            if len(paths) != 1:
+                raise ValueError(f"sample resolution returned {len(paths)} files: {reference}")
+            samples, rate = read_pcm_mono(paths[0])
+            samples, first, last = trim_sample(
+                samples, layer.findtext("SliceStart", layer.findtext("SampleStart")),
+                layer.findtext("SliceEnd", layer.findtext("SampleEnd")),
+            )
+            pitch = _integer(layer.findtext("TuneCoarse"), 0) + _integer(
+                layer.findtext("TuneFine"), 0
+            ) / 100.0
+            audio.append(shape(resample(samples, rate, pitch), velocity))
+            events.append(AuditionEvent(len(events), pad, velocity, reference, 0, pitch, first, last))
     if not events:
         raise ValueError("drum program has no populated layers")
     return events, audio
 
 
-def render(program: Path, output: Path) -> dict[str, Any]:
+def render(program: Path, output: Path, *, drum_velocities: tuple[int, ...] | None = None) -> dict[str, Any]:
     output, manifest_path = output_paths(program, output)
     raw, compressed = read_payload(program)
     if compressed:
+        if drum_velocities is not None:
+            raise ValueError("--drum-velocities applies only to XML Drum programs")
         events, clips = keygroup_events(program, raw=raw)
         program_type = "Keygroup"
     else:
-        events, clips = drum_events(program, raw=raw)
+        events, clips = drum_events(program, raw=raw, velocities=(100,) if drum_velocities is None else drum_velocities)
         program_type = "Drum"
     silence = [0.0] * int(OUTPUT_RATE * 0.12)
     rendered = []
@@ -312,8 +326,11 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("program", type=Path)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--drum-velocities", nargs="+", type=int, metavar="VELOCITY",
+                        help="XML Drum only: 1–8 velocities (1–127) played in order on each of the first 16 populated pads; default: 100")
     args = parser.parse_args()
-    print(json.dumps(render(args.program.expanduser().resolve(), args.output.expanduser().resolve()), indent=2))
+    print(json.dumps(render(args.program.expanduser().resolve(), args.output.expanduser().resolve(),
+                            drum_velocities=args.drum_velocities), indent=2))
     return 0
 
 
