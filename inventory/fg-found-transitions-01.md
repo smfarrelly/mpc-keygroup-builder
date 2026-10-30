@@ -69,22 +69,11 @@ uv run mpc-drum-build inventory/fg-found-transitions-01.toml \
 
 The template must be an XML Drum Program with 128 instrument slots. The builder
 copies the eight source WAVs beside the XPM and rewrites the populated sample
-references. It refuses a nonempty output directory. Color the known FX voices
-explicitly using the existing library API, since vendor names such as
-`BigImpact` do not match generic filename classification:
-
-```python
-from pathlib import Path
-from mpc_keygroup_builder.drum_builder import load_manifest
-from mpc_keygroup_builder.programs import colorize_drum_program, load_palette
-
-manifest = load_manifest(Path("inventory/fg-found-transitions-01.toml"))
-program = Path("work/generated-drum-programs/FG Found Transitions 01/FG Found Transitions 01.xpm")
-colored = program.with_suffix(".colored.tmp")
-colorize_drum_program(program, colored, load_palette(),
-                     overrides={p.sample.casefold(): "fx" for p in manifest.pads})
-colored.replace(program)
-```
+references. It refuses a nonempty output directory. Each pad declares
+`color_category = "fx"` in the recipe, since vendor names such as `BigImpact`
+do not match generic filename classification. The single build command now
+sets the intended colors without a postprocessing script. See
+[declarative pad colors](../docs/drum-recipe-colors.md) for other categories.
 
 ## Software validation
 
@@ -92,7 +81,9 @@ The initial package contains nine files, 8,890,849 bytes. Eight active pads,
 eight single layers, one-shot playback, Mute Group 1 only on A05-A08, and purple
 colors were checked. Model, sample-reference, and Drum audit checks pass. The
 Drum audit still reports filename categories as `unknown`; explicit FX colors
-were verified separately. The color pass changed only ProgramPads.
+were verified separately. The initial deployment used a color-only pass that
+changed only ProgramPads; subsequent builds declare the same colors directly
+in the recipe. No update to the already deployed candidate is required.
 
 All copied WAV bytes match the source; full PCM reads are nonempty and complete.
 Source peaks are approximately -6 dBFS; no normalization or processing was

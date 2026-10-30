@@ -6,9 +6,54 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from mpc_keygroup_builder import drum_builder
+from mpc_keygroup_builder import model
 
 
 class DrumBuilderTests(unittest.TestCase):
+    def test_transition_recipe_builds_declared_colors_without_postprocessing(self):
+        recipe = Path(__file__).resolve().parents[1] / "inventory/fg-found-transitions-01.toml"
+        manifest = drum_builder.load_manifest(recipe)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            template = root / "template.xpm"
+            self.write_template(template)
+            for pad in manifest.pads:
+                self.write_wav(root / pad.sample)
+            destination = drum_builder.build_drum_program(manifest, template, root, root / "out")
+            actual = model.from_xpm(destination)
+            planned = model.from_drum_manifest(recipe)
+            self.assertEqual(len(actual.zones), 8)
+            self.assertEqual([z.color for z in actual.zones], [0x8000FF] * 8)
+            self.assertEqual([z.color for z in planned.zones], [z.color for z in actual.zones])
+            self.assertEqual([z.mute_group for z in actual.zones], [0] * 4 + [1] * 4)
+            for pad in manifest.pads:
+                self.assertEqual((root / pad.sample).read_bytes(), (destination.parent / pad.sample).read_bytes())
+            settings = json.loads(ET.parse(destination).findtext("./Program/ProgramPads"))["ProgramPads"]
+            self.assertTrue(all(settings["pads"][f"value{i}"] == 0 for i in range(8, 128)))
+
+    def test_rejects_invalid_color_category_with_context(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "manifest.toml"
+            for value in ('"purple"', '""', 'false', '17', '["fx"]'):
+                with self.subTest(value=value):
+                    path.write_text('name="Bad"\n[[pads]]\npad=1\nsample="A.wav"\ncolor_category=' + value)
+                    with self.assertRaisesRegex(ValueError, "pads entry 1 has invalid color_category"):
+                        drum_builder.load_manifest(path)
+
+    def test_inherited_layered_pad_preserves_explicit_color(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "base.toml").write_text(
+                'name="Base"\n[[pads]]\npad=1\ncolor_category="fx"\n'
+                'layers=[{sample="BD Soft.wav",velocity_start=0,velocity_end=63},'
+                '{sample="BD Hard.wav",velocity_start=64,velocity_end=127}]\n'
+            )
+            child = root / "child.toml"
+            child.write_text('extends="base.toml"\nname="Child"\n[[pads]]\npad=2\nsample="BD Auto.wav"\n')
+            program = model.from_drum_manifest(child)
+            self.assertEqual([z.color for z in program.zones], [0x8000FF, 0xFF0000])
+            self.assertEqual(len(program.zones[0].layers), 2)
+
     def write_template(self, path: Path) -> None:
         pads = {f"value{index}": 123 for index in range(128)}
         root = ET.Element("MPCVObject")

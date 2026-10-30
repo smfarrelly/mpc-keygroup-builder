@@ -3,6 +3,11 @@
 `mpc-tools` is the stable front door for discovery. It keeps the specialist
 commands independently scriptable without asking a new user to memorize them.
 
+For reproducible Drum Program colors, see
+[declaring pad colors in recipes](drum-recipe-colors.md). `mpc-drum-build`
+accepts per-pad `color_category` values in the manifest; no extra CLI flag or
+postprocessing step is needed.
+
 ```bash
 mpc-tools commands
 mpc-tools commands --category "Creative MIDI"

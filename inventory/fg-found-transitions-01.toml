@@ -6,35 +6,43 @@ name = "FG Found Transitions 01"
 [[pads]]
 pad = 1
 sample = "BigImpact-Clean.wav"
+color_category = "fx"
 
 [[pads]]
 pad = 2
 sample = "PipeImpact-Clean.wav"
+color_category = "fx"
 
 [[pads]]
 pad = 3
 sample = "DepthCharge-Clean.wav"
+color_category = "fx"
 
 [[pads]]
 pad = 4
 sample = "TapeRewind-Clean.wav"
+color_category = "fx"
 
 [[pads]]
 pad = 5
 sample = "WooshReversePipe-Clean.wav"
+color_category = "fx"
 mute_group = 1
 
 [[pads]]
 pad = 6
 sample = "WooshReverseBottle-Clean.wav"
+color_category = "fx"
 mute_group = 1
 
 [[pads]]
 pad = 7
 sample = "WooshReverseGlass-Clean.wav"
+color_category = "fx"
 mute_group = 1
 
 [[pads]]
 pad = 8
 sample = "FireWoosh-Clean.wav"
+color_category = "fx"
 mute_group = 1
