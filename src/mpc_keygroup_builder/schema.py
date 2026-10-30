@@ -72,7 +72,8 @@ SCHEMAS = {
         "drum-manifest",
         "Drum pads, samples, velocity layers, explicit color categories, and mute groups",
         "drum-manifest.schema.json",
-        ("inventory/fg-vinyl-layered-kit.toml", "inventory/fg-found-transitions-01.toml"),
+        ("inventory/fg-vinyl-layered-kit.toml", "inventory/fg-found-transitions-01.toml",
+         "inventory/fg-mechanical-layers-01.toml"),
         lambda path: drum_builder.load_manifest(path),
     ),
     "drum-recipe": SchemaSpec(

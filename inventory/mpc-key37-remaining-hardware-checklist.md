@@ -1,5 +1,10 @@
 # MPC Key 37 remaining hardware master checklist
 
+**Additional optional candidate:** [FG Mechanical Layers 01](fg-mechanical-layers-01.md)
+at `00 FG Hardware Tests/Mechanical Layers 01/FG Mechanical Layers 01.xpm`.
+Eight pads, Clean/Tube switch at velocity 64, no cross-pad choke groups.
+Hardware listening is deferred; there is no requirement to retest accepted kits.
+
 **Current instrument candidate:** [FG Found Transitions 01](fg-found-transitions-01.md)
 is deployed at `00 FG Hardware Tests/Found Transitions 01/FG Found Transitions 01.xpm`.
 Software checks pass; hardware listening is deferred. A01-A08 are populated;

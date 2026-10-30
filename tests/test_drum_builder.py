@@ -34,6 +34,71 @@ class DrumBuilderTests(unittest.TestCase):
                 drum_builder.build_drum_program(manifest, root/'not-read.xpm', root, root/'out')
             self.assertFalse((root/'out').exists())
 
+    def test_source_map_packages_distinct_same_basename_files(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root/'source'
+            for subfolder, frames in [('Clean', 20), ('Tube', 30)]:
+                (source/subfolder).mkdir(parents=True)
+                self.write_wav(source/subfolder/'tone.wav', frames)
+            path = root/'recipe.toml'
+            path.write_text('name="Mapped"\n[sources]\n"Clean.wav"="Clean/tone.wav"\n'
+                            '"Tube.wav"="Tube/tone.wav"\n[[pads]]\npad=1\ncolor_category="fx"\n'
+                            'layers=[{sample="Clean.wav",velocity_start=0,velocity_end=63},'
+                            '{sample="Tube.wav",velocity_start=64,velocity_end=127}]\n')
+            manifest = drum_builder.load_manifest(path)
+            template = root/'template.xpm'
+            self.write_template(template)
+            destination = drum_builder.build_drum_program(manifest, template, source, root/'out')
+            for alias, relative in manifest.sources.items():
+                self.assertEqual((destination.parent/alias).read_bytes(), (source/relative).read_bytes())
+            generated = model.from_xpm(destination)
+            self.assertEqual([x.sample for x in generated.zones[0].layers], ['Clean.wav','Tube.wav'])
+            self.assertEqual([x.sample_end for x in generated.zones[0].layers], [19,29])
+            self.assertEqual(model.from_drum_manifest(path, source).zones[0].color, 0x8000FF)
+
+    def test_source_map_rejects_escape_paths_and_case_collisions(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)/'recipe.toml'
+            for relative in ('../outside.wav', '/outside.wav', 'C:\\outside.wav', '.'):
+                path.write_text('name="Unsafe"\n[sources]\n"A.wav"='+json.dumps(relative)+'\n'
+                                '[[pads]]\npad=1\nsample="A.wav"\n')
+                with self.subTest(relative=relative), self.assertRaisesRegex(ValueError, 'relative source path'):
+                    drum_builder.load_manifest(path)
+            path.write_text('name="Collision"\n[[pads]]\npad=1\nsample="A.wav"\n'
+                            '[[pads]]\npad=2\nsample="a.wav"\n')
+            with self.assertRaisesRegex(ValueError,'case-colliding'):
+                drum_builder.load_manifest(path)
+
+    def test_source_map_rejects_symlink_escape_before_package_creation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root/'source'
+            source.mkdir()
+            outside = root/'outside.wav'
+            self.write_wav(outside)
+            try:
+                (source/'linked.wav').symlink_to(outside)
+            except OSError as error:
+                self.skipTest(str(error))
+            template = root/'template.xpm'
+            self.write_template(template)
+            manifest = drum_builder.DrumManifest('Unsafe',(drum_builder.PadSpec(1,'Alias.wav'),),
+                                                  sources={'Alias.wav':'linked.wav'})
+            with self.assertRaisesRegex(ValueError,'escapes source root'):
+                drum_builder.build_drum_program(manifest, template, source, root/'out')
+            self.assertFalse((root/'out').exists())
+
+    def test_source_map_inheritance_is_explicit_and_preserved(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root/'base.toml').write_text('name="Base"\n[sources]\n"A.wav"="Clean/A.wav"\n'
+                                         '[[pads]]\npad=1\nsample="A.wav"\n')
+            child = root/'child.toml'
+            child.write_text('extends="base.toml"\nname="Child"\n[sources]\n"A.wav"="Tube/A.wav"\n')
+            self.assertEqual(drum_builder.load_manifest(child).sources, {'A.wav':'Tube/A.wav'})
+            self.assertEqual(drum_builder.load_manifest(root/'base.toml').sources, {'A.wav':'Clean/A.wav'})
+
     def test_transition_recipe_builds_declared_colors_without_postprocessing(self):
         recipe = Path(__file__).resolve().parents[1] / "inventory/fg-found-transitions-01.toml"
         manifest = drum_builder.load_manifest(recipe)

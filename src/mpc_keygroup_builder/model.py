@@ -12,7 +12,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Literal
 
-from .drum_builder import load_manifest
+from .drum_builder import load_manifest, resolve_sample
 from .programs import classify_sample, load_palette
 from .roles import infer_role, load_role_overrides
 from .program_io import read_payload, serialized_document, xml_root, parse_json
@@ -125,9 +125,9 @@ def from_drum_manifest(
         if not resolved_layers:
             raise ValueError(f"pad {spec.pad} has no sample layers")
         for layer in resolved_layers:
-            if source_root is not None and not (source_root / layer.sample).is_file():
+            if source_root is not None and not resolve_sample(manifest, source_root, layer.sample).is_file():
                 raise FileNotFoundError(
-                    f"missing sample for pad {spec.pad}: {source_root / layer.sample}"
+                    f"missing sample for pad {spec.pad}: {resolve_sample(manifest, source_root, layer.sample)}"
                 )
         category = spec.color_category or classify_sample(resolved_layers[0].sample)
         zones.append(

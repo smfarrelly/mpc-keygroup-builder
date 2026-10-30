@@ -46,4 +46,10 @@ Hardware acceptance is pending. It focuses on
 impacts and short sweeps instead of another complete drum kit. See that page
 for its pad map and deferred listening checks.
 
+A second optional candidate is
+`00 FG Hardware Tests/Mechanical Layers 01/FG Mechanical Layers 01.xpm`.
+Its eight pads switch between Clean and Tube mechanical percussion at velocity
+64. [Mechanical Layers notes](../inventory/fg-mechanical-layers-01.md) explain
+the layout and level warning. It is software-verified, not hardware accepted.
+
 For project loading and broader navigation, see [SD navigation](sd-navigation.md).
