@@ -48,6 +48,54 @@ reader now validates physical chunk boundaries and adjusts only its in-memory
 view. The SD files match the original sources; none needed rewriting.
 Genuinely incomplete audio is still rejected.
 
+## Complete curated PCM and region check
+
+The opt-in `mpc-tools check --verify-audio` check covers all 28 inventoried
+Scratchpad/Favorites programs plus the two new candidates. All 30 have readable
+PCM and valid normalized sample regions: 2,489 regions total. Twenty-nine
+programs pass cleanly. Breaks Texture Banks 01 retains warnings for three
+original vendor files that count one zero alignment byte inside odd-length
+mono 24-bit data:
+
+- `OH Vari Tape Vinyl 07.wav`
+- `SD Degraded Vinyl 07.wav`
+- `Tom FX Rack Plate Vinyl 01.wav`
+
+Each matches its owned original bytes. The reader uses the complete frames,
+records `data_padding_ignored`, and leaves the source unchanged. Other partial
+PCM frames remain errors. The retained initial failure report and subsequent
+warning-only recheck make this compatibility handling visible. This does not
+change the earlier hardware pass.
+
+Private evidence: `curated-audio-integrity.json`,
+`breaks-texture-pcm-recheck.json`, `curated-audio-integrity-final.json`, and
+`padding-original-matches.json` in the audit folder. Counts include repeated
+sample use across different programs; they are not unique-library counts.
+
+## Colored vendor kits: deeper audio checks
+
+All 88 colocated colored vendor programs have readable referenced PCM. The
+4,885 declared regions were inspected: 86 programs pass; two retain strict
+region-bound failures inherited from the original uncolored vendor programs:
+
+- `Samples/Samples From Mars/Perkons From Mars/Perkons From Mars 01 FG COLORS.xpm`:
+  zone 16, `Cymbal Noise Lite Perkons 02`, ends at 102,932 with 102,932 frames.
+  This is one past the normalized model's inclusive maximum of 102,931.
+- `Samples/Samples From Mars/Vinyl Synths From Mars/Vinyl Synths From Mars FG COLORS.xpm`:
+  zone 11, `Sub37 Noise Tom Lo Vinyl Synths C3`, ends at 49,772 with 33,996
+  frames. This extends beyond the available source audio.
+
+Paths start at Browser > Places > SD Card. Both original XPMs contain the same
+markers, and both WAVs match the owned MPC source files byte-for-byte. These
+are not color-conversion or transfer regressions. No markers were clamped or
+rewritten: source intent and MPC endpoint handling need separate evidence.
+They do not affect the accepted Scratchpad selection. Any targeted hardware
+inspection can remain deferred; a software bound failure alone does not tell
+us exactly what the MPC will play.
+
+Evidence: `colored-vendor-audio.jsonl`, `colored-vendor-audio-summary.json`,
+and `vendor-region-original-evidence.json` in the private audit folder.
+
 ## Current Scratchpad evidence
 
 Use `inventory/scratchpad-current.toml` with `mpc-scratchpad-check`. It points

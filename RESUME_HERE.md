@@ -4,21 +4,34 @@
 
 Updated October 30, 2026. No new hardware acceptance session is required now.
 
-PRs #62–#85 are merged into `main`. Start with one musical task rather than
-reconstructing that development history:
+The current focus is instrument creation, organization, and reliable software
+review. Start with the [instrument role guide](docs/instrument-role-guide.md)
+and [software checkpoint](inventory/instrument-software-review-2026-10-30.md).
+Use the existing Scratchpad for music; no new hardware session is required.
 
 ```bash
-uv run mpc-tools start
 uv run mpc-tools resume --offline
+uv run mpc-scratchpad-check inventory/scratchpad-current.toml \
+  --ledger inventory/program-status.csv --require core
 ```
 
-The SD handoff is complete: the seven Scratchpad entry points pass bounded
-sample-reference checks, and the optional twelve-candidate MIDI/synthetic wave
-is deployed without replacing existing instruments or projects. Use
-[SD navigation](docs/sd-navigation.md) for full loading paths. No new listening
-verdicts were recorded. Laptop library reconciliation, safer capture/restore and
-package publication, bounded XPM inspection, and contextual storage errors are
-available on current `main`; they are newer than the pinned v0.1.0 release.
+The current manifest covers the six selected ledger-backed instruments at their
+actual SD locations. The original v0.1 shortlist is historical. Expanded shots
+and expressive alternates remain documented separately. Add `--sd-root` only
+when checking a mounted card; otherwise deployment is explicitly not checked.
+
+The focused Layered Banks, Breaks Texture, and Wurli Clean/Warm/Pad hardware
+review passed. New Found Transitions and Mechanical Layers candidates remain
+hardware-pending; existing favorites are unchanged. The full reference audit
+checked 1,306 XPMs and repaired three vendor spelling failures using two exact
+WAV aliases, without changing any XPM or baseline project.
+
+For software-only review, use Drum bank/velocity previews and optional PCM
+verification, described in [testing](docs/testing-framework.md) and
+[local readiness](docs/local-readiness.md). Thirty curated/new programs have
+readable PCM and valid regions; Breaks Texture retains three vendor-padding
+warnings. Software evidence does not promote hardware status. Current `main`
+is newer than the pinned v0.1.0 release.
 
 For a personal browser landing page, use [the local home guide](docs/local-home.md).
 It combines your explicit favorites ledger, verified local archives, and selected
