@@ -1,0 +1,52 @@
+MPC SD CARD - START HERE (2026-10-30)
+
+Paths start at Browser > Places > SD Card. This text is laptop-readable.
+
+PLAY AN EXISTING PROJECT
+Projects/FG Scratchpad/FG Vinyl Scratchpad v02 Master.xpj
+Projects/Boot.xpj
+Projects/Volca/Base.xpj
+Save experiments under a new name. Preserve these baseline projects.
+
+SELECTED INSTRUMENTS
+Main drums: 00 FG Scratchpad/01 Main Drums/Vinyl SP From Mars 01 FG COLORS.xpm
+Shots: 00 FG Scratchpad/02 Vinyl Shots/FG Vinyl Shots 04 Eight Bank.xpm
+Bass: 00 FG Scratchpad/03 Bass/Pluck Bass.xpm
+Keys: 00 FG Scratchpad/04 Keys/Wurli.xpm
+Lead: 00 FG Scratchpad/05 Lead/Dark FM.xpm
+Pad: 00 FG Scratchpad/06 Pad/Glass Howl.xpm
+Bass pad: 00 FG Scratchpad/07 Bass Pad/Sub Smooth.xpm
+
+MORE SOUNDS
+00 INSTRUMENT ROLES.txt gives the accepted expressive and texture alternates.
+Samples/Samples From Mars/<collection>/<name> FG COLORS.xpm
+01 FG Favorites
+Programs/Keygroups/SFM REFERENCE INSTRUMENTS
+Keep programs beside their WAVs. Do not relocate individual XPM files.
+
+OPTIONAL NEW MATERIAL - HARDWARE ACCEPTANCE DEFERRED
+00 FG Hardware Tests/Found Transitions 01/FG Found Transitions 01.xpm
+00 FG Hardware Tests/Mechanical Layers 01/FG Mechanical Layers 01.xpm
+creative-wave-2026-10-24/Instrument/FG Portable Cross Kit.xpm
+creative-wave-2026-10-24/Candidates/dusty/seed-1/idea.mid
+The creative wave is a synthetic demo/idea collection, not a replacement kit.
+Detailed deferred checks: 00 FG Hardware Tests/00 ACTIVE TESTS.txt
+No new hardware session is required to continue software work.
+
+SOFTWARE CHECKPOINT
+1,306 inventoried programs have passing sample-reference evidence after two
+exact WAV aliases repaired the same vendor spelling error in three programs.
+Thirty curated/new programs have readable PCM and valid sample regions;
+Breaks Texture retains three vendor-padding warnings, with audio unchanged.
+Two region-marker issues in Perkons/Vinyl Synths vendor programs are recorded
+in the laptop review. Existing selected Scratchpad instruments are unaffected.
+These checks do not establish new hardware listening or favorite status.
+
+ON THE LAPTOP
+Repository: inventory/instrument-software-review-2026-10-30.md
+Current core: inventory/scratchpad-current.toml
+Use mpc-program-audition for bank/velocity previews and mpc-tools check
+--verify-audio for selected XPMs. Original vendor WAVs are not rewritten.
+
+00 READY SMALL TEST is a partial experiment, not the full library.
+Older Volca guides conflict; inspect the loaded project's actual routing.

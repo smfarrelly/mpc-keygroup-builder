@@ -1,10 +1,10 @@
 schema_version = 1
 updated = "2026-10-30"
-title = "Software hardening and musical idea capture; hardware deferred"
+title = "Instrument creation and organization; software review, hardware deferred"
 baseline_relative = "Projects/Boot.xpj"
 working_relative = "Projects/Volca/Base.xpj"
 target_relative = "Projects/FG Volca Direct 123.xpj"
-next_action = "Software through PR #85 is merged. The SD update is verified; use docs/sd-navigation.md for exact Scratchpad and optional creative-wave-2026-10-24 paths. Seven Scratchpad sample-reference checks passed, but no new listening acceptance was recorded. Use a new project name for optional MIDI experiments."
+next_action = "Use docs/instrument-role-guide.md for current instruments and inventory/instrument-software-review-2026-10-30.md for evidence. Run mpc-scratchpad-check inventory/scratchpad-current.toml --ledger inventory/program-status.csv --require core without a card, or add --sd-root when mounted. Preview Drum banks and velocity layers on the laptop; use mpc-tools check --verify-audio for selected XPMs. No new hardware session is required."
 notes = "Hardware testing is deferred. The project paths and routes below retain the earlier Volca target plan, not verified current device state. Current priorities are source preservation, safe rebuilds, explicit conversion losses, and capture/verification/comparison of musical ideas. Use XL3 for MPC internal mixing and buried plugin controls, not to duplicate good native hardware panels."
 
 [[routes]]
