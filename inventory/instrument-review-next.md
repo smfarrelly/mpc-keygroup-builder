@@ -1,5 +1,14 @@
 # Next instrument review: expression, texture, and keys
 
+**Completed October 30, 2026 — hardware pass.** After this focused review,
+the user reported "alll passed": FG Vinyl Layered Banks 03, FG Breaks Texture
+Banks 01, Wurli Clean, Wurli Warm, and Wurli Pad. This closes this review,
+including its save/reload finish. No favorite bank, new favorite instrument,
+or detailed individual measurements were supplied. Layered drums remain an
+expressive alternate; the existing Scratchpad selections stay unchanged.
+This result does not extend to Wurli Bass/Pluck/Lo-Fi, every vendor program,
+or stricter exhaustive checks in the historical checklist.
+
 October 30, 2026. This is a small listening session, not a replacement for the
 historical ledger. Keep Vinyl SP as the main kit and Pluck Bass, Wurli, Dark FM,
 Glass Howl, and Sub Smooth in their current roles. Save experiments under a new
