@@ -1,4 +1,6 @@
 import json
+import hashlib
+from html.parser import HTMLParser
 from pathlib import Path
 import struct
 import tempfile
@@ -39,6 +41,20 @@ class SourceRegionTests(unittest.TestCase):
                 self.assertNotEqual(stream.readframes(3), bytes(6))
             self.assertIn('not converted instruments', result['limitations'])
             self.assertEqual(json.loads((root/'out/comparison.json').read_text()), result)
+            class AudioLinks(HTMLParser):
+                def __init__(self):
+                    super().__init__()
+                    self.sources = []
+                def handle_starttag(self, tag, attrs):
+                    if tag == 'audio':
+                        self.sources.append(dict(attrs)['src'])
+            page = (root/'out/review.html').read_text()
+            links = AudioLinks()
+            links.feed(page)
+            self.assertEqual(links.sources, ['01-full.wav', '01-region.wav'])
+            for name in links.sources:
+                self.assertTrue((root/'out'/name).is_file())
+            self.assertIn('not an MPC instrument', page)
             with self.assertRaises(FileExistsError):
                 source_regions.compare(preset, source, root/'out')
 
@@ -79,6 +95,34 @@ class SourceRegionTests(unittest.TestCase):
             with patch.object(source_regions.ableton, 'inspect', return_value=report):
                 result = source_regions.compare(preset, source, root/'out')
             self.assertEqual(len(result['zones']), 1)
+
+    def test_source_hash_matches_decoded_snapshot_during_external_change(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            source, preset, report = self.fixture(root)
+            wav = source/'pack/WAV/Voice C1.wav'
+            original = wav.read_bytes()
+            decode = source_regions.read_pcm_mono
+            def change_after_read(stream):
+                wav.write_bytes(original[:-2] + b'\x01\x00')
+                return decode(stream)
+            with patch.object(source_regions.ableton, 'inspect', return_value=report), \
+                 patch.object(source_regions, 'read_pcm_mono', side_effect=change_after_read):
+                result = source_regions.compare(preset, source, root/'out')
+            self.assertEqual(result['zones'][0]['sample_sha256'], hashlib.sha256(original).hexdigest())
+            self.assertNotEqual(wav.read_bytes(), original)
+
+    def test_review_escapes_source_text(self):
+        report = {'preset': '<script>alert(1)</script>', 'limitations': 'reference only', 'zones': [{
+            'zone': 1, 'sample': '<img src=x onerror=alert(1)>',
+            'start': 0, 'end': 1, 'source_frames': 2,
+            'full_preview': '01-full.wav', 'region_preview': '01-region.wav',
+            'source_settings': {'name': '</pre><script>bad</script>'},
+        }]}
+        page = source_regions.review_html(report)
+        self.assertNotIn('<script>', page)
+        self.assertNotIn('<img ', page)
+        self.assertIn('&lt;script&gt;', page)
 
     def test_concurrent_destination_is_preserved(self):
         with tempfile.TemporaryDirectory() as folder:

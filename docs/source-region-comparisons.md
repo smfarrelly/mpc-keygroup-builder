@@ -23,6 +23,14 @@ a transient or move directly into a sustained texture. The region endpoint can
 also shorten the source. `comparison.json` records the offsets, source WAV
 hashes, and source detune, panorama, volume, loop, and warp settings.
 
+Open `review.html` in the output folder for an offline page with paired audio
+players, the selected frame range, and expandable source settings. Pause one
+player before starting the other. Keep the folder together so its relative
+audio links work; no server or network connection is needed. Plain WAV links
+and `comparison.json` remain available if the browser cannot play the audio.
+The source hash is computed from the same bounded in-memory WAV snapshot used
+for decoding, rather than rereading a potentially changed file afterward.
+
 These are unpitched mono excerpts capped at three seconds. They do not render
 Ableton or MPC envelopes, filters, effects, loops, detune, warp, or voice
 behavior. The two files can have different lengths. An excerpt sounding useful
@@ -37,6 +45,9 @@ staged and published without overwriting an existing destination.
 
 The local MPC project captures checked on October 30 contain no nonzero sample
 starts; they do not establish the hardware's edited-region behavior. The
+additional scan of 171 original vendor XPMs on the card also found no nonzero
+starts and no parsing errors. This is evidence about those files, not a claim
+that MPC cannot save or play trimmed regions. The
 Databenders Bowed Bytes source starts at frame 5029 and also has release-loop
 metadata. Chaos and Far East have enabled loop settings. A region-only export
 would not establish preservation of those instruments.
