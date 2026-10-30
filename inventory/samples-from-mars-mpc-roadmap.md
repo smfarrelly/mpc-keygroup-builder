@@ -121,6 +121,10 @@ value such as:
 
 ## Deferred/reference work
 
+See the [deferred Keygroup review](keygroup-conversion-gaps.md) for preservation
+priorities. Detune, sample offsets, and panorama must not be discarded simply
+to increase the number of exported programs.
+
 - Full `.als` sessions remain project references unless their multi-track
   structure serves the hardware workflow.
 - Large Individual Hits racks remain searchable source catalogs for the kit
