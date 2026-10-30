@@ -8,8 +8,8 @@ import shutil
 import tomllib
 import wave
 import xml.etree.ElementTree as ET
-from dataclasses import dataclass
-from pathlib import Path
+from dataclasses import dataclass, field
+from pathlib import Path, PurePosixPath
 
 from .programs import classify_sample, load_palette
 
@@ -41,6 +41,21 @@ class PadSpec:
 class DrumManifest:
     name: str
     pads: tuple[PadSpec, ...]
+    sources: dict[str, str] = field(default_factory=dict)
+
+
+def _sample_name(value: str) -> None:
+    if not value.strip() or value in {'.', '..'} or any(c in value for c in '/\\:\0'):
+        raise ValueError(f"sample must be a basename, not a path: {value!r}")
+
+
+def resolve_sample(manifest: DrumManifest, source_root: Path, name: str) -> Path:
+    _sample_name(name)
+    root = source_root.resolve()
+    path = (root / manifest.sources.get(name, name)).resolve()
+    if not path.is_relative_to(root):
+        raise ValueError(f"sample source escapes source root: {name!r}")
+    return path
 
 
 def _load_manifest(path: Path, loading: set[Path]) -> DrumManifest:
@@ -62,6 +77,18 @@ def _load_manifest(path: Path, loading: set[Path]) -> DrumManifest:
     name = data.get("name", base.name if base else None)
     if not isinstance(name, str) or not name.strip():
         raise ValueError("manifest name must be a non-empty string")
+    sources = dict(base.sources) if base else {}
+    additions = data.get('sources', {})
+    if not isinstance(additions, dict):
+        raise ValueError('manifest sources must map sample basenames to relative paths')
+    for alias, relative in additions.items():
+        _sample_name(alias)
+        if not isinstance(relative, str) or not relative or any(c in relative for c in '\\:\0'):
+            raise ValueError(f'invalid relative source path for {alias!r}')
+        parts = PurePosixPath(relative)
+        if parts.is_absolute() or '..' in parts.parts or not parts.parts:
+            raise ValueError(f'invalid relative source path for {alias!r}')
+        sources[alias] = relative
     raw_pads = data.get("pads", [])
     if not isinstance(raw_pads, list):
         raise ValueError("manifest pads must be [[pads]] tables")
@@ -101,6 +128,7 @@ def _load_manifest(path: Path, loading: set[Path]) -> DrumManifest:
                 velocity_end = layer.get("velocity_end")
                 if not isinstance(layer_sample, str) or not layer_sample.strip():
                     raise ValueError(f"pads entry {index} layer {layer_index} has no sample")
+                _sample_name(layer_sample)
                 if Path(layer_sample).name != layer_sample:
                     raise ValueError(
                         f"sample must be a basename, not a path: {layer_sample!r}"
@@ -133,8 +161,7 @@ def _load_manifest(path: Path, loading: set[Path]) -> DrumManifest:
         else:
             if not isinstance(sample, str) or not sample.strip():
                 raise ValueError(f"pads entry {index} has no sample")
-            if Path(sample).name != sample:
-                raise ValueError(f"sample must be a basename, not a path: {sample!r}")
+            _sample_name(sample)
         if not isinstance(mute_group, int) or not 0 <= mute_group <= 32:
             raise ValueError(f"pads entry {index} has invalid mute_group {mute_group!r}")
         seen.add(pad)
@@ -143,7 +170,14 @@ def _load_manifest(path: Path, loading: set[Path]) -> DrumManifest:
     if not pads:
         raise ValueError("manifest must contain at least one [[pads]] table")
     loading.remove(path)
-    return DrumManifest(name=name.strip(), pads=tuple(sorted(pads, key=lambda item: item.pad)))
+    spellings = {}
+    for pad in pads:
+        for layer in pad.resolved_layers():
+            key = layer.sample.casefold()
+            if key in spellings and spellings[key] != layer.sample:
+                raise ValueError(f'case-colliding sample names: {spellings[key]!r} and {layer.sample!r}')
+            spellings[key] = layer.sample
+    return DrumManifest(name=name.strip(), pads=tuple(sorted(pads, key=lambda item: item.pad)), sources=sources)
 
 
 def load_manifest(path: Path) -> DrumManifest:
@@ -243,7 +277,7 @@ def build_drum_program(
         if not layer_specs:
             raise ValueError(f"pad {spec.pad} has no sample layers")
         for layer_spec in layer_specs:
-            source = source_root / layer_spec.sample
+            source = resolve_sample(manifest, source_root, layer_spec.sample)
             if not source.is_file():
                 raise FileNotFoundError(f"missing sample for pad {spec.pad}: {source}")
             resolved.append((layer_spec, source, _frames(source)))
@@ -298,12 +332,12 @@ def build_drum_program(
 
     pad_node.text = json.dumps({"ProgramPads": settings}, indent=4)
     output.mkdir(parents=True, exist_ok=True)
-    copied: set[Path] = set()
+    copied: set[str] = set()
     for source_layers in sources.values():
-        for _, source, _ in source_layers:
-            if source not in copied:
-                shutil.copy2(source, output / source.name)
-                copied.add(source)
+        for spec, source, _ in source_layers:
+            if spec.sample not in copied:
+                shutil.copy2(source, output / spec.sample)
+                copied.add(spec.sample)
     destination = output / f"{manifest.name}.xpm"
     ET.indent(tree, space="  ")
     tree.write(destination, encoding="UTF-8", xml_declaration=True)

@@ -7,6 +7,12 @@
   "properties": {
     "name": {"type": "string", "minLength": 1},
     "extends": {"type": "string", "minLength": 1},
+    "sources": {
+      "type": "object",
+      "description": "Map packaged sample basenames to relative files below --source-root; never flatten directories manually.",
+      "propertyNames": {"pattern": "^[^/\\\\:]+$"},
+      "additionalProperties": {"type": "string", "minLength": 1}
+    },
     "pads": {
       "type": "array",
       "items": {

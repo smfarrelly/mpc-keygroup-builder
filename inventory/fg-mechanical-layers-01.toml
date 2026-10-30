@@ -1,0 +1,85 @@
+name = "FG Mechanical Layers 01"
+
+# Source root: Found Sounds From Mars/WAV/Mechanical.
+# Clean 0-63 / Tube 64-127: a deliberate timbre switch, not sampled dynamics.
+[sources]
+"ElevatorImpact-Clean.wav" = "Clean/ElevatorImpact-Clean.wav"
+"ElevatorImpact-Tube.wav" = "Tube/ElevatorImpact-Tube.wav"
+"FridgeDoorSlamAttack-Clean.wav" = "Clean/FridgeDoorSlamAttack-Clean.wav"
+"FridgeDoorSlamAttack-Tube.wav" = "Tube/FridgeDoorSlamAttack-Tube.wav"
+"TapeClunk-Clean.wav" = "Clean/TapeClunk-Clean.wav"
+"TapeClunk-Tube.wav" = "Tube/TapeClunk-Tube.wav"
+"CDTrayAttack-Clean.wav" = "Clean/CDTrayAttack-Clean.wav"
+"CDTrayAttack-Tube.wav" = "Tube/CDTrayAttack-Tube.wav"
+"Ratchet1-Clean.wav" = "Clean/Ratchet1-Clean.wav"
+"Ratchet1-Tube.wav" = "Tube/Ratchet1-Tube.wav"
+"Shears-Clean.wav" = "Clean/Shears-Clean.wav"
+"Shears-Tube.wav" = "Tube/Shears-Tube.wav"
+"ElectricSpark-Clean.wav" = "Clean/ElectricSpark-Clean.wav"
+"ElectricSpark-Tube.wav" = "Tube/ElectricSpark-Tube.wav"
+"DrillBurst2-Clean.wav" = "Clean/DrillBurst2-Clean.wav"
+"DrillBurst2-Tube.wav" = "Tube/DrillBurst2-Tube.wav"
+
+[[pads]]
+pad = 1
+color_category = "percussion"
+layers = [
+  {sample = "ElevatorImpact-Clean.wav", velocity_start = 0, velocity_end = 63},
+  {sample = "ElevatorImpact-Tube.wav", velocity_start = 64, velocity_end = 127},
+]
+
+[[pads]]
+pad = 2
+color_category = "percussion"
+layers = [
+  {sample = "FridgeDoorSlamAttack-Clean.wav", velocity_start = 0, velocity_end = 63},
+  {sample = "FridgeDoorSlamAttack-Tube.wav", velocity_start = 64, velocity_end = 127},
+]
+
+[[pads]]
+pad = 3
+color_category = "percussion"
+layers = [
+  {sample = "TapeClunk-Clean.wav", velocity_start = 0, velocity_end = 63},
+  {sample = "TapeClunk-Tube.wav", velocity_start = 64, velocity_end = 127},
+]
+
+[[pads]]
+pad = 4
+color_category = "percussion"
+layers = [
+  {sample = "CDTrayAttack-Clean.wav", velocity_start = 0, velocity_end = 63},
+  {sample = "CDTrayAttack-Tube.wav", velocity_start = 64, velocity_end = 127},
+]
+
+[[pads]]
+pad = 5
+color_category = "percussion"
+layers = [
+  {sample = "Ratchet1-Clean.wav", velocity_start = 0, velocity_end = 63},
+  {sample = "Ratchet1-Tube.wav", velocity_start = 64, velocity_end = 127},
+]
+
+[[pads]]
+pad = 6
+color_category = "percussion"
+layers = [
+  {sample = "Shears-Clean.wav", velocity_start = 0, velocity_end = 63},
+  {sample = "Shears-Tube.wav", velocity_start = 64, velocity_end = 127},
+]
+
+[[pads]]
+pad = 7
+color_category = "fx"
+layers = [
+  {sample = "ElectricSpark-Clean.wav", velocity_start = 0, velocity_end = 63},
+  {sample = "ElectricSpark-Tube.wav", velocity_start = 64, velocity_end = 127},
+]
+
+[[pads]]
+pad = 8
+color_category = "fx"
+layers = [
+  {sample = "DrillBurst2-Clean.wav", velocity_start = 0, velocity_end = 63},
+  {sample = "DrillBurst2-Tube.wav", velocity_start = 64, velocity_end = 127},
+]
