@@ -6,9 +6,17 @@ import unittest
 from pathlib import Path
 
 from mpc_keygroup_builder import schema
+from mpc_keygroup_builder.programs import load_palette
 
 
 class SchemaTests(unittest.TestCase):
+    def test_published_drum_color_categories_match_builder_palette(self):
+        document = schema.schema_document('drum-manifest')
+        category = document['properties']['pads']['items']['properties']['color_category']
+        self.assertEqual(category['type'], 'string')
+        self.assertEqual(set(category['enum']), set(load_palette()))
+        self.assertNotIn('color_category', document['properties']['pads']['items']['required'])
+
     def setUp(self):
         self.root = Path(__file__).resolve().parents[1]
 

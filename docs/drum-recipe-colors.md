@@ -31,3 +31,8 @@ voice `unknown`; the generated XPM and manifest model retain the chosen color.
 
 The [Found Transitions recipe](../inventory/fg-found-transitions-01.toml) is a
 complete example. Its eight purple FX pads now rebuild in one command.
+
+The published `drum-manifest` JSON schema includes the same optional field and
+category choices for editor assistance. Inspect it with
+`mpc-schema show drum-manifest`, or validate a recipe with
+`mpc-schema validate drum-manifest inventory/fg-found-transitions-01.toml`.
