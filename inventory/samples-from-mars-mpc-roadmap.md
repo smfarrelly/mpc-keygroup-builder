@@ -27,10 +27,11 @@ B, C, and G, save/reload restores expected state, and its source-native layouts
 need no stricter normalized variant. `FG Vinyl Layered Kit 01` has a strong
 initial hardware verdict—the velocity-layered-pad concept is excellent—but
 retains a choke warning and still needs complete pad, boundary, groove, and
-reload acceptance. It is now a provisional main-drum direction: build `FG
-Vinyl Layered Main 02` with more coherent soft-to-hard voices, matched boundary
-levels, and an unmistakable hat-choke test, then compare it directly with the
-current Vinyl SP main-drums favorite.
+reload acceptance. `FG Vinyl Layered Main 02` was subsequently built and liked
+as an expressive alternate, explicitly not the main kit. Vinyl SP remains the
+main-drums favorite. `FG Vinyl Layered Banks 03` extends the idea across Banks
+A-D; E-H are intentionally empty. Finish focused listening of these existing
+alternates before creating more near-identical layered variants.
 
 1. Hardware-test `FG Vinyl Kit Banks 01` and `FG Vinyl Layered Kit 01`.
 2. Compare their feel and usefulness with `FG Vinyl Shots 04 Eight Bank`.
@@ -95,8 +96,10 @@ only mappings or behaviors that improve on the existing generated Keygroups.
    606, 626, 707, 808, 909, CR-78, DMX, Drumtrax, Drumulator, LM-1, and MPC60.
 2. Reuse the bank composer to make a few contrasting A–H collections instead
    of exporting every Ableton kit as a separate browser entry.
-3. Build S950 Snacks and Found Sounds performance kits for texture, glitch,
-   Foley, and transition duties.
+3. Review the existing `FG Breaks Texture Banks 01` before building additional
+   S950 Snacks and Found Sounds kits: Bank F contains Body Kit, G contains
+   S950 Club 8, and H contains S950 Hard Glitch. Add a new texture program only
+   when it offers a distinct playing role beyond this deployed collection.
 4. Convert Acid loops only after the Clip exporter passes Vinyl Breaks hardware
    acceptance.
 5. Evaluate Tape Fragments, Trumpet Fragments, and Databenders as expressive
