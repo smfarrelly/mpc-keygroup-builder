@@ -4,18 +4,17 @@ from __future__ import annotations
 
 import argparse
 from contextlib import ExitStack
-import gzip
 import json
 import os
 import struct
 import tempfile
 import wave
-import xml.etree.ElementTree as ET
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, BinaryIO
 
 from .wave_io import complete_riff_view
+from .program_io import read_payload, serialized_document, xml_root
 from .testing import _audio_index, _boolean, _integer, _resolve
 
 
@@ -158,15 +157,26 @@ def output_paths(program: Path, output: Path) -> tuple[Path, Path]:
     return requested.resolve(), manifest_requested.resolve()
 
 
-def _json_program(path: Path) -> dict[str, Any]:
-    with gzip.open(path, "rt", encoding="utf-8") as stream:
-        text = stream.read()
-    return json.loads(text[text.find("{") :])["data"]
+def _json_program(path: Path, *, raw: bytes | None = None) -> dict[str, Any]:
+    if raw is None:
+        raw, compressed = read_payload(path)
+        if not compressed:
+            raise ValueError("Keygroup audition requires a compressed MPC program")
+    _, document = serialized_document(raw)
+    data = document.get("data", {})
+    # Untyped legacy payloads must explicitly declare a keygroup section.
+    kind = data.get("type")
+    if kind != 1 and not (kind is None and isinstance(data.get("keygroup"), dict)):
+        raise ValueError("audition supports compressed Keygroups only; compressed Drum programs are not supported")
+    instruments = data.get("drum", {}).get("instruments", [])
+    if any(not isinstance(instrument, dict) for instrument in instruments):
+        raise ValueError("Keygroup instruments must be objects")
+    return data
 
 
-def keygroup_events(path: Path) -> tuple[list[AuditionEvent], list[list[float]]]:
-    data = _json_program(path)
-    instruments = data["drum"]["instruments"][1:]
+def keygroup_events(path: Path, *, raw: bytes | None = None) -> tuple[list[AuditionEvent], list[list[float]]]:
+    data = _json_program(path, raw=raw)
+    instruments = data.get("drum", {}).get("instruments", [])[1:]
     indexes = _audio_index(path.with_name(f"{path.stem}_[ProgramData]"), recursive=False)
     events = []
     audio = []
@@ -217,8 +227,15 @@ def keygroup_events(path: Path) -> tuple[list[AuditionEvent], list[list[float]]]
     return events, audio
 
 
-def drum_events(path: Path) -> tuple[list[AuditionEvent], list[list[float]]]:
-    root = ET.parse(path).getroot()
+def drum_events(path: Path, *, raw: bytes | None = None) -> tuple[list[AuditionEvent], list[list[float]]]:
+    if raw is None:
+        raw, compressed = read_payload(path)
+        if compressed:
+            raise ValueError("Drum audition requires an XML Drum program")
+    root = xml_root(raw)
+    program = root.find("Program")
+    if program is not None and program.get("type") not in {None, "Drum"}:
+        raise ValueError("XML audition supports Drum programs only")
     indexes = _audio_index(path.parent, recursive=True)
     events = []
     audio = []
@@ -257,18 +274,19 @@ def drum_events(path: Path) -> tuple[list[AuditionEvent], list[list[float]]]:
 
 def render(program: Path, output: Path) -> dict[str, Any]:
     output, manifest_path = output_paths(program, output)
-    output.parent.mkdir(parents=True, exist_ok=True)
-    if program.read_bytes()[:2] == b"\x1f\x8b":
-        events, clips = keygroup_events(program)
+    raw, compressed = read_payload(program)
+    if compressed:
+        events, clips = keygroup_events(program, raw=raw)
         program_type = "Keygroup"
     else:
-        events, clips = drum_events(program)
+        events, clips = drum_events(program, raw=raw)
         program_type = "Drum"
     silence = [0.0] * int(OUTPUT_RATE * 0.12)
     rendered = []
     for clip in clips:
         rendered.extend(clip)
         rendered.extend(silence)
+    output.parent.mkdir(parents=True, exist_ok=True)
     write_wav(output, rendered)
     manifest = {
         "program": str(program),
