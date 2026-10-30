@@ -6,11 +6,45 @@ import wave
 from unittest.mock import patch
 from pathlib import Path
 
-from mpc_keygroup_builder import audition
+from mpc_keygroup_builder import audition, program_io
 from tests.test_testing_framework import write_keygroup
 
 
 class AuditionTests(unittest.TestCase):
+    def test_rejected_containers_do_not_create_output_directory(self):
+        header = b'ACVS\n3.9.1.2\nSerialisableProgramData\njson\nLinux\n'
+        cases = [
+            (gzip.compress(b'{}'), 'header'),
+            (gzip.compress(header + b'{"data":{"type":0}}'), 'compressed Drum'),
+            (gzip.compress(header + b'{"data":{},"data":{}}'), 'duplicate'),
+            (gzip.compress(header + b'{"data":{"type":1,"drum":{"instruments":[null]}}}'), 'objects'),
+            (b'<!DOCTYPE x [<!ENTITY y "text">]><MPCVObject/>', 'document types'),
+            (b'<MPCVObject><Program type="Keygroup"/></MPCVObject>', 'Drum programs only'),
+        ]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            program = root/'Bad.xpm'
+            for payload, message in cases:
+                with self.subTest(message=message):
+                    program.write_bytes(payload)
+                    with self.assertRaisesRegex(ValueError, message):
+                        audition.render(program, root/'preview'/'test.wav')
+                    self.assertFalse((root/'preview').exists())
+
+    def test_source_and_expansion_limits_apply_before_audio_lookup(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            program = root/'Large.xpm'
+            for payload, setting, message in [
+                (b'x'*101, 'MAX_SOURCE_BYTES', 'source bytes'),
+                (gzip.compress(b'x'*101), 'MAX_EXPANDED_BYTES', 'expanded bytes'),
+            ]:
+                with self.subTest(setting=setting), patch.object(program_io, setting, 100):
+                    program.write_bytes(payload)
+                    with self.assertRaisesRegex(ValueError, message):
+                        audition.render(program, root/'preview'/'test.wav')
+                    self.assertFalse((root/'preview').exists())
+
     def test_trim_bounds_are_inclusive_and_reject_invalid_offsets(self):
         samples = [0.1, 0.2, 0.3, 0.4]
         self.assertEqual(audition.trim_sample(samples, "1", "2"), ([0.2, 0.3], 1, 2))
@@ -30,6 +64,7 @@ class AuditionTests(unittest.TestCase):
             layer = data['drum']['instruments'][1]['layersv'][0]
             layer.update(sampleStart=0, sampleEnd=0, sliceInfo={'Start': 7, 'End': 12})
             with gzip.open(program, 'wt') as stream:
+                stream.write('ACVS\n3.9.1.2\nSerialisableProgramData\njson\nLinux\n')
                 json.dump({'data': data}, stream)
             with patch.object(audition, 'KEYGROUP_NOTES', (60,)), \
                  patch.object(audition, 'read_pcm_mono', return_value=(list(range(32)), 44100)), \
