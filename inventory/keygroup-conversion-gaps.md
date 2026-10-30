@@ -27,6 +27,12 @@ preflight is not proof that the downstream builder or the MPC will reproduce it.
 
 ## Next implementation priorities
 
+Prerequisite completed: the local audition renderer now honors existing XPM
+source-frame start/end bounds instead of previewing the whole WAV. It records
+the selected bounds and refuses invalid ranges. This makes offset comparisons
+testable in software, but does not itself preserve Ableton offsets during
+conversion or prove hardware behavior. Current conversion guards stay active.
+
 1. Preserve per-zone detune with documented units and a reference XPM. Prove
    positive and negative pitch offsets in software and compare on hardware
    before promoting converted instruments.

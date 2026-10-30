@@ -3,6 +3,16 @@
 `mpc-tools` is the stable front door for discovery. It keeps the specialist
 commands independently scriptable without asking a new user to memorize them.
 
+`mpc-program-audition FILE.xpm --output preview.wav` renders a dry software
+preview. It applies inclusive source-frame start/end bounds before pitch
+conversion, preferring `sliceInfo.Start/End` for serialized Keygroups and
+`SliceStart/SliceEnd` for XML Drums, with sample-level bounds as fallbacks.
+Missing bounds use the whole sample; malformed, reversed, or out-of-range
+bounds fail rather than silently playing the wrong region. Its JSON event
+records include `sample_start` and `sample_end`. This is not an MPC emulation:
+loops, envelopes, filters, effects, warp, and voice behavior are omitted, and
+each event is capped at 1.25 seconds with a synthetic fade.
+
 For reproducible Drum Program colors, see
 [declaring pad colors in recipes](drum-recipe-colors.md). `mpc-drum-build`
 accepts per-pad `color_category` values in the manifest; no extra CLI flag or
