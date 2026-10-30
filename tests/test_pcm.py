@@ -76,6 +76,13 @@ class PCMTests(unittest.TestCase):
                 self.assertIs(complete_riff_view(source), source)
                 self.assertEqual(source.tell(), 0)
 
+    def test_complete_odd_sized_final_pcm_chunk_needs_no_extra_padding(self):
+        raw = wav_bytes(width=3, channels=1)
+        metadata = b'atem' + struct.pack('<I', 4) + b'abcd'
+        malformed = raw[:36] + metadata + raw[36:]
+        self.assertEqual(audition.read_pcm_channels(io.BytesIO(malformed)),
+                         audition.read_pcm_channels(io.BytesIO(raw)))
+
     def test_incomplete_frames_and_missing_frames_are_rejected(self):
         raw = wav_bytes()
         for removed in (1, 4):

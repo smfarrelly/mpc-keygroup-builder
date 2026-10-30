@@ -60,7 +60,9 @@ def complete_riff_view(source):
             if tag in {b'fmt ', b'data'} and tag in seen:
                 return source
             seen.add(tag)
-            offset += 8 + size + size % 2
+            chunk_end = offset + 8 + size
+            # PCM writers commonly omit the pad byte on a final odd-sized chunk.
+            offset = chunk_end if chunk_end == end else chunk_end + size % 2
         return source
     finally:
         source.seek(base)
