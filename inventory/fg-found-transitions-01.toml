@@ -1,0 +1,40 @@
+name = "FG Found Transitions 01"
+
+# Source: Found Sounds From Mars/WAV/FX Textures/Clean.
+# A01-A04 can overlap. A05-A08 share one exclusive sweep group.
+# A09-A16 and Banks B-H are intentionally empty.
+[[pads]]
+pad = 1
+sample = "BigImpact-Clean.wav"
+
+[[pads]]
+pad = 2
+sample = "PipeImpact-Clean.wav"
+
+[[pads]]
+pad = 3
+sample = "DepthCharge-Clean.wav"
+
+[[pads]]
+pad = 4
+sample = "TapeRewind-Clean.wav"
+
+[[pads]]
+pad = 5
+sample = "WooshReversePipe-Clean.wav"
+mute_group = 1
+
+[[pads]]
+pad = 6
+sample = "WooshReverseBottle-Clean.wav"
+mute_group = 1
+
+[[pads]]
+pad = 7
+sample = "WooshReverseGlass-Clean.wav"
+mute_group = 1
+
+[[pads]]
+pad = 8
+sample = "FireWoosh-Clean.wav"
+mute_group = 1

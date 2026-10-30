@@ -1,5 +1,13 @@
 # MPC Key 37 remaining hardware master checklist
 
+**Current instrument candidate:** [FG Found Transitions 01](fg-found-transitions-01.md)
+is deployed at `00 FG Hardware Tests/Found Transitions 01/FG Found Transitions 01.xpm`.
+Software checks pass; hardware listening is deferred. A01-A08 are populated;
+all other pads are intentionally empty. Check A05/A08 sweep choking, A01/A08
+independent tails, useful timing over a loop, and save/reload when convenient.
+The preceding Layered Banks, Breaks Texture, and Clean/Warm/Pad Wurli review
+passed; use the [role guide](../docs/instrument-role-guide.md) to find them.
+
 **October 30 handoff:** software work through PR #85 is merged. The seven
 Scratchpad entry-point instruments pass on-card sample-reference checks, not
 new listening acceptance. An optional twelve-candidate synthetic/MIDI wave is
