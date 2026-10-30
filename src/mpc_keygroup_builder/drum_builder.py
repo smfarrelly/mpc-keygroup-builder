@@ -58,6 +58,17 @@ def resolve_sample(manifest: DrumManifest, source_root: Path, name: str) -> Path
     return path
 
 
+def validate_program_name(value: str) -> str:
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError('program name must be a non-empty string')
+    name = value.strip()
+    reserved = {'CON', 'PRN', 'AUX', 'NUL'} | {f'{prefix}{number}' for prefix in ('COM', 'LPT') for number in range(1, 10)}
+    if (name in {'.', '..'} or any(ord(c) < 32 or c in '<>:"/\\|?*' for c in name)
+            or name.split('.')[0].upper() in reserved):
+        raise ValueError(f'program name must be a portable filename without path separators or reserved characters: {value!r}')
+    return name
+
+
 def _load_manifest(path: Path, loading: set[Path]) -> DrumManifest:
     path = path.resolve()
     if path in loading:
@@ -77,6 +88,7 @@ def _load_manifest(path: Path, loading: set[Path]) -> DrumManifest:
     name = data.get("name", base.name if base else None)
     if not isinstance(name, str) or not name.strip():
         raise ValueError("manifest name must be a non-empty string")
+    name = validate_program_name(name)
     sources = dict(base.sources) if base else {}
     additions = data.get('sources', {})
     if not isinstance(additions, dict):
@@ -253,6 +265,11 @@ def build_drum_program(
     source_root: Path,
     output: Path,
 ) -> Path:
+    program_name = validate_program_name(manifest.name)
+    destination_name = f'{program_name}.xpm'
+    if any(layer.sample.casefold() == destination_name.casefold()
+           for pad in manifest.pads for layer in pad.resolved_layers()):
+        raise ValueError(f'sample name collides with output program filename: {destination_name}')
     if output.exists():
         if not output.is_dir():
             raise FileExistsError(f"output path is not a directory: {output}")
@@ -286,7 +303,7 @@ def build_drum_program(
     name_node = program.find("ProgramName")
     if name_node is None:
         raise ValueError("template has no ProgramName")
-    name_node.text = manifest.name
+    name_node.text = program_name
     palette = load_palette()
     pad_node = program.find("ProgramPads")
     if pad_node is None or not pad_node.text:
@@ -338,7 +355,7 @@ def build_drum_program(
             if spec.sample not in copied:
                 shutil.copy2(source, output / spec.sample)
                 copied.add(spec.sample)
-    destination = output / f"{manifest.name}.xpm"
+    destination = output / destination_name
     ET.indent(tree, space="  ")
     tree.write(destination, encoding="UTF-8", xml_declaration=True)
     return destination

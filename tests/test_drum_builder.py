@@ -10,6 +10,30 @@ from mpc_keygroup_builder import model
 
 
 class DrumBuilderTests(unittest.TestCase):
+    def test_program_name_cannot_escape_output_or_use_reserved_filename(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = root/'recipe.toml'
+            for name in ('../outside', '/tmp/outside', 'C:\\outside', 'Kit/Child', 'bad\nname', 'NUL', 'COM1.test'):
+                with self.subTest(name=name):
+                    path.write_text('name='+json.dumps(name)+'\n[[pads]]\npad=1\nsample="Hit.wav"\n')
+                    with self.assertRaisesRegex(ValueError, 'portable filename'):
+                        drum_builder.load_manifest(path)
+                    manifest = drum_builder.DrumManifest(name, (drum_builder.PadSpec(1,'Hit.wav'),))
+                    with self.assertRaisesRegex(ValueError, 'portable filename'):
+                        drum_builder.build_drum_program(manifest, root/'not-read.xpm', root, root/'out')
+                    self.assertFalse((root/'out').exists())
+            for name in ("Fisherman'sFriend", 'Mécanique 01', 'Drums (Warm)'):
+                self.assertEqual(drum_builder.validate_program_name(name), name)
+
+    def test_sample_cannot_be_overwritten_by_generated_program(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            manifest = drum_builder.DrumManifest('Kit', (drum_builder.PadSpec(1, 'KIT.XPM'),))
+            with self.assertRaisesRegex(ValueError, 'collides with output program'):
+                drum_builder.build_drum_program(manifest, root/'not-read.xpm', root, root/'out')
+            self.assertFalse((root/'out').exists())
+
     def test_source_map_packages_distinct_same_basename_files(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
