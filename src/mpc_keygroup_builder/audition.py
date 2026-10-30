@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+from contextlib import ExitStack
 import json
 import os
 import struct
@@ -12,6 +13,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, BinaryIO
 
+from .wave_io import complete_riff_view
 from .program_io import read_payload, serialized_document, xml_root
 from .testing import _audio_index, _boolean, _integer, _resolve
 
@@ -51,7 +53,9 @@ def trim_sample(samples: list[float], start: object, end: object) -> tuple[list[
 
 def read_pcm_channels(path: Path | BinaryIO) -> tuple[list[list[float]], int]:
     try:
-        with wave.open(str(path) if isinstance(path, Path) else path, "rb") as stream:
+        with ExitStack() as stack:
+            source = stack.enter_context(path.open("rb")) if isinstance(path, Path) else path
+            stream = stack.enter_context(wave.open(complete_riff_view(source), "rb"))
             channels = stream.getnchannels()
             width = stream.getsampwidth()
             rate = stream.getframerate()
