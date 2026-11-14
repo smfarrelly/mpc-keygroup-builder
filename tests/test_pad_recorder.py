@@ -1,6 +1,8 @@
 import base64
 import io
 import json
+import os
+import subprocess
 from pathlib import Path
 import tempfile
 import unittest
@@ -84,3 +86,50 @@ class PadRecorderTests(unittest.TestCase):
         (self.root / "Kick.wav").write_bytes(b"broken")
         with self.assertRaisesRegex(ValueError, "Kick.wav"):
             recorder.bank_data(self.program, "A")
+
+    @unittest.skipUnless(os.environ.get("MPC_TEST_CHROME"), "needs a headless Chrome executable")
+    def test_browser_records_velocity_and_filters_a_simulated_midi_input(self):
+        page = recorder.build(self.program, self.root / "web")
+        script = r"""<script>
+        (async () => {
+          const get = id => document.getElementById(id);
+          const wait = ms => new Promise(r => setTimeout(r, ms));
+          const until = async fn => { for(let i=0;i<200;i++){ if(fn())return; await wait(10); } throw Error("timeout"); };
+          const assert = (value, message) => { if (!value) throw Error(message); };
+          const port = {id:"pads", name:"Fixture", state:"connected", close:async()=>{}};
+          const access = {inputs:new Map([["pads",port]])};
+          let calls = 0, blob;
+          Object.defineProperty(navigator,"requestMIDIAccess",{value:async options => {
+            assert(options.sysex === false,"unexpected SysEx request"); calls++; return access;
+          }});
+          const original = URL.createObjectURL.bind(URL);
+          URL.createObjectURL = b => { blob = b; return original(b); };
+          HTMLAnchorElement.prototype.click = () => {};
+          assert(calls===0, "initial MIDI access");
+          get("connect-midi").click();
+          await until(()=>get("midi-port").options.length===2);
+          assert(calls===1 && !port.onmidimessage,"input selection");
+          get("midi-port").value="pads"; get("midi-port").onchange();
+          get("midi-channel").value="10"; get("record").click();
+          await until(()=>get("record").getAttribute("aria-pressed")==="true");
+          const send = (s,n,v) => port.onmidimessage({data:[s,n,v],timeStamp:performance.now()});
+          send(0x90,44,80); send(0xb9,44,80); send(0x99,44,0); send(0x89,44,80); send(0x99,40,80);
+          assert(get("midi-status").textContent.includes("outside bank"),"wrong-bank diagnostic");
+          send(0x99,44,95);
+          await until(()=>get("count").textContent==="1 hit");
+          assert(get("midi-status").textContent.includes("velocity 95"),"velocity display");
+          get("stop").click(); get("save").click();
+          const take = JSON.parse(await blob.text());
+          assert(take.events.length===1 && take.events[0].pad===1 && take.events[0].velocity===95,"recorded take");
+          port.state="disconnected"; access.onstatechange();
+          assert(get("midi-port").value==="" && port.onmidimessage===null,"disconnection");
+          document.body.dataset.result="passed";
+        })().catch(e => { document.body.dataset.result=e.message; });
+        </script>"""
+        probe = self.root / "probe.html"
+        probe.write_text(page.read_text().replace("</body>", script + "</body>"))
+        result = subprocess.run([os.environ["MPC_TEST_CHROME"], "--headless", "--no-sandbox",
+                                 "--disable-gpu", "--disable-dev-shm-usage", "--autoplay-policy=no-user-gesture-required",
+                                 "--user-data-dir=" + str(self.root / "profile"), "--virtual-time-budget=5000",
+                                 "--dump-dom", probe.as_uri()], capture_output=True, text=True, timeout=30, check=True)
+        self.assertIn('<body data-result="passed">', result.stdout, result.stdout[:7000])

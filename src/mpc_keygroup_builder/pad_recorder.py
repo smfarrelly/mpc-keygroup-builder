@@ -59,9 +59,10 @@ def _wav_region(path, layer):
     return memory.getvalue()
 
 
-def bank_data(program, bank):
+def bank_data(program, bank, *, include_audio=True):
     if bank not in tuple("ABCDEFGH"):
         raise ValueError("bank must be A through H")
+    program_hash = sha256(program)
     raw, compressed = read_payload(program)
     if compressed:
         raise ValueError("choose an XML Drum Program")
@@ -87,7 +88,7 @@ def bank_data(program, bank):
                 raise ValueError(f"pad {zone.pad}: {name} resolves to {len(paths)} files")
             audio = _sample(paths[0], layer)
             key = hashlib.sha256(audio).hexdigest()
-            if key not in assets:
+            if include_audio and key not in assets:
                 assets[key] = base64.b64encode(audio).decode("ascii")
             lo = int(layer.findtext("VelStart", "0"))
             hi = int(layer.findtext("VelEnd", "127"))
@@ -105,7 +106,9 @@ def bank_data(program, bank):
                      "oneShot": zone.playback_mode == "one-shot", "mono": zone.monophonic, "group": zone.mute_group, "layers": layers})
     if not pads:
         raise ValueError(f"no playable pads in bank {bank}")
-    layout = {"program": model.name, "program_sha256": sha256(program), "bank": bank, "pads": pads}
+    if sha256(program) != program_hash:
+        raise ValueError("drum program changed while reading this bank")
+    layout = {"program": model.name, "program_sha256": program_hash, "bank": bank, "pads": pads}
     layout["fingerprint"] = hashlib.sha256(json.dumps(layout, sort_keys=True).encode()).hexdigest()
     return layout, assets
 
@@ -185,10 +188,10 @@ def build(program, output, *, bank="A", tempo=96, bars=2, recipe=None, seed=37):
     layout, samples = bank_data(program, bank)
     take = initial_take(layout, tempo, bars, recipe, seed, program)
     data = json.dumps({"layout": layout, "samples": samples, "initial": take}, separators=(",", ":"))
-    template = Template((ASSETS / "pad_recorder.html").read_text())
+    template = Template((ASSETS / "pad_recorder.html").read_text(encoding="utf-8"))
     page = template.substitute(program=escape(layout["program"]), bank=bank,
                                data=data.replace("<", "\\u003c"),
-                               script=(ASSETS / "pad_recorder.js").read_text())
+                               script=(ASSETS / "pad_recorder.js").read_text(encoding="utf-8"))
     with tempfile.TemporaryDirectory(dir=output.parent, prefix=".pad-recorder-") as tmp:
         folder = Path(tmp)
         (folder / "index.html").write_text(page, encoding="utf-8")
@@ -203,13 +206,16 @@ def render(program, take_path, output):
     take = json.loads(take_path.read_text(encoding="utf-8"))
     if not isinstance(take, dict):
         raise ValueError("expected a take JSON object")
-    layout, _ = bank_data(program, take.get("bank"))
+    layout, _ = bank_data(program, take.get("bank"), include_audio=False)
     idea = validate_take(take, layout)
     with tempfile.TemporaryDirectory(dir=output.parent, prefix=".pad-take-") as tmp:
         folder = Path(tmp)
         pattern, _ = ideas.write_outputs(folder / "pattern", [program, take_path],
                                          json.dumps(idea.to_dict(), indent=2) + "\n", ideas.render_midi(idea), force=False)
         pattern_audio.render_pattern(program, pattern, folder / "listen.wav")
+        latest, _ = bank_data(program, take["bank"], include_audio=False)
+        if latest["fingerprint"] != layout["fingerprint"]:
+            raise ValueError("drum program or samples changed during rendering")
         (folder / "performance.take.json").write_text(json.dumps(take, indent=2) + "\n")
         receipt(folder)
         publish_directory(folder, output)

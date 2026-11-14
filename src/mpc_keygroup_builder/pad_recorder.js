@@ -131,7 +131,7 @@
     $("position").value = "1.1";
     refresh();
   }
-  async function strike(pad, velocity) {
+  async function strike(pad, velocity, receivedTime) {
     await audio();
     const now = ctx.currentTime;
     voice(pad, velocity, now, 60);
@@ -139,7 +139,8 @@
     button.classList.add("active");
     setTimeout(() => button.classList.remove("active"), 110);
     if (!recording) return;
-    const raw = Math.max(0, (now - start) / seconds());
+    const hitTime = receivedTime ?? now;
+    const raw = Math.max(0, (hitTime - start) / seconds());
     const grid = Number($("snap").value) || 1;
     const absolute = Math.round(raw / grid) * grid;
     const tick = absolute % length();
@@ -209,7 +210,7 @@
     role.textContent = pad?.role.replaceAll("_"," ") || "Empty";
     button.append(label, role);
     if (pad) {
-      button.title = pad.layers.map(l => l.low + "–" + l.high + " " + l.sample).join("\n");
+      button.title = "MIDI note " + pad.note + "\n" + pad.layers.map(l => l.low + "–" + l.high + " " + l.sample).join("\n");
       if (Number.isInteger(pad.color)) button.style.setProperty("--pad","#" + (pad.color & 0xffffff).toString(16).padStart(6,"0"));
       button.onpointerdown = safely(e => { if (e.button === 0) return strike(pad,e.shiftKey ? 40 : +$("velocity").value); });
       button.onclick = safely(e => { if (e.detail === 0) return strike(pad,+$("velocity").value); });
@@ -223,6 +224,67 @@
     const index = key.length === 1 ? shortcuts.indexOf(key) : -1;
     if (index >= 0 && pads.has(first + index)) return strike(pads.get(first + index), e.shiftKey ? 40 : +$("velocity").value);
   }));
+  let access, input;
+  const inputNotes = new Map();
+  for (const pad of pads.values()) {
+    const sameNote = inputNotes.get(pad.note) || [];
+    sameNote.push(pad);
+    inputNotes.set(pad.note, sameNote);
+  }
+  function midiStatus(text) { $("midi-status").textContent = text; }
+  function midiHit(event) {
+    const [status, note, velocity] = event.data;
+    if ((status & 0xf0) !== 0x90 || !velocity) return;
+    const channel = (status & 15) + 1;
+    const filter = Number($("midi-channel").value);
+    if (filter && channel !== filter) return;
+    const matches = inputNotes.get(note) || [];
+    if (matches.length !== 1) {
+      midiStatus(matches.length ? "Note " + note + " matches several pads in this bank." :
+                 "Note " + note + " is outside bank " + layout.bank + ". Hover over a pad for its MIDI note.");
+      return;
+    }
+    const pad = matches[0];
+    const arrival = ctx.currentTime - Math.max(0, performance.now() - event.timeStamp) / 1000;
+    midiStatus("Channel " + channel + " · note " + note + " · velocity " + velocity);
+    strike(pad, velocity, arrival).catch(error => midiStatus(error.message));
+  }
+  function releaseInput() {
+    if (input) {
+      input.onmidimessage = null;
+      input.close().catch(error => midiStatus(error.message));
+      input = undefined;
+    }
+  }
+  function listInputs() {
+    const ports = Array.from(access.inputs.values()).filter(port => port.state === "connected");
+    if (input && !ports.includes(input)) {
+      releaseInput();
+      midiStatus("Input disconnected. Choose a connected input to resume.");
+    }
+    $("midi-port").replaceChildren(new Option("Off",""));
+    for (const p of ports) $("midi-port").add(new Option(p.name || p.manufacturer || p.id,p.id));
+    $("midi-port").value = input?.id || "";
+    if (!ports.length) midiStatus("No connected MIDI inputs. Connect a controller or use the computer keyboard.");
+  }
+  for (let n = 1; n <= 16; n++) $("midi-channel").add(new Option(String(n),String(n)));
+  $("connect-midi").onclick = async () => {
+    try {
+      if (!navigator.requestMIDIAccess) throw Error("MIDI input is unavailable in this browser. Use the on-screen pads or keyboard.");
+      if (!access) access = await navigator.requestMIDIAccess({sysex:false});
+      await audio();
+      access.onstatechange = listInputs;
+      midiStatus("Choose an input to play this bank.");
+      listInputs();
+    } catch (error) { midiStatus(error.message); }
+  };
+  $("midi-port").onchange = () => {
+    const id = $("midi-port").value;
+    releaseInput();
+    input = access?.inputs.get(id);
+    if (input) input.onmidimessage = midiHit;
+    midiStatus(input ? "Listening to " + (input.name || input.id) : "MIDI input off.");
+  };
   $("enable").onclick = safely(async () => { await audio(); report("Ready to play."); });
   $("play").onclick = safely(() => transport(false));
   $("record").onclick = safely(() => transport(true));
