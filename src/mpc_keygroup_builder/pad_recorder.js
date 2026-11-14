@@ -201,13 +201,20 @@
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
+  function roleName(role) {
+    const [family, detail] = role.split(".");
+    if (family === "hihat") return detail + " hat";
+    if (family === "tom" && detail !== "other") return detail + " tom";
+    if (!detail || detail === "primary" || detail === "other") return family;
+    return detail.replaceAll("_", " ");
+  }
   for (const row of [3,2,1,0]) for (let col = 0; col < 4; col++) {
     const slot = row * 4 + col, pad = pads.get(first + slot);
     const button = document.createElement("button");
     button.className = "pad";
     const label = document.createElement("span"), role = document.createElement("strong");
     label.textContent = layout.bank + String(slot + 1).padStart(2,"0") + " · " + shortcuts[slot];
-    role.textContent = pad?.role.replaceAll("_"," ") || "Empty";
+    role.textContent = pad ? roleName(pad.role) : "Empty";
     button.append(label, role);
     if (pad) {
       button.title = "MIDI note " + pad.note + "\n" + pad.layers.map(l => l.low + "–" + l.high + " " + l.sample).join("\n");
