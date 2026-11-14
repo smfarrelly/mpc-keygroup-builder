@@ -1,10 +1,12 @@
 import base64
+from http.server import BaseHTTPRequestHandler, HTTPServer
 import io
 import json
 import os
 import subprocess
 from pathlib import Path
 import tempfile
+import time
 import unittest
 import wave
 
@@ -94,7 +96,7 @@ class PadRecorderTests(unittest.TestCase):
         (async () => {
           const get = id => document.getElementById(id);
           const wait = ms => new Promise(r => setTimeout(r, ms));
-          const until = async fn => { for(let i=0;i<200;i++){ if(fn())return; await wait(10); } throw Error("timeout"); };
+          const until = async fn => { for(let i=0;i<500;i++){ if(fn())return; await wait(10); } throw Error("timeout"); };
           const assert = (value, message) => { if (!value) throw Error(message); };
           const port = {id:"pads", name:"Fixture", state:"connected", close:async()=>{}};
           const access = {inputs:new Map([["pads",port]])};
@@ -124,12 +126,43 @@ class PadRecorderTests(unittest.TestCase):
           port.state="disconnected"; access.onstatechange();
           assert(get("midi-port").value==="" && port.onmidimessage===null,"disconnection");
           document.body.dataset.result="passed";
-        })().catch(e => { document.body.dataset.result=e.message; });
+        })().catch(e => { document.body.dataset.result=e.message; })
+            .finally(() => fetch("/result", {method:"POST",body:document.body.dataset.result}));
+
         </script>"""
-        probe = self.root / "probe.html"
-        probe.write_text(page.read_text().replace("</body>", script + "</body>"))
-        result = subprocess.run([os.environ["MPC_TEST_CHROME"], "--headless", "--no-sandbox",
-                                 "--disable-gpu", "--disable-dev-shm-usage", "--autoplay-policy=no-user-gesture-required",
-                                 "--user-data-dir=" + str(self.root / "profile"), "--virtual-time-budget=5000",
-                                 "--dump-dom", probe.as_uri()], capture_output=True, text=True, timeout=30, check=True)
-        self.assertIn('<body data-result="passed">', result.stdout, result.stdout[:7000])
+        html = page.read_text().replace("</body>", script + "</body>").encode()
+        results = []
+        class Probe(BaseHTTPRequestHandler):
+            def do_GET(self):
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html")
+                self.end_headers()
+                self.wfile.write(html if self.path == "/" else b"")
+
+            def do_POST(self):
+                if self.path == "/result":
+                    results.append(self.rfile.read(int(self.headers["Content-Length"])).decode())
+                self.send_response(204)
+                self.end_headers()
+
+            def log_message(self, *_args):
+                pass
+
+        # Decoding runs on a real audio thread. Advancing Chrome's virtual clock
+        # can exhaust a JS timeout before that thread runs on a busy CI machine.
+        with HTTPServer(("127.0.0.1", 0), Probe) as server:
+            server.timeout = 0.25
+            url = f"http://127.0.0.1:{server.server_port}/"
+            process = subprocess.Popen([os.environ["MPC_TEST_CHROME"], "--headless", "--no-sandbox",
+                                        "--disable-gpu", "--disable-dev-shm-usage", "--mute-audio",
+                                        "--autoplay-policy=no-user-gesture-required",
+                                        "--user-data-dir=" + str(self.root / "profile"), url],
+                                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            try:
+                deadline = time.monotonic() + 25
+                while not results and process.poll() is None and time.monotonic() < deadline:
+                    server.handle_request()
+            finally:
+                process.terminate()
+                process.wait(timeout=10)
+        self.assertEqual(results, ["passed"])
