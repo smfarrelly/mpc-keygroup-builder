@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Compare Loop Throw</title>
+<style>
+:root {font:17px/1.5 "DM Sans",system-ui,sans-serif;background:#171e1b;color:#efece1}
+main {max-width:45rem;padding:clamp(1rem,5vw,3rem);margin:auto}
+h1 {font-size:clamp(2rem,6vw,4rem);line-height:1.05;letter-spacing:-.05em}
+section {border-top:1px solid #77857d;padding:1rem 0} h2,p {margin:.4em 0} a {color:#c3e9b0}
+button {font:inherit;padding:.4rem .8rem;cursor:pointer} audio {width:100%}
+</style><main><h1>Compare Loop Throw</h1><p><b>@SOURCE@</b><br>@DESCRIPTION@</p>
+<p>Play either version. Switch during playback to hear the same point at the same player volume.</p>
+<section><h2>Dry</h2><audio id="dry" controls preload="metadata" src="Dry.wav"></audio></section>
+<section><h2>Loop Throw</h2><audio id="wet" controls preload="metadata" src="Loop%20Throw.wav"></audio></section>
+<button id="switch" type="button" hidden>Switch to Loop Throw</button>
+<p id="status" role="status"></p><p><a href="settings.json">Render settings</a></p></main>
+<script>
+(() => {
+  const dry = document.getElementById("dry"), wet = document.getElementById("wet");
+  const button = document.getElementById("switch"), status = document.getElementById("status");
+  let active = dry;
+  const other = player => player === dry ? wet : dry;
+  const label = player => player === dry ? "Dry" : "Loop Throw";
+  function select(player) {
+    active = player;
+    other(player).pause();
+    button.textContent = "Switch to " + label(other(player));
+  }
+  for (const player of [dry, wet]) player.onplay = () => select(player);
+  button.hidden = false;
+  button.onclick = async () => {
+    const from = active, to = other(from);
+    if (!to.readyState) { status.textContent = "Waiting for the audio file. Try again once its duration appears."; return; }
+    const playing = !from.paused;
+    to.currentTime = from.currentTime;
+    to.volume = from.volume;
+    to.muted = from.muted;
+    to.playbackRate = from.playbackRate;
+    select(to);
+    try {
+      if (playing) await to.play();
+      status.textContent = label(to) + " selected.";
+    } catch { status.textContent = "Press play on " + label(to) + " to continue."; }
+  };
+})();
+</script></html>
