@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import hashlib
 import html
+import json
+import re
 from pathlib import Path
 from string import Template
 from typing import Any
@@ -67,6 +70,29 @@ _GROUPS = (
 
 def esc(value: Any) -> str:
     return html.escape(str(value), quote=True)
+
+
+def note_manifest(report: dict) -> dict | None:
+    """Bind listening notes to the exact XPJ, controller modes and selected controls."""
+    project_hash = report.get("project_sha256")
+    if not isinstance(project_hash, str) or not re.fullmatch("[0-9a-f]{64}", project_hash):
+        return None
+    controls = []
+    for core in report["cores"]:
+        capture_hash = (core["source_capture"] or {}).get("sha256")
+        if core["errors"] or not isinstance(capture_hash, str) or not re.fullmatch("[0-9a-f]{64}", capture_hash):
+            return None
+        for row in core["selected_controls"]:
+            evidence = row.get("evidence") or {}
+            controls.append({
+                "key": f'{core["id"]}-{row["endpoint"]}', "mode": core["capture_name"],
+                "mode_sha256": capture_hash, "endpoint": row["endpoint"],
+                "target": row["expected_target"], "channel": row["channel"], "cc": row["cc"],
+                "plugin": evidence.get("plugin"), "preset": evidence.get("preset"),
+            })
+    identity = {"project_sha256": project_hash, "controls": sorted(controls, key=lambda r: r["key"])}
+    digest = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()
+    return {**identity, "fingerprint": digest, "project": report.get("project_name")}
 
 
 def _card(core: dict, row: dict, position: int, mix: bool) -> str:
@@ -137,5 +163,20 @@ def render_html(report: dict[str, Any]) -> str:
     firmware = report.get("project_firmware") or "unknown"
     template = Path(__file__).with_name("capture_guide.html").read_text(encoding="utf-8")
     # Substitute once so literal tokens in a user-supplied label survive.
+    manifest = note_manifest(report)
+    note_ui = ""
+    script = ""
+    if manifest:
+        note_ui = ('<section id="notebook" hidden><h2>Preset listening notes</h2>'
+                   '<form><label>Physical control <select id="gesture"></select></label>'
+                   '<label>What changes as you turn or press it?'
+                   '<textarea id="observation" rows="3" maxlength="2000"></textarea></label></form>'
+                   '<button type="button" id="save-notes">Download notes</button> '
+                   '<label class="import">Restore notes <input type="file" id="restore-notes" accept=".json,application/json"></label>'
+                   '<p id="note-status" role="status"></p></section>')
+        payload = json.dumps(manifest, ensure_ascii=True).replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
+        javascript = Path(__file__).with_name("capture_notes.js").read_text(encoding="utf-8")
+        script = f'<script type="application/json" id="note-manifest">{payload}</script><script>{javascript}</script>'
     return Template(template).substitute(nav=" ".join(nav), sections="".join(sections),
-                                         project=esc(project), firmware=esc(firmware))
+                                         project=esc(project), firmware=esc(firmware),
+                                         notebook=note_ui, scripts=script)

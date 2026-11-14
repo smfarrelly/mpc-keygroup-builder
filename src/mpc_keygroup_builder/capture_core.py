@@ -190,6 +190,7 @@ def analyze(
     return {
         "schema_version": 1, "kind": "mpc-captured-plugin-cores",
         "audit_path": audit["source_path"],
+        "project_sha256": audit.get("project_sha256"),
         "project_name": Path(audit.get("project") or "").name,
         "project_firmware": audit.get("project_firmware"),
         "summary": {

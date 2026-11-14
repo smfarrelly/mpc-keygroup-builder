@@ -26,6 +26,12 @@ strong {font-size:.95rem;line-height:1.15;display:block;margin-bottom:.35rem}
 .card ul {padding:0;margin:0 0 .4rem;list-style:none}
 .card li+li {margin-top:.3rem}
 .card p:last-child {margin-bottom:0}
+#notebook {max-width:50rem;padding:1.4rem 0;border-top:2px solid #747b74}
+#notebook label {display:block;margin:.5rem 0}
+#notebook select,#notebook textarea {display:block;width:100%;margin:.3rem 0 1rem;padding:.45rem;font:inherit}
+#notebook button,.note-link {font:inherit;cursor:pointer}
+.note-link {font-size:.8rem;border:0;border-bottom:1px solid currentColor;background:transparent;color:#e1ecba;padding:0}
+#note-status {min-height:1.5em;color:#d2cfc8}
 details {margin-top:.8rem} summary {cursor:pointer;color:#c9dfa9}
 code {overflow-wrap:anywhere}
 :target {outline:2px solid #e7ae55;outline-offset:2px}
@@ -33,7 +39,7 @@ code {overflow-wrap:anywhere}
 @media(max-width:540px) {.strip {grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media print {
  :root {color-scheme:light;color:black;background:white} main {padding:0}
- nav {display:none} article {break-before:page} article:first-of-type {break-before:auto}
+ nav,.note-link,#notebook {display:none} article {break-before:page} article:first-of-type {break-before:auto}
  .strip {grid-template-columns:repeat(4,minmax(0,1fr))} .card,.blank {break-inside:avoid;color:black;background:white}
  header p,article>p,summary {color:black} h2,h3 {break-after:avoid}
 }
@@ -45,4 +51,111 @@ code {overflow-wrap:anywhere}
 <p>Find the physical control by row and column, then read its saved MPC destination. Channel and CC matches come from the Components export and the project’s MIDI Learn settings. Live response is pending.</p>
 <nav aria-label="Plugin pages"><a href="#opx4-macros-core">OPx-4 Macro Core</a> <a href="#jura-live-core">Jura Live Core</a></nav></header>
 <article id="opx4-macros-core"><h2>OPx-4 Macro Core</h2><p>OPx-4 · 1 - OPX4 · Tron Guitar</p><p>Components mode <b>1 - OPX</b> · 8 selected controls</p><p>Listen to each macro on the saved preset to identify its musical effect.</p><section><h3>Top encoders</h3><div class="strip"><div class="blank"><small>1</small>Outside core</div><div class="blank"><small>2</small>Outside core</div><div class="blank"><small>3</small>Outside core</div><div class="blank"><small>4</small>Outside core</div><div class="card plugin" id="opx4-macros-core-top-encoder-5"><small>5</small><strong>Macro 1</strong><p>Ch 9 · CC 17</p><ul><li>1 - OPX4 (Macro 1)</li></ul><p>XPJ parameter 4104</p><p>Plugin skin<br>Screen Mode T1/S1 Q-Link 13</p></div><div class="card plugin" id="opx4-macros-core-top-encoder-6"><small>6</small><strong>Macro 2</strong><p>Ch 9 · CC 18</p><ul><li>1 - OPX4 (Macro 2)</li></ul><p>XPJ parameter 4105</p><p>Plugin skin<br>Screen Mode T1/S1 Q-Link 9</p></div><div class="card plugin" id="opx4-macros-core-top-encoder-7"><small>7</small><strong>Macro 3</strong><p>Ch 9 · CC 19</p><ul><li>1 - OPX4 (Macro 3)</li></ul><p>XPJ parameter 4106</p><p>Plugin skin<br>Screen Mode T1/S1 Q-Link 5</p></div><div class="card plugin" id="opx4-macros-core-top-encoder-8"><small>8</small><strong>Macro 4</strong><p>Ch 9 · CC 20</p><ul><li>1 - OPX4 (Macro 4)</li></ul><p>XPJ parameter 4107</p><p>Plugin skin<br>Screen Mode T1/S1 Q-Link 1</p></div></div></section><section><h3>Middle encoders</h3><div class="strip"><div class="blank"><small>1</small>Outside core</div><div class="blank"><small>2</small>Outside core</div><div class="blank"><small>3</small>Outside core</div><div class="blank"><small>4</small>Outside core</div><div class="card plugin" id="opx4-macros-core-middle-encoder-5"><small>5</small><strong>Macro 5</strong><p>Ch 9 · CC 25</p><ul><li>1 - OPX4 (Macro 5)</li></ul><p>XPJ parameter 4108</p><p>Plugin skin<br>Screen Mode T1/S1 Q-Link 14</p></div><div class="card plugin" id="opx4-macros-core-middle-encoder-6"><small>6</small><strong>Macro 6</strong><p>Ch 9 · CC 26</p><ul><li>1 - OPX4 (Macro 6)</li></ul><p>XPJ parameter 4109</p><p>Plugin skin<br>Screen Mode T1/S1 Q-Link 10</p></div><div class="card plugin" id="opx4-macros-core-middle-encoder-7"><small>7</small><strong>Macro 7</strong><p>Ch 9 · CC 27</p><ul><li>1 - OPX4 (Macro 7)</li></ul><p>XPJ parameter 4110</p><p>Plugin skin<br>Screen Mode T1/S1 Q-Link 6</p></div><div class="card plugin" id="opx4-macros-core-middle-encoder-8"><small>8</small><strong>Macro 8</strong><p>Ch 9 · CC 28</p><ul><li>1 - OPX4 (Macro 8)</li></ul><p>XPJ parameter 4111</p><p>Plugin skin<br>Screen Mode T1/S1 Q-Link 2</p></div></div></section><section><h3>Persistent MPC mix faders</h3><div class="strip"><div class="card mix" id="opx4-macros-core-fader-1"><small>1</small><strong>Track 1 Vol</strong><p>Ch 16 · CC 5</p><ul><li>Submix 1 (Volume)</li></ul></div><div class="card mix" id="opx4-macros-core-fader-2"><small>2</small><strong>Track 2 Vol</strong><p>Ch 16 · CC 6</p><ul><li>Submix 2 (Volume)</li></ul></div><div class="card mix" id="opx4-macros-core-fader-3"><small>3</small><strong>Track 3 Vol</strong><p>Ch 16 · CC 7</p><ul><li>Submix 3 (Volume)</li></ul></div><div class="card mix" id="opx4-macros-core-fader-4"><small>4</small><strong>Track 4 Vol</strong><p>Ch 16 · CC 8</p><p>No saved Learn target</p></div><div class="card mix" id="opx4-macros-core-fader-5"><small>5</small><strong>Track 5 Vol</strong><p>Ch 16 · CC 9</p><p>No saved Learn target</p></div><div class="card mix" id="opx4-macros-core-fader-6"><small>6</small><strong>Track 6 Vol</strong><p>Ch 16 · CC 10</p><p>No saved Learn target</p></div><div class="card mix" id="opx4-macros-core-fader-7"><small>7</small><strong>Track 7 Vol</strong><p>Ch 16 · CC 11</p><p>No saved Learn target</p></div><div class="card mix" id="opx4-macros-core-fader-8"><small>8</small><strong>Track 8 / Main Vol</strong><p>Ch 16 · CC 12</p><ul><li>Out 1/2 (Volume)</li></ul></div></div></section><details><summary>Mapping findings</summary><ul><li>mix faders without saved Learn targets: fader-4, fader-5, fader-6, fader-7</li></ul></details><details><summary>Capture identification</summary><p>Components SHA-256 <code>6fcac4b14d6d9e3cd9d88fb18b94113b43a199fe4be01911328cd9b0d79144cc</code></p></details></article><article id="jura-live-core"><h2>Jura Live Core</h2><p>Jura · 2 - Jura · Fat Square</p><p>Components mode <b>2 - Jura</b> · 8 selected controls</p><section><h3>Top encoders</h3><div class="strip"><div class="blank"><small>1</small>Outside core</div><div class="blank"><small>2</small>Outside core</div><div class="blank"><small>3</small>Outside core</div><div class="blank"><small>4</small>Outside core</div><div class="card plugin" id="jura-live-core-top-encoder-5"><small>5</small><strong>LFO Speed</strong><p>Ch 10 · CC 17</p><ul><li>2 - Jura (Lfo Speed)</li></ul><p>XPJ parameter 4136</p><p>No matching plugin skin in the supplied catalog.</p></div><div class="blank"><small>6</small>Outside core</div><div class="blank"><small>7</small>Outside core</div><div class="blank"><small>8</small>Outside core</div></div></section><section><h3>Middle encoders</h3><div class="strip"><div class="blank"><small>1</small>Outside core</div><div class="card plugin" id="jura-live-core-middle-encoder-2"><small>2</small><strong>VCF Cutoff</strong><p>Ch 10 · CC 22</p><ul><li>2 - Jura (VCF Cutoff)</li></ul><p>XPJ parameter 4115</p><p>No matching plugin skin in the supplied catalog.</p></div><div class="card plugin" id="jura-live-core-middle-encoder-3"><small>3</small><strong>VCF Resonance</strong><p>Ch 10 · CC 23</p><ul><li>2 - Jura (VCF Reso)</li></ul><p>XPJ parameter 4116</p><p>No matching plugin skin in the supplied catalog.</p></div><div class="card plugin" id="jura-live-core-middle-encoder-4"><small>4</small><strong>VCF Env</strong><p>Ch 10 · CC 24</p><ul><li>2 - Jura (VCF Env Amount)</li></ul><p>XPJ parameter 4118</p><p>No matching plugin skin in the supplied catalog.</p></div><div class="blank"><small>5</small>Outside core</div><div class="blank"><small>6</small>Outside core</div><div class="blank"><small>7</small>Outside core</div><div class="blank"><small>8</small>Outside core</div></div></section><section><h3>Bottom encoders</h3><div class="strip"><div class="card plugin" id="jura-live-core-bottom-encoder-1"><small>1</small><strong>Delay Time</strong><p>Ch 10 · CC 29</p><ul><li>2 - Jura (Delay Time)</li></ul><p>XPJ parameter 4162</p><p>No matching plugin skin in the supplied catalog.</p></div><div class="card plugin" id="jura-live-core-bottom-encoder-2"><small>2</small><strong>Delay Feedback</strong><p>Ch 10 · CC 30</p><ul><li>2 - Jura (Delay Feedback)</li></ul><p>XPJ parameter 4165</p><p>No matching plugin skin in the supplied catalog.</p></div><div class="blank"><small>3</small>Outside core</div><div class="blank"><small>4</small>Outside core</div><div class="blank"><small>5</small>Outside core</div><div class="blank"><small>6</small>Outside core</div><div class="card plugin" id="jura-live-core-bottom-encoder-7"><small>7</small><strong>Reverb Mix</strong><p>Ch 10 · CC 35</p><ul><li>2 - Jura (Reverb Dry/Wet Mix)</li></ul><p>XPJ parameter 4186</p><p>No matching plugin skin in the supplied catalog.</p></div><div class="blank"><small>8</small>Outside core</div></div></section><section><h3>Persistent MPC mix faders</h3><div class="strip"><div class="card mix" id="jura-live-core-fader-1"><small>1</small><strong>Env 1 Attack</strong><p>Ch 16 · CC 5</p><ul><li>Submix 1 (Volume)</li></ul></div><div class="card mix" id="jura-live-core-fader-2"><small>2</small><strong>Env 1 Delay</strong><p>Ch 16 · CC 6</p><ul><li>Submix 2 (Volume)</li></ul></div><div class="card mix" id="jura-live-core-fader-3"><small>3</small><strong>Env 1 Sustain</strong><p>Ch 16 · CC 7</p><ul><li>Submix 3 (Volume)</li></ul></div><div class="card mix" id="jura-live-core-fader-4"><small>4</small><strong>Env 1 Release</strong><p>Ch 16 · CC 8</p><p>No saved Learn target</p></div><div class="card mix" id="jura-live-core-fader-5"><small>5</small><strong>Env 2 Attack</strong><p>Ch 16 · CC 9</p><p>No saved Learn target</p></div><div class="card mix" id="jura-live-core-fader-6"><small>6</small><strong>Env 2 Decay</strong><p>Ch 16 · CC 10</p><p>No saved Learn target</p></div><div class="card mix" id="jura-live-core-fader-7"><small>7</small><strong>Env 2 Sustain</strong><p>Ch 16 · CC 11</p><p>No saved Learn target</p></div><div class="card mix" id="jura-live-core-fader-8"><small>8</small><strong>Env 2 Release</strong><p>Ch 16 · CC 12</p><ul><li>Out 1/2 (Volume)</li></ul></div></div></section><section><h3>Upper buttons</h3><div class="strip"><div class="card plugin" id="jura-live-core-upper-button-1"><small>1</small><strong>Chrous I</strong><p>Ch 10 · CC 37 · inferred-from-encoder-section</p><ul><li>2 - Jura (Chorus I)</li></ul><p>XPJ parameter 4147</p><p>No matching plugin skin in the supplied catalog.</p></div><div class="blank"><small>2</small>Outside core</div><div class="blank"><small>3</small>Outside core</div><div class="blank"><small>4</small>Outside core</div><div class="blank"><small>5</small>Outside core</div><div class="blank"><small>6</small>Outside core</div><div class="blank"><small>7</small>Outside core</div><div class="blank"><small>8</small>Outside core</div></div></section><details><summary>Mapping findings</summary><ul><li>mix faders without saved Learn targets: fader-4, fader-5, fader-6, fader-7</li><li>upper-button-1: channel is inferred-from-encoder-section, not directly encoded</li></ul></details><details><summary>Capture identification</summary><p>Components SHA-256 <code>bee3369c04b17e853cd588e997078f196de21d26fbcdbffafa2a03a506217456</code></p></details></article>
-</main></body></html>
+<section id="notebook" hidden><h2>Preset listening notes</h2><form><label>Physical control <select id="gesture"></select></label><label>What changes as you turn or press it?<textarea id="observation" rows="3" maxlength="2000"></textarea></label></form><button type="button" id="save-notes">Download notes</button> <label class="import">Restore notes <input type="file" id="restore-notes" accept=".json,application/json"></label><p id="note-status" role="status"></p></section>
+</main><script type="application/json" id="note-manifest">{"project_sha256": "87f7ccc2d3a508aa0fe6239298d80ba427cb79fd0cfb2b777d801592467c4b16", "controls": [{"key": "jura-live-core-bottom-encoder-1", "mode": "2 - Jura", "mode_sha256": "bee3369c04b17e853cd588e997078f196de21d26fbcdbffafa2a03a506217456", "endpoint": "bottom-encoder-1", "target": "2 - Jura (Delay Time)", "channel": 10, "cc": 29, "plugin": "Jura", "preset": "Fat Square"}, {"key": "jura-live-core-bottom-encoder-2", "mode": "2 - Jura", "mode_sha256": "bee3369c04b17e853cd588e997078f196de21d26fbcdbffafa2a03a506217456", "endpoint": "bottom-encoder-2", "target": "2 - Jura (Delay Feedback)", "channel": 10, "cc": 30, "plugin": "Jura", "preset": "Fat Square"}, {"key": "jura-live-core-bottom-encoder-7", "mode": "2 - Jura", "mode_sha256": "bee3369c04b17e853cd588e997078f196de21d26fbcdbffafa2a03a506217456", "endpoint": "bottom-encoder-7", "target": "2 - Jura (Reverb Dry/Wet Mix)", "channel": 10, "cc": 35, "plugin": "Jura", "preset": "Fat Square"}, {"key": "jura-live-core-middle-encoder-2", "mode": "2 - Jura", "mode_sha256": "bee3369c04b17e853cd588e997078f196de21d26fbcdbffafa2a03a506217456", "endpoint": "middle-encoder-2", "target": "2 - Jura (VCF Cutoff)", "channel": 10, "cc": 22, "plugin": "Jura", "preset": "Fat Square"}, {"key": "jura-live-core-middle-encoder-3", "mode": "2 - Jura", "mode_sha256": "bee3369c04b17e853cd588e997078f196de21d26fbcdbffafa2a03a506217456", "endpoint": "middle-encoder-3", "target": "2 - Jura (VCF Reso)", "channel": 10, "cc": 23, "plugin": "Jura", "preset": "Fat Square"}, {"key": "jura-live-core-middle-encoder-4", "mode": "2 - Jura", "mode_sha256": "bee3369c04b17e853cd588e997078f196de21d26fbcdbffafa2a03a506217456", "endpoint": "middle-encoder-4", "target": "2 - Jura (VCF Env Amount)", "channel": 10, "cc": 24, "plugin": "Jura", "preset": "Fat Square"}, {"key": "jura-live-core-top-encoder-5", "mode": "2 - Jura", "mode_sha256": "bee3369c04b17e853cd588e997078f196de21d26fbcdbffafa2a03a506217456", "endpoint": "top-encoder-5", "target": "2 - Jura (Lfo Speed)", "channel": 10, "cc": 17, "plugin": "Jura", "preset": "Fat Square"}, {"key": "jura-live-core-upper-button-1", "mode": "2 - Jura", "mode_sha256": "bee3369c04b17e853cd588e997078f196de21d26fbcdbffafa2a03a506217456", "endpoint": "upper-button-1", "target": "2 - Jura (Chorus I)", "channel": 10, "cc": 37, "plugin": "Jura", "preset": "Fat Square"}, {"key": "opx4-macros-core-middle-encoder-5", "mode": "1 - OPX", "mode_sha256": "6fcac4b14d6d9e3cd9d88fb18b94113b43a199fe4be01911328cd9b0d79144cc", "endpoint": "middle-encoder-5", "target": "1 - OPX4 (Macro 5)", "channel": 9, "cc": 25, "plugin": "OPx-4", "preset": "Tron Guitar"}, {"key": "opx4-macros-core-middle-encoder-6", "mode": "1 - OPX", "mode_sha256": "6fcac4b14d6d9e3cd9d88fb18b94113b43a199fe4be01911328cd9b0d79144cc", "endpoint": "middle-encoder-6", "target": "1 - OPX4 (Macro 6)", "channel": 9, "cc": 26, "plugin": "OPx-4", "preset": "Tron Guitar"}, {"key": "opx4-macros-core-middle-encoder-7", "mode": "1 - OPX", "mode_sha256": "6fcac4b14d6d9e3cd9d88fb18b94113b43a199fe4be01911328cd9b0d79144cc", "endpoint": "middle-encoder-7", "target": "1 - OPX4 (Macro 7)", "channel": 9, "cc": 27, "plugin": "OPx-4", "preset": "Tron Guitar"}, {"key": "opx4-macros-core-middle-encoder-8", "mode": "1 - OPX", "mode_sha256": "6fcac4b14d6d9e3cd9d88fb18b94113b43a199fe4be01911328cd9b0d79144cc", "endpoint": "middle-encoder-8", "target": "1 - OPX4 (Macro 8)", "channel": 9, "cc": 28, "plugin": "OPx-4", "preset": "Tron Guitar"}, {"key": "opx4-macros-core-top-encoder-5", "mode": "1 - OPX", "mode_sha256": "6fcac4b14d6d9e3cd9d88fb18b94113b43a199fe4be01911328cd9b0d79144cc", "endpoint": "top-encoder-5", "target": "1 - OPX4 (Macro 1)", "channel": 9, "cc": 17, "plugin": "OPx-4", "preset": "Tron Guitar"}, {"key": "opx4-macros-core-top-encoder-6", "mode": "1 - OPX", "mode_sha256": "6fcac4b14d6d9e3cd9d88fb18b94113b43a199fe4be01911328cd9b0d79144cc", "endpoint": "top-encoder-6", "target": "1 - OPX4 (Macro 2)", "channel": 9, "cc": 18, "plugin": "OPx-4", "preset": "Tron Guitar"}, {"key": "opx4-macros-core-top-encoder-7", "mode": "1 - OPX", "mode_sha256": "6fcac4b14d6d9e3cd9d88fb18b94113b43a199fe4be01911328cd9b0d79144cc", "endpoint": "top-encoder-7", "target": "1 - OPX4 (Macro 3)", "channel": 9, "cc": 19, "plugin": "OPx-4", "preset": "Tron Guitar"}, {"key": "opx4-macros-core-top-encoder-8", "mode": "1 - OPX", "mode_sha256": "6fcac4b14d6d9e3cd9d88fb18b94113b43a199fe4be01911328cd9b0d79144cc", "endpoint": "top-encoder-8", "target": "1 - OPX4 (Macro 4)", "channel": 9, "cc": 20, "plugin": "OPx-4", "preset": "Tron Guitar"}], "fingerprint": "aad7a7f76dc37541c1afa046ea035dde0992da31e41c5f427aabd3b1ce7a34fe", "project": "Boot.xpj"}</script><script>(() => {
+  "use strict";
+  const manifest = JSON.parse(document.getElementById("note-manifest").textContent);
+  const key = "mpc-xl3-notes:" + manifest.fingerprint;
+  const byKey = new Map(manifest.controls.map(control => [control.key, control]));
+  const select = document.getElementById("gesture");
+  const field = document.getElementById("observation");
+  const status = document.getElementById("note-status");
+  let notes = new Map();
+
+  function payload() {
+    return {
+      kind: "mpc-preset-gesture-notes", schema_version: 1, fingerprint: manifest.fingerprint,
+      project: manifest.project, project_sha256: manifest.project_sha256,
+      observations: Array.from(notes, ([id, note]) => ({...byKey.get(id), note}))
+    };
+  }
+  function parse(text) {
+    const data = JSON.parse(text);
+    if (data?.kind !== "mpc-preset-gesture-notes" || data.schema_version !== 1 ||
+        data.fingerprint !== manifest.fingerprint || !Array.isArray(data.observations)) {
+      throw Error("Choose a notes file for this saved project and controller layout.");
+    }
+    const result = new Map();
+    for (const row of data.observations) {
+      if (!byKey.has(row?.key) || result.has(row.key) || typeof row.note !== "string" || row.note.length > 2000) {
+        throw Error("A control or note is invalid. Your current notes are still available.");
+      }
+      result.set(row.key, row.note);
+    }
+    return result;
+  }
+  function store(message) {
+    try {
+      localStorage.setItem(key, JSON.stringify(payload()));
+      status.textContent = message;
+    } catch {
+      status.textContent = "Browser storage is unavailable. Download your notes before closing.";
+    }
+  }
+  function show() {
+    field.value = notes.get(select.value) || "";
+  }
+  for (const control of byKey.values()) {
+    const option = document.createElement("option");
+    option.value = control.key;
+    option.textContent = [control.mode, control.endpoint, control.target, control.preset].filter(Boolean).join(" · ");
+    select.append(option);
+    const cell = document.getElementById(control.key);
+    if (cell) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = "Take a note";
+      button.className = "note-link";
+      button.setAttribute("aria-label", "Take a note for " + option.textContent);
+      button.onclick = () => {
+        select.value = control.key;
+        show();
+        field.focus();
+      };
+      cell.append(button);
+    }
+  }
+  try {
+    const text = localStorage.getItem(key);
+    if (text) notes = parse(text);
+  } catch {
+    status.textContent = "Could not restore browser notes. You can restore a downloaded file.";
+  }
+  select.onchange = show;
+  field.oninput = () => {
+    if (field.value.trim()) notes.set(select.value, field.value);
+    else notes.delete(select.value);
+    store("Saved in this browser.");
+  };
+  document.getElementById("save-notes").onclick = () => {
+    const blob = new Blob([JSON.stringify(payload(), null, 2) + "\n"], {type: "application/json"});
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "mpc-preset-notes-" + manifest.fingerprint.slice(0, 12) + ".json";
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+  document.getElementById("restore-notes").onchange = async event => {
+    const input = event.currentTarget;
+    const file = input.files?.[0];
+    if (!file) return;
+    try {
+      const imported = parse(await file.text());
+      for (const [id, note] of imported) {
+        if (notes.has(id) && notes.get(id) !== note) {
+          throw Error("A restored note conflicts with one in this browser. Download your current notes before editing.");
+        }
+      }
+      for (const [id, note] of imported) notes.set(id, note);
+      show();
+      store("Restored " + imported.size + " notes.");
+    } catch (error) {
+      status.textContent = error.message;
+    }
+    input.value = "";
+  };
+  show();
+  document.getElementById("notebook").hidden = false;
+})();
+</script></body></html>

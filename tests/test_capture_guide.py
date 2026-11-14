@@ -1,4 +1,5 @@
 import copy
+import json
 from html.parser import HTMLParser
 from pathlib import Path
 import unittest
@@ -73,12 +74,35 @@ class GuideParser(HTMLParser):
 
 
 class BundledGuideTests(unittest.TestCase):
+    def test_notes_are_bound_to_project_capture_and_selected_targets(self):
+        core = {"id": "core", "capture_name": "Mode", "source_capture": {"sha256": "a" * 64},
+                "errors": [], "selected_controls": [{"endpoint": "top-encoder-1",
+                    "expected_target": "Synth (Tone)", "channel": 1, "cc": 10,
+                    "evidence": {"plugin": "Synth", "preset": "Soft"}}]}
+        report = {"cores": [core], "project_name": "Boot.xpj"}
+        self.assertIsNone(capture_guide.note_manifest(report))
+        report["project_sha256"] = "f" * 64
+        first = capture_guide.note_manifest(report)
+        self.assertEqual(first["controls"][0]["preset"], "Soft")
+        core["selected_controls"][0]["cc"] = 11
+        self.assertNotEqual(first["fingerprint"], capture_guide.note_manifest(report)["fingerprint"])
+        core["selected_controls"][0]["cc"] = 10
+        report["project_sha256"] = "b" * 64
+        self.assertNotEqual(first["fingerprint"], capture_guide.note_manifest(report)["fingerprint"])
+        core["errors"].append("label changed")
+        self.assertIsNone(capture_guide.note_manifest(report))
+
     def test_two_offline_pages_and_physical_slots(self):
         page = Path(__file__).resolve().parents[1] / "site/saved-xl3-controls.html"
         parser = GuideParser()
         html = page.read_text(encoding="utf-8")
         parser.feed(html)
         self.assertEqual(parser.assets, [])
+        payload = html.split('id="note-manifest">', 1)[1].split("</script>", 1)[0]
+        manifest = json.loads(payload)
+        self.assertEqual(len(manifest["controls"]), 16)
+        self.assertEqual({row["preset"] for row in manifest["controls"]}, {"Fat Square", "Tron Guitar"})
+        self.assertEqual(len(manifest["project_sha256"]), 64)
         self.assertEqual(parser.links, ["#opx4-macros-core", "#jura-live-core"])
         self.assertEqual(len(set(parser.ids)), len(parser.ids))
         for link in parser.links:
