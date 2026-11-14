@@ -13,6 +13,7 @@ from tempfile import TemporaryDirectory
 from urllib.parse import urlsplit
 import webbrowser
 
+from .roles import infer_role
 from . import xpj
 from .midi_writer import variable_length
 from .publication import publish_directory
@@ -78,6 +79,7 @@ def catalog(project):
                     dict(
                         id=ids[path],
                         rate=rates[path],
+                        role=infer_role(layer["sampleName"]) if kind == 0 else None,
                         pad=index if kind == 0 else None,
                         mono=kind == 0 and inst.get("monophonic", False),
                         lo=note if kind == 0 else inst["lowNote"],
@@ -212,6 +214,12 @@ def export(take, project, output, instruments):
     bars = min(
         range(1, 151), key=lambda n: (not 20 <= 240 * n / seconds <= 300, abs(n - 4))
     )
+    recorded_bars = seconds * take.get("tempo", 120) / 240
+    if (
+        1 <= round(recorded_bars) <= 150
+        and abs(recorded_bars - round(recorded_bars)) < 1e-7
+    ):
+        bars = round(recorded_bars)
     if seconds < 0.8:
         bars = 1
     bpm = max(20, min(300, 240 * bars / seconds))
@@ -341,7 +349,7 @@ def serve(project, output, port, open_browser):
             if not self.local():
                 return self.send_error(403)
             path = urlsplit(self.path).path
-            if path in ("/", "/capture.js", "/studio.js"):
+            if path in ("/", "/capture.js", "/studio.js", "/answer.js"):
                 asset = ASSETS / ("index.html" if path == "/" else path[1:])
                 return self.send(
                     200,

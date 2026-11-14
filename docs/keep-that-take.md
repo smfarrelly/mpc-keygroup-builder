@@ -2,6 +2,17 @@
 
 Open the [laptop studio](http://127.0.0.1:8737/) while the local recorder is running. To start it from the repository root, run `uv run mpc-keep-take --open`. It reads the two-part [Playable Scratchpad bundle](playable-scratchpad.md) on the laptop. The **02 Four Bar Jam** XPJ and its companion folder supply the instruments and the project format.
 
+## Start with Answer Track
+
+Open a new idea, select **Wurli**, then press **Answer**. That starts the clock and listens for one phrase. Hold a chord for about two beats: Pluck Bass plays its notes underneath while you sustain it. Release the chord when you want it to end. For a melody or pad rhythm, leave a short gap to invite the reply.
+
+- Tap a soft, soft, loud pattern on one **Main Drums** pad. Pluck Bass borrows the timing and accent, using a three-pitch bass figure. Busy fills get shorter answers.
+- Play two notes on **Pluck Bass**. Wurli answers in its own register using the pitch classes you supplied. A single-note melody on **Dark FM** invites Vinyl SP drums.
+- Choose **Again** to hear your original phrase with another answer. Three readings cycle through echoing accents, playing in gaps and reversing the phrase. The generated part plays once per request.
+- Choose **Keep both** when you hear something worth developing. Your phrase and that specific reply loop on separate tracks. The gap, velocities and pedal events travel with the pair. You can overdub or use the existing MIDI and XPJ export.
+
+Answer Track uses the local Scratchpad samples. It listens to notes played on the selected instrument through the browser controls or connected MIDI. **Stop** clears an unkept exchange. If the studio reopens on a previous idea, save that take and choose **New idea** first.
+
 ## Keep a melody and add drums
 
 1. Select **Wurli**, leave the tempo at 120, and press **Start clock**. The first four bars take eight seconds. Play the on-screen keys, use the computer keyboard, or select **Connect MIDI** for a keyboard connected to the laptop. Space acts as a sustain pedal. Octave changes the on-screen and computer keys.

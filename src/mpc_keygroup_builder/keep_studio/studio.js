@@ -13,6 +13,16 @@
     sources = new Set(),
     histories = new Map(),
     pressed = new Map();
+  let listening = false,
+    firstNote = null,
+    lastInput = 0,
+    answerSeed = null,
+    answerOffset = 0,
+    followingChord = false,
+    lastReply = null,
+    variation = 0,
+    pair = null,
+    audition = null;
   let clickOrigin = 0;
   let ctx,
     running = false,
@@ -147,8 +157,13 @@
         hist.events.at(-1)?.[0] ?? 0,
         now() - Math.max(0, performance.now() - received) / 1000,
       );
+    if (followingChord && status === 144) finishChord(t);
     hist.add([t, status, k, v]);
     hist.prune(t - 121);
+    if (listening) {
+      if (status === 144 && firstNote === null) firstNote = t;
+      if (firstNote !== null) lastInput = t;
+    }
     if (status === 176) {
       pedal = v >= 64;
       if (!pedal) {
@@ -224,6 +239,7 @@
     $("track").value = activeName;
     closeInput();
     $("track").value = next;
+    clearAnswer();
     activeName = next;
     lastPhrase = null;
     surface();
@@ -275,6 +291,10 @@
       }),
     );
     $("undo").disabled = !idea.layers.length;
+    $("answer").disabled = loading || !!idea.layers.length;
+    $("answer").textContent = listening ? "Cancel answer" : "Answer";
+    $("again").disabled = !pair || !running;
+    $("both").disabled = !pair || !!idea.layers.length;
     $("keep").disabled = !running;
     $("start").disabled = running || loading;
     $("stop").disabled = !running;
@@ -322,21 +342,62 @@
       }
       nextLayer[i] = cursor;
     }
+    if (
+      followingChord &&
+      ((!live.size && !sustained.size) || t - firstNote >= 55)
+    )
+      finishChord(t);
+    const heldChord =
+      !tracks[current()].drum &&
+      live.size + sustained.size >= 2 &&
+      t - lastInput >= Math.max(1, beat * 2);
+    if (listening && firstNote !== null) {
+      if (t - firstNote > 50) {
+        clearAnswer();
+        $("response").textContent = "Try a phrase under 50 seconds.";
+      } else if (
+        (heldChord ||
+          tracks[current()].drum ||
+          (!live.size && !sustained.size)) &&
+        t - lastInput > Math.max(0.65, Math.min(1.2, beat * 1.5))
+      ) {
+        listening = false;
+        followingChord = heldChord;
+        const seconds = heldChord
+          ? t - firstNote
+          : Math.max(0.055, lastInput - firstNote + 0.004);
+        answerSeed = {
+          track: current(),
+          events: history(current()).slice(
+            firstNote,
+            firstNote + seconds,
+            tracks[current()].drum,
+          ),
+          seconds,
+          beat,
+        };
+        auditionAnswer(false).catch(answerError);
+      }
+    }
     $("phase").textContent =
       "Bar " +
       (1 + Math.floor(Math.max(0, t - clickOrigin) / beat / 4)) +
       " · beat " +
       (1 + (Math.floor(Math.max(0, t - clickOrigin) / beat) % 4));
   }
-  function playLayer(layer, start, duration, scope) {
+  function playLayer(
+    layer,
+    start,
+    duration,
+    scope,
+    snap = Number($("snap").value) / 100,
+    token = null,
+  ) {
     const target = layer.audition || layer.track;
     const srcPads = tracks[layer.track].zones,
       dstPads = tracks[target].zones;
 
-    for (const n of Capture.notes(
-      layer.events,
-      Number($("snap").value) / 100,
-    )) {
+    for (const n of Capture.notes(layer.events, snap)) {
       const k =
         target === layer.track
           ? n.key
@@ -350,13 +411,14 @@
           n.velocity,
           start + (n.start / Capture.END) * duration,
           ((n.end - n.start) / Capture.END) * duration,
-          null,
+          token,
           scope,
         ).catch((e) => msg(e.message));
     }
   }
   function stop() {
     closeInput();
+    clearAnswer();
     running = false;
     clearInterval(clockTimer);
     silence();
@@ -364,7 +426,7 @@
     $("phase").textContent = "Clock stopped";
     refresh();
   }
-  $("start").onclick = safe(async () => {
+  async function startClock() {
     loading = true;
     refresh();
     try {
@@ -394,8 +456,113 @@
       loading = false;
       refresh();
     }
-  });
+  }
+  $("start").onclick = safe(startClock);
   $("stop").onclick = stop;
+
+  function cancelAudition() {
+    if (!audition) return;
+    audition.cancel = true;
+    for (const v of sources)
+      if (v.groupScope === audition) {
+        try {
+          v.source.stop();
+        } catch {}
+      }
+    audition = null;
+  }
+  function clearAnswer() {
+    cancelAudition();
+    listening = false;
+    firstNote = null;
+    answerSeed = null;
+    followingChord = false;
+    lastReply = null;
+    pair = null;
+    variation = 0;
+    $("response").textContent = idea.layers.length
+      ? "Start a new idea to try another exchange."
+      : "Press Answer, play a short phrase, then leave a gap.";
+    refresh();
+  }
+  function finishChord(t) {
+    if (!followingChord) return;
+    followingChord = false;
+    const seconds = Math.max(answerSeed.seconds, t - firstNote + 0.001);
+    answerSeed = {
+      ...answerSeed,
+      seconds,
+      events: history(answerSeed.track).slice(firstNote, firstNote + seconds),
+    };
+    if (pair) pair = answerPair(answerSeed, lastReply, answerOffset, Capture);
+  }
+  function answerError(e) {
+    clearAnswer();
+    $("response").textContent = e.message;
+  }
+  async function auditionAnswer(replay) {
+    cancelAudition();
+    pair = null;
+    refresh();
+    const ticket = { cancel: false };
+    audition = ticket;
+    const reply = answerTrack(answerSeed, tracks, variation, Capture);
+    lastReply = reply;
+    $("response").textContent = "Loading " + reply.target + "…";
+    const ids = reply.notes.map(
+      (n) => zone(reply.target, n.key, n.velocity).id,
+    );
+    if (replay)
+      for (const n of Capture.notes(answerSeed.events)) {
+        const z = zone(answerSeed.track, n.key, n.velocity);
+        if (z) ids.push(z.id);
+      }
+    await Promise.all([...new Set(ids)].map(buffer));
+    if (ticket.cancel) return;
+    if (!replay) answerOffset = Math.max(0, now() + 0.06 - firstNote);
+    pair = answerPair(answerSeed, reply, answerOffset, Capture);
+    const start = replay ? ctx.currentTime + 0.06 : origin + firstNote;
+    if (replay)
+      playLayer(pair.layers[0], start, pair.seconds, ticket, 0, ticket);
+    playLayer(pair.layers[1], start, pair.seconds, ticket, 0, ticket);
+    $("response").textContent = reply.target + " · " + reply.description + ".";
+    refresh();
+  }
+  $("answer").onclick = safe(async () => {
+    const wasListening = listening;
+    clearAnswer();
+    if (wasListening) return;
+    if (!running) await startClock();
+    listening = true;
+    $("response").textContent =
+      "Listening on " + current() + ". Play, then leave a gap.";
+    refresh();
+  });
+  $("again").onclick = safe(async () => {
+    finishChord(now());
+    variation++;
+    await auditionAnswer(true).catch(answerError);
+  });
+  $("both").onclick = () => {
+    if (!pair || idea.layers.length) return;
+    finishChord(now());
+    const chosen = pair;
+    closeInput();
+    clearAnswer();
+    idea.seconds = chosen.seconds;
+    idea.tempo = +$("tempo").value;
+    idea.free = true;
+    $("snap").value = 0;
+    idea.layers.push(...chosen.layers);
+    anchor = now() + 0.12;
+    clickOrigin = anchor;
+    beatIndex = 0;
+    nextLayer = [];
+    persist();
+    refresh();
+    $("response").textContent =
+      "Kept both parts. Choose an instrument to overdub.";
+  };
   function keep(start, end, free) {
     if (!running) throw Error("Start the clock first.");
     if (start < -0.00001) throw Error("Play four complete bars first.");
@@ -432,6 +599,7 @@
     }
     if (idea.layers.length >= 128)
       throw Error("This idea already has 128 layers.");
+    clearAnswer();
     idea.layers.push({ track: current(), events });
     nextLayer.push(
       anchor +
@@ -531,6 +699,7 @@
   function restore(data) {
     if (running) stop();
     idea = data;
+    $("response").textContent="Save this take and choose New idea to start an exchange.";
     $("name").value = data.name;
     $("tempo").value = data.tempo || 120;
     $("snap").value = data.snap || 0;

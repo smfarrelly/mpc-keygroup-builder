@@ -105,6 +105,14 @@
       holds sustain. External MIDI uses the selected instrument.</small
     >
   </fieldset>
+  <fieldset>
+    <legend>Answer Track</legend>
+    <button id="answer">Answer</button><button id="again" disabled>Again</button
+    ><button id="both" disabled>Keep both</button>
+    <output id="response" aria-live="polite"
+      >Press Answer, play a short phrase, then leave a gap.</output
+    >
+  </fieldset>
   <button id="keep" disabled>Keep 4</button
   ><button id="undo">Undo last layer</button>
   <ol id="layers"></ol>
@@ -137,5 +145,6 @@
     >Choose an instrument and start the clock.</output
   >
   <script src="/capture.js"></script>
+  <script src="/answer.js"></script>
   <script src="/studio.js"></script>
 </html>
