@@ -22,6 +22,7 @@ Choose the path that matches what you want to do:
   If your laptop and SD folders differ, [reconcile local instruments](docs/library-reconciliation.md)
   without changing programs or historical listening verdicts.
 
+- **Hear grooves on your own drum kit:** build a [browser listening session with matching MIDI](docs/drum-ideas.md#compare-grooves-in-one-browser-tab).
 - **Find a knob in the saved startup project:** open the [OPx-4 and Jura XL3 guide](site/saved-xl3-controls.html). It includes the saved presets, physical rows and MPC mix faders.
 - **Try it without installing anything:** open
   [`site/index.html`](site/index.html) in a browser, then launch the synthetic

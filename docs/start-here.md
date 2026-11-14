@@ -26,6 +26,10 @@ folder. Remove the preview flags only after checking the selected files.
 The archive stays unchanged. After developing the variation, capture the working
 copy into another new archive. See [Idea snapshots](idea-snapshots.md).
 
+## Hear a drum groove on the laptop
+
+Run `mpc-tools start groove` to build a [listening session](drum-ideas.md#compare-grooves-in-one-browser-tab) with a local XML Drum Program. Open its index in a browser and play the loops. Each loop has matching MIDI for the MPC. To build a fresh kit from the SDK’s eight synthesized drum voices, use the [sampled kit recipe](akai-sdk.md#turn-a-synthesized-drum-kit-into-a-portable-xpm).
+
 ## Design a plugin control page
 
 Open the [offline SDK encoder editor](../site/sdk-mapping.html) and try the four Loop Throw controls. From a terminal, `mpc-tools start sdk` shows how to validate that page against the included reference dump. Use the [SDK guide](akai-sdk.md) when you want to load another plugin’s parameter list, build a worksheet or run a software review.

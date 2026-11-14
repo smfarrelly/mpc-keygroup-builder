@@ -1,5 +1,11 @@
 # Resume here
 
+## November 14 · Play a groove on the laptop
+
+The November 14 batch generated a local **Drum Sessions** folder under `work/controller-review-2026-11-14`. If you have that folder, open its `index.html`: Dusty Pocket, Funk Machine, House Foundation and Electro Grid each have a looping preview and matching MIDI. The sibling **SDK Drum Synth Kit** folder holds the eight-pad XPM and WAVs. **Pocket Throw Comparison** contains a two-bar dry/echo comparison.
+
+On a fresh checkout, build the [eight-pad kit](docs/akai-sdk.md#turn-a-synthesized-drum-kit-into-a-portable-xpm) or start with an existing XML Drum Program. Then [build a listening session](docs/drum-ideas.md#compare-grooves-in-one-browser-tab). Run `mpc-tools start groove` for a short command example.
+
 ## November 14 · Launch Control
 
 Open the [saved XL3 controls](site/saved-xl3-controls.html) for the Boot template. The [mapping guide](docs/plugin-mapping.md#derive-evidence-backed-opx-4-and-jura-cores) explains how to refresh it from a newer project.
