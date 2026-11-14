@@ -35,6 +35,7 @@ jobs:
           python "$sdk/tools/build.py" "$plugin" --target native --toolchain gcc
           c++ -std=c++17 -O2 -I"$sdk/framework" "$plugin/tests/impulse.cpp" -o "$plugin/build/impulse-test"
           "$plugin/build/impulse-test"
+          python "$plugin/tests/audition_smoke.py" "$sdk"
           mpc-sdk-review "$plugin/build/native/loop-throw.so" --host-sim "$sdk/.sdk-tools/host_sim" \
             --baseline "$plugin/params.reference.json" --profile midi/sdk-examples/loop-throw.toml \
             --output work/loop-throw-review

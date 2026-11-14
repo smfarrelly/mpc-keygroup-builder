@@ -32,3 +32,15 @@ uv run mpc-sdk-package "$plugin/build/FG Scratchpad - VST - Loop Throw" --sdk-du
 ```
 
 Source, touchscreen layout and a reference parameter dump are included. The SDK supplies its framework and graphics during the build. Device installation, listening and performance acceptance are pending. [Toolkit mapping guide](../../docs/akai-sdk.md)
+
+## Audition a throw on your own loop
+
+On Linux or macOS with a local C++17 compiler, render a dry/processed pair using the actual effect source. Choose a mono or stereo PCM16 loop of up to two minutes. Both outputs use the same gain, sample rate and length. A mono input is duplicated to stereo. The output folder includes the gesture settings, any clipping count, and a checksum receipt.
+
+```bash
+uv run python plugins/LoopThrow/tools/audition.py "/path/to/four-bar-loop.wav" \
+  --sdk "$sdk" --bpm 120 --beat 15.95 --length 0.25 --division 1/8 \
+  --repeats 65 --tail 2 --output work/loop-throw-audition-01
+```
+
+Beat numbers begin at 1. For a four-bar 4/4 loop this example opens the send just before the last backbeat, closes it a quarter of a beat later, and leaves two seconds for the echo to ring. Listen to `Dry.wav` and `Loop Throw.wav`. To try a different gesture, choose a fresh output directory. Run the portable renderer check with `uv run python plugins/LoopThrow/tests/audition_smoke.py "$sdk"`.
