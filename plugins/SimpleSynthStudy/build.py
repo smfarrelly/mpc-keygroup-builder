@@ -9,6 +9,7 @@ import json
 from math import lcm
 from pathlib import Path
 import shutil
+from string import Template
 import subprocess
 import sys
 import tempfile
@@ -36,14 +37,17 @@ def compile_host(sdk, scratch):
     return binary
 
 
-def render_synth(binary, preset, notes, tempo, end_tick, destination):
+def render_synth(binary, preset, notes, tempo, end_tick, destination, *, moves=None):
     def frame(tick):
         return round(tick * RATE * 60 / (tempo * 480))
 
     frames = frame(end_tick)
     rows = [f"{frame(n.tick)} {frame(n.tick + n.duration_ticks)} {n.note} {n.velocity}" for n in notes]
     with tempfile.TemporaryFile() as pcm:
-        subprocess.run([str(binary), preset, str(frames), str(tempo)], input="\n".join(rows), text=True,
+        args = [str(binary), preset, str(frames), str(tempo)]
+        if moves is not None:
+            args.append(str(moves))
+        subprocess.run(args, input="\n".join(rows), text=True,
                        stdout=pcm, check=True, timeout=max(30, 2 * frames / RATE))
         if pcm.tell() != frames * 2:
             raise ValueError(f"{preset}: incomplete PCM render")
@@ -54,10 +58,11 @@ def render_synth(binary, preset, notes, tempo, end_tick, destination):
                 wav.writeframesraw(block)
 
 
-def mix_stems(folder, expected):
+def mix_stems(folder, expected, *, sources=None):
     peaks = [0, 0, 0, 0]
     with ExitStack() as context:
-        streams = [context.enter_context(wave.open(str(folder / (name + ".wav")))) for name in PARTS]
+        paths = sources if sources is not None else [folder / (name + ".wav") for name in PARTS]
+        streams = [context.enter_context(wave.open(str(path))) for path in paths]
         out = context.enter_context(wave.open(str(folder / "Mix.wav"), "wb"))
         for name, wav in zip(PARTS, streams, strict=True):
             if (wav.getnchannels(), wav.getsampwidth(), wav.getframerate(), wav.getnframes()) != (1, 2, RATE, expected):
@@ -84,6 +89,17 @@ def mix_stems(folder, expected):
 def repeat_notes(events, channel, part_bars, bars):
     return tuple(MidiNote(e.tick + pos * 1920, e.duration_ticks, e.midi_note, e.velocity, channel)
                  for pos in range(0, bars, part_bars) for e in events)
+
+
+def listening_page(name, heading, details, sounds, choices, links):
+    radios = []
+    for index, (source, label) in enumerate(choices):
+        checked = " checked" if index == 0 else ""
+        radios.append(f'<label><input type="radio" name="part" value="{escape(source)}"{checked}>{escape(label)}</label>')
+    downloads = [f'<li><a href="{escape(path)}" download>{escape(label)}</a></li>' for path, label in links]
+    return Template((HERE / "listen.html").read_text()).substitute(
+        name=escape(name), heading=escape(heading), details=escape(details), sounds=escape(sounds),
+        choices="".join(radios), initial=escape(choices[0][0]), links="".join(downloads))
 
 
 def build(program, take_path, recipe_path, sdk, output, *, bass="Fat Bass", chords="Soft Pad", seed=37):
@@ -143,10 +159,13 @@ def build(program, take_path, recipe_path, sdk, output, *, bass="Fat Bass", chor
                           zip(tracks, (drums.program, bass, chords), MIX_GAIN, strict=True)],
                 "pcm16_absolute_peaks": peaks, "hardware_status": "untested"}
         (folder / "sketch.json").write_text(json.dumps(info, indent=2) + "\n")
-        page = (HERE / "listen.html").read_text().replace("{{name}}", escape(drums.recipe))
-        details = f"{bars} bars · {drums.tempo:g} BPM · {recipe.key} {recipe.scale}"
-        page = page.replace("{{details}}", escape(details))
-        page = page.replace("{{sounds}}", escape(f"{drums.program} · {bass} · {chords}"))
+        links = [("Sketch.mid", "Three-track MIDI"), ("Mix.wav", "Full mix WAV"),
+                 ("performance.take.json", "Editable drum take")]
+        for part in PARTS:
+            links.extend([(part + ".mid", part + " MIDI"), (part + ".wav", part + " WAV")])
+        links.extend([("harmony.toml", "Harmony recipe"), ("sketch.json", "Render settings")])
+        page = listening_page(drums.recipe, "Rhythm section", f"{bars} bars · {drums.tempo:g} BPM · {recipe.key} {recipe.scale}",
+                              f"{drums.program} · {bass} · {chords}", [("Mix", "Full mix"), *[(p, p) for p in PARTS]], links)
         (folder / "index.html").write_text(page, encoding="utf-8")
         pad_recorder.receipt(folder)
         publish_directory(folder, output)

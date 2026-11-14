@@ -1,0 +1,10 @@
+schema_version = 1
+name = "Bass filter lift"
+# Beat 1 is the downbeat. Between points, send a new 7-bit value each sixteenth.
+[[lanes]]
+control = "top-encoder-1"
+points = [[9, 48], [12, 86], [15, 105], [16.75, 64]]
+
+[[lanes]]
+control = "top-encoder-2"
+points = [[9, 32], [15, 56], [16.75, 32]]
