@@ -71,3 +71,21 @@ uv run mpc-plugin-map check my-encoders.toml --sdk-dump /path/to/build/params.js
 ```
 
 The editor assigns CC 20 through 27 in selection order. Removing a control shifts the later assignments left. Export a draft before leaving the page or switching plugins.
+
+## Save a reproducible software review
+
+After building your trusted plugin, run the simulator, parameter comparison, package check and worksheet compiler together. Set `sdk` to the SDK checkout. Run from the toolkit root:
+
+```bash
+plugin=plugins/LoopThrow
+uv run mpc-sdk-review "$plugin/build/native/loop-throw.so" \
+  --host-sim "$sdk/.sdk-tools/host_sim" \
+  --profile midi/sdk-examples/loop-throw.toml \
+  --baseline "$plugin/params.reference.json" \
+  --package "$plugin/build/FG Scratchpad - VST - Loop Throw" \
+  --output work/loop-throw-review-01
+```
+
+Open `review.json` for the software result and hashes of the tested desktop binary, simulator, parameter dump and checked ARM binary. The folder also contains the raw simulator log, new dump, worksheets and offline companion. The native library and simulator run as local code. For third-party packages you only want to inspect as files, use `mpc-sdk-package`.
+
+An instrument accepts a comma-separated note list, for example `--notes 36,38,42`. The simulation uses playing transport. Warnings and failures produce exit code 2 and a review for diagnosis when a complete run is available. An unreadable dump or timeout aborts before publication. Use a new output directory per run. Hardware status stays untested.
