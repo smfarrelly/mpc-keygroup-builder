@@ -154,3 +154,7 @@ uv run python plugins/DrumSynthStudy/build.py --sdk "$sdk" \
 ```
 
 Open `work/ghost-accents/index.html` to switch kits during the same two-bar phrase at 96 BPM. The quiet snare ghosts play at velocity 40. The backbeats alternate between 95 and 96, making the layer switch audible with a one-step velocity change. The page links to the shared MIDI file and the per-voice measurements. The `Kit` folder holds the alternate XPM and its twelve WAVs. The build checks all eight pads at both boundary velocities and verifies that the original samples match the Clean Kit reference. Sound and choke behavior on the Key 37 remain pending.
+
+## Hear a recorded drum take with bass and chords
+
+The [Simple Synth rhythm section](../plugins/SimpleSynthStudy/README.md) combines your pad performance with two pitched parts. Listen to the aligned drum, bass and chord stems on the laptop, or keep their MIDI tracks to play with Scratchpad instruments on the MPC.
