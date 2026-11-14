@@ -71,6 +71,13 @@ const Capture = (() => {
         apply(s, event);
       }
       if (!drum) {
+        // Releases exactly on the left edge belong to the preceding sound.
+        // Apply them before reconstructing voices, preserving the raw events below.
+        for (const event of this.events) {
+          if (event[0] < start) continue;
+          if (event[0] > start || event[1] === 144) break;
+          apply(s, event);
+        }
         if (s.pedal) out.push([0, 176, 64, s.pedal]);
         for (const [k, v] of s.ringing)
           out.push([0, 144, k, v], [0, 128, k, 0]);

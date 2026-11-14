@@ -62,3 +62,8 @@ assert.deepEqual(notes(taps, 1), [
   { start: 0, end: 210, key: 70, velocity: 97 },
 ]);
 assert.equal(taps[0][0], 80);
+
+const boundary = new History();
+boundary.add([0, 144, 60, 90]);
+boundary.add([1, 128, 60, 0]);
+assert.deepEqual(notes(boundary.slice(1, 2)), []);
