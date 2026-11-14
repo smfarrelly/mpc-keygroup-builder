@@ -303,10 +303,25 @@ def drum_events(path: Path, *, raw: bytes | None = None,
     return events, audio
 
 
+def protect_sample_output(output, references, indexes):
+    for reference in references:
+        if reference and any(path.resolve() == output for path in _resolve(reference, indexes)):
+            raise ValueError("audition output may not replace a sample referenced by the program")
+
+
 def render(program: Path, output: Path, *, drum_velocities: tuple[int, ...] | None = None,
            drum_bank: str | None = None) -> dict[str, Any]:
     output, manifest_path = output_paths(program, output)
     raw, compressed = read_payload(program)
+    if output.exists():
+        if compressed:
+            sample_root = program.with_name(f"{program.stem}_[ProgramData]")
+            references = [layer.get("sampleFile") for instrument in _json_program(program, raw=raw).get("drum", {}).get("instruments", [])[1:]
+                          for layer in instrument.get("layersv", []) if isinstance(layer, dict)]
+        else:
+            sample_root = program.parent
+            references = [layer.findtext("SampleFile") or layer.findtext("SampleName") for layer in xml_root(raw).iter("Layer")]
+        protect_sample_output(output, references, _audio_index(sample_root, recursive=not compressed))
     if compressed:
         if drum_velocities is not None or drum_bank is not None:
             raise ValueError("--drum-velocities and --drum-bank apply only to XML Drum programs")

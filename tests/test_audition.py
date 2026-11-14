@@ -197,6 +197,24 @@ class AuditionTests(unittest.TestCase):
                 audition.render(wav_named_program, wav_named_program)
             self.assertEqual(wav_named_program.read_bytes(), original)
 
+    def test_existing_samples_are_protected_even_on_another_bank(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            sound = root / "Keep.wav"
+            sound.write_bytes(b"preserve before audio decoding")
+            program = root / "Kit.xpm"
+            program.write_text('<MPCVObject><Program type="Drum"><Instrument number="17">'
+                               '<Layer><SampleName>Keep</SampleName></Layer></Instrument></Program></MPCVObject>')
+            with self.assertRaisesRegex(ValueError, "replace a sample"):
+                audition.render(program, sound, drum_bank="A")
+            self.assertEqual(sound.read_bytes(), b"preserve before audio decoding")
+            keygroup = write_keygroup(root)
+            source = next(keygroup.with_name(keygroup.stem + "_[ProgramData]").glob("*.wav"))
+            original = source.read_bytes()
+            with self.assertRaisesRegex(ValueError, "replace a sample"):
+                audition.render(keygroup, source)
+            self.assertEqual(source.read_bytes(), original)
+
     def test_output_preflight_rejects_manifest_symlink(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
