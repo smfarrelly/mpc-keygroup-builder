@@ -1,5 +1,9 @@
 # Resume here
 
+## November 14 · SDK plugin work
+
+Open the [offline SDK encoder editor](site/sdk-mapping.html) to try the four-control Loop Throw page. For the project-owned drum echo insert, its [source and test guide](plugins/LoopThrow/README.md) covers building and running on Ubuntu. The [SDK workflow](docs/akai-sdk.md) covers parameter discovery, drift checks, Key 37 package inspection and repeatable software reviews. Device installation and listening remain pending.
+
 ## Current focus — software hardening, hardware deferred
 
 Updated October 30, 2026. No new hardware acceptance session is required now.
