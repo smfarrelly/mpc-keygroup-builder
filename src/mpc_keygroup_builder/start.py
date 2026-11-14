@@ -25,6 +25,13 @@ WORKFLOWS = {
         'next': 'Remove --dry-run to create an independent copy. Edit that copy, then capture it as a new archive; do not rewrite the original checksums.',
         'guide': 'docs/idea-snapshots.md',
     },
+    'groove': {
+        'title': 'Hear drum grooves and save one as MIDI',
+        'command': 'mpc-drum-session "/path/to/Kit.xpm" recipes/drums/dusty-pocket.toml recipes/drums/funk-machine.toml --tempo 96 --output work/drum-session-01',
+        'needs': 'An XML Drum Program with its referenced WAV files and the pattern recipes from the checkout.',
+        'next': 'Open work/drum-session-01/index.html. Play the loops and download the MIDI for the groove you want.',
+        'guide': 'docs/drum-ideas.md',
+    },
     'sdk': {
         'title': 'Design a plugin encoder page on this computer',
         'command': 'mpc-plugin-map check midi/sdk-examples/loop-throw.toml --sdk-dump plugins/LoopThrow/params.reference.json',
