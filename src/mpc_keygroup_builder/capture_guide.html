@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Saved XL3 controls · MPC Key 37</title>
+<style>
+:root {color-scheme:dark; font:16px/1.5 "DM Sans",system-ui,sans-serif; color:#f3eee5; background:#181a1b}
+* {box-sizing:border-box}
+body {margin:0}
+main {max-width:1500px; margin:auto; padding:2rem clamp(1rem,3vw,3rem) 4rem}
+h1,h2,h3,p {margin:0 0 .55em}
+h1,h2 {letter-spacing:-.045em; line-height:1.1}
+h1 {font-size:clamp(2.4rem,6vw,5rem)} h2 {font-size:clamp(1.8rem,4vw,2.7rem)}
+h3 {font-size:1rem; margin:1.2rem 0 .5rem}
+header {max-width:56rem} header p,article>p {color:#d2cfc8}
+nav {display:flex;flex-wrap:wrap;gap:.6rem;margin:1.3rem 0}
+nav a {color:#151715;background:#d7ddb9;border-radius:.35rem;padding:.45rem .8rem;font-weight:650}
+article {border-top:2px solid #747b74;padding:2rem 0;scroll-margin:1rem}
+.strip {display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:.35rem}
+.card,.blank {overflow-wrap:anywhere;border-radius:.35rem;padding:.6rem;font-size:.82rem}
+.card {background:#263d37;border:1px solid #587568}
+.mix {background:#323448;border-color:#6c6e93}
+.blank {border:1px dashed #555b5a;color:#c1bfb7}
+small {font:700 .75rem monospace;display:block;padding-bottom:.45rem}
+strong {font-size:.95rem;line-height:1.15;display:block;margin-bottom:.35rem}
+.card ul {padding:0;margin:0 0 .4rem;list-style:none}
+.card li+li {margin-top:.3rem}
+.card p:last-child {margin-bottom:0}
+details {margin-top:.8rem} summary {cursor:pointer;color:#c9dfa9}
+code {overflow-wrap:anywhere}
+:target {outline:2px solid #e7ae55;outline-offset:2px}
+@media(max-width:1000px) {.strip {grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:540px) {.strip {grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media print {
+ :root {color-scheme:light;color:black;background:white} main {padding:0}
+ nav {display:none} article {break-before:page} article:first-of-type {break-before:auto}
+ .strip {grid-template-columns:repeat(4,minmax(0,1fr))} .card,.blank {break-inside:avoid;color:black;background:white}
+ header p,article>p,summary {color:black} h2,h3 {break-after:avoid}
+}
+</style>
+</head>
+<body><main>
+<header><h1>Saved XL3 controls</h1>
+<p><b>$project</b> · MPC firmware $firmware</p>
+<p>Find the physical control by row and column, then read its saved MPC destination. Channel and CC matches come from the Components export and the project’s MIDI Learn settings. Live response is pending.</p>
+<nav aria-label="Plugin pages">$nav</nav></header>
+$sections
+</main></body></html>

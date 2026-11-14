@@ -39,6 +39,17 @@ channel.
 
 ## Derive evidence-backed OPx-4 and Jura cores
 
+Open [Saved XL3 controls](../site/saved-xl3-controls.html) to find the physical rows in the Boot project. OPx-4’s eight macros are on the right half of the top and middle encoder rows. The saved preset is *Tron Guitar*. Jura uses *Fat Square*. In both modes, faders 1–3 address Submixes 1–3 and fader 8 addresses Out 1/2. Faders 4–7 have no matching Learn target in Boot.
+
+To refresh preset, numeric parameter and native Q-Link evidence, first rebuild the audit from your files. Older audits still work for channel and CC lookup.
+
+```bash
+uv run mpc-launch-control audit "/path/to/Boot.xpj" "/path/to/1 - OPX.syx" "/path/to/2 - Jura.syx" --output work/boot-controls.json
+uv run mpc-capture-core work/boot-controls.json midi/capture-cores/opx4-core.toml midi/capture-cores/jura-core.toml --catalog work/plugin-parameter-catalog.json --output work/boot-controls
+```
+
+Open `work/boot-controls/CORE_COMPANION.html`. The optional catalog supplies skin placements when plugin identity, saved parameter ID and control name agree. The saved catalog supplies placements for all eight OPx-4 macros. Jura’s native placements are unknown.
+
 The captured OPx-4 and Jura modes already demonstrate the preferred hybrid
 shape: plugin encoders/buttons use channels 9/10 while all eight faders remain
 isolated on channel 16 for MPC mix targets. Compile the maintained eight-control

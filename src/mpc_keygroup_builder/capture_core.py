@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import csv
-import html
 import io
 import json
 import os
@@ -14,6 +13,8 @@ import tempfile
 import tomllib
 from pathlib import Path
 from typing import Any
+
+from .capture_guide import enrich_control, render_html
 
 
 def load_recipe(path: Path) -> dict[str, Any]:
@@ -59,9 +60,13 @@ def load_audit(path: Path) -> dict[str, Any]:
     return document
 
 
-def analyze(audit: dict[str, Any], recipes: list[dict[str, Any]]) -> dict[str, Any]:
+def analyze(
+    audit: dict[str, Any], recipes: list[dict[str, Any]], *, catalog: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     if not recipes:
         raise ValueError("at least one capture core recipe is required")
+    if catalog is not None and (not isinstance(catalog, dict) or not isinstance(catalog.get("plugins"), list)):
+        raise ValueError("parameter catalog requires a plugins list")
     capture_index = {item["name"]: item for item in audit["captures"]}
     if len(capture_index) != len(audit["captures"]):
         raise ValueError("audit capture names must be unique")
@@ -91,6 +96,8 @@ def analyze(audit: dict[str, Any], recipes: list[dict[str, Any]]) -> dict[str, A
                 row.get("control"): row
                 for row in capture["controls"] if isinstance(row, dict)
             }
+            if len(by_endpoint) != len(capture["controls"]):
+                errors.append("capture has duplicate or malformed physical endpoints")
             controls = []
             for declared in recipe["controls"]:
                 source = by_endpoint.get(declared["endpoint"])
@@ -118,11 +125,14 @@ def analyze(audit: dict[str, Any], recipes: list[dict[str, Any]]) -> dict[str, A
                     errors.append(f"{declared['endpoint']}: invalid captured channel {channel!r}")
                 if type(cc) is not int or not 0 <= cc <= 127:
                     errors.append(f"{declared['endpoint']}: invalid captured CC {cc!r}")
+                if len(targets) > 1:
+                    warnings.append(f"{declared['endpoint']}: channel/CC matches multiple saved mappings")
+                evidence = enrich_control(source, declared["expected_target"], audit, catalog)
                 controls.append({
                     **declared,
                     "channel": channel, "cc": cc,
                     "channel_source": source.get("channel_source"),
-                    "learned_targets": targets,
+                    "learned_targets": targets, "evidence": evidence,
                 })
             mix_faders = []
             if recipe["preserve_mix_faders"]:
@@ -138,6 +148,10 @@ def analyze(audit: dict[str, Any], recipes: list[dict[str, Any]]) -> dict[str, A
                 ]
                 if len(mix_faders) != 8:
                     errors.append(f"persistent mix requires 8 captured faders, found {len(mix_faders)}")
+                if {row["endpoint"] for row in mix_faders} != {f"fader-{i}" for i in range(1, 9)}:
+                    errors.append("persistent mix requires each physical fader 1 through 8")
+                if len({(row["channel"], row["cc"]) for row in mix_faders}) != len(mix_faders):
+                    errors.append("persistent mix faders share a channel/CC")
                 for row in mix_faders:
                     if type(row["channel"]) is not int or not 1 <= row["channel"] <= 16:
                         errors.append(f"{row['endpoint']}: invalid captured channel {row['channel']!r}")
@@ -158,6 +172,7 @@ def analyze(audit: dict[str, Any], recipes: list[dict[str, Any]]) -> dict[str, A
             "id": recipe["id"], "name": recipe["name"],
             "description": recipe["description"],
             "friction_removed": recipe["friction_removed"],
+            "other_enabled_endpoints": sorted(set(by_endpoint) - {r["endpoint"] for r in controls + mix_faders}) if capture else [],
             "capture_name": recipe["capture_name"],
             "source_capture": source_capture,
             "selected_controls": controls,
@@ -175,6 +190,8 @@ def analyze(audit: dict[str, Any], recipes: list[dict[str, Any]]) -> dict[str, A
     return {
         "schema_version": 1, "kind": "mpc-captured-plugin-cores",
         "audit_path": audit["source_path"],
+        "project_name": Path(audit.get("project") or "").name,
+        "project_firmware": audit.get("project_firmware"),
         "summary": {
             "cores": len(results), "errors": len(set(all_errors)),
             "warnings": len(set(all_warnings)),
@@ -253,61 +270,6 @@ def render_checklist(report: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def render_html(report: dict[str, Any]) -> str:
-    sections = []
-    groups = (
-        ("top-encoder", "Top encoders"),
-        ("middle-encoder", "Middle encoders"),
-        ("bottom-encoder", "Bottom encoders"),
-        ("fader", "Persistent MPC mix faders"),
-        ("upper-button", "Upper buttons"),
-        ("lower-button", "Lower buttons"),
-    )
-    for core in report["cores"]:
-        plugin = {row["endpoint"]: row for row in core["selected_controls"]}
-        mix = {row["endpoint"]: row for row in core["persistent_mix_faders"]}
-        rows = []
-        for prefix, title in groups:
-            cells = []
-            for position in range(1, 9):
-                endpoint = f"{prefix}-{position}"
-                item = plugin.get(endpoint) or mix.get(endpoint)
-                if item is None:
-                    cells.append(f'<div class="control empty"><b>{html.escape(endpoint)}</b><span>unassigned</span></div>')
-                    continue
-                is_mix = endpoint in mix
-                label = item.get("expected_label", item.get("label", ""))
-                target = item.get("expected_target") or "; ".join(item.get("learned_targets", [])) or "Learn pending"
-                css = "mix" if is_mix else "plugin"
-                cells.append(
-                    f'<div class="control {css}"><b>{html.escape(endpoint)}</b>'
-                    f'<strong>{html.escape(str(label))}</strong>'
-                    f'<span>ch {item.get("channel")} · CC {item.get("cc")}</span>'
-                    f'<small>{html.escape(str(target))}</small></div>'
-                )
-            rows.append(
-                f'<section class="row"><h3>{html.escape(title)}</h3>'
-                f'<div class="controls">{"".join(cells)}</div></section>'
-            )
-        warnings = "".join(f"<li>{html.escape(item)}</li>" for item in core["warnings"])
-        sections.append(
-            f'<article><header><div><p class="eyebrow">Hardware pending · captured evidence</p>'
-            f'<h2>{html.escape(core["name"])}</h2><p>{html.escape(core["description"])}</p></div>'
-            f'<div class="counts"><b>{len(plugin)}</b> plugin controls<br><b>{len(mix)}</b> mix faders</div></header>'
-            f'{"".join(rows)}<p class="friction"><b>Friction removed:</b> {html.escape(core["friction_removed"])}</p>'
-            f'{f"<details><summary>{len(core["warnings"])} evidence warnings</summary><ul>{warnings}</ul></details>" if warnings else ""}'
-            f'</article>'
-        )
-    return f'''<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="color-scheme" content="dark"><title>Captured Plugin Cores</title><style>
-:root{{font-family:Inter,system-ui,sans-serif;color-scheme:dark;--bg:#0d1110;--panel:#161d19;--line:#334038;--text:#edf4ee;--muted:#9caaa1;--plugin:#284b38;--mix:#3c375d}}
-*{{box-sizing:border-box}}body{{margin:0;background:radial-gradient(circle at 10% 0,#183324,transparent 30rem),var(--bg);color:var(--text)}}main{{max-width:1400px;margin:auto;padding:36px 22px 80px}}h1{{font-size:clamp(2.2rem,6vw,5rem);letter-spacing:-.05em;margin:.2em 0}}.intro{{color:var(--muted);max-width:760px;line-height:1.55}}article{{margin-top:28px;padding:22px;border:1px solid var(--line);border-radius:20px;background:#121815dd}}header{{display:flex;justify-content:space-between;gap:20px;align-items:start}}h2{{font-size:1.8rem;margin:.2em 0}}.eyebrow{{text-transform:uppercase;letter-spacing:.12em;font-size:.7rem;color:#9ee6b1;font-weight:800}}.counts{{text-align:right;color:var(--muted);white-space:nowrap}}.counts b{{color:var(--text);font-size:1.3rem}}.row{{margin-top:18px}}h3{{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}}.controls{{display:grid;grid-template-columns:repeat(8,minmax(90px,1fr));gap:8px;overflow:auto}}.control{{min-height:118px;border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px}}.control.plugin{{background:var(--plugin);border-color:#598469}}.control.mix{{background:var(--mix);border-color:#7770a5}}.control.empty{{opacity:.28}}.control b{{font-size:.7rem;color:var(--muted)}}.control strong{{font-size:.86rem}}.control span,.control small{{font-size:.72rem;line-height:1.3}}.control small{{color:#c0cbc4}}.friction{{margin-top:20px}}details{{color:#f1cf78}}footer{{margin-top:28px;color:var(--muted);font-size:.82rem}}@media(max-width:850px){{header{{display:block}}.counts{{text-align:left}}.controls{{grid-template-columns:repeat(8,105px)}}}}
-</style></head><body><main><p class="eyebrow">Offline · read-only review</p><h1>Captured plugin cores</h1>
-<p class="intro">Green controls are the compact plugin surface. Purple faders preserve the MPC internal mix on its isolated channel. Empty controls are intentionally omitted, not missing evidence.</p>
-{"".join(sections)}<footer>{html.escape(report["boundary"])}</footer></main></body></html>'''
-
-
 def write_report(
     report: dict[str, Any], output: Path, *, force: bool = False,
     protected_paths: tuple[Path, ...] = (),
@@ -351,12 +313,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("audit", type=Path)
     parser.add_argument("recipes", nargs="+", type=Path)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--catalog", type=Path, help="optional saved plugin parameter catalog for native Q-Link evidence")
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args(argv or sys.argv[1:])
-    report = analyze(load_audit(args.audit), [load_recipe(path) for path in args.recipes])
+    catalog = json.loads(args.catalog.read_text(encoding="utf-8")) if args.catalog else None
+    report = analyze(load_audit(args.audit), [load_recipe(path) for path in args.recipes], catalog=catalog)
     write_report(
         report, args.output, force=args.force,
-        protected_paths=(args.audit, *args.recipes),
+        protected_paths=(args.audit, *args.recipes, *([args.catalog] if args.catalog else [])),
     )
     summary = report["summary"]
     print(f"Wrote: {args.output.resolve()}")
