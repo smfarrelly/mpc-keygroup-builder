@@ -23,6 +23,7 @@ Choose the path that matches what you want to do:
   without changing programs or historical listening verdicts.
 
 - **Record a part with your own drum samples:** [play a bank, overdub a loop and export MIDI](docs/pad-recorder.md).
+- **Keep the melody you just played.** [Capture the last four bars or a free-time phrase](docs/keep-that-take.md), overdub drums, and export your idea to MIDI and an MPC project.
 - **Hear grooves on your own drum kit:** build a [browser listening session with matching MIDI](docs/drum-ideas.md#compare-grooves-in-one-browser-tab).
 - **Find a knob in the saved startup project:** open the [OPx-4 and Jura XL3 guide](site/saved-xl3-controls.html). It includes the saved presets, physical rows and MPC mix faders.
 - **Try it without installing anything:** open

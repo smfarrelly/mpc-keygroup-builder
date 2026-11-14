@@ -1,5 +1,9 @@
 # Resume here
 
+## Catch your next idea
+
+Open [Keep That Take](http://127.0.0.1:8737/) on the studio laptop, choose Wurli and start the clock. Play four bars and press **Keep 4**, then add drums. [Start the recorder, capture a free-time phrase or export an XPJ](docs/keep-that-take.md)
+
 ## Play the new Scratchpad
 
 Open `work/Playable Scratchpad/index.html` on the studio laptop to hear three drum kits, Bloom Keys and Beat Catch. The blank project and your four-bar jam are under `Projects/Playable Scratchpad` inside that bundle. [Play, map or rebuild the Scratchpad](docs/playable-scratchpad.md)
