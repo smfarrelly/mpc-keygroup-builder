@@ -311,3 +311,18 @@ Coverage is not a goal of mapping every parameter. It makes the tradeoff
 explicit: a compact page can be accepted when the omitted list contains only
 low-value controls, while a missing filter, envelope, mix, or performance macro
 becomes an actionable profile revision.
+
+## Why Boot and Start respond differently
+
+Both projects contain OPx-4 and Jura. Their saved Learn assignments differ. In Boot, OPx-4’s *Tron Guitar* uses channel 9 for the eight selected macros. In Start, *Emotions* has those macro targets on channel 12, numbers 21–28. Macro 2 has two saved Learn types at number 22. Jura’s *Fat Square* uses channel 10 in Boot. Seven of its eight selected targets appear on channel 11 in Start’s *Abandon*. The comparison found no equivalent Start assignment for Chorus I.
+
+The physical faders in both Components modes send channel 16, numbers 5–12. Boot assigns faders 1–3 to submix volumes and fader 8 to Out 1/2. Start assigns faders 1–5 to the Volca Bass, Volca Keys, Volca Drum, OPX-4 and Jura track volumes. The Jura mode’s fader labels still say “Env” in both cases. Use the project’s saved destinations to interpret those labels.
+
+To check a new template, pass the same Components exports alongside both XPJs:
+
+```bash
+uv run mpc-launch-control compare "/path/to/Boot.xpj" "/path/to/Start.xpj" \
+  "/path/to/1 - OPX.syx" "/path/to/2 - Jura.syx" --output work/controller-changes.json
+```
+
+Each changed endpoint lists its old and new saved targets. When a plugin target appears elsewhere, the report lists candidate inputs in the second project with the same plugin, parameter ID, target label and instrument index. Check the saved Learn type when comparing them. Add `--require-same` to exit 1 on changed bindings or plugin presets. With two copies of the same capture you should get an empty changes list. Changes to knob values and Learn row order alone do not count as a routing change.
