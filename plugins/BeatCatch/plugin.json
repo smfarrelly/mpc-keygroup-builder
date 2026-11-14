@@ -1,0 +1,14 @@
+{
+  "name": "Beat Catch",
+  "manufacturer": "FG Scratchpad",
+  "version": "1.0.0",
+  "format": "vst2",
+  "kind": "effect",
+  "uid": "FgBC",
+  "numInputs": 2,
+  "numOutputs": 2,
+  "file32": "VST/beat-catch-arm32.so",
+  "file64": "VST/beat-catch-arm64.so",
+  "description": "Hold the preceding beat and play it over the live input.",
+  "license": "MIT"
+}

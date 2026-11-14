@@ -1,0 +1,14 @@
+{
+  "name": "Pocket Layers",
+  "manufacturer": "FG Scratchpad",
+  "version": "1.0.0",
+  "format": "vst2",
+  "kind": "instrument",
+  "uid": "FgPL",
+  "numInputs": 0,
+  "numOutputs": 2,
+  "file32": "VST/pocket-layers-arm32.so",
+  "file64": "VST/pocket-layers-arm64.so",
+  "description": "Velocity layers, alternating strikes and choked hats.",
+  "license": "MIT"
+}

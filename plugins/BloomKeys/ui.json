@@ -1,0 +1,26 @@
+{
+  "kit": "cyan",
+  "pages": [
+    {
+      "name": "PLAY",
+      "controls": [
+        {
+          "param": "Bloom",
+          "widget": "knob"
+        },
+        {
+          "param": "Bloom Time",
+          "widget": "knob"
+        },
+        {
+          "param": "Glide",
+          "widget": "knob"
+        },
+        {
+          "param": "Brightness",
+          "widget": "knob"
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,9 @@
 # Resume here
 
+## Play the new Scratchpad
+
+Open `work/Playable Scratchpad/index.html` on the studio laptop to hear three drum kits, Bloom Keys and Beat Catch. The blank project and your four-bar jam are under `Projects/Playable Scratchpad` inside that bundle. [Play, map or rebuild the Scratchpad](docs/playable-scratchpad.md)
+
 ## Open the laptop studio
 
 On the Ubuntu laptop, open `work/pad-studio-2026-11-14/index.html`. Under **Play and record**, choose **Vinyl Layered** to play, **Vinyl Rhythm Section** to hear drums with bass and chords, **Bass Filter Lift** to compare the XL3 gesture, or **Sampled Keys** to audition the four Keygroups. **Ghost Accent** opens a blank take. [Build your own local page](docs/local-home.md#open-the-instruments-from-one-page)

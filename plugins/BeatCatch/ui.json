@@ -1,0 +1,27 @@
+{
+  "kit": "cyan",
+  "pages": [
+    {
+      "name": "PLAY",
+      "controls": [
+        {
+          "param": "Catch",
+          "widget": "switch"
+        },
+        {
+          "param": "Repeat Size",
+          "widget": "slider",
+          "overlay": "menu"
+        },
+        {
+          "param": "Tone",
+          "widget": "knob"
+        },
+        {
+          "param": "Return",
+          "widget": "knob"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "kit": "cyan",
+  "pages": [
+    {
+      "name": "PLAY",
+      "controls": [
+        {
+          "param": "Accent Point",
+          "widget": "knob"
+        },
+        {
+          "param": "Shell Ring",
+          "widget": "knob"
+        },
+        {
+          "param": "Hat Opening",
+          "widget": "knob"
+        }
+      ]
+    }
+  ]
+}

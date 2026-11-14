@@ -1,5 +1,7 @@
 # Use Akai SDK plugins with the mapping toolkit
 
+For the three original instruments and effects and their paired projects, see [Play the Scratchpad](playable-scratchpad.md).
+
 Start with the included Stereo Delay parameter dump. You can search the controls, compile a four-encoder Launch Control XL 3 worksheet, and open the offline companion on your computer. The example uses Sync mode. The encoders set rhythmic division, high cut, feedback and wet/dry mix. All eight faders stay available for the MPC mixer.
 
 From the repository root:
