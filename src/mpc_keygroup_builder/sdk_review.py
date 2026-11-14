@@ -10,9 +10,10 @@ import shutil
 import subprocess
 import tempfile
 
-from . import plugin_companion, plugin_map, plugin_params, sdk_package, sdk_params
+from . import levels, plugin_companion, plugin_map, plugin_params, sdk_package, sdk_params
 from .bundle_verify import sha256, verify_bundle
 from .publication import publish_directory
+from .wave_io import inspect_pcm_file
 
 RESULT = re.compile(r"Result: (PASS(?: with warnings)?|FAIL)\s+\((\d+) passed, (\d+) warnings, (\d+) failures\)")
 
@@ -42,9 +43,22 @@ def simulator_result(run: subprocess.CompletedProcess) -> dict:
             "passed": int(passes), "warnings": int(warnings), "failures": int(failures)}
 
 
+def inspect_preview(path: Path) -> dict:
+    """Verify the requested two-second main pass before publishing listening evidence."""
+    if path.is_symlink() or not path.is_file():
+        raise ValueError("host_sim did not produce a regular preview.wav")
+    pcm = inspect_pcm_file(path)
+    if (pcm["sample_rate"], pcm["channels"], pcm["sample_width_bytes"], pcm["frames"]) != (44100, 2, 2, 88200):
+        raise ValueError("preview.wav must contain two seconds of stereo PCM16 at 44100 Hz")
+    measured = levels.analyze_file(path)
+    return {"file": path.name, "pcm_sha256": pcm["pcm_sha256"], "frames": pcm["frames"],
+            **{key: measured[key] for key in ("sample_rate", "channels", "duration_seconds", "peak_dbfs",
+                                               "rms_dbfs", "silent_fraction", "clipped_fraction")}}
+
+
 def review(*, host: Path, native: Path, output: Path, profile: Path | None = None,
            baseline: Path | None = None, package: Path | None = None,
-           target: str = "arm32", timeout: int = 60, notes: str = "60") -> dict:
+           target: str = "arm32", timeout: int = 60, notes: str = "60", preview: bool = False) -> dict:
     """Publish completed evidence together, including warning/failure results."""
     host, native = (p.expanduser().resolve(strict=True) for p in (host, native))
     if not host.is_file() or not native.is_file():
@@ -61,7 +75,6 @@ def review(*, host: Path, native: Path, output: Path, profile: Path | None = Non
     if package and output.resolve().is_relative_to(package.expanduser().resolve()):
         raise ValueError("review output must be outside the package being checked")
     output.parent.mkdir(parents=True, exist_ok=True)
-    staging = Path(tempfile.mkdtemp(dir=output.parent, prefix=f".{output.name}.review-"))
     page = plugin_map.load_profile(profile) if profile else None
     findings = []
     report = {
@@ -69,6 +82,7 @@ def review(*, host: Path, native: Path, output: Path, profile: Path | None = Non
         "hardware_status": "untested", "native_sha256": sha256(native), "host_sim_sha256": sha256(host),
         "midi_notes": notes, "findings": findings,
     }
+    staging = Path(tempfile.mkdtemp(dir=output.parent, prefix=f".{output.name}.review-"))
     try:
         dump_path = staging / "params.json"
         dump = run_host(host, native, ["dump"], timeout)
@@ -87,9 +101,20 @@ def review(*, host: Path, native: Path, output: Path, profile: Path | None = Non
             report["parameter_comparison"] = delta
             if delta.get("profile_impact", delta)["review_required"]:
                 findings.append("Parameter changes need mapping review.")
-        simulation = run_host(host, native, ["test", "--playing", "--notes", notes], timeout)
+        arguments = ["test", "--playing", "--notes", notes]
+        preview_path = staging / "preview.wav"
+        if preview:
+            arguments += ["--seconds", "2", "--sr", "44100", "--wav", str(preview_path)]
+        simulation = run_host(host, native, arguments, timeout)
         (staging / "host-sim.log").write_text(simulation.stdout + "\n" + simulation.stderr, encoding="utf-8")
         report["simulator"] = simulator_result(simulation)
+        if preview:
+            try:
+                report["preview"] = inspect_preview(preview_path)
+            except (OSError, ValueError) as exc:
+                findings.append(f"Audio preview failed: {exc}")
+                if preview_path.is_symlink() or preview_path.is_file():
+                    preview_path.unlink()
         if package:
             try:
                 report["package"] = sdk_package.inspect(package, target, dump_path)
@@ -140,10 +165,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--target", choices=sdk_package.TARGETS, default="arm32", help="CPU for package inspection")
     parser.add_argument("--timeout", type=int, default=60, metavar="SECONDS", help="limit per simulator call")
     parser.add_argument("--notes", default="60", help="comma-separated MIDI pitches for an instrument")
+    parser.add_argument("--preview", action="store_true", help="save the simulator’s two-second stereo main pass as preview.wav")
     args = parser.parse_args(argv)
     result = review(host=args.host_sim, native=args.native, output=args.output, profile=args.profile,
                     baseline=args.baseline, package=args.package, target=args.target, timeout=args.timeout,
-                    notes=args.notes)
+                    notes=args.notes, preview=args.preview)
     print(f"{result['plugin']}: software {result['software_status']} · hardware untested")
     print(f"Review: {args.output.resolve() / 'review.json'}")
     for finding in result["findings"]:

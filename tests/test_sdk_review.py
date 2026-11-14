@@ -5,6 +5,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 import unittest
+import wave
 from unittest.mock import patch
 
 from mpc_keygroup_builder import bundle_verify, sdk_review
@@ -83,6 +84,35 @@ class SoftwareReviewTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "changed during"):
                 sdk_review.review(**self.kwargs)
         self.assertFalse(self.out.exists())
+        self.assertFalse(list(self.root.glob(".review.review-*")))
+
+    def test_preview_is_validated_and_included_in_receipt(self):
+        def simulate(host, native, args, timeout):
+            if args == ["dump"]:
+                return self.dump
+            with wave.open(args[args.index("--wav") + 1], "wb") as stream:
+                stream.setparams((2, 2, 44100, 88200, "NONE", ""))
+                stream.writeframes(bytes(4 * 88200))
+            return self.passed
+        with patch.object(sdk_review, "run_host", side_effect=simulate):
+            report = sdk_review.review(**self.kwargs, preview=True)
+        self.assertIsNone(report["preview"]["rms_dbfs"])
+        self.assertEqual(report["preview"]["frames"], 88200)
+        receipt = json.loads((self.out / "checksums.json").read_text())
+        self.assertIn("preview.wav", receipt)
+        self.assertEqual(bundle_verify.verify_bundle(self.out)["verified_files"], len(receipt))
+
+    def test_missing_preview_keeps_diagnostic_review(self):
+        with patch.object(sdk_review, "run_host", side_effect=[self.dump, self.passed]):
+            result = sdk_review.review(**self.kwargs, preview=True)
+        self.assertEqual(result["software_status"], "fail")
+        self.assertIn("preview.wav", result["findings"][0])
+        self.assertTrue((self.out / "host-sim.log").exists())
+        self.assertFalse((self.out / "preview.wav").exists())
+
+    def test_malformed_profile_does_not_leave_staging_dir(self):
+        with self.assertRaises(FileNotFoundError):
+            sdk_review.review(**self.kwargs, profile=self.root / "missing.toml")
         self.assertFalse(list(self.root.glob(".review.review-*")))
 
     def test_invalid_notes_rejected_before_launch(self):

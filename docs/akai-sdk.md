@@ -112,3 +112,15 @@ Two additional four-encoder pages are available as alternatives for the same wor
 uv run mpc-plugin-map check midi/sdk-examples/drum-synth.toml --sdk-dump "$sdk/examples/DrumSynth/build/params.json"
 uv run mpc-plugin-map check midi/sdk-examples/simple-synth.toml --sdk-dump "$sdk/examples/SimpleSynth/build/params.json"
 ```
+
+### Listen to a simulator review
+
+Add `--preview` to `mpc-sdk-review` to keep the main stereo pass in the packet. For example, from the checkout with the Drum Synth example already built:
+
+```bash
+uv run mpc-sdk-review "$sdk/examples/DrumSynth/build/native/drum-synth.so" \
+  --host-sim "$sdk/.sdk-tools/host_sim" --profile midi/sdk-examples/drum-synth.toml \
+  --notes 36 --preview --output work/drum-synth-kick
+```
+
+Open `work/drum-synth-kick/preview.wav` to hear the synthesized kick. Use note 37 for snare, 39 for closed hat and 40 for open hat. Multiple requested notes sound together. For effects the simulator supplies its own sine and noise input. The file covers the two-second main pass at 44.1 kHz. The packet includes its peak, RMS, near-full-scale fraction and PCM checksum. Preview files are optional and use about 345 KiB each.
