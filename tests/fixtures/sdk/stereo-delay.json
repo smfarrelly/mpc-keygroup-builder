@@ -1,0 +1,128 @@
+{
+  "name": "Stereo Delay",
+  "vendor": "MPC SDK Examples",
+  "uid": "MxSd",
+  "uidInt": 1299731300,
+  "version": 1000,
+  "isInstrument": false,
+  "numInputs": 2,
+  "numOutputs": 2,
+  "numPrograms": 1,
+  "programs": [
+    "Default"
+  ],
+  "params": [
+    {
+      "index": 0,
+      "id": null,
+      "name": "Sync",
+      "label": "",
+      "display": "On",
+      "default": 1.0,
+      "automatable": true,
+      "kind": "bool",
+      "choices": [
+        "Off",
+        "On"
+      ]
+    },
+    {
+      "index": 1,
+      "id": null,
+      "name": "Division",
+      "label": "",
+      "display": "1/8",
+      "default": 0.4375,
+      "automatable": true,
+      "kind": "choice",
+      "choices": [
+        "1/64",
+        "1/32T",
+        "1/32",
+        "1/16T",
+        "1/16",
+        "1/8T",
+        "1/16D",
+        "1/8",
+        "1/4T",
+        "1/8D",
+        "1/4",
+        "1/2T",
+        "1/4D",
+        "1/2",
+        "1/2D",
+        "1/1",
+        "2/1"
+      ]
+    },
+    {
+      "index": 2,
+      "id": null,
+      "name": "Time",
+      "label": "ms",
+      "display": "350",
+      "default": 0.770689,
+      "automatable": true,
+      "kind": "int",
+      "choices": []
+    },
+    {
+      "index": 3,
+      "id": null,
+      "name": "Feedback",
+      "label": "%",
+      "display": "40",
+      "default": 0.4,
+      "automatable": true,
+      "kind": "int",
+      "choices": []
+    },
+    {
+      "index": 4,
+      "id": null,
+      "name": "Low Cut",
+      "label": "Hz",
+      "display": "120",
+      "default": 0.389076,
+      "automatable": true,
+      "kind": "int",
+      "choices": []
+    },
+    {
+      "index": 5,
+      "id": null,
+      "name": "High Cut",
+      "label": "Hz",
+      "display": "6000",
+      "default": 0.693426,
+      "automatable": true,
+      "kind": "int",
+      "choices": []
+    },
+    {
+      "index": 6,
+      "id": null,
+      "name": "Ping Pong",
+      "label": "",
+      "display": "On",
+      "default": 1.0,
+      "automatable": true,
+      "kind": "bool",
+      "choices": [
+        "Off",
+        "On"
+      ]
+    },
+    {
+      "index": 7,
+      "id": null,
+      "name": "Mix",
+      "label": "%",
+      "display": "35",
+      "default": 0.35,
+      "automatable": true,
+      "kind": "int",
+      "choices": []
+    }
+  ]
+}

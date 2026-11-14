@@ -13,6 +13,15 @@
     "description": {"type": "string", "minLength": 1},
     "slot": {"type": "integer", "minimum": 1, "maximum": 15},
     "channel": {"type": "integer", "minimum": 1, "maximum": 16},
+    "sdk_identity": {
+      "type": "object",
+      "required": ["vendor", "uid_int"],
+      "properties": {
+        "vendor": {"type": "string"},
+        "uid_int": {"type": "integer", "minimum": -2147483648, "maximum": 2147483647}
+      },
+      "additionalProperties": false
+    },
     "probe": {"$ref": "#/$defs/endpoint"},
     "controls": {
       "type": "array",

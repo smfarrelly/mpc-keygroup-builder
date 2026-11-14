@@ -1,0 +1,45 @@
+schema_version = 1
+id = "sdk-stereo-delay"
+name = "Stereo Delay · Drum Throw"
+plugin = "Stereo Delay"
+description = "With Sync enabled, set repeat length and brightness, then ride feedback and mix over a drum loop."
+# Example worksheet using the existing MultiTap slot as an alternate.
+slot = 10
+channel = 8
+probe = "top-encoder-4"
+
+[sdk_identity]
+vendor = "MPC SDK Examples"
+uid_int = 1299731300
+
+[[controls]]
+control = "top-encoder-1"
+ui_parameter = 1
+name = "Division"
+role = "rhythm"
+priority = "core"
+color = "blue"
+
+[[controls]]
+control = "top-encoder-2"
+ui_parameter = 5
+name = "High Cut"
+role = "tone"
+priority = "core"
+color = "yellow"
+
+[[controls]]
+control = "top-encoder-3"
+ui_parameter = 3
+name = "Feedback"
+role = "movement"
+priority = "core"
+color = "blue"
+
+[[controls]]
+control = "top-encoder-4"
+ui_parameter = 7
+name = "Mix"
+role = "global"
+priority = "core"
+color = "white"

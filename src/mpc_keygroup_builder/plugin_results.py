@@ -214,7 +214,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         if name == "import":
             command.add_argument("results", type=Path)
         command.add_argument("profiles", type=Path, nargs="+")
-        command.add_argument("--synth-root", type=Path, required=True)
+        plugin_params.add_source_argument(command)
         command.add_argument("--project", type=Path)
         command.add_argument("--ledger", type=Path, required=True)
         command.add_argument("--report", type=Path)

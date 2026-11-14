@@ -42,8 +42,8 @@ def companion_data(profiles: list[dict[str, Any]], catalog: dict[str, Any]) -> d
                             for key in (
                                 "control", "cc", "label", "role", "priority", "behavior",
                                 "plugin", "name", "ui_parameter", "mpc_parameter", "evidence",
-                                "q_links", "control_type",
-                            )
+                                "q_links", "control_type", "sdk", "sdk_identity",
+                            ) if key in item
                         }
                     )
         pages.append(
@@ -65,7 +65,9 @@ def companion_data(profiles: list[dict[str, Any]], catalog: dict[str, Any]) -> d
             "slot": page["slot"],
             "channel": page["channel"],
             "controls": [
-                (control["control"], control["plugin"], control["ui_parameter"], control["cc"])
+                (control["control"], control["plugin"], control["ui_parameter"], control["cc"],
+                 *([control["sdk_identity"], control["name"], control["sdk"]["kind"],
+                    control["sdk"]["choices"], control["sdk"]["label"]] if "sdk" in control else []))
                 for control in page["controls"]
             ],
         }
@@ -111,6 +113,9 @@ def build_companion(
         key=lambda item: item["slot"],
     )
     catalog = plugin_params.catalog(synth_root.expanduser().resolve(), project)
+    inputs = [synth_root, *profile_paths] + ([project] if project else [])
+    if output in (path.expanduser().resolve() for path in inputs):
+        raise ValueError("companion output must differ from its inputs")
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(render_html(companion_data(profiles, catalog)), encoding="utf-8")
     return output
@@ -119,7 +124,7 @@ def build_companion(
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("profiles", type=Path, nargs="+")
-    parser.add_argument("--synth-root", type=Path, required=True)
+    plugin_params.add_source_argument(parser)
     parser.add_argument("--project", type=Path, help="optional MPC XPJ evidence")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--force", action="store_true", help="replace only the named HTML output")
@@ -208,7 +213,14 @@ HTML_TEMPLATE = r'''<!doctype html>
   function renderTabs(){$('page-list').replaceChildren();DATA.pages.forEach((p,i)=>{const pr=progress(p),b=document.createElement('button');b.type='button';b.className=`page-tab ${i===pageIndex?'active':''}`;b.innerHTML=`<div class="tab-top"><span>${esc(p.name)}</span><span>${pr.pct}%</span></div><div class="tab-meta">Slot ${p.slot} · Ch ${p.channel}</div><div class="mini-progress"><i style="width:${pr.pct}%"></i></div>`;b.onclick=()=>{pageIndex=i;selected=p.probe||p.controls[0]?.control||null;render()};$('page-list').append(b)})}
   function renderSteps(p,s){const probe=p.controls.find(c=>c.control===p.probe),items=[['mode','Create mode',`Slot ${p.slot}, channel ${p.channel}, USB output`],['probe','Verify one probe',probe?`${probe.control} · CC ${probe.cc} → ${probe.plugin} ${probe.name}`:'Use the first core control'],['reload','Save and reload','Confirm the learned assignment persists in the MPC project']];$('steps').replaceChildren();items.forEach(([id,title,copy])=>{const label=document.createElement('label');label.className='step';label.innerHTML=`<input type="checkbox" ${s.steps[id]?'checked':''}><span><b>${esc(title)}</b><small>${esc(copy)}</small></span>`;label.querySelector('input').onchange=e=>{s.steps[id]=e.target.checked;save();renderTabs()};$('steps').append(label)})}
   function renderController(p,s){const by=new Map(p.controls.map(c=>[c.control,c]));$('controller').replaceChildren();DATA.groups.forEach(g=>{const row=document.createElement('div');row.className='control-row';const name=document.createElement('div');name.className='row-name';name.textContent=g.name;row.append(name);for(let i=1;i<=8;i++){const id=`${g.id}-${i}`,c=by.get(id),b=document.createElement('button');b.type='button';b.className=`control ${g.id.includes('fader')?'fader':g.id.includes('button')?'button':''} ${c?'assigned':'empty'} ${c?.priority==='core'?'core':''} ${c?s.controls[id].status:''} ${id===selected?'selected':''}`;b.disabled=!c;b.setAttribute('aria-label',c?`${id}: ${c.label}`:`${id}: unassigned`);b.textContent=c?c.label:'—';if(c)b.onclick=()=>{selected=id;renderController(p,s);renderDetail(p,s)};row.append(b)}$('controller').append(row)})}
-  function renderDetail(p,s){const c=p.controls.find(x=>x.control===selected)||p.controls.find(x=>x.control===p.probe)||p.controls[0];if(!c){$('detail').innerHTML='<div class="detail-empty">No mapped controls on this page.</div>';return}selected=c.control;const v=s.controls[c.control];$('position').textContent=c.control;$('detail').innerHTML=`<div class="detail"><div class="eyebrow">${esc(c.priority)} · ${esc(c.role)}</div><h3>${esc(c.label)}</h3><div class="route">${esc(c.plugin)} → ${esc(c.name)}</div><div class="facts"><div class="fact"><span>Send</span><b>Ch ${p.channel} · CC ${c.cc}</b></div><div class="fact"><span>Behavior</span><b>${esc(c.behavior)}</b></div><div class="fact"><span>UI parameter</span><b>${c.ui_parameter}</b></div><div class="fact"><span>MPC candidate</span><b>${c.mpc_parameter} · ${esc(c.evidence)}</b></div></div><div class="status" role="group" aria-label="Hardware result">${STATUSES.map(x=>`<button type="button" data-status="${x}" class="${v.status===x?'active':''}">${x}</button>`).join('')}</div><label class="notes-label">Listening and behavior notes<textarea id="notes" placeholder="What moved? Range, pickup, unexpected targets, musical usefulness…">${esc(v.notes)}</textarea></label><div class="nav-controls"><button id="prev" type="button">← Previous</button><button id="next" type="button">Next →</button></div></div>`;$('detail').querySelectorAll('[data-status]').forEach(b=>b.onclick=()=>{v.status=b.dataset.status;save();render()});$('notes').oninput=e=>{v.notes=e.target.value;save()};$('prev').onclick=()=>move(-1);$('next').onclick=()=>move(1)}
+  function sdkFacts(control) {
+    if (!control.sdk) return '';
+    const sdk = control.sdk;
+    const initial = [sdk.display, sdk.label].filter(Boolean).join(' ');
+    const choices = sdk.choices.length ? `<div class="fact"><span>Choices</span><b>${esc(sdk.choices.join(' · '))}</b></div>` : '';
+    return `<div class="fact"><span>Startup value</span><b>${esc(initial)}</b></div>${choices}`;
+  }
+  function renderDetail(p,s){const c=p.controls.find(x=>x.control===selected)||p.controls.find(x=>x.control===p.probe)||p.controls[0];if(!c){$('detail').innerHTML='<div class="detail-empty">No mapped controls on this page.</div>';return}selected=c.control;const v=s.controls[c.control];$('position').textContent=c.control;$('detail').innerHTML=`<div class="detail"><div class="eyebrow">${esc(c.priority)} · ${esc(c.role)}</div><h3>${esc(c.label)}</h3><div class="route">${esc(c.plugin)} → ${esc(c.name)}</div><div class="facts"><div class="fact"><span>Send</span><b>Ch ${p.channel} · CC ${c.cc}</b></div><div class="fact"><span>Behavior</span><b>${esc(c.behavior)}</b></div><div class="fact"><span>${c.sdk?'SDK index':'UI parameter'}</span><b>${c.ui_parameter}</b></div><div class="fact"><span>MPC candidate</span><b>${c.mpc_parameter ?? "Unverified"} · ${esc(c.evidence)}</b></div>${sdkFacts(c)}</div><div class="status" role="group" aria-label="Hardware result">${STATUSES.map(x=>`<button type="button" data-status="${x}" class="${v.status===x?'active':''}">${x}</button>`).join('')}</div><label class="notes-label">Listening and behavior notes<textarea id="notes" placeholder="What moved? Range, pickup, unexpected targets, musical usefulness…">${esc(v.notes)}</textarea></label><div class="nav-controls"><button id="prev" type="button">← Previous</button><button id="next" type="button">Next →</button></div></div>`;$('detail').querySelectorAll('[data-status]').forEach(b=>b.onclick=()=>{v.status=b.dataset.status;save();render()});$('notes').oninput=e=>{v.notes=e.target.value;save()};$('prev').onclick=()=>move(-1);$('next').onclick=()=>move(1)}
   function move(delta){const controls=page().controls,i=Math.max(0,controls.findIndex(c=>c.control===selected)),next=(i+delta+controls.length)%controls.length;selected=controls[next].control;renderController(page(),pageState());renderDetail(page(),pageState())}
   function renderPrint(){const root=$('print-pages');root.replaceChildren();DATA.pages.forEach(p=>{const card=document.createElement('article');card.className='print-card';const groups=DATA.groups.map(g=>{const controls=p.controls.filter(c=>c.control.startsWith(g.id));if(!controls.length)return'';return`<section class="print-group"><h2>${esc(g.name)}</h2>${controls.map(c=>`<div class="print-row"><b>${esc(c.control)}</b><span>${esc(c.label)} · ${esc(c.plugin)} → ${esc(c.name)}</span><span>CC ${c.cc}</span></div>`).join('')}</section>`}).join('');card.innerHTML=`<h1>${esc(p.name)}</h1><div class="print-meta">Custom Mode ${p.slot} · MIDI channel ${p.channel} · USB · Probe ${esc(p.probe||'first core control')}</div><div class="print-grid">${groups}</div><div class="print-note">Hardware result: □ pass □ warn □ fail &nbsp; Notes: ________________________________________________</div>`;root.append(card)})}
   function resultPayload(){return{schema_version:1,kind:'mpc-plugin-mapping-results',fingerprint:DATA.fingerprint,exported_at:new Date().toISOString(),pages:DATA.pages.map(p=>({id:p.id,name:p.name,slot:p.slot,channel:p.channel,steps:state.pages[p.id].steps,controls:p.controls.map(c=>({control:c.control,plugin:c.plugin,target:c.name,status:state.pages[p.id].controls[c.control].status,notes:state.pages[p.id].controls[c.control].notes}))}))}}

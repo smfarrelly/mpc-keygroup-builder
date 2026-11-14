@@ -128,6 +128,8 @@ def core_profile(
         key: profile[key]
         for key in ("schema_version", "slot", "channel")
     }
+    if "sdk_identity" in profile:
+        result["sdk_identity"] = profile["sdk_identity"]
     if "plugin" in profile:
         result["plugin"] = profile["plugin"]
     else:

@@ -55,6 +55,8 @@ def load_profile(path: Path) -> dict[str, Any]:
     for field in ("id", "name", "description"):
         if not isinstance(document.get(field), str) or not document[field]:
             raise ValueError(f"{path}: profile requires {field}")
+    if Path(document["id"]).name != document["id"] or document["id"] in (".", "..") or any(c in document["id"] for c in "/\\:"):
+        raise ValueError(f"{path}: profile id must be a single folder name")
     plugin = document.get("plugin")
     plugins = document.get("plugins")
     has_plugin = isinstance(plugin, str) and bool(plugin)
@@ -67,6 +69,10 @@ def load_profile(path: Path) -> dict[str, Any]:
         raise ValueError(f"{path}: profile requires exactly one of plugin or plugins")
     if has_plugins and len(plugins) != len(set(plugins)):
         raise ValueError(f"{path}: plugins must not contain duplicates")
+    if "sdk_identity" in document:
+        identity = document["sdk_identity"]
+        if not has_plugin or not isinstance(identity, dict) or not isinstance(identity.get("vendor"), str) or type(identity.get("uid_int")) is not int:
+            raise ValueError(f"{path}: sdk_identity requires one plugin, vendor and integer uid_int")
     channel = document.get("channel")
     slot = document.get("slot")
     if not isinstance(channel, int) or not 1 <= channel <= 16:
@@ -105,6 +111,9 @@ def validate_profile(
         if plugin is None:
             errors.append(f"plugin content not found: {name}")
         else:
+            if plugin.get("sdk_identity") != profile.get("sdk_identity"):
+                errors.append(f"{name}: SDK plugin identity differs from profile "
+                              f"(expected {profile.get('sdk_identity')}, found {plugin.get('sdk_identity')})")
             discovered_by_plugin[name] = {
                 item["ui_parameter"]: item for item in plugin["controls"]
             }
@@ -134,6 +143,8 @@ def validate_profile(
         if source is None:
             errors.append(f"{endpoint}: UI parameter {ui_parameter} not found in {plugin_name}")
             continue
+        if "sdk" in source and not source["sdk"]["automatable"]:
+            errors.append(f"{endpoint}: SDK host reports {source['name']} is not automatable")
         expected_name = item.get("name")
         source_names = [source["name"], *source.get("aliases", [])]
         if not isinstance(expected_name, str) or _normalized(expected_name) not in {
@@ -174,6 +185,9 @@ def validate_profile(
                 "evidence": source["mpc_parameter_basis"],
                 "q_links": source.get("q_links", []),
                 "control_type": source["control_type"],
+                **({"sdk": source["sdk"], "sdk_identity": profile["sdk_identity"],
+                    "sdk_plugin_kind": catalog_plugins[_normalized(plugin_name)]["plugin_kind"]}
+                   if "sdk" in source and "sdk_identity" in profile else {}),
             }
         )
     if not any(row["priority"] == "core" for row in rows):
@@ -283,7 +297,7 @@ def render_layout(result: dict[str, Any]) -> str:
             plugin = f"{row['plugin']}: " if len(plugins) > 1 else ""
             lines.append(
                 f"- **{row['control']}** — {row['label']} → {plugin}{row['name']} "
-                f"(ch {row['channel']}, CC {row['cc']}, MPC {row['mpc_parameter']}, "
+                f"(ch {row['channel']}, CC {row['cc']}, MPC {row['mpc_parameter'] if row['mpc_parameter'] is not None else 'unverified'}, "
                 f"{row['evidence']}, {row['role']}/{row['priority']}{qlink})"
             )
         lines.append("")
@@ -402,6 +416,10 @@ def render_hardware_checklist(results: list[dict[str, Any]]) -> str:
             if len(plugins) == 1
             else "- [ ] Inspect the XPJ; promote only the probed effect's +4096 parameter relationship."
         )
+        if "sdk" in probe:
+            if probe["sdk_plugin_kind"] == "effect":
+                load_step = f"- [ ] Add **{probe['plugin']}** as an insert on a test track or submix."
+            evidence_step = "- [ ] Inspect the saved XPJ for the Learn target and record its ID."
         lines.extend(
             (
                 f"## {profile['name']}",
@@ -430,9 +448,27 @@ def compile_batch(
     validation = validate_batch(profiles, catalog)
     if validation["errors"]:
         raise ValueError("invalid plugin mapping batch: " + "; ".join(validation["errors"]))
+    if output.expanduser().is_symlink():
+        raise ValueError(f"refusing symbolic-link worksheet directory: {output}")
     output = output.expanduser().resolve()
+    inputs = [Path(p["source_path"]) for p in profiles if "source_path" in p]
+    inputs.extend(Path(p["source"]) for p in catalog["plugins"] if "source" in p)
+    if catalog.get("root"):
+        inputs.append(Path(catalog["root"]))
+    inputs.extend(captures or [])
+    if project:
+        inputs.append(project)
+    if any(path.expanduser().resolve().is_relative_to(output) for path in inputs):
+        raise ValueError("worksheet directory must not contain input files")
     if output.exists() and not force:
         raise FileExistsError(output)
+    if output.exists():
+        receipt = output / "batch.json"
+        if not receipt.is_file() or receipt.is_symlink():
+            raise ValueError(f"refusing to replace unrecognized worksheet directory: {output}")
+        previous = json.loads(receipt.read_text(encoding="utf-8"))
+        if not isinstance(previous, dict) or previous.get("schema_version") != 1 or not isinstance(previous.get("profiles"), list) or "capture_reference" not in previous:
+            raise ValueError(f"invalid worksheet receipt: {receipt}")
     output.parent.mkdir(parents=True, exist_ok=True)
     staging = Path(tempfile.mkdtemp(prefix=f".{output.name}.staging-", dir=output.parent))
     try:
@@ -504,8 +540,8 @@ def compile_batch(
             "validation": {"errors": validation["errors"], "warnings": validation["warnings"]},
             "capture_reference": reference,
             "evidence_boundary": (
-                "UI names are discovered from installed content. MPC IDs remain hypotheses until "
-                "a same-plugin MPC-authored XPJ verifies the relationship."
+                "Names come from plugin skins or SDK dumps. MPC IDs require evidence from "
+                "a same-plugin MPC-authored XPJ."
             ),
         }
         (staging / "batch.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
@@ -525,7 +561,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     compile_parser = commands.add_parser("compile", help="compile profiles into Components and MPC worksheets")
     for command in (check, compile_parser):
         command.add_argument("profiles", type=Path, nargs="+")
-        command.add_argument("--synth-root", type=Path, required=True)
+        plugin_params.add_source_argument(command)
         command.add_argument("--project", type=Path, help="optional MPC XPJ evidence")
     compile_parser.add_argument("--capture", type=Path, action="append", default=[])
     compile_parser.add_argument("--output", type=Path, required=True)
