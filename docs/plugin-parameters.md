@@ -1,5 +1,7 @@
 # Plugin parameter catalog
 
+For an Akai host simulator dump, see [SDK parameter discovery and mapping](akai-sdk.md).
+
 `mpc-plugin-params` turns the MPC UI metadata shipped with some downloaded
 plugin content into a searchable control catalog. It is intended to replace
 scrolling through hundreds of undifferentiated MIDI Learn targets when planning

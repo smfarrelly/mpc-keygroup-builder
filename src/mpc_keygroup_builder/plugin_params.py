@@ -250,6 +250,17 @@ def catalog(
     project: Path | None = None,
     plugin_filter: str | None = None,
 ) -> dict[str, Any]:
+    root = root.expanduser().resolve()
+    if root.is_file():
+        from . import sdk_params
+
+        plugin = sdk_params.inspect(root)
+        if plugin_filter and plugin_filter.casefold() not in plugin["plugin"].casefold():
+            raise ValueError(f"SDK dump {root} describes {plugin['plugin']!r}, not {plugin_filter!r}")
+        return {
+            "schema_version": 1, "root": str(root), "project": None,
+            "plugins": [plugin], "skipped": [],
+        }
     paths = discover(root)
     if plugin_filter:
         token = plugin_filter.casefold()
@@ -302,6 +313,17 @@ def filtered(
 
 def render_markdown(report: dict[str, Any], rows: list[dict[str, Any]]) -> str:
     lines = ["# MPC plugin parameter catalog", "", f"Root: `{report['root']}`", ""]
+    if report["plugins"] and report["plugins"][0].get("source_kind") == "sdk-host-dump":
+        plugin = report["plugins"][0]
+        lines.extend([f"## {plugin['plugin']}", "", plugin["boundary"], ""])
+        for row in rows:
+            sdk = row["sdk"]
+            value = f"{sdk['display']} {sdk['label']}".strip()
+            choices = ", ".join(sdk["choices"])
+            automation = "automatable" if sdk["automatable"] else "automation unavailable"
+            lines.append(f"- {row['name']} (index {row['ui_parameter']}, {automation}). "
+                         f"Default {value}." + (f" Choices: {choices}." if choices else ""))
+        return "\n".join(lines) + "\n"
     for plugin in report["plugins"]:
         lines.append(
             f"- **{plugin['plugin']}**: {plugin['control_count']} UI controls; "
@@ -344,14 +366,20 @@ def render_csv(rows: list[dict[str, Any]]) -> str:
         "plugin", "name", "ui_parameter", "mpc_parameter", "mpc_parameter_basis",
         "control_type", "usefulness_score", "learned_channel", "learned_cc", "q_links",
     )
+    if any("sdk" in row for row in rows):
+        fields += ("automatable", "kind", "unit", "startup_display", "startup_normalized", "choices")
     writer = csv.DictWriter(stream, fieldnames=fields)
     writer.writeheader()
     for row in rows:
+        if "sdk" in row:
+            sdk = row["sdk"]
+            row = {**row, "automatable": sdk["automatable"], "kind": sdk["kind"], "unit": sdk["label"],
+                   "startup_display": sdk["display"], "startup_normalized": sdk["default"], "choices": sdk["choices"]}
         writer.writerow(
             {
                 key: "; ".join(map(str, row[key]))
-                if isinstance(row[key], list)
-                else row[key]
+                if isinstance(row.get(key), list)
+                else row.get(key)
                 for key in fields
             }
         )
@@ -380,9 +408,14 @@ def _write_atomic(path: Path, text: str) -> None:
             temporary.unlink()
 
 
+def add_source_argument(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument("--synth-root", "--sdk-dump", dest="synth_root", type=Path, required=True,
+                        metavar="PATH", help="installed Synths directory or Akai host_sim params.json")
+
+
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("root", type=Path, help="one plugin directory or the MPC Synths directory")
+    parser.add_argument("root", type=Path, help="a host_sim params.json, one plugin directory, or the MPC Synths directory")
     parser.add_argument("--plugin", help="case-insensitive plugin-name filter")
     parser.add_argument("--project", type=Path, help="optional MPC 3 XPJ with MIDI Learn evidence")
     parser.add_argument("--query", help="space-separated words that must occur in a control name")
@@ -404,6 +437,8 @@ def main(argv: list[str] | None = None) -> int:
     else:
         text = render_markdown(report, rows)
     if args.output:
+        if args.output.expanduser().resolve() == args.root.expanduser().resolve():
+            raise ValueError("output must differ from the parameter input")
         _write_atomic(args.output, text)
         print(f"Wrote: {args.output.expanduser().resolve()}")
     else:

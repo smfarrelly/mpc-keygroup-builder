@@ -102,22 +102,25 @@ def seed_profile(plugin: dict[str, Any], slot: int, channel: int, limit: int = 4
     buttons = []
     continuous = []
     for control in plugin["controls"]:
+        if "sdk" in control and not control["sdk"]["automatable"]:
+            continue
         is_button = any(
             token in control["control_type"].casefold() for token in plugin_map.BUTTON_TYPES
         )
         (buttons if is_button else continuous).append(control)
     continuous.sort(key=_rank)
     buttons.sort(key=_rank)
-    selected_continuous = continuous[: min(32, limit)]
+    groups = tuple(group for group in GROUPS if group != "fader" or "sdk_identity" not in plugin)
+    selected_continuous = continuous[: min(len(groups) * 8, limit)]
     selected_buttons = buttons[: min(16, limit - len(selected_continuous))]
-    available = {group: [f"{group}-{position}" for position in range(1, 9)] for group in GROUPS}
+    available = {group: [f"{group}-{position}" for position in range(1, 9)] for group in groups}
     rows = []
     for index, control in enumerate(selected_continuous):
         control_role = role(control["name"])
         endpoint = next(
             available[group].pop(0)
             for group in PREFERENCES[control_role]
-            if available[group]
+            if available.get(group)
         )
         rows.append(
             {
@@ -160,6 +163,7 @@ def seed_profile(plugin: dict[str, Any], slot: int, channel: int, limit: int = 4
         "channel": channel,
         "probe": probe,
         "controls": rows,
+        **({"sdk_identity": plugin["sdk_identity"]} if "sdk_identity" in plugin else {}),
         "source_control_count": plugin["control_count"],
     }
 
@@ -183,6 +187,10 @@ def render_toml(profile: dict[str, Any]) -> str:
         f"probe = {json.dumps(profile['probe'])}",
         "",
     ]
+    if "sdk_identity" in profile:
+        identity = profile["sdk_identity"]
+        lines.extend(["[sdk_identity]", f"vendor = {json.dumps(identity['vendor'])}",
+                      f"uid_int = {identity['uid_int']}", ""])
     for control in profile["controls"]:
         lines.extend(
             (
@@ -205,7 +213,7 @@ def render_toml(profile: dict[str, Any]) -> str:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("plugin")
-    parser.add_argument("--synth-root", type=Path, required=True)
+    plugin_params.add_source_argument(parser)
     parser.add_argument("--project", type=Path)
     parser.add_argument("--slot", type=int, required=True)
     parser.add_argument("--channel", type=int, required=True)

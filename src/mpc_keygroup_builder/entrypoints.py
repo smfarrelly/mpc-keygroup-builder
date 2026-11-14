@@ -86,6 +86,7 @@ COMMANDS = {
     "mpc-launch-control": _spec("launch_control", "MIDI control", "Inspect Launch Control Components captures", "docs/declarative-midi-control.md"),
     "mpc-session-report": _spec("session", "Hardware", "Combine rig, candidate, and capture readiness", "docs/rig-profiles.md"),
     "mpc-plugin-audit": _spec("plugin_audit", "Inspect", "Inventory installed MPC plugin content", "docs/hardware-workflow-tools.md"),
+    "mpc-sdk-compare": _spec("sdk_params", "MIDI control", "Compare Akai SDK parameter dumps for mapping changes", "docs/akai-sdk.md"),
     "mpc-plugin-params": _spec("plugin_params", "MIDI control", "Search plugin controls and verified MIDI Learn mappings", "docs/plugin-parameters.md"),
     "mpc-plugin-skin-audit": _spec("plugin_skin_audit", "MIDI control", "Compare plugin UI skin parameter metadata", "docs/plugin-parameters.md"),
     "mpc-plugin-map": _spec("plugin_map", "MIDI control", "Compile role-based Launch Control plugin pages", "docs/plugin-mapping.md"),

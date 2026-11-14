@@ -17,6 +17,8 @@ found in the installed MPC plugin content. Compilation fails if installed
 metadata has drifted, a parameter is missing, an endpoint is duplicated, or a
 Custom Mode slot is reused.
 
+For external plugins, start with the [Akai SDK mapping walkthrough](akai-sdk.md).
+
 ## First performance-page batch
 
 - `midi/plugins/iona-performance.toml`: slot 7, channel 11, source mix,

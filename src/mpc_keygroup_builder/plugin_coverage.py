@@ -148,7 +148,7 @@ def write_report(report: dict[str, Any], output: Path) -> None:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("profiles", type=Path, nargs="+")
-    parser.add_argument("--synth-root", type=Path, required=True)
+    plugin_params.add_source_argument(parser)
     parser.add_argument("--project", type=Path, help="optional MPC XPJ MIDI Learn evidence")
     parser.add_argument("--omitted-limit", type=int, default=10)
     parser.add_argument("--output", type=Path, required=True)
