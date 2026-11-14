@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <meta charset="utf-8" /><meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  /><title>Keep That Take</title>
+  <style>
+    body {
+      max-width: 48rem;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      background: #f6f2e9;
+      color: #202924;
+      font: 17px/1.5 system-ui;
+    }
+    h1 {
+      font-size: 2.6rem;
+      margin-bottom: 0;
+    }
+    button,
+    input,
+    select {
+      font: inherit;
+      padding: 0.35rem 0.55rem;
+    }
+    button {
+      cursor: pointer;
+    }
+    fieldset {
+      border: 1px solid #acae9f;
+      margin: 1rem 0;
+    }
+    legend {
+      font-weight: bold;
+    }
+    label,
+    button {
+      margin: 0.15rem;
+    }
+    #surface {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 3px;
+    }
+    #surface button {
+      background: #fffcf4;
+      touch-action: none;
+      min-height: 3rem;
+      margin: 0;
+    }
+    #surface button.down {
+      background: #ffc77c;
+    }
+    output {
+      display: block;
+      min-height: 1.6em;
+    }
+    small {
+      display: block;
+    }
+    button:disabled {
+      cursor: default;
+    }
+    input[type="number"] {
+      width: 4.3rem;
+    }
+    #keep {
+      background: #254f40;
+      color: white;
+    }
+    #phase {
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+  <h1>Keep That Take</h1>
+  <p>
+    Start the clock and play. Keep the last four complete bars when you hear an
+    idea worth looping.
+  </p>
+  <fieldset>
+    <legend>Play</legend>
+    <label
+      >Instrument
+      <select id="track"></select></label
+    ><label
+      >Octave
+      <select id="octave">
+        <option>-2</option>
+        <option>-1</option>
+        <option selected>0</option>
+        <option>1</option>
+        <option>2</option>
+      </select></label
+    ><label
+      >BPM
+      <input id="tempo" type="number" value="120" min="20" max="300" /></label
+    ><label><input id="click" type="checkbox" checked />Click</label>
+    <button id="start">Start clock</button
+    ><button id="stop" disabled>Stop</button
+    ><button id="midi">Connect MIDI</button
+    ><output id="phase">Clock stopped</output>
+    <div id="surface"></div>
+    <small
+      >Play A W S E D F T G Y H U J K O L P on your computer keyboard. Space
+      holds sustain. External MIDI uses the selected instrument.</small
+    >
+  </fieldset>
+  <button id="keep" disabled>Keep 4</button
+  ><button id="undo">Undo last layer</button>
+  <ol id="layers"></ol>
+  <details>
+    <summary>Keep a free-time phrase</summary>
+    <p>
+      Turn off the click and play. Find phrase selects your recent notes on the
+      current instrument. Adjust the boundaries in seconds, audition, then keep.
+      The first phrase sets the loop length.
+    </p>
+    <button id="find">Find phrase</button
+    ><label>From <input id="from" type="number" step=".01" /></label
+    ><label>To <input id="to" type="number" step=".01" /></label
+    ><button id="preview">Audition selection</button
+    ><button id="phrase">Keep phrase</button>
+  </details>
+  <fieldset>
+    <legend>Your idea</legend>
+    <label>Name <input id="name" value="My idea" maxlength="64" /></label
+    ><label
+      >Sixteenth-note snap for playback
+      <input id="snap" type="range" min="0" max="100" value="0"
+    /></label>
+    <button id="save">Save take</button
+    ><label>Reopen take <input type="file" id="open" accept=".json" /></label
+    ><button id="export">Export MIDI and MPC project</button
+    ><button id="fresh">New idea</button>
+  </fieldset>
+  <output id="status" aria-live="polite"
+    >Choose an instrument and start the clock.</output
+  >
+  <script src="/capture.js"></script>
+  <script src="/studio.js"></script>
+</html>
