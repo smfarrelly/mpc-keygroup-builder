@@ -1,5 +1,9 @@
 # Resume here
 
+## Start with a musical reply
+
+Open the [laptop studio](http://127.0.0.1:8737/), select **Wurli** and press **Answer**. Hold a chord until Pluck Bass comes in. **Again** auditions an alternative. **Keep both** makes the pair a loop you can overdub. [Answer Track guide](docs/keep-that-take.md#start-with-answer-track)
+
 ## Catch your next idea
 
 Open [Keep That Take](http://127.0.0.1:8737/) on the studio laptop, choose Wurli and start the clock. Play four bars and press **Keep 4**, then add drums. [Start the recorder, capture a free-time phrase or export an XPJ](docs/keep-that-take.md)

@@ -73,9 +73,11 @@ class KeepTakeTests(unittest.TestCase):
                 (out / "Idea_[ProjectData]/keys.wav").read_bytes(), b"test sample"
             )
             self.assertEqual(json.loads((out / "take.json").read_text()), self.take)
-            self.assertNotEqual(
-                studio.export(self.take, p, root / "out", self.instruments), out
-            )
+            one_bar = dict(self.take, seconds=2, tempo=120)
+            second = studio.export(one_bar, p, root / "out", self.instruments)
+            self.assertNotEqual(second, out)
+            seq = xpj.load(second / "Idea.xpj").data["sequences"][0]["value"]
+            self.assertEqual((seq["bpm"], seq["lengthBars"]), (120, 1))
             self.assertEqual(xpj.load(p).document, doc)
 
     def test_validation_rejects_open_notes_and_unknown_auditions(self):

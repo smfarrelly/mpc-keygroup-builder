@@ -24,7 +24,9 @@ jobs:
           MPC_TEST_CHROME: /usr/bin/google-chrome
         run: uv run python -m unittest discover -s tests -v
       - name: Check retrospective MIDI capture and loop boundaries
-        run: node tests/keep_capture.cjs
+        run: |
+          node tests/keep_capture.cjs
+          node tests/answer_track.cjs
       - name: Validate published declarative examples
         run: |
           uv run mpc-schema validate device-profile devices/*.toml
