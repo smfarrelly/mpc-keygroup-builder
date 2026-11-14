@@ -26,6 +26,12 @@ strong {font-size:.95rem;line-height:1.15;display:block;margin-bottom:.35rem}
 .card ul {padding:0;margin:0 0 .4rem;list-style:none}
 .card li+li {margin-top:.3rem}
 .card p:last-child {margin-bottom:0}
+#notebook {max-width:50rem;padding:1.4rem 0;border-top:2px solid #747b74}
+#notebook label {display:block;margin:.5rem 0}
+#notebook select,#notebook textarea {display:block;width:100%;margin:.3rem 0 1rem;padding:.45rem;font:inherit}
+#notebook button,.note-link {font:inherit;cursor:pointer}
+.note-link {font-size:.8rem;border:0;border-bottom:1px solid currentColor;background:transparent;color:#e1ecba;padding:0}
+#note-status {min-height:1.5em;color:#d2cfc8}
 details {margin-top:.8rem} summary {cursor:pointer;color:#c9dfa9}
 code {overflow-wrap:anywhere}
 :target {outline:2px solid #e7ae55;outline-offset:2px}
@@ -33,7 +39,7 @@ code {overflow-wrap:anywhere}
 @media(max-width:540px) {.strip {grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media print {
  :root {color-scheme:light;color:black;background:white} main {padding:0}
- nav {display:none} article {break-before:page} article:first-of-type {break-before:auto}
+ nav,.note-link,#notebook {display:none} article {break-before:page} article:first-of-type {break-before:auto}
  .strip {grid-template-columns:repeat(4,minmax(0,1fr))} .card,.blank {break-inside:avoid;color:black;background:white}
  header p,article>p,summary {color:black} h2,h3 {break-after:avoid}
 }
@@ -45,4 +51,5 @@ code {overflow-wrap:anywhere}
 <p>Find the physical control by row and column, then read its saved MPC destination. Channel and CC matches come from the Components export and the project’s MIDI Learn settings. Live response is pending.</p>
 <nav aria-label="Plugin pages">$nav</nav></header>
 $sections
-</main></body></html>
+$notebook
+</main>$scripts</body></html>

@@ -48,7 +48,7 @@ uv run mpc-launch-control audit "/path/to/Boot.xpj" "/path/to/1 - OPX.syx" "/pat
 uv run mpc-capture-core work/boot-controls.json midi/capture-cores/opx4-core.toml midi/capture-cores/jura-core.toml --catalog work/plugin-parameter-catalog.json --output work/boot-controls
 ```
 
-Open `work/boot-controls/CORE_COMPANION.html`. The optional catalog supplies skin placements when plugin identity, saved parameter ID and control name agree. The saved catalog supplies placements for all eight OPx-4 macros. Jura’s native placements are unknown.
+Open `work/boot-controls/CORE_COMPANION.html`. Choose **Take a note** on a physical control to describe what you hear on the saved preset. Notes persist in this browser when local storage is available. **Download notes** creates a portable JSON file. **Restore notes** checks the project and mapping fingerprint before merging. Each new XPJ save has its own fingerprint. Older audits support viewing mappings, and rebuilding the audit enables preset notes. The optional catalog supplies skin placements when plugin identity, saved parameter ID and control name agree. The saved catalog supplies placements for all eight OPx-4 macros. Jura’s native placements are unknown.
 
 The captured OPx-4 and Jura modes already demonstrate the preferred hybrid
 shape: plugin encoders/buttons use channels 9/10 while all eight faders remain

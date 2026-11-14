@@ -241,6 +241,7 @@ def audit_modes(project: xpj.XPJProject, modes: list[dict[str, Any]]) -> dict[st
     return {
         "schema_version": 1,
         "project": str(project.path),
+        "project_sha256": project.sha256,
         "project_firmware": project.header.firmware if project.header else None,
         "project_midi_learn_count": len(learned),
         "plugin_tracks": xpj.plugin_track_rows(project),

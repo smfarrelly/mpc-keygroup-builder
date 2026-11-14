@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import gzip
+import hashlib
 import json
 import sys
 from collections import Counter
@@ -45,6 +46,7 @@ class XPJProject:
     generation: int
     header: XPJHeader | None
     document: dict[str, Any] | None
+    sha256: str | None = None
 
     @property
     def data(self) -> dict[str, Any]:
@@ -92,7 +94,7 @@ def load(path: Path) -> XPJProject:
         raise ValueError(f"invalid XPJ JSON payload: {error}") from error
     if not isinstance(document, dict):
         raise ValueError("XPJ JSON payload must be an object")
-    project = XPJProject(path, generation, header, document)
+    project = XPJProject(path, generation, header, document, hashlib.sha256(raw).hexdigest())
     project.data
     return project
 
