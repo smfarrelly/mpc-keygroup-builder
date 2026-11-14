@@ -73,6 +73,7 @@ COMMANDS = {
     "mpc-rig": _spec("rig", "Hardware", "Validate or render rig profiles", "docs/rig-profiles.md"),
     "mpc-library": _spec("library", "Catalog", "Query the hardware-status ledger", "docs/catalog.md"),
     "mpc-catalog": _spec("catalog", "Catalog", "Build or query the normalized catalog", "docs/catalog.md"),
+    "mpc-drum-session": _spec("drum_session", "Creative MIDI", "Create an offline listening session with loop previews and MIDI", "docs/drum-ideas.md"),
     "mpc-drum-idea": _spec("ideas", "Creative MIDI", "Generate role-addressed Drum MIDI", "docs/drum-ideas.md"),
     "mpc-harmony-idea": _spec("harmony", "Creative MIDI", "Generate Chords and Bass MIDI", "docs/creative-midi.md"),
     "mpc-melody-idea": _spec("melody", "Creative MIDI", "Generate motif-based Melody MIDI", "docs/creative-midi.md"),

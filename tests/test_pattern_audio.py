@@ -4,7 +4,7 @@ import tempfile
 import unittest
 import wave
 
-from mpc_keygroup_builder import pattern_audio
+from mpc_keygroup_builder import bundle_verify, drum_session, pattern_audio
 
 
 class PatternAudioTests(unittest.TestCase):
@@ -56,6 +56,33 @@ class PatternAudioTests(unittest.TestCase):
                     self.render()
                 self.assertFalse(self.output.exists())
                 self.idea["events"][0][key] = old
+
+    def test_session_creates_linked_midi_audio_and_verified_receipt(self):
+        program = self.program.read_text().replace("low.wav", "Kick.wav").replace("high.wav", "Kick Hard.wav")
+        self.program.write_text(program)
+        (self.root / "low.wav").rename(self.root / "Kick.wav")
+        (self.root / "high.wav").rename(self.root / "Kick Hard.wav")
+        recipe = self.root / "drums.toml"
+        recipe.write_text('schema_version=1\nid="test"\nname="Test & Kit"\nbars=1\nsteps_per_bar=16\n'
+                          '[[events]]\nrole="kick"\nsteps=[0,4]\nvelocity=100\n')
+        output = self.root / "session"
+        result = drum_session.build(self.program, [recipe], output)
+        self.assertEqual(result["patterns"][0]["events"], 2)
+        self.assertEqual(bundle_verify.verify_bundle(output)["verified_files"], 6)
+        html = (output / "index.html").read_text()
+        self.assertIn("Test &amp; Kit", html)
+        for file in ("listen.wav", "pattern.mid", "pattern.json", "listen.json"):
+            relative = "pattern-01/" + file
+            self.assertIn(relative, html)
+            self.assertTrue((output / relative).is_file())
+        with self.assertRaises(FileExistsError):
+            drum_session.build(self.program, [recipe], output)
+        missing = self.root / "missing.toml"
+        missing.write_text(recipe.read_text().replace('role="kick"', 'role="snare"'))
+        with self.assertRaisesRegex(ValueError, "required role"):
+            drum_session.build(self.program, [recipe, missing], self.root / "incomplete")
+        self.assertFalse((self.root / "incomplete").exists())
+        self.assertFalse(list(self.root.glob(".drum-session-*")))
 
     def test_source_files_cannot_be_overwritten(self):
         with self.assertRaisesRegex(ValueError, "output stem"):
