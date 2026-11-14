@@ -20,7 +20,10 @@ def enrich_control(
                 "preset_edited": None, "parameter": None, "q_links": []}
     if "learned_rows" not in source:
         return evidence
-    matches = [r for r in source["learned_rows"] if r.get("name") == target]
+    rows = source["learned_rows"]
+    if not isinstance(rows, list) or any(not isinstance(r, dict) for r in rows):
+        raise ValueError("captured control learned_rows must be a list of Learn records")
+    matches = [r for r in rows if r.get("name") == target]
     if len(matches) != 1 or matches[0].get("target_count") != 1:
         return {**evidence, "status": "ambiguous-target" if matches else "no-target"}
     match = matches[0]
@@ -40,9 +43,13 @@ def enrich_control(
     if not (target.startswith(prefix) and target.endswith(")")):
         return {**evidence, "status": "catalog-unmatched"}
     name = target[len(prefix):-1]
-    controls = [r for r in plugins[0].get("controls", [])
-                if type(r.get("mpc_parameter")) is int and r["mpc_parameter"] == parameter
-                and name in (r.get("name"), *r.get("aliases", []))]
+    controls = []
+    for row in plugins[0]["controls"]:
+        aliases = row.get("aliases", [])
+        if not isinstance(aliases, list) or any(not isinstance(alias, str) for alias in aliases):
+            raise ValueError(f"{evidence['plugin']}: control aliases must be a list of names")
+        if type(row.get("mpc_parameter")) is int and row["mpc_parameter"] == parameter and name in (row.get("name"), *aliases):
+            controls.append(row)
     if len(controls) != 1:
         return {**evidence, "status": "catalog-ambiguous" if controls else "catalog-unmatched"}
     links = controls[0].get("q_links")

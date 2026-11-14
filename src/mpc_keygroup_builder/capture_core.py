@@ -48,6 +48,8 @@ def load_recipe(path: Path) -> dict[str, Any]:
 def load_audit(path: Path) -> dict[str, Any]:
     path = path.expanduser().resolve()
     document = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(document, dict):
+        raise ValueError(f"{path}: expected a capture audit object")
     captures = document.get("captures")
     if not isinstance(captures, list):
         raise ValueError(f"{path}: audit requires captures list")
@@ -67,6 +69,15 @@ def analyze(
         raise ValueError("at least one capture core recipe is required")
     if catalog is not None and (not isinstance(catalog, dict) or not isinstance(catalog.get("plugins"), list)):
         raise ValueError("parameter catalog requires a plugins list")
+    for plugin in (catalog or {}).get("plugins", []):
+        if not isinstance(plugin, dict) or not isinstance(plugin.get("controls"), list):
+            raise ValueError("each catalog plugin requires a controls list")
+        if any(not isinstance(row, dict) for row in plugin["controls"]):
+            raise ValueError("catalog controls must be objects")
+    tracks = audit.get("plugin_tracks", [])
+    if not isinstance(tracks, list) or any(not isinstance(t, dict) or not isinstance(t.get("track"), str)
+                                           or not isinstance(t.get("plugin"), str) for t in tracks):
+        raise ValueError("audit plugin_tracks requires a list of named tracks and plugins")
     capture_index = {item["name"]: item for item in audit["captures"]}
     if len(capture_index) != len(audit["captures"]):
         raise ValueError("audit capture names must be unique")
@@ -110,6 +121,8 @@ def analyze(
                         f"{declared['expected_label']!r} to {source.get('label')!r}"
                     )
                 targets = source.get("learned_targets", [])
+                if not isinstance(targets, list) or any(not isinstance(name, str) for name in targets):
+                    raise ValueError(f"{declared['endpoint']}: learned_targets must be a list of names")
                 if declared["expected_target"] not in targets:
                     errors.append(
                         f"{declared['endpoint']}: expected learned target missing: "

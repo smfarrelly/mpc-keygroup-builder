@@ -34,6 +34,14 @@ class SavedEvidenceTests(unittest.TestCase):
         self.assertEqual(self.enrich()["status"], "catalog-unavailable")
         self.assertEqual(self.enrich()["parameter"], 4104)
 
+    def test_string_alias_or_malformed_learn_rows_cannot_supply_evidence(self):
+        self.control.update(name="Other", aliases="Macro 1")
+        with self.assertRaisesRegex(ValueError, "aliases"):
+            self.enrich()
+        self.source["learned_rows"] = [None]
+        with self.assertRaisesRegex(ValueError, "learned_rows"):
+            self.enrich()
+
     def test_ambiguities_are_visible(self):
         self.catalog["plugins"][0]["controls"].append(copy.copy(self.control))
         self.assertEqual(self.enrich()["status"], "catalog-ambiguous")
