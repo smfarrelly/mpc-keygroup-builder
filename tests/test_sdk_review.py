@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from mpc_keygroup_builder import sdk_review
+from mpc_keygroup_builder import bundle_verify, sdk_review
 
 ROOT = Path(__file__).resolve().parents[1]
 EXAMPLE = ROOT / "tests/fixtures/sdk/stereo-delay.json"
@@ -37,6 +37,10 @@ class SoftwareReviewTests(unittest.TestCase):
         self.assertEqual(report["parameter_comparison"]["changes"], [])
         for path in ["params.json", "host-sim.log", "worksheets/mpc-midi-learn-all.csv", "companion.html"]:
             self.assertTrue((self.out / path).is_file(), path)
+        self.assertGreater(bundle_verify.verify_bundle(self.out)["verified_files"], 4)
+        (self.out / "host-sim.log").write_text("different evidence")
+        with self.assertRaisesRegex(ValueError, "checksum mismatch"):
+            bundle_verify.verify_bundle(self.out)
         with self.assertRaises(FileExistsError):
             sdk_review.review(**self.kwargs)
 

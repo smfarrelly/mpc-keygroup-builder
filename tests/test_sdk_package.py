@@ -44,6 +44,21 @@ class PackageTests(unittest.TestCase):
         self.assertEqual(result["install_relative_path"], f"VST2 Plugins/{self.root.name}")
         self.assertEqual(self.binary.read_bytes(), before)
 
+    def test_flat_program_and_paged_screen_qlinks_bind_to_real_indices(self):
+        path = self.root / "Plugin Skins" / "Q-Links.json"
+        path.parent.mkdir()
+        data = {
+            "Program Mode Q-Links": {"Q-Link 1": 0, "Q-Link 2": -1},
+            "Screen Mode Q-Links": {"map": [{"Tab": 1, "SubTab": 2, "Q-Links": {"Q-Link 13": 0}}]},
+        }
+        path.write_text(json.dumps(data))
+        result = self.inspect(dump=self.dump)
+        self.assertEqual(result["q_links"][0], ["Program Mode Q-Link 1", "Screen Mode T1/S2 Q-Link 13"])
+        data["Program Mode Q-Links"]["Q-Link 1"] = 8
+        path.write_text(json.dumps(data))
+        with self.assertRaisesRegex(ValueError, "missing parameter 8"):
+            self.inspect(dump=self.dump)
+
     def test_binary_selection_does_not_fall_back_across_targets(self):
         self.manifest["file64"] = "delay.so"
         with self.assertRaisesRegex(ValueError, "no file32"):

@@ -11,7 +11,7 @@ import subprocess
 import tempfile
 
 from . import plugin_companion, plugin_map, plugin_params, sdk_package, sdk_params
-from .bundle_verify import sha256
+from .bundle_verify import sha256, verify_bundle
 from .publication import publish_directory
 
 RESULT = re.compile(r"Result: (PASS(?: with warnings)?|FAIL)\s+\((\d+) passed, (\d+) warnings, (\d+) failures\)")
@@ -94,6 +94,9 @@ def review(*, host: Path, native: Path, output: Path, profile: Path | None = Non
         if profile:
             report["profile_sha256"] = sha256(profile)
             catalog = plugin_params.catalog(dump_path)
+            locations = report.get("package", {}).get("q_links", {})
+            for control in catalog["plugins"][0]["controls"]:
+                control["q_links"] = locations.get(control["ui_parameter"], [])
             pages = [plugin_map.load_profile(profile)]
             validation = plugin_map.validate_batch(pages, catalog)
             report["worksheet_warnings"] = validation["warnings"]
@@ -109,6 +112,12 @@ def review(*, host: Path, native: Path, output: Path, profile: Path | None = Non
             status = "warn"
         report["software_status"] = status
         (staging / "review.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+        checksums = {
+            path.relative_to(staging).as_posix(): sha256(path)
+            for path in sorted(staging.rglob("*")) if path.is_file()
+        }
+        (staging / "checksums.json").write_text(json.dumps(checksums, indent=2) + "\n", encoding="utf-8")
+        verify_bundle(staging)
         publish_directory(staging, output)
         return report
     finally:

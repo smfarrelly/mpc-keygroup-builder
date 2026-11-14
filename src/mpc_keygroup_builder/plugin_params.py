@@ -127,7 +127,6 @@ def _score(name: str, learned: bool) -> int:
 
 
 def _qlinks(plugin: Path) -> dict[int, list[str]]:
-    result: dict[int, set[str]] = {}
     skin_root = plugin / "Plugin Skins"
     path = next(
         (
@@ -139,19 +138,43 @@ def _qlinks(plugin: Path) -> dict[int, list[str]]:
     )
     if path is None:
         return {}
+    return qlink_locations(path)
+
+
+def qlink_locations(path: Path, parameter_count: int | None = None) -> dict[int, list[str]]:
+    """Read paged screen maps and flat or paged program maps."""
     data = json.loads(path.read_text(encoding="utf-8"))
-    for section in ("Screen Mode Q-Links", "Program Mode Q-Links"):
-        maps = data.get(section, {}).get("map", [])
-        for page in maps if isinstance(maps, list) else []:
-            if not isinstance(page, dict):
+    if not isinstance(data, dict):
+        raise ValueError(f"{path}: expected a Q-Link map object")
+    result: dict[int, set[str]] = {}
+
+    def add(mapping: dict, location: str) -> None:
+        for position, parameter in mapping.items():
+            if not re.fullmatch(r"Q-Link [1-9][0-9]*", position):
                 continue
-            location = (
-                f"{section.removesuffix(' Q-Links')} "
-                f"T{page.get('Tab', '?')}/S{page.get('SubTab', '?')}"
-            )
-            for position, parameter in page.get("Q-Links", {}).items():
-                if isinstance(parameter, int) and parameter >= 0:
-                    result.setdefault(parameter, set()).add(f"{location} {position}")
+            if type(parameter) is not int or parameter < -1:
+                if parameter_count is not None:
+                    raise ValueError(f"{path}: invalid index at {location} {position}")
+                continue
+            if parameter == -1:
+                continue
+            if parameter_count is not None and parameter >= parameter_count:
+                raise ValueError(f"{path}: {location} {position} refers to missing parameter {parameter}")
+            result.setdefault(parameter, set()).add(f"{location} {position}")
+
+    for mode in ("Screen Mode", "Program Mode"):
+        section = data.get(f"{mode} Q-Links", {})
+        if not isinstance(section, dict):
+            raise ValueError(f"{path}: invalid {mode} Q-Links section")
+        add(section, mode)
+        pages = section.get("map", [])
+        if not isinstance(pages, list):
+            raise ValueError(f"{path}: {mode} map must contain a list of pages")
+        for page in pages:
+            if not isinstance(page, dict) or not isinstance(page.get("Q-Links"), dict):
+                continue
+            location = f"{mode} T{page.get('Tab', '?')}/S{page.get('SubTab', '?')}"
+            add(page["Q-Links"], location)
     return {key: sorted(value) for key, value in result.items()}
 
 

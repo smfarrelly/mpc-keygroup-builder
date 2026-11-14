@@ -9,6 +9,7 @@ from pathlib import Path, PurePosixPath, PureWindowsPath
 import re
 import struct
 
+from .plugin_params import qlink_locations
 from .sdk_params import read_dump
 
 
@@ -123,16 +124,24 @@ def inspect(root: Path, target: str = "arm32", dump: Path | None = None) -> dict
         raise ValueError(f"plugin.json has no {binary_key} binary for {target}")
     binary = package_file(root, manifest[binary_key])
     info = inspect_elf(binary, target)
+    parameter_count = None
     if dump:
         host = read_dump(dump)
+        parameter_count = len(host["params"])
         fields = {"name": name, "vendor": vendor, "uidInt": uid,
                   "isInstrument": instrument, "numInputs": inputs, "numOutputs": outputs}
         for key, expected_value in fields.items():
             observed = host[key] & 0xFFFFFFFF if key == "uidInt" else host[key]
             if observed != expected_value:
                 raise ValueError(f"SDK dump mismatch for {key}: package {expected_value!r}, dump {observed!r}")
+    qlinks = {}
+    qlink_file = root / "Plugin Skins" / "Q-Links.json"
+    if qlink_file.exists() or qlink_file.is_symlink():
+        safe_file = package_file(root, "Plugin Skins/Q-Links.json")
+        qlinks = qlink_locations(safe_file, parameter_count)
     return {
         "schema_version": 1, "kind": "mpc-sdk-package-preflight",
+        "q_links": qlinks,
         "plugin": name, "vendor": vendor, "uid": uid, "plugin_kind": "instrument" if instrument else "effect",
         "binary": {**info, "path": manifest[binary_key]},
         "install_relative_path": f"VST2 Plugins/{expected}",
