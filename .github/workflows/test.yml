@@ -20,6 +20,8 @@ jobs:
       - name: Install the locked development environment
         run: uv sync --locked
       - name: Run the test suite
+        env:
+          MPC_TEST_CHROME: /usr/bin/google-chrome
         run: uv run python -m unittest discover -s tests -v
       - name: Validate published declarative examples
         run: |

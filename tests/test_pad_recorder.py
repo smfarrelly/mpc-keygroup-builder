@@ -1,8 +1,12 @@
 import base64
+from http.server import BaseHTTPRequestHandler, HTTPServer
 import io
 import json
+import os
+import subprocess
 from pathlib import Path
 import tempfile
+import time
 import unittest
 import wave
 
@@ -84,3 +88,81 @@ class PadRecorderTests(unittest.TestCase):
         (self.root / "Kick.wav").write_bytes(b"broken")
         with self.assertRaisesRegex(ValueError, "Kick.wav"):
             recorder.bank_data(self.program, "A")
+
+    @unittest.skipUnless(os.environ.get("MPC_TEST_CHROME"), "needs a headless Chrome executable")
+    def test_browser_records_velocity_and_filters_a_simulated_midi_input(self):
+        page = recorder.build(self.program, self.root / "web")
+        script = r"""<script>
+        (async () => {
+          const get = id => document.getElementById(id);
+          const wait = ms => new Promise(r => setTimeout(r, ms));
+          const until = async fn => { for(let i=0;i<500;i++){ if(fn())return; await wait(10); } throw Error("timeout"); };
+          const assert = (value, message) => { if (!value) throw Error(message); };
+          const port = {id:"pads", name:"Fixture", state:"connected", close:async()=>{}};
+          const access = {inputs:new Map([["pads",port]])};
+          let calls = 0, blob;
+          Object.defineProperty(navigator,"requestMIDIAccess",{value:async options => {
+            assert(options.sysex === false,"unexpected SysEx request"); calls++; return access;
+          }});
+          const original = URL.createObjectURL.bind(URL);
+          URL.createObjectURL = b => { blob = b; return original(b); };
+          HTMLAnchorElement.prototype.click = () => {};
+          assert(calls===0, "initial MIDI access");
+          get("connect-midi").click();
+          await until(()=>get("midi-port").options.length===2);
+          assert(calls===1 && !port.onmidimessage,"input selection");
+          get("midi-port").value="pads"; get("midi-port").onchange();
+          get("midi-channel").value="10"; get("record").click();
+          await until(()=>get("record").getAttribute("aria-pressed")==="true");
+          const send = (s,n,v) => port.onmidimessage({data:[s,n,v],timeStamp:performance.now()});
+          send(0x90,44,80); send(0xb9,44,80); send(0x99,44,0); send(0x89,44,80); send(0x99,40,80);
+          assert(get("midi-status").textContent.includes("outside bank"),"wrong-bank diagnostic");
+          send(0x99,44,95);
+          await until(()=>get("count").textContent==="1 hit");
+          assert(get("midi-status").textContent.includes("velocity 95"),"velocity display");
+          get("stop").click(); get("save").click();
+          const take = JSON.parse(await blob.text());
+          assert(take.events.length===1 && take.events[0].pad===1 && take.events[0].velocity===95,"recorded take");
+          port.state="disconnected"; access.onstatechange();
+          assert(get("midi-port").value==="" && port.onmidimessage===null,"disconnection");
+          document.body.dataset.result="passed";
+        })().catch(e => { document.body.dataset.result=e.message; })
+            .finally(() => fetch("/result", {method:"POST",body:document.body.dataset.result}));
+
+        </script>"""
+        html = page.read_text().replace("</body>", script + "</body>").encode()
+        results = []
+        class Probe(BaseHTTPRequestHandler):
+            def do_GET(self):
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html")
+                self.end_headers()
+                self.wfile.write(html if self.path == "/" else b"")
+
+            def do_POST(self):
+                if self.path == "/result":
+                    results.append(self.rfile.read(int(self.headers["Content-Length"])).decode())
+                self.send_response(204)
+                self.end_headers()
+
+            def log_message(self, *_args):
+                pass
+
+        # Decoding runs on a real audio thread. Advancing Chrome's virtual clock
+        # can exhaust a JS timeout before that thread runs on a busy CI machine.
+        with HTTPServer(("127.0.0.1", 0), Probe) as server:
+            server.timeout = 0.25
+            url = f"http://127.0.0.1:{server.server_port}/"
+            process = subprocess.Popen([os.environ["MPC_TEST_CHROME"], "--headless", "--no-sandbox",
+                                        "--disable-gpu", "--disable-dev-shm-usage", "--mute-audio",
+                                        "--autoplay-policy=no-user-gesture-required",
+                                        "--user-data-dir=" + str(self.root / "profile"), url],
+                                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            try:
+                deadline = time.monotonic() + 25
+                while not results and process.poll() is None and time.monotonic() < deadline:
+                    server.handle_request()
+            finally:
+                process.terminate()
+                process.wait(timeout=10)
+        self.assertEqual(results, ["passed"])
