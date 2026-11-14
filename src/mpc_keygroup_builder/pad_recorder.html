@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>$program · Pad recorder</title>
+<style>
+:root{color-scheme:dark;--ink:#f5f1e6;--quiet:#c2bfb4;--panel:#222521;--line:#444940;--gold:#f2c16b}
+*{box-sizing:border-box}body{margin:0;background:#141714;color:var(--ink);font:1rem/1.45 "Barlow",system-ui,sans-serif}main{max-width:62rem;margin:0 auto;padding:clamp(1rem,4vw,3rem)}header{padding-bottom:1.25rem;border-bottom:1px solid var(--line)}h1,h2,p{margin:0}h1{font-size:clamp(1.8rem,5vw,3rem);letter-spacing:-.045em}h2{font-size:1.1rem;margin-bottom:.8rem}.subtitle,small,label{color:var(--quiet)}.studio{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(16rem,1fr);gap:1.5rem;margin-top:1.5rem}button,input,select{font:inherit;color:inherit}button,select,input{background:var(--panel);border:1px solid var(--line);border-radius:.4rem;padding:.45rem .65rem}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:2px}button:disabled{opacity:.45;cursor:default}
+.controls{display:flex;flex-wrap:wrap;gap:.55rem;align-items:end;margin:.75rem 0}.controls label{display:grid;font-size:.85rem;gap:.2rem}.controls label.inline{display:flex;align-items:center;gap:.4rem;padding:.5rem 0}.controls input[type=number]{width:5rem}#pads{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.4rem}.pad{display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;text-align:left;min-height:5.7rem;overflow:hidden;border-top:4px solid var(--pad,#787c70);background:#292e28;touch-action:none;user-select:none}.pad strong{text-transform:capitalize;font-size:clamp(.73rem,1.65vw,1rem);overflow-wrap:anywhere}.pad span{font-size:.72rem;color:#cfcec3}.pad.active{background:#e9d3aa;color:#20211c}.pad.active span{color:#20211c}button[aria-pressed=true]{border-color:var(--gold);color:var(--gold)}#record[aria-pressed=true]{background:#8e292b;color:white}#enable{background:var(--gold);color:#1a1c17;font-weight:650}#name{width:100%}#position{font-variant-numeric:tabular-nums;font-size:1.25rem}#status{min-height:2.8rem;margin-top:.85rem;color:var(--gold)}#save-panel{margin-top:1.25rem;border-top:1px solid var(--line);padding-top:1rem}kbd{font:inherit}.details{color:var(--quiet);font-size:.9rem;margin-top:1rem}#count{color:var(--quiet)}@media(max-width:680px){.studio{grid-template-columns:1fr;gap:1rem}.pad{min-height:4.2rem}}
+</style>
+</head><body><main><header><p class="subtitle">Pad recorder · Bank $bank</p><h1>$program</h1></header>
+<div class="studio"><section aria-label="Playable pads"><div id="pads"></div>
+<div class="controls"><label>Hit velocity<select id="velocity"><option value="40">40 · Ghost</option><option value="80">80 · Medium</option><option value="112" selected>112 · Accent</option></select></label><button id="enable">Enable audio</button></div>
+<p class="details">Tap a pad or press its shortcut. Hold Shift for a ghost hit. Pad 01 sits at the lower left of each bank.</p></section>
+<section aria-label="Loop recorder"><h2>Loop recorder</h2>
+<label for="name">Take name</label><input id="name" maxlength="120">
+<div class="controls"><label>Tempo (BPM)<input id="tempo" type="number" min="20" max="300" step="any"></label><label>Bars<input id="bars" type="number" min="1" max="64"></label><label>Snap<select id="snap"><option value="0">Off</option><option value="240">1/8</option><option value="120" selected>1/16</option><option value="60">1/32</option></select></label></div>
+<div class="controls"><button id="play">Play</button><button id="record" aria-pressed="false">Record</button><button id="stop">Stop</button><label class="inline"><input type="checkbox" id="click" checked> Click</label></div>
+<p><output id="position">1.1</output> · <span id="count"></span></p><p id="status" role="status">Enable audio to play the kit.</p>
+<div id="save-panel"><h2>Keep this take</h2><div class="controls"><button id="save">Save take</button><button id="midi">Save MIDI</button><button id="open">Open take</button><input type="file" accept=".json" id="file" hidden></div><div class="controls"><button id="undo">Undo</button><button id="clear">Clear hits</button></div>
+<p class="details">Save a take to resume editing or render its audio. Save MIDI to use the same part with this kit on the MPC.</p></div>
+</section></div></main><script type="application/json" id="payload">$data</script><script>$script</script></body></html>
