@@ -100,3 +100,14 @@ uv run mpc-program-audition "/path/to/Drum Program.xpm" \
 ```
 
 The preview uses the idea’s saved tempo, swing timing and velocities. Each pad selects its matching velocity layer. A later hit in a shared mute group cuts the earlier hit, which makes closed/open hat interactions audible. The renderer sums to mono, applies sample trim and pitch, and ends at the bar boundary for looping. The adjacent JSON records each actual sample, start frame and played length. For a remapped idea, use the XPM with the corresponding pad and MIDI-note layout.
+
+## Compare grooves in one browser tab
+
+```bash
+uv run mpc-drum-session "work/SDK Drum Synth Kit/SDK Drum Synth Kit.xpm" \
+  recipes/drums/dusty-pocket.toml recipes/drums/funk-machine.toml \
+  recipes/drums/house-foundation.toml recipes/drums/electro-grid.toml \
+  --tempo 96 --seed 37 --output work/drum-session-01
+```
+
+Open `work/drum-session-01/index.html`. Each player loops the audition at the selected tempo. Starting a different player pauses the previous one. Each pattern has its own format-1 MIDI download and exact sample timing record. The same command works with another XML drum kit that covers the recipes’ requested roles. A missing role identifies the pattern build that needs attention. The generated folder is self-contained for listening. Use the corresponding XPM and its samples when taking the MIDI to the MPC.
