@@ -1,5 +1,9 @@
 # Resume here
 
+## Open the laptop studio
+
+On the Ubuntu laptop, open `work/pad-studio-2026-11-14/index.html`. Under **Play and record**, choose **Vinyl Layered** to play, **Vinyl Rhythm Section** to hear drums with bass and chords, **Bass Filter Lift** to compare the XL3 gesture, or **Sampled Keys** to audition the four Keygroups. **Ghost Accent** opens a blank take. [Build your own local page](docs/local-home.md#open-the-instruments-from-one-page)
+
 ## November 14 · Record a drum part
 
 On this laptop, open `work/pad-studio-2026-11-14/Vinyl Layered/index.html` for the expressive Vinyl kit and the Dusty Pocket groove. Choose **Enable audio**, then **Record** and play along. The adjacent **Ghost Accent** recorder opens with two empty bars. [Record, save and render a take](docs/pad-recorder.md)

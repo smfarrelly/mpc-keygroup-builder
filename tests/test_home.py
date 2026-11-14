@@ -117,6 +117,32 @@ class HomeTests(unittest.TestCase):
         self.assertEqual(report['status'], 'attention')
         self.assertIn('fail', self.output.read_text())
 
+    def test_links_to_verified_pages_survive_moves_and_escape_reserved_characters(self):
+        import hashlib
+        import json
+        from urllib.parse import unquote
+        folders = []
+        for name, file in (('Kit #42 & hits', 'index.html'), ('Saved take', 'listen.wav')):
+            folder = self.root / name
+            folder.mkdir()
+            source = folder / file
+            source.write_bytes(b'preview')
+            (folder / 'checksums.json').write_text(json.dumps({file: hashlib.sha256(b'preview').hexdigest()}))
+            folders.append(folder)
+        home.build(self.output, bundles=folders)
+        parser = PageParser()
+        parser.feed(self.output.read_text())
+        links = [link for link in parser.links if not link.startswith('#')]
+        self.assertEqual(len(links), 2)
+        self.assertIn('%23', links[0])
+        self.assertEqual([(self.output.parent / unquote(link)).resolve() for link in links],
+                         [folders[0] / 'index.html', folders[1] / 'listen.wav'])
+        (folders[0] / 'index.html').write_text('changed')
+        page = self.root / 'second.html'
+        home.build(page, bundles=folders)
+        self.assertNotIn('Open Kit', page.read_text())
+        self.assertIn('Listen to Saved take', page.read_text())
+
     def candidate_program(self, name='Collection/Kit.xpm', sample=True):
         path = self.programs / name
         path.parent.mkdir(parents=True, exist_ok=True)
