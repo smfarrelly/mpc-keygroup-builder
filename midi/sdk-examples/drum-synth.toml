@@ -1,0 +1,45 @@
+schema_version = 1
+id = "drum-synth-encoders"
+name = "Drum Articulation"
+plugin = "Drum Synth"
+description = "Shape kick and snare tails, then open the hats while a recorded pattern loops."
+# Example worksheet using the existing MultiTap slot as an alternate.
+slot = 10
+channel = 8
+probe = "top-encoder-1"
+
+[sdk_identity]
+vendor = "MPC SDK Examples"
+uid_int = 1299727474
+
+[[controls]]
+control = "top-encoder-1"
+ui_parameter = 1
+name = "Kick Decay"
+role = "envelope"
+priority = "core"
+color = "purple"
+
+[[controls]]
+control = "top-encoder-2"
+ui_parameter = 4
+name = "Snare Decay"
+role = "envelope"
+priority = "core"
+color = "purple"
+
+[[controls]]
+control = "top-encoder-3"
+ui_parameter = 10
+name = "CHat Decay"
+role = "envelope"
+priority = "core"
+color = "purple"
+
+[[controls]]
+control = "top-encoder-4"
+ui_parameter = 13
+name = "OHat Decay"
+role = "envelope"
+priority = "core"
+color = "purple"
