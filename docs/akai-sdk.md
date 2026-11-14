@@ -124,3 +124,18 @@ uv run mpc-sdk-review "$sdk/examples/DrumSynth/build/native/drum-synth.so" \
 ```
 
 Open `work/drum-synth-kick/preview.wav` to hear the synthesized kick. Use note 37 for snare, 39 for closed hat and 40 for open hat. Multiple requested notes sound together. For effects the simulator supplies its own sine and noise input. The file covers the two-second main pass at 44.1 kHz. The packet includes its peak, RMS, near-full-scale fraction and PCM checksum. Preview files are optional and use about 345 KiB each.
+
+## Turn a synthesized drum kit into a portable XPM
+
+The supplied [Drum Synth kit recipe](../midi/sdk-kits/drum-synth.toml) samples the SDK example’s eight voices. Pads A01–A08 play kick, snare, clap, closed hat, open hat, low tom, high tom and percussion. The hats share mute group 1. Each pad uses the existing drum color palette. The finished program plays its colocated WAV files and can travel as one folder.
+
+```bash
+uv run mpc-sdk-kit midi/sdk-kits/drum-synth.toml \
+  "$sdk/examples/DrumSynth/build/native/drum-synth.so" --host-sim "$sdk/.sdk-tools/host_sim" \
+  --output "work/SDK Drum Synth Kit"
+uv run mpc-program-audition "work/SDK Drum Synth Kit/SDK Drum Synth Kit.xpm" \
+  --drum-bank A --output work/sdk-kit-bank-a.wav
+uv run mpc-bundle-verify "work/SDK Drum Synth Kit"
+```
+
+To sample another trusted SDK instrument, copy the TOML and change the plugin identity, notes, sample names and pad assignments. Each note is rendered individually at the simulator’s default preset and velocity. The sampler removes whole frames of digital silence from both ends, preserving stereo, level and quiet tails. In `kit.json`, `reaches_render_end` marks a sound still playing at the end of its two-second capture. Move the entire finished folder when preparing for an MPC audition.
