@@ -26,6 +26,10 @@ folder. Remove the preview flags only after checking the selected files.
 The archive stays unchanged. After developing the variation, capture the working
 copy into another new archive. See [Idea snapshots](idea-snapshots.md).
 
+## Design a plugin control page
+
+Open the [offline SDK encoder editor](../site/sdk-mapping.html) and try the four Loop Throw controls. From a terminal, `mpc-tools start sdk` shows how to validate that page against the included reference dump. Use the [SDK guide](akai-sdk.md) when you want to load another plugin’s parameter list, build a worksheet or run a software review.
+
 ## Prepare an update later
 
 First use [local readiness checks](local-readiness.md) to verify selected

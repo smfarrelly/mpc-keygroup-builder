@@ -25,6 +25,13 @@ WORKFLOWS = {
         'next': 'Remove --dry-run to create an independent copy. Edit that copy, then capture it as a new archive; do not rewrite the original checksums.',
         'guide': 'docs/idea-snapshots.md',
     },
+    'sdk': {
+        'title': 'Design a plugin encoder page on this computer',
+        'command': 'mpc-plugin-map check midi/sdk-examples/loop-throw.toml --sdk-dump plugins/LoopThrow/params.reference.json',
+        'needs': 'Toolkit checkout. The reference dump is included.',
+        'next': 'Open site/sdk-mapping.html to choose encoders, or generate a companion from the validated page.',
+        'guide': 'docs/akai-sdk.md',
+    },
     'prepare': {
         'title': 'Plan a card update without applying it',
         'command': 'mpc-package-deploy "/path/to/local/package" "/path/to/card/NewPackage"',

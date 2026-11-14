@@ -6,7 +6,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from mpc_keygroup_builder import plugin_companion, plugin_core, plugin_map, plugin_params, plugin_seed, sdk_params
+from mpc_keygroup_builder import plugin_companion, plugin_core, plugin_map, plugin_params, plugin_results, plugin_seed, sdk_params
 
 ROOT = Path(__file__).resolve().parents[1]
 DUMP = ROOT / "tests/fixtures/sdk/stereo-delay.json"
@@ -106,6 +106,18 @@ class SDKParametersTests(unittest.TestCase):
         self.profile["controls"][0]["name"] = "Div-ision"
         with self.assertRaisesRegex(ValueError, "profile does not match the baseline"):
             sdk_params.profile_impact(sdk_params.compare(self.dump, self.dump), self.profile, DUMP, self.dump)
+
+    def test_results_cannot_replace_sdk_inputs_even_with_force(self):
+        path = self.save(self.dump)
+        original = path.read_bytes()
+        for flag in ("--ledger", "--report"):
+            args = ["init", str(PROFILE), "--sdk-dump", str(path), "--force"]
+            if flag == "--report":
+                args.extend(["--ledger", str(self.root / "new.csv")])
+            with self.assertRaisesRegex(ValueError, "outputs must differ"):
+                plugin_results.main([*args, flag, str(path)])
+            self.assertEqual(path.read_bytes(), original)
+            self.assertFalse((self.root / "new.csv").exists())
 
     def test_malformed_inputs_give_actionable_context(self):
         for key, value in [("index", True), ("index", 7), ("index", 99), ("choices", [0]),
