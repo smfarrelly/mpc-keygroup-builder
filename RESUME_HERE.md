@@ -1,5 +1,9 @@
 # Resume here
 
+## November 14 · Try the ghost-note kit
+
+Open `work/controller-review-2026-11-14/Ghost Accent Comparison/index.html` to compare the original and accent kits. Each plays the same two bars. The alternate XPM and its WAVs are in the adjacent `Kit` folder. [Rebuild instructions and velocity measurements](docs/akai-sdk.md#compare-ghost-notes-and-accents)
+
 ## November 14 · Play a groove on the laptop
 
 The November 14 batch generated a local **Drum Sessions** folder under `work/controller-review-2026-11-14`. If you have that folder, open its `index.html`: Dusty Pocket, Funk Machine, House Foundation and Electro Grid each have a looping preview and matching MIDI. The sibling **SDK Drum Synth Kit** folder holds the eight-pad XPM and WAVs. **Pocket Throw Comparison** contains a two-bar dry/echo comparison.

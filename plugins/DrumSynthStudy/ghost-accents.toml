@@ -1,0 +1,45 @@
+schema_version = 1
+id = "ghost-accents"
+name = "Ghost Notes and Accents"
+bars = 2
+steps_per_bar = 16
+swing = 0.55
+gate = 0.5
+channel = 10
+
+[[events]]
+role = "kick"
+steps = [0, 10, 16, 26]
+velocity = 114
+[[events]]
+role = "kick"
+steps = [7, 23]
+velocity = 72
+[[events]]
+role = "snare"
+steps = [3, 14, 19, 30]
+velocity = 40
+[[events]]
+role = "snare"
+steps = [4, 20]
+velocity = 95
+[[events]]
+role = "snare"
+steps = [12, 28]
+velocity = 96
+[[events]]
+role = "hihat.closed"
+steps = [0, 4, 8, 12, 16, 20, 24, 28]
+velocity = 99
+[[events]]
+role = "hihat.closed"
+steps = [2, 6, 10, 14, 18, 22, 26, 30]
+velocity = 58
+[[events]]
+role = "hihat.open"
+steps = [15]
+velocity = 80
+[[events]]
+role = "hihat.open"
+steps = [31]
+velocity = 110

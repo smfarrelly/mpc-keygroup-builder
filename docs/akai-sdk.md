@@ -139,3 +139,18 @@ uv run mpc-bundle-verify "work/SDK Drum Synth Kit"
 ```
 
 To sample another trusted SDK instrument, copy the TOML and change the plugin identity, notes, sample names and pad assignments. Each note is rendered individually at the simulator’s default preset and velocity. The sampler removes whole frames of digital silence from both ends, preserving stereo, level and quiet tails. In `kit.json`, `reaches_render_end` marks a sound still playing at the end of its two-second capture. Move the entire finished folder when preparing for an MPC audition.
+
+### Compare ghost notes and accents
+
+The SDK Drum Synth applies note velocity to voice gain. On the pinned example, RMS-matching Clean Kit hits at velocities 40, 80 and 120 against velocity 100 left less than 0.7% residual signal RMS for every voice. This measurement uses aligned two-second stereo PCM16 renders from a freshly reset instrument. Quiet tails and quantization affect the residual.
+
+The [accent kit manifest](../plugins/DrumSynthStudy/accent-kit.toml) uses Clean Kit at velocities 1–95. At 96–127 it selects Boom Kit samples on kick, snare, closed hat and open hat. The Boom kick is three semitones lower and longer, the snare is two semitones lower and longer, the closed hat is shorter and the open hat is longer. Both presets were sampled at velocity 100. These layers are an authored performance choice. Clap, both toms and percussion keep one sample each.
+
+After building the baseline kit above, run this from the repository root with a C++17 compiler and the same SDK checkout:
+
+```bash
+uv run python plugins/DrumSynthStudy/build.py --sdk "$sdk" \
+  --baseline "work/SDK Drum Synth Kit" --output work/ghost-accents
+```
+
+Open `work/ghost-accents/index.html` to switch kits during the same two-bar phrase at 96 BPM. The quiet snare ghosts play at velocity 40. The backbeats alternate between 95 and 96, making the layer switch audible with a one-step velocity change. The page links to the shared MIDI file and the per-voice measurements. The `Kit` folder holds the alternate XPM and its twelve WAVs. The build checks all eight pads at both boundary velocities and verifies that the original samples match the Clean Kit reference. Sound and choke behavior on the Key 37 remain pending.

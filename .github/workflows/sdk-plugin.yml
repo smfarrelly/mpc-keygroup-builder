@@ -54,3 +54,5 @@ jobs:
           mpc-sdk-kit midi/sdk-kits/drum-synth.toml "$sdk/examples/DrumSynth/build/native/drum-synth.so" --host-sim "$sdk/.sdk-tools/host_sim" --output work/sdk-kit
           mpc-bundle-verify work/sdk-kit
           mpc-program-audition "work/sdk-kit/SDK Drum Synth Kit.xpm" --drum-bank A --output work/sdk-kit-bank-a.wav
+          python plugins/DrumSynthStudy/build.py --sdk "$sdk" --baseline work/sdk-kit --output work/ghost-accents
+          mpc-bundle-verify work/ghost-accents
