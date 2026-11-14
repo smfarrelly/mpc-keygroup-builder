@@ -43,3 +43,12 @@ uv run mpc-sdk-compare "$dump" /path/to/new/build/params.json --json
 The seed skips controls the SDK reports as non-automatable, reserves the faders, and pins the plugin’s vendor and signed numeric UID. Edit the seed to select the gestures you want. Each mapping pins its parameter name and index. Compilation checks those pins against the current dump. The comparison checks all indices, including unused ones. It exits with status 2 for changes that need mapping review, including moved or removed parameters, changed choices or units, a different plugin identity, and changed automation flags. An appended control or a new startup value is reported as informational. Two matching dumps establish agreement on the reported fields only.
 
 See the [existing performance pages](plugin-mapping.md) for the commercial plugin workflow and [parameter guide](plugin-parameters.md) for the catalog formats.
+
+## Check a built package on the laptop
+
+```bash
+uv run mpc-sdk-package "/path/to/build/MPC SDK Examples - VST - Stereo Delay" \
+  --target arm32 --sdk-dump /path/to/build/params.json --json
+```
+
+This read-only check follows the package manifest to the binary for the selected CPU. It inspects the ELF header, executable load segments, ARM32 hard-float flags, package name, and portable paths. A supplied simulator dump adds plugin identity, instrument/effect and channel-count comparisons. The result includes the file hash and expected location under `VST2 Plugins`. It works on Ubuntu without the SDK, cross compiler, SD card or MPC. Use Akai’s validator for skins and symbol dependencies, and the simulator for audio processing. [Akai package format](https://github.com/inmusic-software/mpc-plugin-builder-sdk/blob/main/docs/plugin-folder-format.md)
