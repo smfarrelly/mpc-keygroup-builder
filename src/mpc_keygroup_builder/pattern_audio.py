@@ -7,7 +7,7 @@ from pathlib import Path
 from . import audition
 from .program_io import read_payload, xml_root
 from .report_io import write_json
-from .testing import _audio_index, _boolean, _integer, _resolve
+from .testing import _audio_index, _boolean, _integer
 
 
 def _integer_in(value, low, high, name):
@@ -49,8 +49,7 @@ def render_pattern(program: Path, pattern: Path, output: Path) -> dict:
     if output.exists():
         references = {(layer.findtext("SampleFile") or layer.findtext("SampleName") or "").strip()
                       for layer in instrument.iter("Layer")}
-        if any(output == path.resolve() for ref in references if ref for path in _resolve(ref, indexes)):
-            raise ValueError("audition output may not replace a sample referenced by the program")
+        audition.protect_sample_output(output, references, indexes)
     selected = []
     for event in events:
         if not isinstance(event, dict):
