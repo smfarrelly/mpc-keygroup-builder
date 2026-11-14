@@ -89,7 +89,7 @@ def build(sdk, baseline, output):
         if test_program(kit, kit.parent).verdict != "pass":
             raise ValueError("alternate kit failed program validation")
         original = baseline / (base.name + ".xpm")
-        recipe = ideas.load_recipe(ROOT / "recipes/drums/ghost-accents.toml")
+        recipe = ideas.load_recipe(HERE / "ghost-accents.toml")
         phrase = ideas.generate_idea(recipe, model.from_xpm(original), tempo=96, seed=37)
         (stage / "Ghost Accents.mid").write_bytes(ideas.render_midi(phrase))
         for title, program, kit_name in (("Original", original, base.name), ("Accent", kit, alternate.name)):
