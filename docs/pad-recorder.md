@@ -28,3 +28,5 @@ uv run mpc-bundle-verify "work/My groove render"
 Listen to `listen.wav` and use `pattern.mid` for the MPC. The folder also holds the editable take, the resolved MIDI notes in `pattern.json`, and the selected sample and frame offset for each hit in `listen.json`. The renderer checks the XPM, bank and sample-region fingerprints before publishing to a new folder.
 
 Both previews implement velocity splits, pitch, note gates, same-pad mono retrigger and mute groups. The browser preserves the source channel count and plays live drum tails. The WAV renderer sums to mono and cuts tails at the loop boundary. MPC effects, envelopes, mixer settings and hardware timing require separate listening.
+
+To hear the groove with a bass line and chords, build a [bass and chord accompaniment](../plugins/SimpleSynthStudy/README.md) from a harmony recipe and the SDK Simple Synth. Use its individual MIDI tracks to try the parts on your Scratchpad sounds.
