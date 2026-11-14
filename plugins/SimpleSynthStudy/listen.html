@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{{name}} · Rhythm section</title>
+<title>$name · $heading</title>
 <style>
 :root{color-scheme:dark;font:17px/1.5 "Barlow",system-ui,sans-serif;background:#171a17;color:#f0f0e6}*{box-sizing:border-box}
 main{max-width:45rem;margin:0 auto;padding:clamp(1.2rem,5vw,3.5rem)}h1{font-size:clamp(2.1rem,6vw,4rem);line-height:1.05;letter-spacing:-.045em;margin:.6rem 0}
@@ -7,14 +7,10 @@ p{color:#c9cabf}fieldset{border:0;padding:0;margin:1.5rem 0}legend{font-weight:b
 label{display:inline-flex;align-items:center;gap:.3rem;background:#29322b;border:1px solid #5c685d;border-radius:.4rem;padding:.55rem .7rem;margin:.15rem}
 label:has(input:checked){border-color:#e9bf7d}input{accent-color:#f2c16b}audio{display:block;width:100%;margin:1rem 0}
 a{color:#f1c880}ul{padding-left:1.2rem}li{margin:.35rem 0}section{border-top:1px solid #52574c;margin-top:1.5rem}
-</style></head><body><main><p>Rhythm section</p><h1>{{name}}</h1><p>{{details}}<br>{{sounds}}</p>
-<fieldset><legend>Listen to</legend><label><input type="radio" name="part" value="Mix" checked>Full mix</label><label><input type="radio" name="part" value="Drums">Drums</label><label><input type="radio" name="part" value="Bass">Bass</label><label><input type="radio" name="part" value="Chords">Chords</label></fieldset>
-<audio id="player" controls loop preload="metadata" src="Mix.wav"></audio><p id="status" role="status"></p>
-<section><h2>Keep the part</h2><p><a href="Sketch.mid" download>Three-track MIDI</a> · <a href="Mix.wav" download>Full mix WAV</a> · <a href="performance.take.json" download>Editable drum take</a></p>
-<ul><li>Drums · <a href="Drums.mid" download>MIDI</a> · <a href="Drums.wav" download>WAV</a></li>
-<li>Bass · <a href="Bass.mid" download>MIDI</a> · <a href="Bass.wav" download>WAV</a></li>
-<li>Chords · <a href="Chords.mid" download>MIDI</a> · <a href="Chords.wav" download>WAV</a></li></ul>
-<p><a href="harmony.toml" download>Harmony recipe</a> · <a href="sketch.json">Render settings</a></p></section></main>
+</style></head><body><main><p>$heading</p><h1>$name</h1><p>$details<br>$sounds</p>
+<fieldset><legend>Listen to</legend>$choices</fieldset>
+<audio id="player" controls loop preload="metadata" src="$initial.wav"></audio><p id="status" role="status"></p>
+<section><h2>Keep the part</h2><ul>$links</ul></section></main>
 <script>
 const player = document.querySelector("audio");
 let seek = 0, resume = false, switching = false;
@@ -23,7 +19,7 @@ for (const choice of document.querySelectorAll("input[name=part]")) choice.oncha
   switching = true;
   const source = choice.value + ".wav";
   player.onloadedmetadata = async () => {
-    if (!player.currentSrc.endsWith("/" + source)) return;
+    if (!player.currentSrc.endsWith("/" + encodeURIComponent(source))) return;
     player.currentTime = Math.min(seek,player.duration);
     switching = false;
     if (resume) try { await player.play(); } catch (error) { document.querySelector("#status").textContent = error.message; }

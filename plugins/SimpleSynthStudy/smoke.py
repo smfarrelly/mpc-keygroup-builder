@@ -1,5 +1,6 @@
 """Exercise real Simple Synth timing, MIDI export and aligned audio from a drum take."""
 import argparse
+import csv
 from array import array
 import json
 from pathlib import Path
@@ -9,6 +10,7 @@ import tempfile
 import wave
 
 from build import build, compile_host
+from gesture import build as build_gesture, moves_for
 from mpc_keygroup_builder import pad_recorder
 from mpc_keygroup_builder.bundle_verify import verify_bundle
 from mpc_keygroup_builder.midi_groove import parse_midi
@@ -56,6 +58,33 @@ def check(sdk, kit):
                 assert [e.tick for e in events] == [53 + bar * 1920 for bar in range(4)]
             with wave.open(str(folder / (name + ".wav"))) as w:
                 assert w.getnframes() == report["frames"]
+        profile = ROOT / "midi/sdk-examples/simple-synth.toml"
+        recipe = ROOT / "plugins/SimpleSynthStudy/bass-rise.toml"
+        gesture = build_gesture(folder, recipe, profile, sdk, root / "gesture").parent
+        verify_bundle(gesture)
+        evidence = json.loads((gesture / "gesture.json").read_text())
+        assert evidence["audio_changed"]
+        for dry, moved in (("Original.wav", "Mix.wav"), ("Original Bass.wav", "Bass.wav")):
+            with wave.open(str(gesture / dry)) as a, wave.open(str(gesture / moved)) as b:
+                assert a.readframes(evidence["first_frame"]) == b.readframes(evidence["first_frame"])
+                assert a.readframes(a.getnframes()) != b.readframes(b.getnframes())
+        rows = list(csv.DictReader((gesture / "controls.csv").read_text().splitlines()))
+        assert len(rows) == evidence["events"] and {int(r["cc"]) for r in rows} == {20, 21}
+        assert {int(r["channel"]) for r in rows} == {8}
+        assert [int(r["tick"]) for r in rows[:2]] == [3840, 3840]
+        source, notes = parse_midi(gesture / "Controls.mid")
+        assert source.tracks == 2 and not notes
+        data = (gesture / "Controls.mid").read_bytes()
+        assert b"\xb7\x14\x30\x00\xb7\x15\x20" in data
+        for points in ([[1, 128]], [[17, 2]], [[2, 0], [1, 3]], [[1.00001, 2]]):
+            try:
+                moves_for({"schema_version": 1, "name": "Test", "lanes": [
+                    {"control": "top-encoder-1", "points": points}]},
+                    {"top-encoder-1": {"ui_parameter": 11}}, 7680)
+            except ValueError:
+                pass
+            else:
+                raise AssertionError(f"accepted invalid points {points}")
         print("Verified 137-frame onset, note release, velocity, presets, repeated off-grid take, aligned stems and exported MIDI.")
 
 

@@ -7,6 +7,8 @@
 #include <cstdint>
 #include <cstdio>
 #include <iostream>
+#include <fstream>
+#include <iomanip>
 #include <string>
 #include <vector>
 
@@ -17,7 +19,7 @@ struct NoteEdge {
 };
 
 int main(int argc, char** argv) {
-    if (argc != 4) return 2;
+    if (argc != 4 && argc != 5) return 2;
     const std::string preset = argv[1];
     const int frames = std::stoi(argv[2]);
     const double bpm = std::stod(argv[3]);
@@ -28,6 +30,25 @@ int main(int argc, char** argv) {
     if (program == synth.numPrograms()) {
         std::cerr << "Unknown Simple Synth preset: " << preset << '\n';
         return 2;
+    }
+    struct Move { int frame, index, value; };
+    std::vector<Move> moves;
+    if (argc == 5) {
+        std::ifstream input(argv[4]);
+        if (!input) return 2;
+        Move move{};
+        std::string name;
+        while (input >> move.frame) {
+            if (!(input >> move.index >> move.value >> std::quoted(name)) ||
+                move.frame < 0 || move.frame >= frames || move.index < 0 || move.index >= synth.numParams() ||
+                move.value < 0 || move.value > 127 || synth.param(move.index).name != name ||
+                (!moves.empty() && move.frame < moves.back().frame)) {
+                std::cerr << "Invalid gesture or parameter mismatch at frame " << move.frame << '\n';
+                return 2;
+            }
+            moves.push_back(move);
+        }
+        if (!input.eof() || moves.empty()) return 2;
     }
     std::vector<NoteEdge> edges;
     int start, end, note, velocity;
@@ -46,9 +67,14 @@ int main(int argc, char** argv) {
     synth.setProgram(program);
     synth.prepare(rate, block);
     synth.reset();
-    size_t next = 0;
-    for (int pos = 0; pos < frames; pos += block) {
-        const int count = std::min(block, frames - pos);
+    size_t next = 0, nextMove = 0;
+    for (int pos = 0; pos < frames;) {
+        while (nextMove < moves.size() && moves[nextMove].frame == pos) {
+            const auto& move = moves[nextMove++];
+            synth.setNormalised(move.index, move.value / 127.0f);
+        }
+        int count = std::min(block, frames - pos);
+        if (nextMove < moves.size()) count = std::min(count, moves[nextMove].frame - pos);
         std::vector<mpc::MidiEvent> events;
         while (next < edges.size() && edges[next].frame < pos + count) {
             const auto& event = edges[next++];
@@ -83,6 +109,7 @@ int main(int argc, char** argv) {
             pcm[2*i+1] = static_cast<unsigned char>(sample >> 8);
         }
         if (std::fwrite(pcm.data(), 2, count, stdout) != static_cast<size_t>(count)) return 1;
+        pos += count;
     }
     return std::fflush(stdout) == 0 ? 0 : 1;
 }

@@ -16,9 +16,18 @@ class MidiNote:
 
 
 @dataclass(frozen=True)
+class MidiControlChange:
+    tick: int
+    controller: int
+    value: int
+    channel: int
+
+
+@dataclass(frozen=True)
 class MidiTrack:
     name: str
     notes: tuple[MidiNote, ...]
+    controls: tuple[MidiControlChange, ...] = ()
 
 
 def variable_length(value: int) -> bytes:
@@ -96,6 +105,12 @@ def render_standard_midi(
                     bytes([0x80 | channel, note.note, 0]),
                 )
             )
+        for control in midi_track.controls:
+            if not 0 <= control.tick < end_tick or not 1 <= control.channel <= 16:
+                raise ValueError("MIDI controller event falls outside the track or channel range")
+            if not 0 <= control.controller <= 127 or not 0 <= control.value <= 127:
+                raise ValueError("MIDI controller number and value must be in 0..127")
+            timeline.append((control.tick, 1, bytes([0xB0 | (control.channel - 1), control.controller, control.value])))
         timeline.append((end_tick, 9, b"\xff\x2f\x00"))
         rendered_tracks.append(timeline)
 
