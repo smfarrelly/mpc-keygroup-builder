@@ -158,3 +158,5 @@ Open `work/ghost-accents/index.html` to switch kits during the same two-bar phra
 ## Hear a recorded drum take with bass and chords
 
 The [Simple Synth rhythm section](../plugins/SimpleSynthStudy/README.md) combines your pad performance with two pitched parts. Listen to the aligned drum, bass and chord stems on the laptop, or keep their MIDI tracks to play with Scratchpad instruments on the MPC.
+
+For a sample-based instrument, [build the four Simple Synth Keygroups](../plugins/SimpleSynthStudy/README.md#play-the-presets-as-sampled-mpc-keygroups). The result includes a local keyboard audition and all WAVs referenced by each XPM.
