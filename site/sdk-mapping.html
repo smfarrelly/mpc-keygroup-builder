@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>SDK encoder page · MPC Instrument Factory</title>
+<style>
+:root { font-family: Inter, system-ui, sans-serif; color: #ecf1ed; background: #101311; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { width: min(100% - 32px, 1050px); margin: auto; padding: 34px 0 70px; }
+a { color: #b9edc6; }
+h1 { margin: 24px 0 8px; font-size: clamp(2.1rem, 5vw, 3.5rem); letter-spacing: -.05em; }
+h2 { font-size: 1.2rem; }
+p, small { color: #c2cdc4; line-height: 1.5; }
+input, button { font: inherit; }
+button, input { border: 1px solid #526158; border-radius: 6px; padding: 8px 10px; background: #19221c; color: inherit; }
+button { cursor: pointer; }
+button:disabled { opacity: .5; cursor: default; }
+button:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid #a8e4b8; outline-offset: 2px; }
+button.primary { background: #b9edc6; color: #15231a; font-weight: 650; }
+.tools { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin: 22px 0 12px; }
+label { display: grid; gap: 5px; }
+.columns { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(270px, 1fr); gap: 24px; align-items:start; }
+aside { padding: 0 18px 16px; border: 1px solid #405045; border-radius: 8px; background: #161c18; }
+#params, #selected { list-style:none; padding:0; }
+#params li, #selected li { padding:10px 0; border-bottom:1px solid #344039; }
+#params li label { display:flex; gap:12px; align-items:baseline; }
+#params input { accent-color:#a7e5b6; }
+small { display:block; }
+#selected li { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+#selected button { padding:3px 7px; }
+#selection-hint, #file-status { min-height:1.5em; }
+input[type=number] { width:5em; }
+@media(max-width:680px){.columns {grid-template-columns:1fr;} main {padding-top:20px;} input[type=file] {max-width:100%;}}
+</style>
+</head>
+<body><main>
+<a href="index.html">MPC Instrument Factory</a>
+<h1>Design an SDK encoder page</h1>
+<p>Pick up to eight controls in playing order. The worksheet assigns them to the top row of your Launch Control XL 3 and leaves the faders available for your MPC mix.</p>
+<div class="tools"><label>Local SDK parameter dump<input type="file" id="file" accept=".json,application/json"></label><button id="example" type="button">Load Loop Throw example</button></div>
+<p id="file-status" role="status"></p>
+<div class="columns">
+<section><h2 id="plugin-name">Plugin parameters</h2>
+<label>Search parameters<input type="search" id="query" placeholder="Name, unit or choice"></label>
+<ul id="params"></ul></section>
+<aside><h2>Encoder assignments</h2><ol id="selected"></ol>
+<p id="selection-hint" aria-live="polite"></p>
+<div class="tools"><label>Mode slot<input id="slot" type="number" required min="1" max="15" value="10"></label>
+<label>MIDI channel<input id="channel" type="number" required min="1" max="16" value="8"></label></div>
+<p>Slot 10 is an alternate for the existing MultiTap page. Choose the intended slot before exporting.</p>
+<button type="button" class="primary" id="export">Download mapping TOML</button></aside></div>
+<p>Files are read in this browser. SDK indices identify plugin controls. A saved MPC project is needed to verify MIDI Learn assignments.</p>
+</main>
+<script id="bundled-dump" type="application/json">{"name":"Loop Throw","vendor":"FG Scratchpad","uid":"FgLt","uidInt":1181174900,"version":1000,"isInstrument":false,"numInputs":2,"numOutputs":2,"numPrograms":1,"programs":["Default"],"params":[{"index":0,"id":null,"name":"Throw","label":"%","display":"0","default":0.0,"automatable":true,"kind":"int","choices":[]},{"index":1,"id":null,"name":"Division","label":"","display":"1/8","default":0.333333,"automatable":true,"kind":"choice","choices":["1/16","1/8","1/8D","1/4"]},{"index":2,"id":null,"name":"Repeats","label":"%","display":"40","default":0.470588,"automatable":true,"kind":"int","choices":[]},{"index":3,"id":null,"name":"Tone","label":"Hz","display":"5500","default":0.73721,"automatable":true,"kind":"int","choices":[]}]}</script>
+<script src="sdk-mapping.js"></script>
+</body></html>

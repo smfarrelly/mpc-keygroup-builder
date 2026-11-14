@@ -61,3 +61,13 @@ This read-only check follows the package manifest to the binary for the selected
 uv run mpc-plugin-companion midi/sdk-examples/loop-throw.toml \
   --sdk-dump plugins/LoopThrow/params.reference.json --output work/sdk-delay/loop-throw.html
 ```
+
+## Choose your own controls in a browser
+
+Open [Design an SDK encoder page](../site/sdk-mapping.html) from the offline site. It starts with Loop Throw. Choose another local host simulator dump, search by control name, unit or choice, and select controls in the order you want on encoders 1–8. Download the TOML and validate it with the same dump:
+
+```bash
+uv run mpc-plugin-map check my-encoders.toml --sdk-dump /path/to/build/params.json
+```
+
+The editor assigns CC 20 through 27 in selection order. Removing a control shifts the later assignments left. Export a draft before leaving the page or switching plugins.
