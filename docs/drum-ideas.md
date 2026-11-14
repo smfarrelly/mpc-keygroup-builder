@@ -89,3 +89,14 @@ they created no new sequence on MPC 3.9.1.2. The format-1 replacements import
 and play on hardware, and the source/Classic pair is musically close enough to
 accept. Because the source contains varied one-shots, that listening result is
 not an isolated measurement of every velocity or swing offset.
+
+## Hear the pattern with the kit you chose
+
+After generating a Drum Idea, render its JSON to a loop-length WAV. Use the matching XML Drum Program and a different output stem so the audition receipt and idea can sit together.
+
+```bash
+uv run mpc-program-audition "/path/to/Drum Program.xpm" \
+  --drum-idea work/ideas/dusty-pocket.json --output work/ideas/dusty-pocket-listen.wav
+```
+
+The preview uses the idea’s saved tempo, swing timing and velocities. Each pad selects its matching velocity layer. A later hit in a shared mute group cuts the earlier hit, which makes closed/open hat interactions audible. The renderer sums to mono, applies sample trim and pitch, and ends at the bar boundary for looping. The adjacent JSON records each actual sample, start frame and played length. For a remapped idea, use the XPM with the corresponding pad and MIDI-note layout.
