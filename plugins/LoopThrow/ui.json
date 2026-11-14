@@ -2,7 +2,7 @@
   "kit": "cyan",
   "pages": [
     {
-      "name": "LOOP THROW",
+      "name": "THROW",
       "controls": [
         {"param": "Throw", "widget": "knob"},
         {"param": "Division", "widget": "slider", "overlay": "menu"},
