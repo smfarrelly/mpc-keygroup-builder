@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from mpc_keygroup_builder import launch_control
+from mpc_keygroup_builder import controller_compare, launch_control
 
 
 def section(name: str, section_id: int, enabled: dict[int, tuple[int, int, str]]) -> bytes:
@@ -81,6 +81,65 @@ class LaunchControlTests(unittest.TestCase):
             self.assertEqual(result["project_midi_learn_count"], 1)
             self.assertEqual(result["captures"][0]["matched_control_count"], 1)
             self.assertEqual(result["captures"][0]["controls"][0]["learned_targets"], ["OPX (Level 1)"])
+
+    def test_compare_tracks_saved_target_across_renames_and_channel_changes(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            syx = root / "OPX.syx"
+            syx.write_bytes(section("OPX", 0, {0x10: (9, 13, "OP1 Level")}))
+            left = project(root / "Before.xpj")
+            right = root / "After.xpj"
+            header, payload = gzip.decompress(left.read_bytes()).rsplit(b"\n", 1)
+            data = json.loads(payload)
+            data["data"]["tracks"] = [{"name": "OPX", "program": {"plugin": {"plugin": {
+                "description": {"name": "OPx-4"}, "presetName": "First", "state": "opaque"}}}}]
+            left.write_bytes(gzip.compress(header + b"\n" + json.dumps(data).encode()))
+            row = data["data"]["midiLearnSettings"]["controls"][0]
+            row["mapping"].update(channel=12, data1=21)
+            row["control"]["name"] = "Lead (Level 1)"
+            row["control"]["targetData"][0]["track"] = "Lead"
+            track = data["data"]["tracks"][0]
+            track["name"] = "Lead"
+            track["program"]["plugin"]["plugin"]["presetName"] = "Second"
+            right.write_bytes(gzip.compress(header + b"\n" + json.dumps(data).encode()))
+            result = controller_compare.compare_projects(left, right, [syx])
+            self.assertTrue(result["changed"])
+            self.assertTrue(result["presets_changed"])
+            self.assertNotIn("opaque", json.dumps(result))
+            mode = result["captures"][0]
+            self.assertEqual(mode["summary"], {"removed": 1})
+            change = mode["changes"][0]
+            self.assertEqual(change["endpoint"], "top-encoder-1")
+            self.assertEqual(change["other_saved_inputs"][0]["channel"], 12)
+            self.assertEqual(change["other_saved_inputs"][0]["number"], 21)
+            self.assertFalse(controller_compare.compare_projects(left, left, [syx])["changed"])
+            with self.assertRaisesRegex(ValueError, "distinct"):
+                controller_compare.compare_projects(left, right, [syx, syx])
+
+    def test_changing_only_learn_values_or_row_order_is_not_a_routing_change(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            syx = root / "OPX.syx"
+            syx.write_bytes(section("OPX", 0, {0x10: (9, 13, "OP1 Level")}))
+            left = project(root / "Before.xpj")
+            right = root / "After.xpj"
+            header, payload = gzip.decompress(left.read_bytes()).rsplit(b"\n", 1)
+            data = json.loads(payload)
+            rows = data["data"]["midiLearnSettings"]["controls"]
+            extra = json.loads(json.dumps(rows[0]))
+            extra["control"]["name"] = "Also assigned"
+            rows.append(extra)
+            left.write_bytes(gzip.compress(header + b"\n" + json.dumps(data).encode()))
+            rows.reverse()
+            rows[0]["control"]["controlValue"] = 0.83
+            right.write_bytes(gzip.compress(header + b"\n" + json.dumps(data).encode()))
+            result = controller_compare.compare_projects(left, right, [syx])
+            self.assertFalse(result["changed"])
+            self.assertEqual(result["captures"][0]["summary"], {"same": 1})
+            rows[0]["control"]["targetData"].append({"track": "Extra", "parameter": 5})
+            right.write_bytes(gzip.compress(header + b"\n" + json.dumps(data).encode()))
+            self.assertEqual(controller_compare.compare_projects(left, right, [syx])["captures"][0]["summary"], {"changed": 1})
+
 
     def test_rejects_unrecognized_sysex(self):
         with tempfile.TemporaryDirectory() as temporary:

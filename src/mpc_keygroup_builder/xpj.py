@@ -5,13 +5,14 @@ from __future__ import annotations
 import argparse
 import gzip
 import json
-import os
 import sys
-import tempfile
 from collections import Counter
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Iterable
+
+
+from .report_io import write_json as _write_json
 
 
 PROGRAM_TYPES = {
@@ -231,6 +232,10 @@ def midi_learn_rows(project: XPJProject) -> list[dict[str, Any]]:
                 "parameter": target.get("parameter"),
                 "instrument_index": target.get("instrumentIndex"),
                 "target_count": len(targets) if isinstance(targets, list) else 0,
+                "target_details": [
+                    {key: part.get(key) for key in ("track", "parameter", "instrumentIndex")}
+                    for part in targets if isinstance(part, dict)
+                ] if isinstance(targets, list) else [],
             }
         )
     return rows
@@ -286,36 +291,6 @@ def compare(left: XPJProject, right: XPJProject) -> dict[str, Any]:
         "change_count": len(changes),
         "changes": changes,
     }
-
-
-def _write_json(
-    value: Any, output: Path | None, inputs: tuple[Path, ...] = ()
-) -> None:
-    rendered = json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
-    if output is None:
-        sys.stdout.write(rendered)
-    else:
-        requested = output.expanduser()
-        if requested.is_symlink():
-            raise ValueError(f"XPJ report output may not be a symbolic link: {requested}")
-        destination = requested.resolve()
-        if destination in {path.expanduser().resolve() for path in inputs}:
-            raise ValueError(f"XPJ report output may not replace an input: {requested}")
-        if destination.exists() and not destination.is_file():
-            raise ValueError(f"XPJ report output is not a regular file: {requested}")
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        descriptor, temporary_name = tempfile.mkstemp(
-            prefix=f".{destination.name}.", dir=destination.parent
-        )
-        temporary = Path(temporary_name)
-        try:
-            with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as stream:
-                stream.write(rendered)
-                stream.flush()
-                os.fsync(stream.fileno())
-            os.replace(temporary, destination)
-        finally:
-            temporary.unlink(missing_ok=True)
 
 
 def main(argv: list[str] | None = None) -> int:

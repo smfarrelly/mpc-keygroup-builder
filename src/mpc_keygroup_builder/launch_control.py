@@ -4,13 +4,12 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import json
-import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
 from . import xpj
+from .report_io import write_json
 
 
 NOVATION_HEADER = bytes((0xF0, 0x00, 0x20, 0x29, 0x02, 0x15, 0x05, 0x00, 0x45))
@@ -195,6 +194,11 @@ def inspect_many(paths: list[Path]) -> dict[str, Any]:
 
 def audit(project_path: Path, syx_paths: list[Path]) -> dict[str, Any]:
     project = xpj.load(project_path)
+    return audit_modes(project, [inspect(path) for path in syx_paths])
+
+
+def audit_modes(project: xpj.XPJProject, modes: list[dict[str, Any]]) -> dict[str, Any]:
+    """Join the same decoded modes to one saved project's MIDI Learn rows."""
     learned = xpj.midi_learn_rows(project)
     by_signature: dict[tuple[int, int], list[dict[str, Any]]] = defaultdict(list)
     for row in learned:
@@ -203,8 +207,7 @@ def audit(project_path: Path, syx_paths: list[Path]) -> dict[str, Any]:
         if type(channel) is int and type(number) is int:
             by_signature[(channel, number)].append(row)
     captures = []
-    for path in syx_paths:
-        capture = inspect(path)
+    for capture in modes:
         controls = []
         for control in capture["controls"]:
             if not control["enabled"]:
@@ -220,7 +223,7 @@ def audit(project_path: Path, syx_paths: list[Path]) -> dict[str, Any]:
                     "number": control["number"],
                     "learned_targets": [row["name"] for row in matches],
                     "learned_rows": [
-                        {field: row[field] for field in ("name", "track", "parameter", "control_type", "instrument_index", "target_count")}
+                        {field: row[field] for field in ("name", "track", "parameter", "control_type", "instrument_index", "target_count", "target_details")}
                         for row in matches
                     ],
                 }
@@ -237,7 +240,7 @@ def audit(project_path: Path, syx_paths: list[Path]) -> dict[str, Any]:
         )
     return {
         "schema_version": 1,
-        "project": str(project_path),
+        "project": str(project.path),
         "project_firmware": project.header.firmware if project.header else None,
         "project_midi_learn_count": len(learned),
         "plugin_tracks": xpj.plugin_track_rows(project),
@@ -247,15 +250,6 @@ def audit(project_path: Path, syx_paths: list[Path]) -> dict[str, Any]:
             "are expected to bypass MPC MIDI Learn. Matches prove only the captured channel/number pair."
         ),
     }
-
-
-def _write(value: dict[str, Any], output: Path | None) -> None:
-    rendered = json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
-    if output is None:
-        sys.stdout.write(rendered)
-    else:
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_text(rendered, encoding="utf-8")
 
 
 def main() -> int:
@@ -268,11 +262,24 @@ def main() -> int:
     audit_parser.add_argument("project", type=Path)
     audit_parser.add_argument("captures", type=Path, nargs="+")
     audit_parser.add_argument("--output", type=Path)
+    compare = commands.add_parser("compare", help="compare the same physical controls in two saved projects")
+    compare.add_argument("before", type=Path, help="reference MPC 3 XPJ")
+    compare.add_argument("after", type=Path, help="second MPC 3 XPJ")
+    compare.add_argument("captures", type=Path, nargs="+", help="unchanged Components .syx exports")
+    compare.add_argument("--output", type=Path, help="write the comparison as JSON")
+    compare.add_argument("--require-same", action="store_true", help="exit 1 if a control assignment or saved plugin preset differs")
     args = parser.parse_args()
+    inputs = tuple(args.captures)
     if args.command == "inspect":
-        _write(inspect_many(args.captures), args.output)
+        write_json(inspect_many(args.captures), args.output, inputs)
+    elif args.command == "audit":
+        write_json(audit(args.project, args.captures), args.output, (*inputs, args.project))
     else:
-        _write(audit(args.project, args.captures), args.output)
+        from .controller_compare import compare_projects
+        result = compare_projects(args.before, args.after, args.captures)
+        write_json(result, args.output, (*inputs, args.before, args.after))
+        if args.require_same and result["changed"]:
+            return 1
     return 0
 
 
