@@ -13,7 +13,6 @@ import shutil
 import struct
 import tempfile
 import wave
-import xml.etree.ElementTree as ET
 from dataclasses import replace
 from pathlib import Path
 
@@ -21,7 +20,7 @@ from .arrangement import arrange_idea, render_markdown as render_arrangement_mar
 from .arrangement import render_section
 from .catalog import build_catalog
 from .bundle_verify import verify_bundle
-from .drum_builder import build_drum_program, load_manifest
+from .drum_builder import build_drum_program, load_manifest, write_drum_template
 from .kit_select import load_recipe as load_kit_recipe
 from .kit_select import render_manifest, render_markdown as render_selection_markdown
 from .kit_select import select_kit, stage_audio
@@ -98,38 +97,6 @@ def _write_sound(path: Path, kind: str, duration: float, frequency: float, seed:
         stream.setsampwidth(2)
         stream.setframerate(SAMPLE_RATE)
         stream.writeframes(b"".join(struct.pack("<h", value) for value in frames))
-
-
-def write_drum_template(path: Path) -> None:
-    pads = {f"value{index}": 0 for index in range(128)}
-    root = ET.Element("MPCVObject")
-    program = ET.SubElement(root, "Program", type="Drum")
-    ET.SubElement(program, "ProgramName").text = "Portable Template"
-    ET.SubElement(program, "ProgramPads").text = json.dumps(
-        {"ProgramPads": {"Universal": {"value0": True}, "Type": {"value0": 1}, "pads": pads}}
-    )
-    note_map = ET.SubElement(program, "PadNoteMap")
-    bank_a = (37, 36, 42, 82, 40, 38, 46, 44, 48, 47, 45, 43, 49, 55, 51, 53)
-    note_values = bank_a + tuple(note for note in range(128) if note not in bank_a)
-    for number, note in enumerate(note_values, 1):
-        pad_note = ET.SubElement(note_map, "PadNote", number=str(number))
-        ET.SubElement(pad_note, "Note").text = str(note)
-    instruments = ET.SubElement(program, "Instruments")
-    for number in range(1, 129):
-        instrument = ET.SubElement(instruments, "Instrument", number=str(number))
-        ET.SubElement(instrument, "Mono").text = "False"
-        ET.SubElement(instrument, "Polyphony").text = "4"
-        ET.SubElement(instrument, "MuteGroup").text = "0"
-        ET.SubElement(instrument, "OneShot").text = "False"
-        layers = ET.SubElement(instrument, "Layers")
-        for layer_number in range(1, 5):
-            layer = ET.SubElement(layers, "Layer", number=str(layer_number))
-            ET.SubElement(layer, "Active").text = "False"
-            ET.SubElement(layer, "SampleName")
-            ET.SubElement(layer, "SampleFile")
-            ET.SubElement(layer, "VelStart").text = "0"
-            ET.SubElement(layer, "VelEnd").text = "127"
-    ET.ElementTree(root).write(path, encoding="UTF-8", xml_declaration=True)
 
 
 def _source_manifest() -> str:

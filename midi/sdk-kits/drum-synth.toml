@@ -1,0 +1,55 @@
+schema_version = 1
+name = "SDK Drum Synth Kit"
+plugin = "Drum Synth"
+vendor = "MPC SDK Examples"
+uid_int = 1299727474
+
+[[pads]]
+pad = 1
+note = 36
+sample = "Kick.wav"
+color_category = "kick"
+
+[[pads]]
+pad = 2
+note = 37
+sample = "Snare.wav"
+color_category = "snare"
+
+[[pads]]
+pad = 3
+note = 38
+sample = "Clap.wav"
+color_category = "clap"
+
+[[pads]]
+pad = 4
+note = 39
+sample = "Closed Hat.wav"
+color_category = "closed_hat"
+mute_group = 1
+
+[[pads]]
+pad = 5
+note = 40
+sample = "Open Hat.wav"
+color_category = "open_hat"
+mute_group = 1
+
+[[pads]]
+pad = 6
+note = 41
+sample = "Low Tom.wav"
+color_category = "tom"
+
+[[pads]]
+pad = 7
+note = 42
+sample = "High Tom.wav"
+color_category = "tom"
+
+[[pads]]
+pad = 8
+note = 43
+sample = "Percussion.wav"
+color_category = "percussion"

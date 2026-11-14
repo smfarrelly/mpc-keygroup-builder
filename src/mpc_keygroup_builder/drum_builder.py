@@ -259,6 +259,38 @@ def _set_layer(layer: ET.Element, spec: LayerSpec, frames: int) -> None:
         node.text = value
 
 
+def write_drum_template(path: Path) -> None:
+    pads = {f"value{index}": 0 for index in range(128)}
+    root = ET.Element("MPCVObject")
+    program = ET.SubElement(root, "Program", type="Drum")
+    ET.SubElement(program, "ProgramName").text = "Portable Template"
+    ET.SubElement(program, "ProgramPads").text = json.dumps(
+        {"ProgramPads": {"Universal": {"value0": True}, "Type": {"value0": 1}, "pads": pads}}
+    )
+    note_map = ET.SubElement(program, "PadNoteMap")
+    bank_a = (37, 36, 42, 82, 40, 38, 46, 44, 48, 47, 45, 43, 49, 55, 51, 53)
+    note_values = bank_a + tuple(note for note in range(128) if note not in bank_a)
+    for number, note in enumerate(note_values, 1):
+        pad_note = ET.SubElement(note_map, "PadNote", number=str(number))
+        ET.SubElement(pad_note, "Note").text = str(note)
+    instruments = ET.SubElement(program, "Instruments")
+    for number in range(1, 129):
+        instrument = ET.SubElement(instruments, "Instrument", number=str(number))
+        ET.SubElement(instrument, "Mono").text = "False"
+        ET.SubElement(instrument, "Polyphony").text = "4"
+        ET.SubElement(instrument, "MuteGroup").text = "0"
+        ET.SubElement(instrument, "OneShot").text = "False"
+        layers = ET.SubElement(instrument, "Layers")
+        for layer_number in range(1, 5):
+            layer = ET.SubElement(layers, "Layer", number=str(layer_number))
+            ET.SubElement(layer, "Active").text = "False"
+            ET.SubElement(layer, "SampleName")
+            ET.SubElement(layer, "SampleFile")
+            ET.SubElement(layer, "VelStart").text = "0"
+            ET.SubElement(layer, "VelEnd").text = "127"
+    ET.ElementTree(root).write(path, encoding="UTF-8", xml_declaration=True)
+
+
 def build_drum_program(
     manifest: DrumManifest,
     template: Path,
