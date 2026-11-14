@@ -1,0 +1,40 @@
+name: sdk-plugin
+
+on:
+  pull_request:
+    paths:
+      - 'plugins/**'
+      - 'midi/sdk-examples/**'
+      - 'src/mpc_keygroup_builder/sdk_*.py'
+      - '.github/workflows/sdk-plugin.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          repository: inmusic-software/mpc-plugin-builder-sdk
+          ref: febd2ca5bd9eb16c4a412837196e145566bc981b
+          path: work/akai-sdk
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Verify source, simulator behavior, mapping contract and timing
+        run: |
+          python -m pip install .
+          sdk=work/akai-sdk
+          plugin=plugins/LoopThrow
+          python "$sdk/tools/build.py" "$plugin" --target native --toolchain gcc
+          "$sdk/.sdk-tools/host_sim" "$plugin/build/native/loop-throw.so" test --playing
+          c++ -std=c++17 -O2 -I"$sdk/framework" "$plugin/tests/impulse.cpp" -o "$plugin/build/impulse-test"
+          "$plugin/build/impulse-test"
+          mpc-sdk-compare "$plugin/params.reference.json" "$plugin/build/params.json"
+          mpc-plugin-map check midi/sdk-examples/loop-throw.toml --sdk-dump "$plugin/build/params.json"

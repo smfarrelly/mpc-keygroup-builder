@@ -1,0 +1,65 @@
+{
+  "name": "Loop Throw",
+  "vendor": "FG Scratchpad",
+  "uid": "FgLt",
+  "uidInt": 1181174900,
+  "version": 1000,
+  "isInstrument": false,
+  "numInputs": 2,
+  "numOutputs": 2,
+  "numPrograms": 1,
+  "programs": [
+    "Default"
+  ],
+  "params": [
+    {
+      "index": 0,
+      "id": null,
+      "name": "Throw",
+      "label": "%",
+      "display": "0",
+      "default": 0.0,
+      "automatable": true,
+      "kind": "int",
+      "choices": []
+    },
+    {
+      "index": 1,
+      "id": null,
+      "name": "Division",
+      "label": "",
+      "display": "1/8",
+      "default": 0.333333,
+      "automatable": true,
+      "kind": "choice",
+      "choices": [
+        "1/16",
+        "1/8",
+        "1/8D",
+        "1/4"
+      ]
+    },
+    {
+      "index": 2,
+      "id": null,
+      "name": "Repeats",
+      "label": "%",
+      "display": "40",
+      "default": 0.470588,
+      "automatable": true,
+      "kind": "int",
+      "choices": []
+    },
+    {
+      "index": 3,
+      "id": null,
+      "name": "Tone",
+      "label": "Hz",
+      "display": "5500",
+      "default": 0.73721,
+      "automatable": true,
+      "kind": "int",
+      "choices": []
+    }
+  ]
+}
