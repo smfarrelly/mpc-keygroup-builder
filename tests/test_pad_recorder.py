@@ -1,8 +1,10 @@
 import base64
+import errno
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import io
 import json
 import os
+import shutil
 import subprocess
 from pathlib import Path
 import tempfile
@@ -165,4 +167,15 @@ class PadRecorderTests(unittest.TestCase):
             finally:
                 process.terminate()
                 process.wait(timeout=10)
+                # Chrome's utility processes can finish a profile write just
+                # after the browser process exits.
+                profile = self.root / "profile"
+                deadline = time.monotonic() + 5
+                while profile.exists():
+                    try:
+                        shutil.rmtree(profile)
+                    except OSError as error:
+                        if error.errno not in (errno.ENOENT, errno.ENOTEMPTY) or time.monotonic() >= deadline:
+                            raise
+                        time.sleep(0.1)
         self.assertEqual(results, ["passed"])
