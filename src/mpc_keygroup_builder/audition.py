@@ -239,6 +239,21 @@ def _drum_velocities(values) -> tuple[int, ...]:
     return values
 
 
+def drum_layer_audio(layer, reference, indexes):
+    paths = _resolve(reference, indexes)
+    if len(paths) != 1:
+        raise ValueError(f"sample resolution returned {len(paths)} files: {reference}")
+    samples, rate = read_pcm_mono(paths[0])
+    samples, first, last = trim_sample(
+        samples, layer.findtext("SliceStart", layer.findtext("SampleStart")),
+        layer.findtext("SliceEnd", layer.findtext("SampleEnd")),
+    )
+    pitch = _integer(layer.findtext("TuneCoarse"), 0) + _integer(
+        layer.findtext("TuneFine"), 0
+    ) / 100.0
+    return samples, rate, first, last, pitch
+
+
 def drum_events(path: Path, *, raw: bytes | None = None,
                 velocities: tuple[int, ...] = (100,), bank: str | None = None) -> tuple[list[AuditionEvent], list[list[float]]]:
     velocities = _drum_velocities(velocities)
@@ -280,17 +295,7 @@ def drum_events(path: Path, *, raw: bytes | None = None,
             if selected is None:
                 raise ValueError(f"no layer for pad {pad} velocity {velocity}")
             layer, reference = selected
-            paths = _resolve(reference, indexes)
-            if len(paths) != 1:
-                raise ValueError(f"sample resolution returned {len(paths)} files: {reference}")
-            samples, rate = read_pcm_mono(paths[0])
-            samples, first, last = trim_sample(
-                samples, layer.findtext("SliceStart", layer.findtext("SampleStart")),
-                layer.findtext("SliceEnd", layer.findtext("SampleEnd")),
-            )
-            pitch = _integer(layer.findtext("TuneCoarse"), 0) + _integer(
-                layer.findtext("TuneFine"), 0
-            ) / 100.0
+            samples, rate, first, last, pitch = drum_layer_audio(layer, reference, indexes)
             audio.append(shape(resample(samples, rate, pitch), velocity))
             events.append(AuditionEvent(len(events), pad, velocity, reference, 0, pitch, first, last))
     if not events:
@@ -351,8 +356,15 @@ def main() -> int:
                         help="XML Drum only: 1–8 velocities (1–127) played in order on each of the first 16 populated pads; default: 100")
     parser.add_argument("--drum-bank", type=str.upper, choices=tuple("ABCDEFGH"),
                         help="XML Drum only: preview populated pads in one bank A–H")
+    parser.add_argument("--drum-idea", type=Path, help="play an mpc-drum-idea JSON pattern with this XML Drum Program")
     args = parser.parse_args()
-    print(json.dumps(render(args.program.expanduser().resolve(), args.output.expanduser().resolve(),
+    if args.drum_idea:
+        if args.drum_bank or args.drum_velocities:
+            parser.error("--drum-idea provides its own pads and velocities")
+        from .pattern_audio import render_pattern
+        print(json.dumps(render_pattern(args.program, args.drum_idea, args.output), indent=2))
+        return 0
+    print(json.dumps(render(args.program.expanduser().resolve(), args.output.expanduser(),
                             drum_velocities=args.drum_velocities, drum_bank=args.drum_bank), indent=2))
     return 0
 
