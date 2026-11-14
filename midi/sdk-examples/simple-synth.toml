@@ -1,0 +1,45 @@
+schema_version = 1
+id = "simple-synth-encoders"
+name = "Bass Movement"
+plugin = "Simple Synth"
+description = "Open the filter, add resonance, then adjust filter envelope depth and note glide while a bass phrase repeats."
+# Example worksheet using the existing MultiTap slot as an alternate.
+slot = 10
+channel = 8
+probe = "top-encoder-1"
+
+[sdk_identity]
+vendor = "MPC SDK Examples"
+uid_int = 1299731321
+
+[[controls]]
+control = "top-encoder-1"
+ui_parameter = 11
+name = "Cutoff"
+role = "tone"
+priority = "core"
+color = "yellow"
+
+[[controls]]
+control = "top-encoder-2"
+ui_parameter = 12
+name = "Resonance"
+role = "tone"
+priority = "core"
+color = "yellow"
+
+[[controls]]
+control = "top-encoder-3"
+ui_parameter = 14
+name = "Env Amount"
+role = "envelope"
+priority = "core"
+color = "purple"
+
+[[controls]]
+control = "top-encoder-4"
+ui_parameter = 9
+name = "Glide"
+role = "movement"
+priority = "core"
+color = "blue"

@@ -100,3 +100,15 @@ uv run mpc-sdk-compare original/params.json updated/params.json \
 ```
 
 The comparison first validates the page against the original plugin. It names the affected encoders or buttons with their channels, CCs and changed fields. A changed unit on Mix flags encoder 4 on the example page. A change to its unused free-delay-time control remains visible in the full list and leaves the page compatible. With `--profile`, the exit code follows the page-specific result. A software review with both a profile and baseline uses the same rule.
+
+## Instrument pages for the SDK examples
+
+Two additional four-encoder pages are available as alternatives for the same worksheet slot. Build the corresponding SDK example using the native instructions above, then check the page against its generated dump. Use one page at a time.
+
+- **Drum Articulation** exposes kick decay, snare decay, closed-hat decay and open-hat decay. It suits a drummer who wants to change how much space a repeating groove leaves between hits. [Drum Synth worksheet](../midi/sdk-examples/drum-synth.toml)
+- **Bass Movement** exposes cutoff, resonance, filter-envelope amount and glide on Simple Synth. It gives a recorded bass phrase four live gestures. [Simple Synth worksheet](../midi/sdk-examples/simple-synth.toml)
+
+```bash
+uv run mpc-plugin-map check midi/sdk-examples/drum-synth.toml --sdk-dump "$sdk/examples/DrumSynth/build/params.json"
+uv run mpc-plugin-map check midi/sdk-examples/simple-synth.toml --sdk-dump "$sdk/examples/SimpleSynth/build/params.json"
+```

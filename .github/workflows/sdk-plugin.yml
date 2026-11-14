@@ -39,3 +39,11 @@ jobs:
           mpc-sdk-review "$plugin/build/native/loop-throw.so" --host-sim "$sdk/.sdk-tools/host_sim" \
             --baseline "$plugin/params.reference.json" --profile midi/sdk-examples/loop-throw.toml \
             --output work/loop-throw-review
+      - name: Check the curated instrument pages against the SDK examples
+        run: |
+          sdk=work/akai-sdk
+          for pair in 'DrumSynth drum-synth' 'SimpleSynth simple-synth'; do
+            read -r instrument page <<< "$pair"
+            python "$sdk/tools/build.py" "$sdk/examples/$instrument" --target native --toolchain gcc
+            mpc-plugin-map check "midi/sdk-examples/$page.toml" --sdk-dump "$sdk/examples/$instrument/build/params.json"
+          done
