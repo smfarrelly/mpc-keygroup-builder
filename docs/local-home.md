@@ -88,3 +88,14 @@ markup safety tests. The toolkit does not launch projects, execute displayed
 commands, or mark MPC hardware tests passed from this page.
 Use the [browser acceptance checklist](browser-acceptance.md) for the remaining
 visual/runtime checks; static tests alone do not mark these complete.
+
+## Open the instruments from one page
+
+Select the prepared folders you want to revisit. When a bundle passes verification, **Play and record** links directly to its `index.html` or, for an audio render, its `listen.wav`. The links follow your selection order. Keep the home page alongside the folders and they can move together.
+
+```bash
+uv run mpc-tools home --bundle "work/My recorder" --bundle "work/My rhythm section" \
+  --bundle "work/Bass filter lift" --output "work/Studio.html"
+```
+
+Bundles without a listening page or WAV still appear under **Readiness**. A failed verification appears there with the error.

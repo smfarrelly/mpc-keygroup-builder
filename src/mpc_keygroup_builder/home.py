@@ -3,9 +3,11 @@
 from datetime import datetime, timezone
 from html import escape
 import json
+import os
 from pathlib import Path
 import shlex
 import tomllib
+from urllib.parse import quote
 
 from .idea_archive import list_archives
 from .library import query
@@ -100,12 +102,21 @@ def collect(*, archive_library=None, ledger=None, program_root=None, bundles=(),
             report['status'] = 'attention'
     if bundles:
         report['readiness'] = check(bundles=bundles, recipe_root=recipe_root)
+        for row in report['readiness']['checks']:
+            if row['status'] != 'pass':
+                continue
+            folder = Path(row['path'])
+            for name in ('index.html', 'listen.wav'):
+                entry = folder / name
+                if entry.is_file() and not entry.is_symlink():
+                    row['open_file'] = str(entry)
+                    break
         if report['readiness']['status'] != 'pass':
             report['status'] = 'attention'
     return report
 
 
-def render(report):
+def render(report, *, page_directory=None):
     def card(title, text):
         return '<article><h3>' + escape(title) + '</h3>' + text + '</article>'
     def paragraph(value):
@@ -164,11 +175,30 @@ def render(report):
     readiness = '<p>No bundles selected. Integrity and freshness were not checked.</p>'
     if report['readiness'] is not None:
         readiness = ''.join(card(row['path'], paragraph(row['status']) + '<details><summary>Evidence and limitations</summary><pre>' + escape(json.dumps(row, indent=2)) + '</pre></details>') for row in report['readiness']['checks'])
+    listening = ''
+    if report['readiness']:
+        links = []
+        for row in report['readiness']['checks']:
+            if 'open_file' not in row:
+                continue
+            path = Path(row['open_file'])
+            href = path.as_uri()
+            if page_directory is not None:
+                try:
+                    relative = Path(os.path.relpath(path, page_directory)).as_posix()
+                    href = quote(relative, safe='/')
+                except ValueError:
+                    pass  # Windows paths can reside on different drives.
+            kind = 'Open' if path.suffix == '.html' else 'Listen to'
+            links.append('<li><a href="' + escape(href, quote=True) + '">' +
+                         escape(kind + ' ' + path.parent.name) + '</a></li>')
+        if links:
+            listening = '<section id="listen"><h2>Play and record</h2><ul>' + ''.join(links) + '</ul></section>'
     return '''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
 <title>MPC — Start making music</title><style>
 :root{color-scheme:dark;font-family:system-ui,sans-serif;background:#111815;color:#edf7f0}body{margin:0}main{max-width:1000px;margin:auto;padding:32px 20px}h1{font-size:clamp(2rem,6vw,4rem)}p{line-height:1.6}a{color:#aee6bf}nav{display:flex;gap:20px;flex-wrap:wrap}article{background:#1b2820;border:1px solid #486453;border-radius:12px;padding:20px;margin:16px 0}pre{white-space:pre-wrap;overflow-wrap:anywhere;color:#bddbc7}p,h3{overflow-wrap:anywhere}summary{cursor:pointer}a:focus,summary:focus{outline:3px solid #e9c879;outline-offset:4px}.notice{border-left:4px solid #e9c879;padding:12px 20px}section{margin-top:40px}
-</style></head><body><main><a href="#favorites">Skip to favorite sounds</a><h1>Start making music.</h1>
+</style></head><body><main><a href="#favorites">Skip to favorite sounds</a><h1>Start making music.</h1>''' + listening + '''
 <p class="notice">Private local report. Nothing uploads or executes. This page cannot inspect your disks, launch programs, or restore files. Generated ''' + escape(report['generated_at']) + '''. Availability and verification are point-in-time evidence, not live status or hardware acceptance.</p>
 <nav aria-label="Page sections"><a href="#overview">At a glance</a><a href="#favorites">Favorite sounds</a><a href="#archives">Saved ideas</a><a href="#workflows">Choose a task</a><a href="#readiness">Readiness</a></nav>
 <section id="overview"><h2>At a glance</h2>''' + overview + '''</section>
@@ -191,7 +221,7 @@ def build(output: Path, **inputs):
         if root is not None and output.is_relative_to(root.expanduser().resolve()):
             raise ValueError('landing page must be outside input libraries, recipe trees and bundles')
     report = collect(**inputs)
-    html = render(report)
+    html = render(report, page_directory=output.parent)
     output.parent.mkdir(parents=True, exist_ok=True)
     with output.open('x', encoding='utf-8') as stream:
         stream.write(html)
