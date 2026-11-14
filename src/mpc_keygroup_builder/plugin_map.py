@@ -136,7 +136,7 @@ def validate_profile(
         if discovered is None:
             continue
         ui_parameter = item.get("ui_parameter")
-        if not isinstance(ui_parameter, int) or ui_parameter < 0:
+        if type(ui_parameter) is not int or ui_parameter < 0:
             errors.append(f"{endpoint}: ui_parameter must be a nonnegative integer")
             continue
         source = discovered.get(ui_parameter)
@@ -147,9 +147,13 @@ def validate_profile(
             errors.append(f"{endpoint}: SDK host reports {source['name']} is not automatable")
         expected_name = item.get("name")
         source_names = [source["name"], *source.get("aliases", [])]
-        if not isinstance(expected_name, str) or _normalized(expected_name) not in {
-            _normalized(name) for name in source_names
-        }:
+        if "sdk" in source:
+            matches_name = expected_name == source["name"]
+        else:
+            matches_name = isinstance(expected_name, str) and _normalized(expected_name) in {
+                _normalized(name) for name in source_names
+            }
+        if not matches_name:
             errors.append(
                 f"{endpoint}: parameter {ui_parameter} is {source['name']!r}, "
                 f"not {expected_name!r}"
