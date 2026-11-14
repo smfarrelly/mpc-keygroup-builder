@@ -1,0 +1,15 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Playable Scratchpad</title>
+<style>body{max-width:46rem;margin:3rem auto;padding:0 1rem;background:#201f20;color:#f9f4ec;font:17px/1.5 system-ui}a{color:#f3c087}h1,h2{line-height:1.1}section{margin:2rem 0}audio{width:100%}select{font:inherit;margin:.5rem 0;padding:.3rem}</style>
+<h1>Playable Scratchpad</h1><section><h2>Choose a drum feel</h2>
+<label>Four bars at 96 BPM <select id="kit"><option>Vinyl SP</option><option>Vinyl Layered</option><option>Pocket Layers</option></select></label>
+<audio id="drums" controls loop src="Listen/Vinyl SP.wav"></audio>
+<p>Listen to the ghost snare before each backbeat, the open hat closing at each bar line, and the snare roll in bar four. Switch kits to hear the same hits at matched RMS.</p></section>
+<section><h2>Bloom Keys</h2><audio controls src="Listen/Bloom Keys.wav"></audio><p>Two short plucks, a held note, then a glide up a fifth.</p></section>
+<section><h2>Beat Catch</h2><label>Drum bus <select id="fx"><option>Beat Catch</option><option>Beat Catch dry</option></select></label><audio id="bus" controls src="Listen/Beat Catch.wav"></audio><p>At ten seconds the last half beat of the fill repeats over the next bar. The return closes two beats later.</p></section>
+<section><h2>On the MPC</h2><p>Open <strong>Projects / Playable Scratchpad / 01 Sit Down.xpj</strong> to record, or <strong>02 Four Bar Jam.xpj</strong> to hear the recorded drums, bass and Wurli. Keep each matching ProjectData folder beside its XPJ.</p>
+<a href="XL3 controls.csv">XL3 mapping worksheet</a> · <a href="build.json">Build measurements</a></section>
+<script>
+function compare(selector,player){const select=document.getElementById(selector),audio=document.getElementById(player);let last=0,playing=false,loading=false;
+select.onchange=()=>{if(!loading){last=audio.currentTime;playing=!audio.paused}loading=true;audio.onloadedmetadata=()=>{audio.currentTime=Math.min(last,audio.duration);loading=false;if(playing)audio.play().catch(()=>{})};audio.src='Listen/'+select.value+'.wav'};}
+compare('kit','drums');compare('fx','bus');
+</script></html>

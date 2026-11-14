@@ -1,0 +1,14 @@
+# Top row on a dedicated XL3 custom page. Existing Boot mixer faders stay on channel 16.
+channel = 8
+[PocketLayers]
+top-encoder-1 = "Accent Point"
+top-encoder-2 = "Shell Ring"
+top-encoder-3 = "Hat Opening"
+[BloomKeys]
+top-encoder-4 = "Bloom"
+top-encoder-5 = "Bloom Time"
+top-encoder-6 = "Glide"
+[BeatCatch]
+top-encoder-7 = "Repeat Size"
+top-encoder-8 = "Tone"
+upper-button-1 = "Catch"

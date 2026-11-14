@@ -1,0 +1,14 @@
+{
+  "name": "Bloom Keys",
+  "manufacturer": "FG Scratchpad",
+  "version": "1.0.0",
+  "format": "vst2",
+  "kind": "instrument",
+  "uid": "FgBK",
+  "numInputs": 0,
+  "numOutputs": 2,
+  "file32": "VST/bloom-keys-arm32.so",
+  "file64": "VST/bloom-keys-arm64.so",
+  "description": "A monophonic low pluck that blooms into a sustained voice.",
+  "license": "MIT"
+}

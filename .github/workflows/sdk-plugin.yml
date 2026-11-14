@@ -60,3 +60,11 @@ jobs:
         run: python plugins/SimpleSynthStudy/smoke.py work/akai-sdk "work/sdk-kit/SDK Drum Synth Kit.xpm"
       - name: Sample the SDK synth into an MPC Keygroup
         run: MPC_TEST_SDK=work/akai-sdk python -m unittest discover -s tests -p test_sdk_sampled_keys.py -v
+      - name: Exercise the playable Scratchpad instruments and beat capture
+        run: |
+          sdk=work/akai-sdk
+          for plugin in PocketLayers BloomKeys BeatCatch; do
+            python "$sdk/tools/build.py" "plugins/$plugin" --target native --toolchain gcc
+            "$sdk/.sdk-tools/host_sim" plugins/"$plugin"/build/native/*.so test --notes 36 --playing
+          done
+          python plugins/PlayableScratchpad/smoke.py "$sdk"
