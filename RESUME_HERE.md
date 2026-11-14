@@ -1,5 +1,9 @@
 # Resume here
 
+## November 14 · Record a drum part
+
+On this laptop, open `work/pad-studio-2026-11-14/Vinyl Layered/index.html` for the expressive Vinyl kit and the Dusty Pocket groove. Choose **Enable audio**, then **Record** and play along. The adjacent **Ghost Accent** recorder opens with two empty bars. [Record, save and render a take](docs/pad-recorder.md)
+
 ## November 14 · Try the ghost-note kit
 
 Open `work/controller-review-2026-11-14/Ghost Accent Comparison/index.html` to compare the original and accent kits. Each plays the same two bars. The alternate XPM and its WAVs are in the adjacent `Kit` folder. [Rebuild instructions and velocity measurements](docs/akai-sdk.md#compare-ghost-notes-and-accents)
