@@ -62,11 +62,11 @@ def read_dump(path: Path) -> dict:
     return data
 
 
-def inspect(path: Path) -> dict:
+def inspect(path: Path, *, dump: dict | None = None) -> dict:
     from .plugin_params import _score
 
     path = path.expanduser().resolve()
-    data = read_dump(path)
+    data = read_dump(path) if dump is None else dump
     controls = []
     for param in data["params"]:
         controls.append({
@@ -132,13 +132,44 @@ def compare(before: dict, after: dict) -> dict:
     }
 
 
+def profile_impact(report: dict, profile: dict, baseline_path: Path, baseline: dict) -> dict:
+    """Identify exactly which physical encoders/buttons have a changed contract."""
+    from .plugin_map import validate_profile
+
+    catalog = {"plugins": [inspect(baseline_path, dump=baseline)]}
+    verified = validate_profile(profile, catalog)
+    if verified["errors"]:
+        raise ValueError("profile does not match the baseline: " + "; ".join(verified["errors"]))
+    affected = []
+    for control in verified["controls"]:
+        changes = [
+            change for change in report["changes"]
+            if change["level"] == "review" and change["index"] in (None, control["ui_parameter"])
+        ]
+        if changes:
+            affected.append({
+                "control": control["control"], "name": control["name"], "index": control["ui_parameter"],
+                "channel": control["channel"], "cc": control["cc"], "fields": [c["field"] for c in changes],
+            })
+    return {"profile": profile["id"], "review_required": bool(affected), "affected_controls": affected}
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Compare two Akai host_sim parameter dumps for mapping drift.")
     parser.add_argument("before", type=Path, help="previous build/params.json")
     parser.add_argument("after", type=Path, help="new build/params.json")
+    parser.add_argument("--profile", type=Path, help="identify affected XL3 assignments and scope the exit code to this page")
     parser.add_argument("--json", action="store_true", help="print a machine-readable comparison")
     args = parser.parse_args(argv)
-    report = compare(read_dump(args.before), read_dump(args.after))
+    before = read_dump(args.before)
+    report = compare(before, read_dump(args.after))
+    needs_review = report["review_required"]
+    if args.profile:
+        from .plugin_map import load_profile
+
+        impact = profile_impact(report, load_profile(args.profile), args.before, before)
+        report["profile_impact"] = impact
+        needs_review = impact["review_required"]
     if args.json:
         print(json.dumps(report, indent=2))
     else:
@@ -146,4 +177,10 @@ def main(argv: list[str] | None = None) -> int:
         for item in report["changes"]:
             target = f"parameter {item['index']}" if item["index"] is not None else "plugin"
             print(f"{item['level']} {target} {item['field']}: {item['before']!r} -> {item['after']!r}")
-    return 2 if report["review_required"] else 0
+        if args.profile:
+            controls = report["profile_impact"]["affected_controls"]
+            print(f"{len(controls)} mapped controls need review on {report['profile_impact']['profile']}")
+            for control in controls:
+                print(f"  {control['control']} · ch{control['channel']}/CC{control['cc']} "
+                      f"{control['name']} ({', '.join(control['fields'])})")
+    return 2 if needs_review else 0

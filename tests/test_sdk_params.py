@@ -85,6 +85,28 @@ class SDKParametersTests(unittest.TestCase):
         self.assertIn("choices", [r["field"] for r in report["changes"]])
         self.assertFalse(sdk_params.compare(self.dump, self.dump)["changes"])
 
+    def test_compare_scopes_review_to_assigned_encoders(self):
+        changed = copy.deepcopy(self.dump)
+        changed["params"][2]["label"] = "seconds"  # free time is outside this page
+        args = [str(DUMP), str(self.save(changed)), "--profile", str(PROFILE), "--json"]
+        with contextlib.redirect_stdout(io.StringIO()) as out:
+            self.assertEqual(sdk_params.main(args), 0)
+        report = json.loads(out.getvalue())
+        self.assertTrue(report["review_required"])
+        self.assertFalse(report["profile_impact"]["affected_controls"])
+        changed["params"][7]["label"] = "dB"
+        self.save(changed)
+        with contextlib.redirect_stdout(io.StringIO()) as out:
+            self.assertEqual(sdk_params.main(args), 2)
+        self.assertEqual(json.loads(out.getvalue())["profile_impact"]["affected_controls"], [{
+            "control": "top-encoder-4", "index": 7, "name": "Mix", "channel": 8, "cc": 23, "fields": ["label"]
+        }])
+
+    def test_exact_sdk_target_name_and_verified_baseline(self):
+        self.profile["controls"][0]["name"] = "Div-ision"
+        with self.assertRaisesRegex(ValueError, "profile does not match the baseline"):
+            sdk_params.profile_impact(sdk_params.compare(self.dump, self.dump), self.profile, DUMP, self.dump)
+
     def test_malformed_inputs_give_actionable_context(self):
         for key, value in [("index", True), ("index", 7), ("index", 99), ("choices", [0]),
                            ("default", float("nan")), ("automatable", 1), ("label", None)]:

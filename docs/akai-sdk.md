@@ -91,3 +91,12 @@ Open `review.json` for the software result and hashes of the tested desktop bina
 An instrument accepts a comma-separated note list, for example `--notes 36,38,42`. The simulation uses playing transport. Warnings and failures produce exit code 2 and a review for diagnosis when a complete run is available. An unreadable dump or timeout aborts before publication. Use a new output directory per run. Hardware status stays untested.
 
 Supplying a built package also brings its declared screen and program Q-Link assignments into the worksheets and companion. Compare those locations with your proposed XL3 page before dedicating encoders to a control that is already easy to reach. A checked dump detects Q-Link references outside the plugin’s parameter list. The software review writes a checksum receipt over the full packet. Verify a copied or archived packet with `uv run mpc-bundle-verify work/loop-throw-review-01`.
+
+### Find the physical controls affected by an update
+
+```bash
+uv run mpc-sdk-compare original/params.json updated/params.json \
+  --profile midi/sdk-examples/stereo-delay.toml
+```
+
+The comparison first validates the page against the original plugin. It names the affected encoders or buttons with their channels, CCs and changed fields. A changed unit on Mix flags encoder 4 on the example page. A change to its unused free-delay-time control remains visible in the full list and leaves the page compatible. With `--profile`, the exit code follows the page-specific result. A software review with both a profile and baseline uses the same rule.

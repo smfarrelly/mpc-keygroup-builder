@@ -62,6 +62,7 @@ def review(*, host: Path, native: Path, output: Path, profile: Path | None = Non
         raise ValueError("review output must be outside the package being checked")
     output.parent.mkdir(parents=True, exist_ok=True)
     staging = Path(tempfile.mkdtemp(dir=output.parent, prefix=f".{output.name}.review-"))
+    page = plugin_map.load_profile(profile) if profile else None
     findings = []
     report = {
         "schema_version": 1, "kind": "mpc-sdk-software-review",
@@ -79,9 +80,12 @@ def review(*, host: Path, native: Path, output: Path, profile: Path | None = Non
         report.update(plugin=data["name"], uid_int=data["uidInt"], parameter_count=len(data["params"]),
                       dump_sha256=sha256(dump_path))
         if baseline:
-            delta = sdk_params.compare(sdk_params.read_dump(baseline), data)
+            previous = sdk_params.read_dump(baseline)
+            delta = sdk_params.compare(previous, data)
+            if page:
+                delta["profile_impact"] = sdk_params.profile_impact(delta, page, baseline, previous)
             report["parameter_comparison"] = delta
-            if delta["review_required"]:
+            if delta.get("profile_impact", delta)["review_required"]:
                 findings.append("Parameter changes need mapping review.")
         simulation = run_host(host, native, ["test", "--playing", "--notes", notes], timeout)
         (staging / "host-sim.log").write_text(simulation.stdout + "\n" + simulation.stderr, encoding="utf-8")
@@ -91,13 +95,13 @@ def review(*, host: Path, native: Path, output: Path, profile: Path | None = Non
                 report["package"] = sdk_package.inspect(package, target, dump_path)
             except (ValueError, OSError) as exc:
                 findings.append(f"Package check failed: {exc}")
-        if profile:
+        if page:
             report["profile_sha256"] = sha256(profile)
             catalog = plugin_params.catalog(dump_path)
             locations = report.get("package", {}).get("q_links", {})
             for control in catalog["plugins"][0]["controls"]:
                 control["q_links"] = locations.get(control["ui_parameter"], [])
-            pages = [plugin_map.load_profile(profile)]
+            pages = [page]
             validation = plugin_map.validate_batch(pages, catalog)
             report["worksheet_warnings"] = validation["warnings"]
             findings.extend(validation["errors"])
