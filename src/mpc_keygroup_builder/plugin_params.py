@@ -460,8 +460,10 @@ def main(argv: list[str] | None = None) -> int:
     else:
         text = render_markdown(report, rows)
     if args.output:
-        if args.output.expanduser().resolve() == args.root.expanduser().resolve():
-            raise ValueError("output must differ from the parameter input")
+        inputs = [args.root, args.project]
+        inputs.extend(Path(plugin["skin"]) for plugin in report["plugins"] if "skin" in plugin)
+        if args.output.expanduser().resolve() in (p.expanduser().resolve() for p in inputs if p is not None):
+            raise ValueError("output must differ from the parameter and project inputs")
         _write_atomic(args.output, text)
         print(f"Wrote: {args.output.expanduser().resolve()}")
     else:

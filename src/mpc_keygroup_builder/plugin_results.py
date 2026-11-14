@@ -225,6 +225,10 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv or sys.argv[1:])
     targets = _output_paths(args.ledger, args.report, force=args.force)
+    sources = [args.synth_root, *args.profiles, args.project, getattr(args, "results", None)]
+    inputs = {p.expanduser().resolve() for p in sources if p is not None}
+    if inputs.intersection(targets):
+        raise ValueError("result outputs must differ from the dump, profile, project and imported result files")
     companion = _companion(args)
     if args.command == "init":
         rows = expected_rows(companion)
