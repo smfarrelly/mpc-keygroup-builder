@@ -1,0 +1,14 @@
+{
+  "name": "Loop Throw",
+  "manufacturer": "FG Scratchpad",
+  "version": "1.0.0",
+  "format": "vst2",
+  "kind": "effect",
+  "uid": "FgLt",
+  "numInputs": 2,
+  "numOutputs": 2,
+  "file32": "VST/loop-throw-arm32.so",
+  "file64": "VST/loop-throw-arm64.so",
+  "description": "Open Throw for one hit and close it to leave tempo-synced repeats ringing over the dry loop.",
+  "license": "MIT"
+}

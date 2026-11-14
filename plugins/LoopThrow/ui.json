@@ -1,0 +1,14 @@
+{
+  "kit": "cyan",
+  "pages": [
+    {
+      "name": "LOOP THROW",
+      "controls": [
+        {"param": "Throw", "widget": "knob"},
+        {"param": "Division", "widget": "slider", "overlay": "menu"},
+        {"param": "Repeats", "widget": "knob"},
+        {"param": "Tone", "widget": "knob"}
+      ]
+    }
+  ]
+}

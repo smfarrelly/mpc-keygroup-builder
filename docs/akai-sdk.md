@@ -52,3 +52,12 @@ uv run mpc-sdk-package "/path/to/build/MPC SDK Examples - VST - Stereo Delay" \
 ```
 
 This read-only check follows the package manifest to the binary for the selected CPU. It inspects the ELF header, executable load segments, ARM32 hard-float flags, package name, and portable paths. A supplied simulator dump adds plugin identity, instrument/effect and channel-count comparisons. The result includes the file hash and expected location under `VST2 Plugins`. It works on Ubuntu without the SDK, cross compiler, SD card or MPC. Use Akai’s validator for skins and symbol dependencies, and the simulator for audio processing. [Akai package format](https://github.com/inmusic-software/mpc-plugin-builder-sdk/blob/main/docs/plugin-folder-format.md)
+
+## Try the project's Loop Throw effect
+
+[Loop Throw](../plugins/LoopThrow/README.md) is a drum-submix insert with a dedicated send gesture. Open Throw for the hit you want to repeat and close it while the dry loop keeps playing. Its source, four-encoder worksheet, reference parameter dump and offline impulse tests are in the repository. You can build its companion immediately:
+
+```bash
+uv run mpc-plugin-companion midi/sdk-examples/loop-throw.toml \
+  --sdk-dump plugins/LoopThrow/params.reference.json --output work/sdk-delay/loop-throw.html
+```
