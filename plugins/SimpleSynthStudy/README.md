@@ -33,3 +33,16 @@ The SDK checkout needs the native Simple Synth example built so its parameter du
 Before applying the moves, the host reproduces the sketch’s bass WAV byte for byte and checks each mapped parameter against the SDK dump. It applies the normalized value at the specified frame through the native parameter interface. **Controller MIDI** exports the same moves as CC messages on the worksheet’s channel. The example uses channel 8, CC20 for Cutoff and CC21 for Resonance. Sending those messages to a physical MPC requires the corresponding MIDI Learn assignments. Their hardware behavior remains untested.
 
 The resulting packet includes the editable TOML, a CSV with tick, frame, controller and value for every change, and both audio comparisons.
+
+## Play the presets as sampled MPC Keygroups
+
+Build **Fat Bass**, **Pluck**, **Soft Pad** and **Init Saw** from the local SDK example. Each program uses 19 mono WAV roots six semitones apart, sampled at velocity 100. The native synth supplies its attack, tone and recorded note release. The Keygroup maps the roots across MIDI notes 0–127. A software probe checks for missing and stacked notes at eight velocities and renders a ten-note keyboard preview through the written XPM.
+
+```bash
+uv run python plugins/SimpleSynthStudy/sample_keys.py --sdk "$sdk" \
+  --template "/path/to/known-working-keygroup.xpm" --output "work/SDK sampled keys"
+```
+
+Open the generated `index.html` to hear each preview. To prepare just one sound, pass `--preset "Fat Bass"`. Each instrument folder holds its XPM and the matching `_[ProgramData]` folder of WAVs. Transfer those two together for later device testing. The sampled version plays without installing the SDK synth on the MPC.
+
+These are finite notes. For example, Soft Pad contains a three-second held note plus up to two seconds of release. A sustained key eventually reaches the end of the recording. The native plugin remains the way to hold indefinitely, adjust the synth parameters live, or retain glide between notes. Use a neutral known-working template since its envelope, filter and mixer settings also affect playback on the MPC.

@@ -58,3 +58,5 @@ jobs:
           mpc-bundle-verify work/ghost-accents
       - name: Render a drum take with the SDK Simple Synth
         run: python plugins/SimpleSynthStudy/smoke.py work/akai-sdk "work/sdk-kit/SDK Drum Synth Kit.xpm"
+      - name: Sample the SDK synth into an MPC Keygroup
+        run: MPC_TEST_SDK=work/akai-sdk python -m unittest discover -s tests -p test_sdk_sampled_keys.py -v
