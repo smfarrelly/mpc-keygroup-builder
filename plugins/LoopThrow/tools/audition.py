@@ -1,6 +1,8 @@
 """Render a Loop Throw gesture on a local PCM16 loop using the plugin DSP."""
 
 import argparse
+import html
+import math
 import json
 from pathlib import Path
 import shutil
@@ -15,7 +17,7 @@ PLUGIN = Path(__file__).resolve().parents[1]
 DIVISIONS = ("1/16", "1/8", "1/8D", "1/4")
 
 
-def audition(source, sdk, output, bpm, beat, duration, division, repeats, tone, tail):
+def audition(source, sdk, output, bpm, beat, duration, division, repeats, tone, tail, also_beats=()):
     if not (15 <= bpm <= 300 and beat >= 1 and 0 < duration <= 16 and
             0 <= repeats <= 85 and 400 <= tone <= 14000 and 0 <= tail <= 30):
         raise ValueError("use 15–300 BPM, beat >=1, length (0,16] beats, repeats 0–85%, tone 400–14000 Hz, tail 0–30 seconds")
@@ -32,12 +34,20 @@ def audition(source, sdk, output, bpm, beat, duration, division, repeats, tone, 
             raise ValueError("use a mono or stereo PCM16 WAV at 8–192 kHz")
         if not 0 < frames <= rate * 120:
             raise ValueError("choose a nonempty loop of up to 120 seconds")
-        if beat > 1 + frames * bpm / (60 * rate):
-            raise ValueError("the throw starts past the end of the loop")
-        start = round((beat - 1) * rate * 60 / bpm)
-        stop = round((beat - 1 + duration) * rate * 60 / bpm)
-        if start >= frames or stop <= start:
-            raise ValueError("the throw must capture at least one input frame")
+        windows = []
+        requested_beats = sorted([beat, *also_beats])
+        for onset in requested_beats:
+            if not math.isfinite(onset) or onset < 1 or onset > 1 + frames * bpm / (60 * rate):
+                raise ValueError("each throw must start within the input loop")
+            first = round((onset - 1) * rate * 60 / bpm)
+            last = round((onset - 1 + duration) * rate * 60 / bpm)
+            if first >= frames or last <= first:
+                raise ValueError("each throw must capture at least one input frame")
+            if windows and first <= windows[-1][1]:
+                windows[-1][1] = max(windows[-1][1], last)
+            else:
+                windows.append([first, last])
+        start, stop = windows[0]
         output.parent.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory() as tmp:
             private = Path(tmp)
@@ -47,6 +57,7 @@ def audition(source, sdk, output, bpm, beat, duration, division, repeats, tone, 
             if compile_run.returncode:
                 raise ValueError(f"C++ build failed: {compile_run.stderr[-2000:]}")
             args = [str(value) for value in (rate, bpm, start, stop, DIVISIONS.index(division), repeats, tone)]
+            args.extend(str(edge) for pair in windows[1:] for edge in pair)
             tail_frames = round(tail * rate)
             with (private / "input.pcm").open("w+b") as raw, (private / "output.pcm").open("w+b") as rendered:
                 remaining = frames
@@ -79,12 +90,18 @@ def audition(source, sdk, output, bpm, beat, duration, division, repeats, tone, 
                     settings = {
                         "schema_version": 1, "kind": "loop-throw-audition", "source": source.name,
                         "sample_rate": rate, "source_channels": channels, "source_frames": frames,
-                        "bpm": bpm, "beat": beat, "length_beats": duration, "division": division,
+                        "bpm": bpm, "beat": requested_beats[0], "length_beats": duration, "division": division,
                         "repeats_percent": repeats, "tone_hz": tone, "tail_seconds": tail,
-                        "open_frame": start, "close_frame": stop, "renderer_message": run.stderr.strip(),
+                        "open_frame": start, "close_frame": stop, "beats": requested_beats,
+                        "send_windows_frames": windows, "renderer_message": run.stderr.strip(),
                         "hardware_status": "untested",
                     }
                     (staging / "settings.json").write_text(json.dumps(settings, indent=2) + "\n", encoding="utf-8")
+                    page = Path(__file__).with_name("listen.html").read_text(encoding="utf-8")
+                    title = html.escape(source.name)
+                    description = html.escape(f"{bpm:g} BPM · {division} repeats · throw at beats " +
+                                              ", ".join(f"{value:g}" for value in requested_beats))
+                    (staging / "index.html").write_text(page.replace("@DESCRIPTION@", description).replace("@SOURCE@", title), encoding="utf-8")
                     checksums = {p.name: sha256(p) for p in sorted(staging.iterdir())}
                     (staging / "checksums.json").write_text(json.dumps(checksums, indent=2) + "\n", encoding="utf-8")
                     verify_bundle(staging)
@@ -107,10 +124,11 @@ def main():
     parser.add_argument("--repeats", type=float, default=50, help="feedback percent")
     parser.add_argument("--tone", type=float, default=5500, help="echo low-pass cutoff in Hz")
     parser.add_argument("--tail", type=float, default=2, help="seconds to append to both files")
+    parser.add_argument("--also-beat", type=float, action="append", default=[], help="another send opening, in beats from 1 (repeatable)")
     args = parser.parse_args()
     try:
         audition(args.input, args.sdk, args.output, args.bpm, args.beat, args.length,
-                 args.division, args.repeats, args.tone, args.tail)
+                 args.division, args.repeats, args.tone, args.tail, args.also_beat)
     except (OSError, ValueError, wave.Error, EOFError, subprocess.SubprocessError) as exc:
         parser.exit(2, f"Could not render this loop: {exc}\n")
     print(f"Dry and processed WAVs: {args.output.resolve()}")

@@ -44,3 +44,5 @@ uv run python plugins/LoopThrow/tools/audition.py "/path/to/four-bar-loop.wav" \
 ```
 
 Beat numbers begin at 1. For a four-bar 4/4 loop this example opens the send just before the last backbeat, closes it a quarter of a beat later, and leaves two seconds for the echo to ring. Listen to `Dry.wav` and `Loop Throw.wav`. To try a different gesture, choose a fresh output directory. Run the portable renderer check with `uv run python plugins/LoopThrow/tests/audition_smoke.py "$sdk"`.
+
+To capture several hits in one render, add `--also-beat` for each additional send opening. For a two-bar loop at 96 BPM, `--beat 3.97 --also-beat 7.97 --length 0.22` opens just before beat four of each bar. Overlapping windows form one continuous send. Open the output folder’s `index.html`, play **Dry**, then choose **Switch to Loop Throw** during playback. The other player follows the same timestamp and volume. The WAV files and JSON remain usable on their own.

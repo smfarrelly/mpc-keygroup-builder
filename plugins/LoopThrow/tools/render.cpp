@@ -6,14 +6,20 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
+#include <vector>
 
 int main(int argc, char** argv)
 {
-    if (argc != 8) return 2;
+    if (argc < 8 || (argc - 8) % 2 != 0) return 2;
     const double rate = std::stod(argv[1]);
     const double bpm = std::stod(argv[2]);
     const auto open = std::stoll(argv[3]);
     const auto close = std::stoll(argv[4]);
+    std::vector<std::int64_t> edges = {open, close};
+    for (int i = 8; i < argc; i += 2) {
+        edges.push_back(std::stoll(argv[i]));
+        edges.push_back(std::stoll(argv[i + 1]));
+    }
     LoopThrow effect;
     effect.set(LoopThrow::Division, std::stof(argv[5]));
     effect.set(LoopThrow::Repeats, std::stof(argv[6]));
@@ -27,14 +33,15 @@ int main(int argc, char** argv)
     std::array<unsigned char, block * 4> pcm;
     std::array<float, block> left, right;
     long clipped = 0;
+    std::size_t edge = 0;
     while (true) {
-        const bool active = position >= open && position < close;
+        while (edge < edges.size() && position >= edges[edge]) ++edge;
+        const bool active = (edge % 2) == 1;
         effect.set(LoopThrow::Throw, active ? 100 : 0);
         int count = block;
         // Split exactly on gesture boundaries, even in the middle of a block.
-        for (auto boundary : {open, close})
-            if (boundary > position && boundary < position + count)
-                count = static_cast<int>(boundary - position);
+        if (edge < edges.size() && edges[edge] < position + count)
+            count = static_cast<int>(edges[edge] - position);
         const auto bytes = std::fread(pcm.data(), 1, count * 4, stdin);
         if (bytes % 4 || std::ferror(stdin)) return 1;
         if (bytes == 0) break;
