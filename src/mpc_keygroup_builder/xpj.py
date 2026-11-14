@@ -175,6 +175,30 @@ def summarize(project: XPJProject) -> dict[str, Any]:
     return result
 
 
+def plugin_track_rows(project: XPJProject) -> list[dict[str, Any]]:
+    """Read saved plugin and preset labels without exporting opaque instrument state."""
+    rows = []
+    tracks = project.data.get("tracks")
+    if not isinstance(tracks, list):
+        return rows
+    for track in tracks:
+        plugin = track
+        for key in ("program", "plugin", "plugin"):
+            plugin = plugin.get(key) if isinstance(plugin, dict) else None
+        if not isinstance(plugin, dict):
+            continue
+        description = plugin.get("description")
+        name = description.get("name") if isinstance(description, dict) else None
+        if not isinstance(name, str) or not name or not isinstance(track.get("name"), str):
+            continue
+        rows.append({
+            "track": track["name"], "plugin": name,
+            "preset": plugin.get("presetName") if isinstance(plugin.get("presetName"), str) else None,
+            "preset_edited": plugin.get("presetEdited") if type(plugin.get("presetEdited")) is bool else None,
+        })
+    return rows
+
+
 def midi_learn_rows(project: XPJProject) -> list[dict[str, Any]]:
     """Return stable, read-only rows for project-scoped MIDI Learn controls."""
     if project.generation != 3:
@@ -206,6 +230,7 @@ def midi_learn_rows(project: XPJProject) -> list[dict[str, Any]]:
                 "track": target.get("track"),
                 "parameter": target.get("parameter"),
                 "instrument_index": target.get("instrumentIndex"),
+                "target_count": len(targets) if isinstance(targets, list) else 0,
             }
         )
     return rows

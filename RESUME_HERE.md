@@ -1,5 +1,9 @@
 # Resume here
 
+## November 14 · Launch Control
+
+Open the [saved XL3 controls](site/saved-xl3-controls.html) for the Boot template. The [mapping guide](docs/plugin-mapping.md#derive-evidence-backed-opx-4-and-jura-cores) explains how to refresh it from a newer project.
+
 ## November 14 · SDK plugin work
 
 Open the [offline SDK encoder editor](site/sdk-mapping.html) to try the four-control Loop Throw page. For the project-owned drum echo insert, its [source and test guide](plugins/LoopThrow/README.md) covers building and running on Ubuntu. The [SDK workflow](docs/akai-sdk.md) covers parameter discovery, drift checks, Key 37 package inspection and repeatable software reviews. Device installation and listening remain pending.

@@ -200,7 +200,7 @@ def audit(project_path: Path, syx_paths: list[Path]) -> dict[str, Any]:
     for row in learned:
         channel = row.get("channel")
         number = row.get("number")
-        if isinstance(channel, int) and isinstance(number, int):
+        if type(channel) is int and type(number) is int:
             by_signature[(channel, number)].append(row)
     captures = []
     for path in syx_paths:
@@ -210,7 +210,7 @@ def audit(project_path: Path, syx_paths: list[Path]) -> dict[str, Any]:
             if not control["enabled"]:
                 continue
             key = (control.get("channel"), control.get("number"))
-            matches = by_signature.get(key, []) if all(isinstance(value, int) for value in key) else []
+            matches = by_signature.get(key, []) if all(type(value) is int for value in key) else []
             controls.append(
                 {
                     "control": control["control"],
@@ -219,6 +219,10 @@ def audit(project_path: Path, syx_paths: list[Path]) -> dict[str, Any]:
                     "channel_source": control["channel_source"],
                     "number": control["number"],
                     "learned_targets": [row["name"] for row in matches],
+                    "learned_rows": [
+                        {field: row[field] for field in ("name", "track", "parameter", "control_type", "instrument_index", "target_count")}
+                        for row in matches
+                    ],
                 }
             )
         captures.append(
@@ -236,6 +240,7 @@ def audit(project_path: Path, syx_paths: list[Path]) -> dict[str, Any]:
         "project": str(project_path),
         "project_firmware": project.header.firmware if project.header else None,
         "project_midi_learn_count": len(learned),
+        "plugin_tracks": xpj.plugin_track_rows(project),
         "captures": captures,
         "interpretation": (
             "A missing learned target is not automatically an error: direct hardware/Volca controls "
