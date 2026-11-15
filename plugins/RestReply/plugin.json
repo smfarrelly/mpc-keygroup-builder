@@ -1,0 +1,14 @@
+{
+  "name": "Rest Reply",
+  "manufacturer": "FG Scratchpad",
+  "version": "1.0.0",
+  "format": "vst2",
+  "kind": "effect",
+  "uid": "FgRR",
+  "numInputs": 2,
+  "numOutputs": 2,
+  "file32": "VST/rest-reply-arm32.so",
+  "file64": "VST/rest-reply-arm64.so",
+  "description": "Answer the spaces in a drum performance with a tuned percussion phrase.",
+  "license": "MIT"
+}

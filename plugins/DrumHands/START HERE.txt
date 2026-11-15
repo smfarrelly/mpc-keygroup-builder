@@ -1,0 +1,41 @@
+START ON ONE TRACK
+
+On a Plugin track choose External Plugins > Drum Seat. Use a pad note layout
+sending MIDI notes 36 and 37. If your preferred two pads send other notes, switch Learn Hands on in the
+PADS page and tap left, then right. The pair saves with the project.
+Play a firm backbeat, then slip quiet left and
+right notes in between. At the default Ghost notes setting, only the quiet
+strokes carry the direct melody. Leave a beat of space for the pitched reply.
+Play a key sending MIDI 48-79 to change root. Record the pads as usual.
+
+HEAR THE REHEARSALS
+
+SD / Projects / Drum Hands / 01 Drum Seat - ghost line.wav
+SD / Projects / Drum Hands / 02 Split Cycle - three against four.wav
+SD / Projects / Drum Hands / 03 Rudiment Keys - paradiddle.wav
+SD / Projects / Drum Hands / 04 Ghost Wire - press and release.wav
+SD / Projects / Drum Hands / 05 Rest Reply - trade phrases.wav
+SD / Projects / Drum Hands / 05 Rest Reply - dry drums.wav
+
+Each numbered performance also has a same-name .mid file with editable
+pad strokes. The first four use the named instrument. Number 05 uses Ghost
+Wire with Rest Reply on its first insert. Alternatively, put the dry WAV on
+an audio track and add Rest Reply. The wet WAV is the listening reference.
+Use a fresh instance at its defaults for the examples. In Split Cycle, the
+MIDI contains what the hands did; the plugin makes the repeated notes.
+
+DRUM SEAT / GHOST WIRE
+36/37 left/right centre. 38/39 rims. Hold 40/41 for press rolls.
+42/43 cross-sticks. 44 hand damp. 45 kick. 46 closed hat, 47 open hat.
+
+RUDIMENT KEYS
+36/37 left/right mallets. 38/39 dyads. 40/41 flams. 42 bass pedal.
+43 damp. 44 reset the melodic walk. MIDI keys 48-84 choose the root.
+
+SPLIT CYCLE
+36/38/40 play the left lane. 37/39/41 play the right. Start with 36 and 37.
+Write Hits captures them on different loop lengths. Switch it off to solo.
+42/43 toggle left/right mute, 44 undoes the last pattern edit,
+46/47 clear the left/right lane. Both patterns save with the project.
+
+Package location: SD / VST2 Plugins / FG Scratchpad - VST - <plugin name> /

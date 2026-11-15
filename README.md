@@ -10,8 +10,6 @@ own or may legally use, and generated programs stay on your own storage.
 
 ## Start here
 
-Choose the path that matches what you want to do:
-
 - **Returning after a break:** run `mpc-tools start` or read
   [Start with one musical task](docs/start-here.md). No card is needed.
 - **Find the current Key 37 rig’s instruments:** use the
@@ -22,6 +20,7 @@ Choose the path that matches what you want to do:
   If your laptop and SD folders differ, [reconcile local instruments](docs/library-reconciliation.md)
   without changing programs or historical listening verdicts.
 
+- **Turn a backbeat into a melodic idea on the MPC.** [Play Drum Seat or loop your two hands independently](plugins/DrumHands/README.md).
 - **Record a part with your own drum samples:** [play a bank, overdub a loop and export MIDI](docs/pad-recorder.md).
 - **Keep the melody you just played.** [Capture the last four bars or a free-time phrase](docs/keep-that-take.md), overdub drums, and export your idea to MIDI and an MPC project.
 - **Hear grooves on your own drum kit:** build a [browser listening session with matching MIDI](docs/drum-ideas.md#compare-grooves-in-one-browser-tab).

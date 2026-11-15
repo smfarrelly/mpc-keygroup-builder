@@ -1,0 +1,44 @@
+{
+  "kit": "cyan",
+  "pages": [
+    {
+      "name": "PLAY",
+      "controls": [
+        {
+          "param": "Root",
+          "widget": "knob"
+        },
+        {
+          "param": "Scale",
+          "widget": "slider",
+          "overlay": "menu"
+        },
+        {
+          "param": "Accent Point",
+          "widget": "knob"
+        },
+        {
+          "param": "Tail",
+          "widget": "knob"
+        }
+      ]
+    },
+    {
+      "name": "SOUND",
+      "controls": [
+        {
+          "param": "Stick",
+          "widget": "knob"
+        },
+        {
+          "param": "Tone",
+          "widget": "knob"
+        },
+        {
+          "param": "Width",
+          "widget": "knob"
+        }
+      ]
+    }
+  ]
+}

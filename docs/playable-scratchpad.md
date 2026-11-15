@@ -1,5 +1,7 @@
 # Sit down and play the Scratchpad
 
+For a snare kit, a ghost-note melody and call-and-response on one track, open [Drum Seat](../plugins/DrumHands/README.md). For independently looping hands, try [Split Cycle](../plugins/DrumHands/README.md#split-cycle--play-two-loop-lengths-at-once).
+
 For a drum and bass instrument with its own performance keeper, add [Pocket Duo](../plugins/PocketDuo/README.md) to a Plugin track.
 
 To perform a part first and decide what to keep afterward, [open the retrospective recorder](keep-that-take.md).

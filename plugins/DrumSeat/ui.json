@@ -1,0 +1,66 @@
+{
+  "kit": "cyan",
+  "pages": [
+    {
+      "name": "BAND",
+      "controls": [
+        {
+          "param": "Follow",
+          "widget": "slider",
+          "overlay": "menu"
+        },
+        {
+          "param": "Melody Level",
+          "widget": "knob"
+        },
+        {
+          "param": "Reply Level",
+          "widget": "knob"
+        },
+        {
+          "param": "Root",
+          "widget": "knob"
+        }
+      ]
+    },
+    {
+      "name": "KIT",
+      "controls": [
+        {
+          "param": "Drum Level",
+          "widget": "knob"
+        },
+        {
+          "param": "Snares",
+          "widget": "knob"
+        },
+        {
+          "param": "Reply Gap",
+          "widget": "slider",
+          "overlay": "menu"
+        },
+        {
+          "param": "Keep Call",
+          "widget": "switch"
+        }
+      ]
+    },
+    {
+      "name": "PADS",
+      "controls": [
+        {
+          "param": "Learn Hands",
+          "widget": "switch"
+        },
+        {
+          "param": "Left Input",
+          "widget": "knob"
+        },
+        {
+          "param": "Right Input",
+          "widget": "knob"
+        }
+      ]
+    }
+  ]
+}

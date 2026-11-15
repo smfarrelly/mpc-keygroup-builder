@@ -1,0 +1,14 @@
+{
+  "name": "Drum Seat",
+  "manufacturer": "FG Scratchpad",
+  "version": "1.0.0",
+  "format": "vst2",
+  "kind": "instrument",
+  "uid": "FgDS",
+  "numInputs": 0,
+  "numOutputs": 2,
+  "file32": "VST/drum-seat-arm32.so",
+  "file64": "VST/drum-seat-arm64.so",
+  "description": "Play a stereo kit, sticking melody and gap replies from a single Plugin track.",
+  "license": "MIT"
+}

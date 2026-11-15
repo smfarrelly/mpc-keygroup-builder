@@ -1,0 +1,45 @@
+schema_version = 1
+id = "drum-seat-hands"
+name = "Drum Seat"
+plugin = "Drum Seat"
+description = "Choose which strokes sing, bring the melody or reply forward, then lengthen the gap before the answer."
+# An optional alternate to the other SDK pages. The rig mixer faders stay free.
+slot = 10
+channel = 8
+probe = "top-encoder-1"
+
+[sdk_identity]
+vendor = "FG Scratchpad"
+uid_int = 1181172819
+
+[[controls]]
+control = "top-encoder-1"
+ui_parameter = 0
+name = "Follow"
+role = "movement"
+priority = "core"
+color = "blue"
+
+[[controls]]
+control = "top-encoder-2"
+ui_parameter = 1
+name = "Melody Level"
+role = "movement"
+priority = "core"
+color = "yellow"
+
+[[controls]]
+control = "top-encoder-3"
+ui_parameter = 2
+name = "Reply Level"
+role = "movement"
+priority = "core"
+color = "yellow"
+
+[[controls]]
+control = "top-encoder-4"
+ui_parameter = 6
+name = "Reply Gap"
+role = "rhythm"
+priority = "core"
+color = "blue"
