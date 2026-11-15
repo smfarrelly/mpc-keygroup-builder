@@ -83,6 +83,7 @@ COMMANDS = {
     "mpc-arrange-idea": _spec("arrangement", "Creative MIDI", "Derive five traceable arrangement sections", "docs/creative-midi.md"),
     "mpc-sequence-morph": _spec("sequence_morph", "Creative MIDI", "Evolve played sequences in a separate MPC 3 project", "docs/sequence-morph.md"),
     "mpc-hook-rehearsal": _spec("hook_rehearsal", "Creative MIDI", "Turn a four-bar take into Hook, Verse and Return", "docs/hook-rehearsal.md"),
+    "mpc-export-loudness": _spec("export_loudness", "Audio", "Check an export against a reference WAV and true-peak ceiling", "docs/export-loudness.md"),
     "mpc-phrase-lab": _spec("phrase_lab", "Creative MIDI", "Recompose a performed hook into fourteen playable sequences", "docs/phrase-lab.md"),
     "mpc-idea-batch": _spec("idea_batch", "Creative MIDI", "Generate and rank a bounded seed batch", "docs/creative-midi.md"),
     "mpc-kit-select": _spec("kit_select", "Catalog", "Select one deterministic cross-library kit", "docs/catalog.md"),
