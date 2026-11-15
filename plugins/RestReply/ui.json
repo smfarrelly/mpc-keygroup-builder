@@ -1,0 +1,45 @@
+{
+  "kit": "cyan",
+  "pages": [
+    {
+      "name": "REPLY",
+      "controls": [
+        {
+          "param": "Gap",
+          "widget": "slider",
+          "overlay": "menu"
+        },
+        {
+          "param": "Reply Shape",
+          "widget": "slider",
+          "overlay": "menu"
+        },
+        {
+          "param": "Keep Call",
+          "widget": "switch"
+        },
+        {
+          "param": "Reply Level",
+          "widget": "knob"
+        }
+      ]
+    },
+    {
+      "name": "SOUND",
+      "controls": [
+        {
+          "param": "Root",
+          "widget": "knob"
+        },
+        {
+          "param": "Sensitivity",
+          "widget": "knob"
+        },
+        {
+          "param": "Decay",
+          "widget": "knob"
+        }
+      ]
+    }
+  ]
+}

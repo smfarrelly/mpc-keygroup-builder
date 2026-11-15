@@ -1,0 +1,14 @@
+{
+  "name": "Split Cycle",
+  "manufacturer": "FG Scratchpad",
+  "version": "1.0.0",
+  "format": "vst2",
+  "kind": "instrument",
+  "uid": "FgSC",
+  "numInputs": 0,
+  "numOutputs": 2,
+  "file32": "VST/split-cycle-arm32.so",
+  "file64": "VST/split-cycle-arm64.so",
+  "description": "Tap two percussion loops with independent cycle lengths and undo the last overdub.",
+  "license": "MIT"
+}

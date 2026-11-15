@@ -1,0 +1,14 @@
+{
+  "name": "Rudiment Keys",
+  "manufacturer": "FG Scratchpad",
+  "version": "1.0.0",
+  "format": "vst2",
+  "kind": "instrument",
+  "uid": "FgRu",
+  "numInputs": 0,
+  "numOutputs": 2,
+  "file32": "VST/rudiment-keys-arm32.so",
+  "file64": "VST/rudiment-keys-arm64.so",
+  "description": "Turn sticking, accents and ghost strokes into a mallet melody.",
+  "license": "MIT"
+}

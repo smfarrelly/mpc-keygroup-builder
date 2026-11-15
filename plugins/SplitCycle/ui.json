@@ -1,0 +1,48 @@
+{
+  "kit": "cyan",
+  "pages": [
+    {
+      "name": "LOOP",
+      "controls": [
+        {
+          "param": "Write Hits",
+          "widget": "switch"
+        },
+        {
+          "param": "Left Eighths",
+          "widget": "knob"
+        },
+        {
+          "param": "Right Eighths",
+          "widget": "knob"
+        },
+        {
+          "param": "Snap",
+          "widget": "slider",
+          "overlay": "menu"
+        }
+      ]
+    },
+    {
+      "name": "MIX",
+      "controls": [
+        {
+          "param": "Left Mute",
+          "widget": "switch"
+        },
+        {
+          "param": "Right Mute",
+          "widget": "switch"
+        },
+        {
+          "param": "Root",
+          "widget": "knob"
+        },
+        {
+          "param": "Metal Tail",
+          "widget": "knob"
+        }
+      ]
+    }
+  ]
+}

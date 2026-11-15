@@ -1,5 +1,9 @@
 # Resume here
 
+## Play a ghost-note melody from two pads
+
+On one Plugin track, open **External Plugins → Drum Seat**. Choose **Learn Hands**, tap your left and right pads, and play a backbeat with quiet notes between accents. Hear the example at `SD / Projects / Drum Hands / 01 Drum Seat - ghost line.wav`. [Drum Seat, Split Cycle and the drum performance instruments](plugins/DrumHands/README.md)
+
 ## Try a four-bar live jam
 
 Add **Resonant Kit** and **Turnaround** to a drum track. Use **Chord Relay** on a Plugin track to play two chords from the pads. [First jam, pad notes and SD paths](plugins/LiveJam/README.md)

@@ -1,0 +1,26 @@
+{
+  "kit": "cyan",
+  "pages": [
+    {
+      "name": "PLAY",
+      "controls": [
+        {
+          "param": "Tension",
+          "widget": "knob"
+        },
+        {
+          "param": "Snares",
+          "widget": "knob"
+        },
+        {
+          "param": "Buzz Rate",
+          "widget": "knob"
+        },
+        {
+          "param": "Damping",
+          "widget": "knob"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,156 @@
+{
+  "name": "Drum Seat",
+  "vendor": "FG Scratchpad",
+  "uid": "FgDS",
+  "uidInt": 1181172819,
+  "version": 1000,
+  "isInstrument": true,
+  "numInputs": 0,
+  "numOutputs": 2,
+  "numPrograms": 4,
+  "programs": [
+    "Ghost Line",
+    "Accent Stabs",
+    "Trade Phrases",
+    "Two Mallets"
+  ],
+  "params": [
+    {
+      "index": 0,
+      "id": null,
+      "name": "Follow",
+      "label": "",
+      "display": "Ghost notes",
+      "default": 0.0,
+      "automatable": true,
+      "kind": "choice",
+      "choices": [
+        "Ghost notes",
+        "Sticking",
+        "Accents",
+        "Rests only"
+      ]
+    },
+    {
+      "index": 1,
+      "id": null,
+      "name": "Melody Level",
+      "label": "%",
+      "display": "65",
+      "default": 0.65,
+      "automatable": true,
+      "kind": "int",
+      "choices": []
+    },
+    {
+      "index": 2,
+      "id": null,
+      "name": "Reply Level",
+      "label": "%",
+      "display": "45",
+      "default": 0.45,
+      "automatable": true,
+      "kind": "int",
+      "choices": []
+    },
+    {
+      "index": 3,
+      "id": null,
+      "name": "Root",
+      "label": "MIDI",
+      "display": "50",
+      "default": 0.408163,
+      "automatable": true,
+      "kind": "int",
+      "choices": []
+    },
+    {
+      "index": 4,
+      "id": null,
+      "name": "Drum Level",
+      "label": "%",
+      "display": "83",
+      "default": 0.83,
+      "automatable": true,
+      "kind": "int",
+      "choices": []
+    },
+    {
+      "index": 5,
+      "id": null,
+      "name": "Snares",
+      "label": "%",
+      "display": "72",
+      "default": 0.72,
+      "automatable": true,
+      "kind": "int",
+      "choices": []
+    },
+    {
+      "index": 6,
+      "id": null,
+      "name": "Reply Gap",
+      "label": "",
+      "display": "Quarter",
+      "default": 0.333333,
+      "automatable": true,
+      "kind": "choice",
+      "choices": [
+        "Eighth",
+        "Quarter",
+        "Dotted quarter",
+        "Half"
+      ]
+    },
+    {
+      "index": 7,
+      "id": null,
+      "name": "Keep Call",
+      "label": "",
+      "display": "Off",
+      "default": 0.0,
+      "automatable": true,
+      "kind": "bool",
+      "choices": [
+        "Off",
+        "On"
+      ]
+    },
+    {
+      "index": 8,
+      "id": null,
+      "name": "Learn Hands",
+      "label": "",
+      "display": "Off",
+      "default": 0.0,
+      "automatable": true,
+      "kind": "bool",
+      "choices": [
+        "Off",
+        "On"
+      ]
+    },
+    {
+      "index": 9,
+      "id": null,
+      "name": "Left Input",
+      "label": "MIDI",
+      "display": "36",
+      "default": 0.283465,
+      "automatable": true,
+      "kind": "int",
+      "choices": []
+    },
+    {
+      "index": 10,
+      "id": null,
+      "name": "Right Input",
+      "label": "MIDI",
+      "display": "37",
+      "default": 0.291339,
+      "automatable": true,
+      "kind": "int",
+      "choices": []
+    }
+  ]
+}

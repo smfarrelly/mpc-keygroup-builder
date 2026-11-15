@@ -87,3 +87,16 @@ jobs:
           done
           c++ -std=c++17 -O2 -I"$sdk/framework" plugins/LiveJam/tests/session.cpp -o work/live-jam-test
           work/live-jam-test
+      - name: Record, reopen and render the drummer performance instruments
+        run: |
+          sdk=work/akai-sdk
+          for plugin in GhostWire RudimentKeys RestReply SplitCycle DrumSeat; do
+            python "$sdk/tools/build.py" "plugins/$plugin" --target native --toolchain gcc
+            "$sdk/.sdk-tools/host_sim" plugins/"$plugin"/build/native/*.so test --notes 36,37,40,41 --playing
+          done
+          c++ -std=c++17 -O2 -I"$sdk/framework" plugins/DrumHands/tests/session.cpp -ldl -o work/drum-hands-test
+          work/drum-hands-test plugins
+          python plugins/DrumHands/rehearsal.py --sdk "$sdk" --output work/drum-hands-rehearsal
+          mpc-bundle-verify work/drum-hands-rehearsal
+          mpc-sdk-compare plugins/DrumSeat/params.reference.json plugins/DrumSeat/build/params.json
+          mpc-plugin-map check midi/sdk-examples/drum-seat.toml --sdk-dump plugins/DrumSeat/build/params.json
