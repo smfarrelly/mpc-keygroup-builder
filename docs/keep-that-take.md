@@ -2,6 +2,17 @@
 
 Open the [laptop studio](http://127.0.0.1:8737/) while the local recorder is running. To start it from the repository root, run `uv run mpc-keep-take --open`. It reads the two-part [Playable Scratchpad bundle](playable-scratchpad.md) on the laptop. The **02 Four Bar Jam** XPJ and its companion folder supply the instruments and the project format.
 
+## Play a melody from drum hits
+
+In a new idea, press **Play with pads**. Tap pad 1 four times, making the second tap soft. With the default Mirage Pluck Bass pitches, you’ll hear **C, C, E-flat, G** alongside the drum. Hits below MIDI velocity 50 repeat the previous pitch with a short gate. The next stronger hit advances the phrase. A rest in your drumming leaves the melody silent. On the computer keyboard, try **A, Shift+A, A, A**.
+
+- **Kick pads only** lets you play hats and snares freely while kicks drive the melody. Select it before starting. On an external pad or single drum trigger, choose **Learn MIDI kick trigger**, then strike it once. The browser remembers that MIDI input, channel and note as the kit’s kick whenever a drum instrument is selected. **Forget trigger** restores the original assignment.
+- Choose **Wurli** or another keygroup under **Voice** before starting. Enter up to 16 pitches such as `C3 Eb3 G3 Bb3`, or choose **Play pitches on MIDI**, play the notes at any speed, and finish pitch entry. To work rhythm-first, tap your rhythm, change the pitches, then **Audition new pitches**. The timing and accents come from your original taps.
+- **Keep groove** starts a loop with separate drum and melody layers. It starts on your first hit and rounds up to a whole bar. On an existing idea, the two new layers follow its loop length and retain their position against your earlier parts. If you play several passes, the most recent loop ending with your performance is kept. Keep it before pressing Stop or changing drum instruments. The existing take, MIDI and MPC project exports preserve both parts.
+- While the kept loop plays and a drum track is selected, choose **Move a melody hit with next kick**. Play one kick where you want the nearest melody note to land. Hear the change on the next pass. **Undo kick move** restores the previous timing.
+
+This mode uses the laptop’s sample playback. A saved MPC project contains the performed notes and samples. Live accompaniment and trigger learning run in the browser.
+
 ## Start with Answer Track
 
 Open a new idea, select **Wurli**, then press **Answer**. That starts the clock and listens for one phrase. Hold a chord for about two beats: Pluck Bass plays its notes underneath while you sustain it. Release the chord when you want it to end. For a melody or pad rhythm, leave a short gap to invite the reply.

@@ -27,6 +27,7 @@ jobs:
         run: |
           node tests/keep_capture.cjs
           node tests/answer_track.cjs
+          node tests/pad_melody.cjs
       - name: Validate published declarative examples
         run: |
           uv run mpc-schema validate device-profile devices/*.toml

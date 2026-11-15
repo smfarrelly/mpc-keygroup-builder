@@ -349,7 +349,13 @@ def serve(project, output, port, open_browser):
             if not self.local():
                 return self.send_error(403)
             path = urlsplit(self.path).path
-            if path in ("/", "/capture.js", "/studio.js", "/answer.js"):
+            if path in (
+                "/",
+                "/capture.js",
+                "/studio.js",
+                "/answer.js",
+                "/pad-melody.js",
+            ):
                 asset = ASSETS / ("index.html" if path == "/" else path[1:])
                 return self.send(
                     200,
