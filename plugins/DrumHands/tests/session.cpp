@@ -1,11 +1,27 @@
 // SPDX-License-Identifier: MIT
 #include "host.h"
-#include <fstream>
+#include <cctype>
 using namespace testhost;
 namespace fs = std::filesystem;
 constexpr int rate = 32000, beat = rate / 2;
 static fs::path binaries;
+static std::string architecture;
 fs::path binary(const char *folder, const char *slug) {
+    if (!architecture.empty()) {
+        std::string display(slug);
+        bool word = true;
+        for (char &c : display) {
+            if (c == '-') {
+                c = ' ';
+                word = true;
+            } else if (word) {
+                c = char(std::toupper(static_cast<unsigned char>(c)));
+                word = false;
+            }
+        }
+        return binaries / ("FG Scratchpad - VST - " + display) / "VST" /
+               (std::string(slug) + "-" + architecture + ".so");
+    }
     return binaries / folder / "build/native" / (std::string(slug) + ".so");
 }
 void ghostWire() {
@@ -327,11 +343,16 @@ void drumSeat() {
                  "and large host blocks passed.\n";
 }
 int main(int argc, char **argv) {
-    if (argc != 2) {
-        std::cerr << "usage: session /path/to/repository/plugins\n";
+    if (argc == 2)
+        binaries = fs::absolute(argv[1]);
+    else if (argc == 4 && std::string(argv[1]) == "--packages" &&
+             (std::string(argv[3]) == "arm32" || std::string(argv[3]) == "arm64")) {
+        binaries = fs::absolute(argv[2]);
+        architecture = argv[3];
+    } else {
+        std::cerr << "usage: session REPO/plugins | session --packages 'VST2 Plugins' arm32|arm64\n";
         return 2;
     }
-    binaries = fs::absolute(argv[1]);
     ghostWire();
     rudiments();
     restReply();

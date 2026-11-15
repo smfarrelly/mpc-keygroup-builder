@@ -83,3 +83,16 @@ uv run mpc-bundle-verify "work/Drum Hands Rehearsal"
 To assemble a card-ready directory, add `--include-plugins` to the rehearsal command and choose a new output folder. Copy the five complete folders under `VST2 Plugins` and the `Projects/Drum Hands` folder onto the card. The bundle contains only the new instruments and their rehearsals.
 
 The test host exercises the native shared objects with timestamped MIDI, stereo audio, transport, plugin presets and opaque project-state chunks. It measures pitches and reply timing, changes audio callback sizes, and reloads new instances. Standalone discovery, pad feel, physical pressure transmission and project recall on the Key 37 still require a listening session.
+
+### Exercise the packaged ARM binaries before a device session
+
+The same host can open the shared objects inside the card's manufacturer-prefixed folders. On Linux, use a Zig cross compiler, QEMU user-mode emulator, and an ARM glibc sysroot. For the original Key 37 package:
+
+```bash
+"$zig" c++ -std=c++17 -O2 -UNDEBUG -target arm-linux-gnueabihf.2.31 -mcpu=cortex_a17 \
+  -I"$sdk/framework" plugins/DrumHands/tests/session.cpp -ldl -o /tmp/check-drum-hands-arm32
+qemu-arm-static -L /usr/arm-linux-gnueabihf /tmp/check-drum-hands-arm32 \
+  --packages "$card/VST2 Plugins" arm32
+```
+
+For ARM64, use `-target aarch64-linux-gnu.2.31 -mcpu=cortex_a55`, `qemu-aarch64-static`, the AArch64 sysroot and the `arm64` package argument. `-UNDEBUG` enables the assertions in the cross-compiled host. This verifies the deployable binaries' DSP and state behavior under emulation. Device CPU headroom and standalone host behavior remain hardware checks.

@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
 // Exercise the built shared objects through the same plugin ABI used to save a project.
 #pragma once
+#ifdef NDEBUG
+#error "The rehearsal host requires active assertions. Compile with -UNDEBUG."
+#endif
 #include "mpc_vst2_abi.h"
 #include <algorithm>
 #include <array>
