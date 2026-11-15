@@ -342,6 +342,49 @@ void drumSeat() {
     std::cout << "Drum Seat: ghost-only melody, accent preset, gap-only answers, kept recall, tuning "
                  "and large host blocks passed.\n";
 }
+void patternBoundaries() {
+    Plugin p(binary("SplitCycle", "split-cycle"));
+    p.set(1, 1); // Eight eighths. The stored phrase can contain more than 96 different ticks.
+    p.set(3, 0); // Feel, at 96 pulses per quarter.
+    std::vector<Event> denselyPlayed;
+    for (int i = 0; i < 96; i++)
+        denselyPlayed.push_back({int(std::lround(i * beat / 96.)), 36, 76});
+    p.render(beat, denselyPlayed);
+    auto full = p.save();
+    constexpr size_t length = 3 + 96 * 4;
+    assert(full.size() > length);
+    const size_t extra = full.size() - length;
+    assert(full[extra] == 1 && full[extra + 1] == 96 && full.back() == 0);
+    p.render(100, {{0, 38, 100}}); // New position when full: monitor the stroke, preserve the pattern.
+    assert(p.save() == full);
+    p.position = 0;
+    p.render(100, {{0, 36, 102}});
+    assert(p.save() != full);
+    p.render(100, {{0, 44, 90}});
+    assert(p.save() == full);
+    auto bad = full;
+    bad[extra + 1] = 97;
+    p.load(bad);
+    p.render(100);
+    assert(p.save() == full);
+    bad = full;
+    bad[extra + 2 + 4] = bad[extra + 2]; // Duplicate the first tick/key at the second event.
+    p.load(bad);
+    p.render(100);
+    assert(p.save() == full);
+
+    Plugin fx(binary("RestReply", "rest-reply"));
+    auto input = callAudio(4 * beat);
+    fx.render(4 * beat, {}, &input);
+    auto good = fx.save();
+    assert(good.size() > 5 && good[good.size() - 3] != 0);
+    bad = good;
+    bad[bad.size() - 3] &= 0xe0; // A noninitial hit cannot have zero interval.
+    fx.load(bad);
+    fx.render(100);
+    assert(fx.save() == good);
+    std::cout << "Full lane replacement and undo, and malformed project-state rejection passed.\n";
+}
 int main(int argc, char **argv) {
     if (argc == 2)
         binaries = fs::absolute(argv[1]);
@@ -358,4 +401,5 @@ int main(int argc, char **argv) {
     restReply();
     splitCycle();
     drumSeat();
+    patternBoundaries();
 }
