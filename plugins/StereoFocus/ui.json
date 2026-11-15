@@ -1,0 +1,23 @@
+{
+  "kit": "cyan",
+  "pages": [
+    {
+      "name": "MASTER",
+      "controls": [
+        {
+          "param": "Frequency",
+          "widget": "knob"
+        },
+        {
+          "param": "Bass focus",
+          "widget": "knob"
+        },
+        {
+          "param": "Listen",
+          "widget": "slider",
+          "overlay": "menu"
+        }
+      ]
+    }
+  ]
+}

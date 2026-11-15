@@ -1,0 +1,14 @@
+{
+  "name": "Stereo Focus",
+  "manufacturer": "FG Scratchpad",
+  "version": "1.0.0",
+  "format": "vst2",
+  "kind": "effect",
+  "uid": "FgSf",
+  "numInputs": 2,
+  "numOutputs": 2,
+  "file32": "VST/stereo-focus-arm32.so",
+  "file64": "VST/stereo-focus-arm64.so",
+  "description": "Narrow the bass in stereo and audition the mono or side component.",
+  "license": "MIT"
+}
