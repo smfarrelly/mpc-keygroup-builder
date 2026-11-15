@@ -10,8 +10,6 @@ own or may legally use, and generated programs stay on your own storage.
 
 ## Start here
 
-Choose the path that matches what you want to do:
-
 - **Returning after a break:** run `mpc-tools start` or read
   [Start with one musical task](docs/start-here.md). No card is needed.
 - **Find the current Key 37 rig’s instruments:** use the
