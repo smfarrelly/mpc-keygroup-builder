@@ -1,0 +1,36 @@
+{
+  "kit": "cyan",
+  "pages": [
+    {
+      "name": "MASTER",
+      "controls": [
+        {
+          "param": "Capture",
+          "widget": "slider",
+          "overlay": "menu"
+        },
+        {
+          "param": "RMS B-A",
+          "widget": "knob"
+        },
+        {
+          "param": "Peak B-A",
+          "widget": "knob"
+        },
+        {
+          "param": "Crest B-A",
+          "widget": "knob"
+        }
+      ]
+    },
+    {
+      "name": "STATUS",
+      "controls": [
+        {
+          "param": "Readings",
+          "widget": "knob"
+        }
+      ]
+    }
+  ]
+}

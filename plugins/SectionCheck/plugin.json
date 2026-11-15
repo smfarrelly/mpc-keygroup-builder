@@ -1,0 +1,14 @@
+{
+  "name": "Section Check",
+  "manufacturer": "FG Scratchpad",
+  "version": "1.0.0",
+  "format": "vst2",
+  "kind": "effect",
+  "uid": "FgSc",
+  "numInputs": 2,
+  "numOutputs": 2,
+  "file32": "VST/section-check-arm32.so",
+  "file64": "VST/section-check-arm64.so",
+  "description": "Capture two stereo passages and compare RMS, sample peak and crest factor.",
+  "license": "MIT"
+}

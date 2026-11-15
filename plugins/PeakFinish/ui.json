@@ -1,0 +1,27 @@
+{
+  "kit": "cyan",
+  "pages": [
+    {
+      "name": "MASTER",
+      "controls": [
+        {
+          "param": "Drive",
+          "widget": "knob"
+        },
+        {
+          "param": "Ceiling",
+          "widget": "knob"
+        },
+        {
+          "param": "Listen",
+          "widget": "slider",
+          "overlay": "menu"
+        },
+        {
+          "param": "Reduction",
+          "widget": "knob"
+        }
+      ]
+    }
+  ]
+}

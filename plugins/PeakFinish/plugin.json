@@ -1,0 +1,14 @@
+{
+  "name": "Peak Finish",
+  "manufacturer": "FG Scratchpad",
+  "version": "1.0.0",
+  "format": "vst2",
+  "kind": "effect",
+  "uid": "FgPf",
+  "numInputs": 2,
+  "numOutputs": 2,
+  "file32": "VST/peak-finish-arm32.so",
+  "file64": "VST/peak-finish-arm64.so",
+  "description": "Stereo-linked soft clipping with RMS-matched wet and dry auditioning.",
+  "license": "MIT"
+}
