@@ -112,3 +112,10 @@ jobs:
           python plugins/ShadowSteps/tests/printer.py
           python plugins/ShadowSteps/jam.py --sdk "$sdk" --output work/shadow-steps-jam
           mpc-bundle-verify work/shadow-steps-jam
+      - name: Play and restore learned Phrase Hands melodies
+        run: |
+          sdk=work/akai-sdk
+          plugin=plugins/PhraseHands
+          python "$sdk/tools/build.py" "$plugin" --target native --toolchain gcc
+          c++ -O2 -std=c++17 -I"$sdk/framework" "$plugin/tests/session.cpp" -ldl -o "$plugin/build/session"
+          "$plugin/build/session" "$plugin/build/native/phrase-hands.so"

@@ -162,6 +162,13 @@ def build(source, output, sequence, tracks, style, amounts, seed, guide=None):
     styles = [style] if isinstance(style, str) else style
     for mode in styles:
         report.extend(evolve(project.data, sequence, tracks, mode, amounts, seed, guide))
+    publish_project(project, output)
+    return report
+
+
+def publish_project(project, output, extras=None):
+    """Publish an independent, verified native project and its media."""
+    source = project.path
     companion = source.with_name(source.stem + "_[ProjectData]")
     if output.exists() or output.is_symlink():
         raise ValueError(f"Choose a new output folder: {output}")
@@ -186,11 +193,15 @@ def build(source, output, sequence, tracks, style, amounts, seed, guide=None):
         target.write_bytes(gzip.compress(payload.encode(), mtime=0))
         if xpj.load(target).document != project.document:
             raise ValueError("Output project failed readback")
+        for name, content in (extras or {}).items():
+            if Path(name).name != name or PureWindowsPath(name).name != name:
+                raise ValueError("Project extras must be plain filenames")
+            with (stage / name).open("xb") as handle:
+                handle.write(content)
         publish_directory(stage, output)
     finally:
         if stage.exists():
             shutil.rmtree(stage)
-    return report
 
 
 def main():

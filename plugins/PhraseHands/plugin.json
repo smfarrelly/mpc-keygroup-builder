@@ -1,0 +1,14 @@
+{
+  "name": "Phrase Hands",
+  "manufacturer": "FG Scratchpad",
+  "version": "1.0.0",
+  "format": "vst2",
+  "kind": "instrument",
+  "uid": "FgPh",
+  "numInputs": 0,
+  "numOutputs": 2,
+  "file32": "VST/phrase-hands-arm32.so",
+  "file64": "VST/phrase-hands-arm64.so",
+  "description": "Learn eight melody notes, then voice them with your hands in four performance orders.",
+  "license": "MIT"
+}

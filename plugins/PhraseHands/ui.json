@@ -1,0 +1,26 @@
+{
+  "kit": "cyan",
+  "pages": [
+    {
+      "name": "PLAY",
+      "controls": [
+        {
+          "param": "Level",
+          "widget": "knob"
+        },
+        {
+          "param": "Decay",
+          "widget": "knob"
+        },
+        {
+          "param": "Brightness",
+          "widget": "knob"
+        },
+        {
+          "param": "Register",
+          "widget": "knob"
+        }
+      ]
+    }
+  ]
+}

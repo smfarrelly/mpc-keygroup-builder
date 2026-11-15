@@ -1,5 +1,9 @@
 # Resume here
 
+## Make a new musical part from your hook
+
+Open `SD / Projects / Phrase Lab / 02 Four Bar Jam.xpj` and try **Ghost choir** and **Pass the phrase**. For live playing, open **Phrase Hands** on a Plugin track. [All fourteen variations and the six pad controls](docs/phrase-lab.md)
+
 ## Borrow the groove of a drum take
 
 Load `SD / Projects / Groove Transfer / 02 Four Bar Jam.xpj`. Switch between **Accent 100%** and **Duck 100%** to hear the bass and Wurli follow your drum dynamics in opposite ways. [Use your own tracks as guides](docs/sequence-morph.md#make-the-bass-and-keys-follow-your-hands)
