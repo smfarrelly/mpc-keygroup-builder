@@ -46,3 +46,5 @@ Each target onset matches the closest unmuted guide onset within a quarter beat 
 ### Try the prepared comparison
 
 Open `SD / Projects / Groove Transfer / 02 Four Bar Jam.xpj`. Start with **Four-bar jam**, then switch between **Accent 100%** and **Duck 100%**. Listen for the bass and Wurli leaning into the drum accents in the first version and leaving room for them in the second. Use **Lock 100%** to compare timing. The folder’s listening WAV plays original, Lock, Accent and Duck at full strength, eight seconds each, using a dry software rendering.
+
+For a three-track rehearsal using your own four-bar take, see [Play a four-bar hook](hook-rehearsal.md).
