@@ -81,7 +81,7 @@ def wavefile(path, raw):
         w.writeframes(raw)
 
 
-def build(folder, scratch, sdk):
+def build(folder, scratch, sdk, seed=None):
     runner = scratch / "render"
     subprocess.run(
         [
@@ -111,6 +111,24 @@ def build(folder, scratch, sdk):
             (14, 2, 61, 6),
         )
     ]
+    if seed is not None:
+        meta, events = parse_midi(seed)
+        source = [
+            note(
+                min(BAR - 1, round(event.tick * PPQ / meta.ppq)),
+                event.note,
+                event.velocity,
+                1,
+            )
+            for event in events
+            if event.tick < 4 * meta.ppq and 36 <= event.note <= 39
+        ]
+        if not source:
+            raise ValueError(
+                "the seed needs drum notes 36–39 within its first four beats"
+            )
+        # A capture cue starts the bar even when the player's first stroke is a pickup.
+        source.insert(0, note(0, 35, 100, 1))
     midi(folder / "Source groove.mid", [MidiTrack("Source", tuple(source))], BAR)
     printed = folder / "Editable variations"
     print_take(folder / "Source groove.mid", printed, [36, 37, 38, 39], 1, BPM, 43)
@@ -165,11 +183,16 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--sdk", required=True, type=Path)
     p.add_argument("--output", required=True, type=Path, help="new rehearsal folder")
+    p.add_argument(
+        "--seed",
+        type=Path,
+        help="use the first 4/4 bar of a Play in Shadow Steps.mid file as the drum part",
+    )
     args = p.parse_args()
     out = _new_folder(args.output)
     with TemporaryDirectory(dir=out.parent) as tmp, TemporaryDirectory() as work:
         stage = Path(tmp)
-        build(stage, Path(work), args.sdk.resolve())
+        build(stage, Path(work), args.sdk.resolve(), args.seed)
         receipt(stage)
         publish_directory(stage, out)
     print(out)

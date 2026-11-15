@@ -68,4 +68,6 @@ uv run python plugins/ShadowSteps/jam.py --sdk "$sdk" --output "work/Shadow Step
 uv run mpc-bundle-verify "work/Shadow Steps rehearsal"
 ```
 
+To use a groove you printed from your own project, add `--seed "work/My variations/Play in Shadow Steps.mid"` to the rehearsal command. It places your rhythm in the 100 BPM duet and uses its printed canon pitches for the keyboard part.
+
 The software tests check note placement, velocity boundaries, canceled replacements, loop wraps, all three chord voicings, sustain, and fresh-instance recall. Physical pad feel, standalone discovery and project recall on the Key 37 remain listening checks.
