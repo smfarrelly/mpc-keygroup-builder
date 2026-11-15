@@ -78,3 +78,12 @@ jobs:
           "$plugin/build/session"
           c++ -std=c++17 -O2 -I"$sdk/framework" "$plugin/tests/reopen.cpp" -ldl -o "$plugin/build/reopen"
           "$plugin/build/reopen" "$plugin/build/native/pocket-duo.so"
+      - name: Exercise live fills, drum resonators and taught chords
+        run: |
+          sdk=work/akai-sdk
+          for plugin in Turnaround ResonantKit ChordRelay; do
+            python "$sdk/tools/build.py" "plugins/$plugin" --target native --toolchain gcc
+            "$sdk/.sdk-tools/host_sim" plugins/"$plugin"/build/native/*.so test --notes 36,40 --playing
+          done
+          c++ -std=c++17 -O2 -I"$sdk/framework" plugins/LiveJam/tests/session.cpp -o work/live-jam-test
+          work/live-jam-test

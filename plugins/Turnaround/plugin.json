@@ -1,0 +1,14 @@
+{
+  "name": "Turnaround",
+  "manufacturer": "FG Scratchpad",
+  "version": "1.0.0",
+  "format": "vst2",
+  "kind": "effect",
+  "uid": "FgTA",
+  "numInputs": 2,
+  "numOutputs": 2,
+  "file32": "VST/turnaround-arm32.so",
+  "file64": "VST/turnaround-arm64.so",
+  "description": "Arm a fill for the end of a four-bar phrase.",
+  "license": "MIT"
+}

@@ -1,0 +1,39 @@
+{
+  "kit": "cyan",
+  "pages": [
+    {
+      "name": "PLAY",
+      "controls": [
+        {
+          "param": "Root",
+          "widget": "knob"
+        },
+        {
+          "param": "Decay",
+          "widget": "knob"
+        },
+        {
+          "param": "Kick to Snare",
+          "widget": "knob"
+        },
+        {
+          "param": "Wet",
+          "widget": "knob"
+        }
+      ]
+    },
+    {
+      "name": "TUNING",
+      "controls": [
+        {
+          "param": "Middle Interval",
+          "widget": "knob"
+        },
+        {
+          "param": "Upper Interval",
+          "widget": "knob"
+        }
+      ]
+    }
+  ]
+}

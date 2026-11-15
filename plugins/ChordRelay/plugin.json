@@ -1,0 +1,14 @@
+{
+  "name": "Chord Relay",
+  "manufacturer": "FG Scratchpad",
+  "version": "1.0.0",
+  "format": "vst2",
+  "kind": "instrument",
+  "uid": "FgCR",
+  "numInputs": 0,
+  "numOutputs": 2,
+  "file32": "VST/chord-relay-arm32.so",
+  "file64": "VST/chord-relay-arm64.so",
+  "description": "Teach two chords and phrase them from the pads.",
+  "license": "MIT"
+}
