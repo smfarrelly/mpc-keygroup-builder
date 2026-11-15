@@ -1,5 +1,7 @@
 # CLI reference
 
+Use [Sequence Morph](sequence-morph.md) to make editable variations of a recorded MPC sequence.
+
 For kits drawing from several folders, use
 [explicit Drum source maps](drum-source-maps.md) instead of manually flattening
 WAV directories.

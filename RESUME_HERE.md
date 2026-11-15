@@ -1,5 +1,9 @@
 # Resume here
 
+## Evolve an existing performance
+
+Open `SD / Projects / Sequence Morph / 02 Four Bar Jam.xpj` and switch from **Four-bar jam** to **Answer 65%** or **Space 75%**. [Morph your own sequence](docs/sequence-morph.md)
+
 ## Vary a groove or find the chord under a melody
 
 Load **Shadow Steps**, play one bar, then hold MIDI note 41 to hear a response in its rests. On a separate track, **Common Tone** lets you try three chords under a melody note and drum the one you keep. [Pad map, full SD paths and editable MIDI](plugins/ShadowSteps/README.md)

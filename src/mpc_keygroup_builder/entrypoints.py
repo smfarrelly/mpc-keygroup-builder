@@ -81,6 +81,7 @@ COMMANDS = {
     "mpc-melody-idea": _spec("melody", "Creative MIDI", "Generate motif-based Melody MIDI", "docs/creative-midi.md"),
     "mpc-workstation-idea": _spec("workstation", "Creative MIDI", "Generate a four-part Scratchpad idea", "docs/creative-midi.md"),
     "mpc-arrange-idea": _spec("arrangement", "Creative MIDI", "Derive five traceable arrangement sections", "docs/creative-midi.md"),
+    "mpc-sequence-morph": _spec("sequence_morph", "Creative MIDI", "Evolve played sequences in a separate MPC 3 project", "docs/sequence-morph.md"),
     "mpc-idea-batch": _spec("idea_batch", "Creative MIDI", "Generate and rank a bounded seed batch", "docs/creative-midi.md"),
     "mpc-kit-select": _spec("kit_select", "Catalog", "Select one deterministic cross-library kit", "docs/catalog.md"),
     "mpc-kit-wave": _spec("kit_wave", "Catalog", "Build and audit a multi-recipe kit wave", "docs/catalog.md"),
