@@ -1,0 +1,6 @@
+{
+  "name":"Pocket Duo","manufacturer":"FG Scratchpad","version":"1.0.0","format":"vst2",
+  "kind":"instrument","uid":"FgPD","numInputs":0,"numOutputs":2,
+  "file32":"VST/pocket-duo-arm32.so","file64":"VST/pocket-duo-arm64.so",
+  "description":"Play drums with a responsive bassist and keep the last pass.","license":"MIT"
+}
