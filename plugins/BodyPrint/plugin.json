@@ -1,0 +1,14 @@
+{
+  "name": "Body Print",
+  "manufacturer": "FG Scratchpad",
+  "version": "1.0.0",
+  "format": "vst2",
+  "kind": "effect",
+  "uid": "FgBp",
+  "numInputs": 2,
+  "numOutputs": 2,
+  "file32": "VST/body-print-arm32.so",
+  "file64": "VST/body-print-arm64.so",
+  "description": "Color an instrument with two sampled resonances and steer the blend by touch.",
+  "license": "MIT"
+}

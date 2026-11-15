@@ -60,4 +60,4 @@ uv run python plugins/PerformanceEffects/body_study.py --keys "/my/samples/Wurli
   --responses "/my/samples/Rim.wav" "/my/samples/Tape Clap.wav" --output "work/body-study.wav"
 ```
 
-The body study is an offline experiment. Break Envelope and Wear Pair are proposed experiments. [Local Samples From Mars inventory](../../inventory/samples-from-mars-mpc-backlog.md)
+The body study is the offline predecessor to the [Body Print standalone insert](../BodyPrint/README.md). Break Envelope and Wear Pair are proposed experiments. [Local Samples From Mars inventory](../../inventory/samples-from-mars-mpc-backlog.md)

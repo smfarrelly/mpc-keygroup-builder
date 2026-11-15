@@ -1,0 +1,26 @@
+{
+  "kit": "cyan",
+  "pages": [
+    {
+      "name": "PLAY",
+      "controls": [
+        {
+          "param": "Wander",
+          "widget": "knob"
+        },
+        {
+          "param": "Seed",
+          "widget": "knob"
+        },
+        {
+          "param": "Tune",
+          "widget": "knob"
+        },
+        {
+          "param": "Level",
+          "widget": "knob"
+        }
+      ]
+    }
+  ]
+}

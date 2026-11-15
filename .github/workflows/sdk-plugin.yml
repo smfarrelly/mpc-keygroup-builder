@@ -130,3 +130,16 @@ jobs:
           mkdir -p work/imprint-fixture/Content
           python -c "from pathlib import Path; Path('work/imprint-fixture/Content/slot-1.gri').write_bytes(bytes((1,1,0,4,127)))"
           MPC_PLUGIN_FOLDER="$PWD/work/imprint-fixture" work/performance-effects-test plugins/{GhostFader,RhythmImprint,TailChoir}/build/native/*.so
+      - name: Verify played slice order, bank switching and touch-driven sampled bodies
+        run: |
+          sdk=work/akai-sdk
+          for plug in BreakRelay BodyPrint; do
+            python "$sdk/tools/build.py" "plugins/$plug" --target native --toolchain gcc
+            "$sdk/.sdk-tools/host_sim" plugins/"$plug"/build/native/*.so test --playing --notes 36,37,38,39
+            c++ -O2 -std=c++17 -I"$sdk/framework" plugins/"$plug"/tests/session.cpp -ldl -o "work/$plug-session"
+          done
+          python plugins/BreakRelay/tests/fixture.py work/relay-fixture
+          MPC_PLUGIN_FOLDER="$PWD/work/relay-fixture" work/BreakRelay-session plugins/BreakRelay/build/native/break-relay.so
+          work/BodyPrint-session plugins/BodyPrint/build/native/body-print.so
+          python plugins/BreakRelay/rehearsal.py --sdk "$sdk" --output work/relay-demo
+          mpc-bundle-verify work/relay-demo

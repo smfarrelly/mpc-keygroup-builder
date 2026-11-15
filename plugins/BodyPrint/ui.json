@@ -1,0 +1,26 @@
+{
+  "kit": "cyan",
+  "pages": [
+    {
+      "name": "PLAY",
+      "controls": [
+        {
+          "param": "Body",
+          "widget": "knob"
+        },
+        {
+          "param": "Touch",
+          "widget": "knob"
+        },
+        {
+          "param": "Length",
+          "widget": "knob"
+        },
+        {
+          "param": "Blend",
+          "widget": "knob"
+        }
+      ]
+    }
+  ]
+}

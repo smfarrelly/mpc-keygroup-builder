@@ -1,5 +1,9 @@
 # Resume here
 
+## Play two breaks from four pads
+
+Start with **External Plugins → Break Relay**. The first audition is `SD / Projects / Break Relay / 01 Same hands - Home, Borrow, Away.wav`. [Break Relay controls](plugins/BreakRelay/README.md) · [Body Print insert](plugins/BodyPrint/README.md) · [Phrase Hands landing gesture](docs/phrase-lab.md#play-a-phrase-from-the-pads)
+
 ## Play the new effects
 
 Start with **Ghost Fader** on a snare track or **Rhythm Imprint** on Wurli. Auditions are at `SD / Projects / Performance Effects /`. [Insert controls, groove slots and Samples From Mars experiments](plugins/PerformanceEffects/README.md)

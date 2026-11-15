@@ -31,4 +31,9 @@ int main(int argc, char **argv) {
     Plugin reset(argv[1]); reset.load(state);
     auto two=reset.render(34000,{{10,36,90},{14000,41,90},{17010,36,90}});
     assert(two==keys({62,62},90));
+    // Destination preview plus three struck notes, a pinned landing and a Home.
+    Plugin land(argv[1]); land.load(state);
+    auto arrival=land.render(6*17000,{{10,72,90},{500,42,110},{700,72,0,128},
+        {17010,36,90},{34010,36,90},{51010,36,90},{68010,36,90},{80000,41,90},{85010,36,90}});
+    assert(arrival==keys({72,65,71,72,72,62},90));
 }
