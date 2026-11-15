@@ -68,8 +68,8 @@
     return ctx.resume();
   }
   function stopVoice(v, t) {
-    if (!v || v.released) return;
-    v.released = true;
+    if (!v || v.releaseAt <= t) return;
+    v.releaseAt = t;
     const when = Math.max(ctx.currentTime, t);
     v.gain.gain.cancelScheduledValues(when);
     v.gain.gain.setTargetAtTime(0, when, 0.006);
@@ -181,10 +181,11 @@
         }
       const token = { note: k, drum: tracks[name].drum };
       live.set(k, token);
-      sound(name, k, v, ctx.currentTime, null, token, "live").catch((e) =>
-        msg(e.message),
-      );
+      const when = ctx.currentTime;
+      padStrike(k, v, t, when);
+      sound(name, k, v, when, null, token, "live").catch((e) => msg(e.message));
     } else if (live.has(k)) {
+      if (groove?.down.delete(k)) groove.drums.add([t, 128, k, 0]);
       const token = live.get(k);
       live.delete(k);
       if (pedal && !token.drum) sustained.add(token);
@@ -228,7 +229,7 @@
       b.onpointerdown = (e) => {
         e.preventDefault();
         b.setPointerCapture(e.pointerId);
-        record(144, n, 96);
+        record(144, n, e.shiftKey ? 38 : 96);
       };
       b.onpointerup = b.onpointercancel = () => record(128, n, 0);
       root.append(b);
@@ -240,6 +241,7 @@
     closeInput();
     $("track").value = next;
     clearAnswer();
+    resetGroove();
     activeName = next;
     lastPhrase = null;
     surface();
@@ -260,7 +262,366 @@
     ];
     await Promise.all(ids.map(buffer));
   }
+  for (const [name, t] of Object.entries(tracks))
+    if (!t.drum) $("voice").add(new Option(name, name));
+  if (tracks["Pluck Bass"]) $("voice").value = "Pluck Bass";
+  let groove = null,
+    grooveBusy = false,
+    learning = false,
+    learned = [],
+    conductor = false,
+    melodyVoice = null,
+    groovePreview = null,
+    moveUndo = null;
+  let learnTrigger = false,
+    triggerBinding = null,
+    midiAccess = null;
+  try {
+    triggerBinding = JSON.parse(localStorage.getItem("pad-melody-trigger"));
+  } catch {}
+  function updateTrigger() {
+    $("learnTrigger").textContent = learnTrigger
+      ? "Cancel trigger learn"
+      : "Learn MIDI kick trigger";
+    $("forgetTrigger").disabled = !triggerBinding;
+  }
+  $("learnTrigger").onclick = safe(async () => {
+    if (learnTrigger) {
+      learnTrigger = false;
+      updateTrigger();
+      return;
+    }
+    closeInput();
+    await connectMidi();
+    learnTrigger = true;
+    learning = false;
+    $("learnPitches").textContent = "Play pitches on MIDI";
+    updateTrigger();
+    $("grooveStatus").textContent =
+      "Strike the external pad you want to use as a kick.";
+  });
+  $("forgetTrigger").onclick = () => {
+    closeInput();
+    triggerBinding = null;
+    learnTrigger = false;
+    localStorage.removeItem("pad-melody-trigger");
+    updateTrigger();
+    $("grooveStatus").textContent = "Removed the MIDI kick assignment.";
+  };
+  function stopMelodyPreview() {
+    if (!groovePreview) return;
+    groovePreview.cancel = true;
+    for (const v of sources)
+      if (v.groupScope === groovePreview) v.source.stop();
+    groovePreview = null;
+  }
+  function resetGroove() {
+    stopMelodyPreview();
+    groove = null;
+    conductor = false;
+    learning = false;
+    learnTrigger = false;
+    updateTrigger();
+    $("learnPitches").textContent = "Play pitches on MIDI";
+    if (melodyVoice) {
+      melodyVoice.cancel = true;
+      stopVoice(melodyVoice.voice, ctx.currentTime);
+      melodyVoice = null;
+    }
+    $("grooveStatus").textContent =
+      "Each strike plays a drum and the next pitch. Soft hits repeat the previous pitch.";
+  }
+  function grooveControls() {
+    updateTrigger();
+    const canMove = idea.layers.some((l) => l.padMelody === true);
+    $("accompany").disabled =
+      grooveBusy || loading || idea.layers.length > 126 || !$("voice").value;
+    $("accompany").textContent = groove
+      ? groove.playing
+        ? "Finish playing"
+        : "Resume playing"
+      : "Play with pads";
+    $("keepGroove").disabled = $("remelody").disabled =
+      grooveBusy || !groove?.notes.length;
+    $("voice").disabled = $("trigger").disabled = !!groove || grooveBusy;
+    $("undoMove").disabled = !moveUndo || !idea.layers.includes(moveUndo.layer);
+    $("conduct").disabled =
+      !running || !!groove || !canMove || !tracks[current()].drum;
+    $("conduct").textContent = conductor
+      ? "Cancel kick move"
+      : "Move a melody hit with next kick";
+  }
+  async function pitchBank() {
+    const pitches = PadMelody.pitches($("pitches").value),
+      name = $("voice").value;
+    await init();
+    const ids = new Set();
+    for (const n of pitches) {
+      const zones = tracks[name].zones.filter((z) => z.lo <= n && n <= z.hi);
+      if (!zones.length)
+        throw Error(name + " cannot play " + PadMelody.label(n) + ".");
+      for (const z of zones) ids.add(z.id);
+    }
+    await Promise.all([...ids].map(buffer));
+    return pitches;
+  }
+  function padStrike(n, velocity, time, when) {
+    const z = zone(current(), n, velocity);
+    if (!z) return;
+    if (conductor && z.role === "kick.primary") {
+      const layer = idea.layers.findLast((l) => l.padMelody === true);
+      const phase =
+        (((time - anchor) % idea.seconds) + idea.seconds) % idea.seconds;
+      const tick = Math.min(
+        Capture.END - 1,
+        Math.round((phase / idea.seconds) * Capture.END),
+      );
+      moveUndo = { layer, events: layer.events };
+      layer.events = PadMelody.moveHit(layer.events, tick, Capture);
+      conductor = false;
+      persist();
+      refresh();
+      $("grooveStatus").textContent =
+        "Moved the nearest melody hit to this kick. Listen on the next loop.";
+    }
+    if (!groove || !groove.playing) return;
+    if (groove.start === null) groove.start = time;
+    const bar = 240 / +$("tempo").value;
+    if (
+      time - groove.start >= Math.floor(120 / bar) * bar ||
+      groove.hits.length >= 8192
+    ) {
+      groove.playing = false;
+      $("grooveStatus").textContent =
+        "Capture full. Keep the groove or audition new pitches.";
+      return;
+    }
+    if (groove.down.has(n)) groove.drums.add([time, 128, n, 0]);
+    groove.down.add(n);
+    groove.drums.add([time, 144, n, velocity]);
+    // Drum one-shots need a release for MIDI playback, supplied by slice or actual key-up.
+    if ($("trigger").value === "kick" && z.role !== "kick.primary") return;
+    stopMelodyPreview();
+    const hit = { time, velocity };
+    groove.hits.push(hit);
+    const note = PadMelody.advance(
+      groove.cursor,
+      hit,
+      groove.pitches,
+      60 / +$("tempo").value,
+    );
+    groove.notes.push(note);
+    if (melodyVoice) {
+      melodyVoice.cancel = true;
+      stopVoice(melodyVoice.voice, when);
+    }
+    melodyVoice = {};
+    sound(
+      $("voice").value,
+      note.key,
+      velocity,
+      when,
+      note.duration,
+      melodyVoice,
+      "pad-melody",
+    ).catch((e) => msg(e.message));
+    $("grooveStatus").textContent =
+      $("voice").value +
+      " · " +
+      PadMelody.label(note.key) +
+      " · velocity " +
+      velocity;
+    grooveControls();
+  }
+  function groovePair() {
+    const bar = 240 / +$("tempo").value,
+      start = groove.start;
+    const last = groove.notes.at(-1);
+    const end = Math.max(
+      last.time + last.duration,
+      groove.drums.events.filter((e) => e[1] === 144).at(-1)[0] + 0.05,
+    );
+    if (idea.layers.length) {
+      const seconds = idea.seconds;
+      const melodic = new Capture.History();
+      for (const [i, n] of groove.notes.entries()) {
+        const off = Math.min(
+          n.time + n.duration,
+          groove.notes[i + 1]?.time ?? Infinity,
+        );
+        if (off <= n.time) continue;
+        melodic.add([n.time, 144, n.key, n.velocity]);
+        melodic.add([off, 128, n.key, 0]);
+      }
+      const layers = [
+        {
+          track: current(),
+          events: Capture.aligned(
+            groove.drums,
+            end - seconds,
+            end,
+            anchor,
+            true,
+          ),
+        },
+        {
+          track: $("voice").value,
+          padMelody: true,
+          events: Capture.aligned(melodic, end - seconds, end, anchor, false),
+        },
+      ];
+      if (layers.some((l) => !l.events.some((e) => e[1] === 144)))
+        throw Error("Play a trigger in the most recent loop before keeping.");
+      return { seconds, layers };
+    }
+    const seconds =
+      Math.min(Math.floor(120 / bar), Math.ceil((end - start) / bar)) * bar;
+    return {
+      seconds,
+      layers: [
+        {
+          track: current(),
+          events: groove.drums.slice(start, start + seconds, true),
+        },
+        {
+          track: $("voice").value,
+          events: PadMelody.events(groove.notes, start, seconds, Capture.END),
+          padMelody: true,
+        },
+      ],
+    };
+  }
+  $("accompany").onclick = safe(async () => {
+    if (groove) {
+      groove.playing = !groove.playing;
+      $("grooveStatus").textContent = groove.playing
+        ? "Listening to pads."
+        : "Rhythm captured. Keep it or audition new pitches.";
+      grooveControls();
+      $("accompany").textContent = groove.playing
+        ? "Finish playing"
+        : "Resume playing";
+      return;
+    }
+    grooveBusy = true;
+    refresh();
+    try {
+      const drum = tracks[current()].drum
+        ? current()
+        : Object.keys(tracks).find((n) => tracks[n].drum);
+      if (!drum) throw Error("Choose a Scratchpad with a drum track.");
+      if (current() !== drum) {
+        $("track").value = drum;
+        $("track").onchange();
+      }
+      clearAnswer();
+      conductor = false;
+      if (!running) await startClock();
+      const pitches = await pitchBank();
+      if (!running || current() !== drum) return;
+      groove = {
+        playing: true,
+        start: null,
+        pitches,
+        cursor: { step: 0, previous: pitches[0] },
+        hits: [],
+        notes: [],
+        down: new Set(),
+        drums: new Capture.History(),
+      };
+      $("grooveStatus").textContent =
+        "Play a pad. The melody follows your hits.";
+    } finally {
+      grooveBusy = false;
+      refresh();
+    }
+  });
+  $("remelody").onclick = safe(async () => {
+    const take = groove;
+    grooveBusy = true;
+    grooveControls();
+    try {
+      const pitches = await pitchBank();
+      if (take !== groove) return;
+      groove.pitches = pitches;
+      groove.cursor = { step: 0, previous: pitches[0] };
+      groove.notes = PadMelody.line(
+        groove.hits,
+        pitches,
+        60 / +$("tempo").value,
+        groove.cursor,
+      );
+      const preview = groovePair();
+      stopMelodyPreview();
+      groovePreview = {};
+      const start = ctx.currentTime + 0.05;
+      for (const l of preview.layers)
+        playLayer(l, start, preview.seconds, groovePreview, 0, groovePreview);
+      $("grooveStatus").textContent =
+        "Same rhythm, new pitches. Keep groove saves this version.";
+    } finally {
+      grooveBusy = false;
+      grooveControls();
+    }
+  });
+  $("keepGroove").onclick = safe(() => {
+    const chosen = groovePair();
+    closeInput();
+    resetGroove();
+    clearAnswer();
+    if (!idea.layers.length) {
+      idea.seconds = chosen.seconds;
+      idea.tempo = +$("tempo").value;
+      idea.free = true;
+      $("snap").value = 0;
+      anchor = now() + 0.12;
+      clickOrigin = anchor;
+      beatIndex = 0;
+    }
+    const next =
+      anchor +
+      Math.max(0, Math.ceil((now() - anchor) / idea.seconds)) * idea.seconds;
+    idea.layers.push(...chosen.layers);
+    nextLayer.push(next, next);
+    persist();
+    refresh();
+    $("grooveStatus").textContent =
+      "Drums and melody kept. Arm a kick move to change the loop.";
+  });
+  $("undoMove").onclick = () => {
+    if (!moveUndo || !idea.layers.includes(moveUndo.layer)) return;
+    moveUndo.layer.events = moveUndo.events;
+    moveUndo = null;
+    conductor = false;
+    persist();
+    refresh();
+    $("grooveStatus").textContent = "Restored the melody timing.";
+  };
+  $("conduct").onclick = () => {
+    conductor = !conductor;
+    grooveControls();
+    $("grooveStatus").textContent = conductor
+      ? "Play a kick where you want the nearest melody hit."
+      : "Kick move cancelled.";
+  };
+  $("learnPitches").onclick = safe(async () => {
+    if (!learning) {
+      closeInput();
+      await connectMidi();
+      learnTrigger = false;
+      updateTrigger();
+      learned = [];
+      learning = true;
+    } else learning = false;
+    $("learnPitches").textContent = learning
+      ? "Finish pitch entry"
+      : "Play pitches on MIDI";
+    $("grooveStatus").textContent = learning
+      ? "Play up to 16 MIDI notes, then finish pitch entry."
+      : "Pitch order ready. Start playing or audition the new pitches.";
+  });
   function refresh() {
+    grooveControls();
     $("layers").replaceChildren(
       ...idea.layers.map((l, i) => {
         const li = document.createElement("li");
@@ -291,11 +652,13 @@
       }),
     );
     $("undo").disabled = !idea.layers.length;
-    $("answer").disabled = loading || !!idea.layers.length;
+    $("answer").disabled =
+      loading || grooveBusy || !!groove || !!idea.layers.length;
     $("answer").textContent = listening ? "Cancel answer" : "Answer";
     $("again").disabled = !pair || !running;
     $("both").disabled = !pair || !!idea.layers.length;
-    $("keep").disabled = !running;
+    $("keep").disabled = !running || !!groove;
+    $("phrase").disabled = !!groove;
     $("start").disabled = running || loading;
     $("stop").disabled = !running;
     $("tempo").disabled = running || !!idea.layers.length;
@@ -417,6 +780,7 @@
     }
   }
   function stop() {
+    resetGroove();
     closeInput();
     clearAnswer();
     running = false;
@@ -699,7 +1063,8 @@
   function restore(data) {
     if (running) stop();
     idea = data;
-    $("response").textContent="Save this take and choose New idea to start an exchange.";
+    $("response").textContent =
+      "Save this take and choose New idea to start an exchange.";
     $("name").value = data.name;
     $("tempo").value = data.tempo || 120;
     $("snap").value = data.snap || 0;
@@ -739,15 +1104,59 @@
       refresh();
     }
   });
-  $("midi").onclick = safe(async () => {
+  async function connectMidi() {
     if (!navigator.requestMIDIAccess)
       throw Error("Open in a Web MIDI compatible browser such as Chrome.");
-    const access = await navigator.requestMIDIAccess();
+    const access = (midiAccess ??= await navigator.requestMIDIAccess());
     const bind = () => {
       for (const input of access.inputs.values())
         input.onmidimessage = ({ data, timeStamp }) => {
-          const [s, k, v] = data,
+          const [s, incoming, v] = data,
             status = s & 240;
+          let k = incoming;
+          if (learnTrigger) {
+            if (status === 144 && v > 0) {
+              triggerBinding = {
+                port: input.id,
+                channel: s & 15,
+                note: incoming,
+              };
+              learnTrigger = false;
+              updateTrigger();
+              $("grooveStatus").textContent =
+                "Learned MIDI note " +
+                incoming +
+                " on channel " +
+                ((s & 15) + 1) +
+                ". Play with pads to use it.";
+              try {
+                localStorage.setItem(
+                  "pad-melody-trigger",
+                  JSON.stringify(triggerBinding),
+                );
+              } catch {}
+            }
+            return;
+          }
+          if (
+            !learning &&
+            tracks[current()].drum &&
+            (status === 144 || status === 128) &&
+            triggerBinding?.port === input.id &&
+            triggerBinding.channel === (s & 15) &&
+            triggerBinding.note === incoming
+          ) {
+            k =
+              tracks[current()].zones.find((z) => z.role === "kick.primary")
+                ?.root ?? incoming;
+          }
+          if (learning) {
+            if (status === 144 && v > 0 && learned.length < 16) {
+              learned.push(k);
+              $("pitches").value = learned.map(PadMelody.label).join(" ");
+            }
+            return;
+          }
           if (status === 144) record(v ? 144 : 128, k, v, timeStamp);
           else if (status === 128 || (status === 176 && k === 64))
             record(status, k, v, timeStamp);
@@ -760,7 +1169,8 @@
       closeInput();
       bind();
     };
-  });
+  }
+  $("midi").onclick = safe(connectMidi);
   window.addEventListener("keydown", (e) => {
     if (
       !running ||
@@ -781,7 +1191,7 @@
     if (button) {
       e.preventDefault();
       pressed.set(k, +button.dataset.note);
-      record(144, +button.dataset.note, 96);
+      record(144, +button.dataset.note, e.shiftKey ? 38 : 96);
     }
   });
   window.addEventListener("keyup", (e) => {

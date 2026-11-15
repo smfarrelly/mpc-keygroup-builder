@@ -102,7 +102,37 @@
     <div id="surface"></div>
     <small
       >Play A W S E D F T G Y H U J K O L P on your computer keyboard. Space
-      holds sustain. External MIDI uses the selected instrument.</small
+      holds sustain. Hold Shift to play softly. External MIDI uses the selected
+      instrument.</small
+    >
+  </fieldset>
+  <fieldset>
+    <legend>Melody from pads</legend>
+    <label
+      >Voice
+      <select id="voice"></select
+    ></label>
+    <label
+      >Pitch order <input id="pitches" value="C2 Eb2 G2" size="14"
+    /></label>
+    <button id="learnPitches">Play pitches on MIDI</button>
+    <label
+      >Trigger
+      <select id="trigger">
+        <option value="all">Any drum pad</option>
+        <option value="kick">Kick pads only</option>
+      </select></label
+    >
+    <button id="learnTrigger">Learn MIDI kick trigger</button
+    ><button id="forgetTrigger" disabled>Forget trigger</button>
+    <button id="accompany">Play with pads</button
+    ><button id="remelody" disabled>Audition new pitches</button
+    ><button id="keepGroove" disabled>Keep groove</button>
+    <button id="conduct" disabled>Move a melody hit with next kick</button
+    ><button id="undoMove" disabled>Undo kick move</button>
+    <output id="grooveStatus" aria-live="polite"
+      >Each strike plays a drum and the next pitch. Soft hits repeat the
+      previous pitch.</output
     >
   </fieldset>
   <fieldset>
@@ -146,5 +176,6 @@
   >
   <script src="/capture.js"></script>
   <script src="/answer.js"></script>
+  <script src="/pad-melody.js"></script>
   <script src="/studio.js"></script>
 </html>

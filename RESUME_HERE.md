@@ -1,5 +1,9 @@
 # Resume here
 
+## Play bass with your drum pads
+
+Open the [laptop studio](http://127.0.0.1:8737/), choose **Play with pads**, and tap a rhythm. Try one quiet hit between two accents. **Keep groove** loops the drums and bass on separate tracks. [Pitch entry and kick-trigger setup](docs/keep-that-take.md#play-a-melody-from-drum-hits)
+
 ## Start with a musical reply
 
 Open the [laptop studio](http://127.0.0.1:8737/), select **Wurli** and press **Answer**. Hold a chord until Pluck Bass comes in. **Again** auditions an alternative. **Keep both** makes the pair a loop you can overdub. [Answer Track guide](docs/keep-that-take.md#start-with-answer-track)
