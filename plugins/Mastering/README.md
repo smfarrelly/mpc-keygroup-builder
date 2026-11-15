@@ -26,3 +26,5 @@ c++ -std=c++17 -O2 -I"$sdk/framework" plugins/Mastering/session.cpp -ldl -o /tmp
 ```
 
 Copy the named package inside each plugin's build directory to the SD folder above. The native tests cover ceiling behavior, channel linkage, RMS-matched comparisons, mono and side isolation, low-frequency narrowing, section recapture, silence, stopped transport and block-size changes.
+
+Check a bounced mix on the laptop with [Export loudness](../../docs/export-loudness.md).

@@ -19,6 +19,8 @@ jobs:
           enable-cache: true
       - name: Install the locked development environment
         run: uv sync --locked
+      - name: Ensure the export loudness tests can measure WAVs
+        run: command -v ffmpeg || (sudo apt-get update && sudo apt-get install -y ffmpeg)
       - name: Run the test suite
         env:
           MPC_TEST_CHROME: /usr/bin/google-chrome
