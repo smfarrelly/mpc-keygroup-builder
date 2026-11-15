@@ -1,0 +1,14 @@
+{
+  "name": "Shadow Steps",
+  "manufacturer": "FG Scratchpad",
+  "version": "1.0.0",
+  "format": "vst2",
+  "kind": "instrument",
+  "uid": "FgSw",
+  "numInputs": 0,
+  "numOutputs": 2,
+  "file32": "VST/shadow-steps-arm32.so",
+  "file64": "VST/shadow-steps-arm64.so",
+  "description": "Catch a bar of tuned drums and play variations over the original rhythm.",
+  "license": "MIT"
+}

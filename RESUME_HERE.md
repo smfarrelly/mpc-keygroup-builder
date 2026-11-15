@@ -1,5 +1,9 @@
 # Resume here
 
+## Vary a groove or find the chord under a melody
+
+Load **Shadow Steps**, play one bar, then hold MIDI note 41 to hear a response in its rests. On a separate track, **Common Tone** lets you try three chords under a melody note and drum the one you keep. [Pad map, full SD paths and editable MIDI](plugins/ShadowSteps/README.md)
+
 ## Play a ghost-note melody from two pads
 
 On one Plugin track, open **External Plugins → Drum Seat**. Choose **Learn Hands**, tap your left and right pads, and play a backbeat with quiet notes between accents. Hear the example at `SD / Projects / Drum Hands / 01 Drum Seat - ghost line.wav`. [Drum Seat, Split Cycle and the drum performance instruments](plugins/DrumHands/README.md)

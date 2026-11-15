@@ -1,0 +1,27 @@
+{
+  "kit": "cyan",
+  "pages": [
+    {
+      "name": "PLAY",
+      "controls": [
+        {
+          "param": "Scene",
+          "widget": "slider",
+          "overlay": "menu"
+        },
+        {
+          "param": "Root",
+          "widget": "knob"
+        },
+        {
+          "param": "Kit Level",
+          "widget": "knob"
+        },
+        {
+          "param": "Answer Level",
+          "widget": "knob"
+        }
+      ]
+    }
+  ]
+}

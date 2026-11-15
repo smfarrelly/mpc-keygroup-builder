@@ -1,0 +1,26 @@
+{
+  "kit": "cyan",
+  "pages": [
+    {
+      "name": "PLAY",
+      "controls": [
+        {
+          "param": "Lead Level",
+          "widget": "knob"
+        },
+        {
+          "param": "Chord Level",
+          "widget": "knob"
+        },
+        {
+          "param": "Pulse Level",
+          "widget": "knob"
+        },
+        {
+          "param": "Release",
+          "widget": "knob"
+        }
+      ]
+    }
+  ]
+}
