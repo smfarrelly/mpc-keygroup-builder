@@ -1,5 +1,7 @@
 # CLI reference
 
+Use [mpc-break-relay-bank](../plugins/BreakRelay/README.md) for ordered stereo break slices and [mpc-body-print-bank](../plugins/BodyPrint/README.md) for paired reflection patterns.
+
 Use [mpc-imprint-bank](../plugins/PerformanceEffects/README.md) to prepare timing and accent slots for the Rhythm Imprint insert.
 
 Use [Phrase Lab](phrase-lab.md) to turn a played hook into fourteen editable sequences or perform its pitches live.

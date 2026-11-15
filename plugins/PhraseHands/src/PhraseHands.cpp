@@ -10,6 +10,8 @@ class PhraseHands final : public mpc::Plugin {
     uint64_t draft = 0;
     int count = 0, cursor = 0, voice = 0;
     bool learning = false;
+    std::array<int, 80> held{};
+    int heldCount = 0, landing = 0, destination = 60;
     std::array<percussion::Mallet, 12> voices{};
     static mpc::PluginInfo info() {
         mpc::PluginInfo p;
@@ -18,7 +20,7 @@ class PhraseHands final : public mpc::Plugin {
         p.isInstrument = true;
         p.numInputs = 0;
         p.uniqueId = MPC_FOURCC('F','g','P','h');
-        p.version = 1000;
+        p.version = 1100;
         return p;
     }
     void sound(int key, int velocity, double sr) {
@@ -40,13 +42,26 @@ class PhraseHands final : public mpc::Plugin {
             }
             learning = false;
         }
+        if (k >= 48 && k <= 127 && (e.isNoteOn() || e.isNoteOff())) {
+            auto end = held.begin() + heldCount;
+            auto it = std::find(held.begin(), end, k);
+            if (it != end) {
+                std::move(it + 1, end, it);
+                --heldCount;
+            }
+            if (e.isNoteOn()) held[heldCount++] = k;
+        }
         if (!e.isNoteOn()) return;
         if (k == 40) {
+            landing = 0;
             learning = true;
             draft = 0;
             count = 0;
         } else if (k == 41) {
-            cursor = 0;
+            landing = cursor = 0;
+        } else if (k == 42 && heldCount && !learning) {
+            destination = held[heldCount - 1];
+            landing = 1;
         } else if (k >= 48) {
             if (learning && count < 8) {
                 draft |= uint64_t(k) << (7 * count++);
@@ -59,7 +74,12 @@ class PhraseHands final : public mpc::Plugin {
             if (k == 37) i = length - 1 - i;
             if (k == 38) i = i % 2 ? length - 1 - i / 2 : i / 2;
             if (k == 39) i = (e.velocity() - 1) * length / 127;
-            sound(int((saved >> (7*i)) & 127), e.velocity(), sr);
+            int pitch = int((saved >> (7*i)) & 127);
+            if (landing) {
+                pitch += int(std::round((destination - pitch) * landing / 3.));
+                landing = std::min(3, landing + 1);
+            }
+            sound(pitch, e.velocity(), sr);
             cursor = (cursor + 1) % length;
         }
     }
@@ -74,7 +94,7 @@ class PhraseHands final : public mpc::Plugin {
     }
     void reset() override {
         voices = {};
-        cursor = voice = count = 0;
+        heldCount = landing = cursor = voice = count = 0;
         learning = false;
     }
     void process(mpc::ProcessContext &c) override {

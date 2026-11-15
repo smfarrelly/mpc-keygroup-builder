@@ -5,33 +5,15 @@ from array import array
 import math
 from pathlib import Path
 
-from audition import RATE, comparison, take
-from mpc_keygroup_builder.audition import read_pcm_mono
+from audition import comparison, take
+from mpc_keygroup_builder.body_print import reflections
 
 
 def imprint(dry, path):
-    body, rate = read_pcm_mono(path)
-    peak = max(map(abs, body), default=0)
-    if not peak:
-        raise ValueError(f"Silent response source: {path}")
-    attack = next(i for i, value in enumerate(body) if abs(value) >= peak * 0.12)
-    # Skip the first 3 ms; preserve the following 60 ms as 48 signed reflections.
-    start = attack + round(rate * 0.003)
-    kernel = {}
-    for j in range(48):
-        lo = start + round(rate * 0.060 * j / 48)
-        hi = min(len(body), start + round(rate * 0.060 * (j + 1) / 48))
-        if hi <= lo:
-            break
-        index = max(range(lo, hi), key=lambda i: abs(body[i]))
-        offset = round((index - start) * RATE / rate)
-        kernel[offset] = kernel.get(offset, 0) + body[index] * (1 - j / 48)
-    power = math.sqrt(sum(v * v for v in kernel.values()))
-    if power < 1e-8:
-        raise ValueError(f"Response decays before the analysis window: {path}")
+    kernel = reflections(path)
     wet = array("f", [0]) * len(dry)
     for offset, value in kernel.items():
-        gain = value / power
+        gain = value
         for i in range(offset * 2, len(wet)):
             wet[i] += gain * dry[i - offset * 2]
     # Level-match the colored path so the comparison isn't decided by added gain.
