@@ -1,0 +1,28 @@
+{
+  "kit": "cyan",
+  "pages": [
+    {
+      "name": "PLAY",
+      "controls": [
+        {
+          "param": "Fill",
+          "widget": "switch"
+        },
+        {
+          "param": "Gesture",
+          "widget": "slider",
+          "overlay": "menu"
+        },
+        {
+          "param": "Span",
+          "widget": "slider",
+          "overlay": "menu"
+        },
+        {
+          "param": "Keep",
+          "widget": "switch"
+        }
+      ]
+    }
+  ]
+}

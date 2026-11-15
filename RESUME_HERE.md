@@ -1,5 +1,9 @@
 # Resume here
 
+## Try a four-bar live jam
+
+Add **Resonant Kit** and **Turnaround** to a drum track. Use **Chord Relay** on a Plugin track to play two chords from the pads. [First jam, pad notes and SD paths](plugins/LiveJam/README.md)
+
 ## Play a drum and bass part directly on the Key 37
 
 Add **Pocket Duo** from **External Plugins** on one Plugin track. Try four kick hits with a quiet second hit, then turn on **Keep Pass**. [Controls, exact SD path and save/reopen check](plugins/PocketDuo/README.md)

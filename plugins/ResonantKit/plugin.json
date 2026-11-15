@@ -1,0 +1,14 @@
+{
+  "name": "Resonant Kit",
+  "manufacturer": "FG Scratchpad",
+  "version": "1.0.0",
+  "format": "vst2",
+  "kind": "effect",
+  "uid": "FgRK",
+  "numInputs": 2,
+  "numOutputs": 2,
+  "file32": "VST/resonant-kit-arm32.so",
+  "file64": "VST/resonant-kit-arm64.so",
+  "description": "Excite three tuned resonators with live drum audio.",
+  "license": "MIT"
+}

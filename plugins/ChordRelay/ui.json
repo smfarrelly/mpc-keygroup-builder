@@ -1,0 +1,26 @@
+{
+  "kit": "cyan",
+  "pages": [
+    {
+      "name": "PLAY",
+      "controls": [
+        {
+          "param": "Teach",
+          "widget": "switch"
+        },
+        {
+          "param": "Spread",
+          "widget": "knob"
+        },
+        {
+          "param": "Release",
+          "widget": "knob"
+        },
+        {
+          "param": "Brightness",
+          "widget": "knob"
+        }
+      ]
+    }
+  ]
+}
