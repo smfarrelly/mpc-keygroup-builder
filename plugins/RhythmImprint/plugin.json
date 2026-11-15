@@ -1,0 +1,14 @@
+{
+  "name": "Rhythm Imprint",
+  "manufacturer": "FG Scratchpad",
+  "version": "1.0.0",
+  "format": "vst2",
+  "kind": "effect",
+  "uid": "FgRi",
+  "numInputs": 2,
+  "numOutputs": 2,
+  "file32": "VST/rhythm-imprint-arm32.so",
+  "file64": "VST/rhythm-imprint-arm64.so",
+  "description": "Teach a bar of attacks and apply its rhythm to another track.",
+  "license": "MIT"
+}

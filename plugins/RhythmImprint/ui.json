@@ -1,0 +1,36 @@
+{
+  "kit": "cyan",
+  "pages": [
+    {
+      "name": "PLAY",
+      "controls": [
+        {
+          "param": "Learn",
+          "widget": "knob"
+        },
+        {
+          "param": "Depth",
+          "widget": "knob"
+        },
+        {
+          "param": "Release",
+          "widget": "knob"
+        },
+        {
+          "param": "Sensitivity",
+          "widget": "knob"
+        }
+      ]
+    },
+    {
+      "name": "SOURCE",
+      "controls": [
+        {
+          "param": "Groove",
+          "widget": "slider",
+          "overlay": "menu"
+        }
+      ]
+    }
+  ]
+}
