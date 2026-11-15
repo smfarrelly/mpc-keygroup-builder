@@ -1,5 +1,9 @@
 # Resume here
 
+## Borrow the groove of a drum take
+
+Load `SD / Projects / Groove Transfer / 02 Four Bar Jam.xpj`. Switch between **Accent 100%** and **Duck 100%** to hear the bass and Wurli follow your drum dynamics in opposite ways. [Use your own tracks as guides](docs/sequence-morph.md#make-the-bass-and-keys-follow-your-hands)
+
 ## Evolve an existing performance
 
 Open `SD / Projects / Sequence Morph / 02 Four Bar Jam.xpj` and switch from **Four-bar jam** to **Answer 65%** or **Space 75%**. [Morph your own sequence](docs/sequence-morph.md)
