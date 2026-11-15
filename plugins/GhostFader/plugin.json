@@ -1,0 +1,14 @@
+{
+  "name": "Ghost Fader",
+  "manufacturer": "FG Scratchpad",
+  "version": "1.0.0",
+  "format": "vst2",
+  "kind": "effect",
+  "uid": "FgGf",
+  "numInputs": 2,
+  "numOutputs": 2,
+  "file32": "VST/ghost-fader-arm32.so",
+  "file64": "VST/ghost-fader-arm64.so",
+  "description": "Balance ghost strokes and accents using recent attack levels.",
+  "license": "MIT"
+}

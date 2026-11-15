@@ -1,0 +1,26 @@
+{
+  "kit": "cyan",
+  "pages": [
+    {
+      "name": "PLAY",
+      "controls": [
+        {
+          "param": "Bed",
+          "widget": "knob"
+        },
+        {
+          "param": "Wait",
+          "widget": "knob"
+        },
+        {
+          "param": "Grain",
+          "widget": "knob"
+        },
+        {
+          "param": "Clear",
+          "widget": "knob"
+        }
+      ]
+    }
+  ]
+}

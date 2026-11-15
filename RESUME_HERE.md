@@ -1,5 +1,9 @@
 # Resume here
 
+## Play the new effects
+
+Start with **Ghost Fader** on a snare track or **Rhythm Imprint** on Wurli. Auditions are at `SD / Projects / Performance Effects /`. [Insert controls, groove slots and Samples From Mars experiments](plugins/PerformanceEffects/README.md)
+
 ## Make a new musical part from your hook
 
 Open `SD / Projects / Phrase Lab / 02 Four Bar Jam.xpj` and try **Ghost choir** and **Pass the phrase**. For live playing, open **Phrase Hands** on a Plugin track. [All fourteen variations and the six pad controls](docs/phrase-lab.md)

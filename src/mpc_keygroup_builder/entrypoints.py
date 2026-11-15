@@ -94,6 +94,7 @@ COMMANDS = {
     "mpc-sdk-kit": _spec("sdk_kit", "Build", "Sample a trusted SDK instrument into a portable Drum Program", "docs/akai-sdk.md"),
     "mpc-sdk-review": _spec("sdk_review", "Inspect", "Run Akai host tests and compile a plugin software review", "docs/akai-sdk.md"),
     "mpc-sdk-package": _spec("sdk_package", "MIDI control", "Check an external plugin package for the original Key 37 or arm64", "docs/akai-sdk.md"),
+    "mpc-imprint-bank": _spec("imprint_bank", "Creative MIDI", "Prepare MIDI groove slots for Rhythm Imprint", "plugins/PerformanceEffects/README.md"),
     "mpc-sdk-compare": _spec("sdk_params", "MIDI control", "Compare Akai SDK parameter dumps for mapping changes", "docs/akai-sdk.md"),
     "mpc-plugin-params": _spec("plugin_params", "MIDI control", "Search plugin controls and verified MIDI Learn mappings", "docs/plugin-parameters.md"),
     "mpc-plugin-skin-audit": _spec("plugin_skin_audit", "MIDI control", "Compare plugin UI skin parameter metadata", "docs/plugin-parameters.md"),

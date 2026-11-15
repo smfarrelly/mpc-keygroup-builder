@@ -119,3 +119,14 @@ jobs:
           python "$sdk/tools/build.py" "$plugin" --target native --toolchain gcc
           c++ -O2 -std=c++17 -I"$sdk/framework" "$plugin/tests/session.cpp" -ldl -o "$plugin/build/session"
           "$plugin/build/session" "$plugin/build/native/phrase-hands.so"
+      - name: Verify expressive inserts and groove transfer through the native host
+        run: |
+          sdk=work/akai-sdk
+          for plug in GhostFader RhythmImprint TailChoir; do
+            python "$sdk/tools/build.py" "plugins/$plug" --target native --toolchain gcc
+            "$sdk/.sdk-tools/host_sim" plugins/"$plug"/build/native/*.so test --playing
+          done
+          c++ -std=c++17 -O2 -I"$sdk/framework" plugins/PerformanceEffects/session.cpp -ldl -o work/performance-effects-test
+          mkdir -p work/imprint-fixture/Content
+          python -c "from pathlib import Path; Path('work/imprint-fixture/Content/slot-1.gri').write_bytes(bytes((1,1,0,4,127)))"
+          MPC_PLUGIN_FOLDER="$PWD/work/imprint-fixture" work/performance-effects-test plugins/{GhostFader,RhythmImprint,TailChoir}/build/native/*.so

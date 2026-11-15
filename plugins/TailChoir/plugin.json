@@ -1,0 +1,14 @@
+{
+  "name": "Tail Choir",
+  "manufacturer": "FG Scratchpad",
+  "version": "1.0.0",
+  "format": "vst2",
+  "kind": "effect",
+  "uid": "FgTc",
+  "numInputs": 2,
+  "numOutputs": 2,
+  "file32": "VST/tail-choir-arm32.so",
+  "file64": "VST/tail-choir-arm64.so",
+  "description": "Sustain the stereo decay of the last three hits under the dry track.",
+  "license": "MIT"
+}

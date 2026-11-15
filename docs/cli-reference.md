@@ -1,5 +1,7 @@
 # CLI reference
 
+Use [mpc-imprint-bank](../plugins/PerformanceEffects/README.md) to prepare timing and accent slots for the Rhythm Imprint insert.
+
 Use [Phrase Lab](phrase-lab.md) to turn a played hook into fourteen editable sequences or perform its pitches live.
 
 Use [Sequence Morph](sequence-morph.md) to make editable variations of a recorded MPC sequence.

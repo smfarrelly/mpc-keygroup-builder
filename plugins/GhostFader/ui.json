@@ -1,0 +1,26 @@
+{
+  "kit": "cyan",
+  "pages": [
+    {
+      "name": "PLAY",
+      "controls": [
+        {
+          "param": "Balance",
+          "widget": "knob"
+        },
+        {
+          "param": "Split",
+          "widget": "knob"
+        },
+        {
+          "param": "Isolation",
+          "widget": "knob"
+        },
+        {
+          "param": "Sensitivity",
+          "widget": "knob"
+        }
+      ]
+    }
+  ]
+}
