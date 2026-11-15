@@ -12,6 +12,7 @@ import shutil
 from tempfile import mkdtemp
 
 from . import xpj
+from .groove_transfer import GUIDED_STYLES, transfer
 from .publication import publish_directory
 
 
@@ -91,7 +92,7 @@ def morph_clip(clip, style, amount, seed, track, lane):
     return changed
 
 
-def evolve(data, sequence, tracks, style, amounts, seed):
+def evolve(data, sequence, tracks, style, amounts, seed, guide=None):
     sequences = data["sequences"]
     matches = [s for s in sequences if (
         s["key"] == data["currentSequence"] if sequence is None else s["value"]["name"] == sequence
@@ -103,14 +104,22 @@ def evolve(data, sequence, tracks, style, amounts, seed):
     selected = set(tracks) or eligible
     if selected - eligible:
         raise ValueError(f"Unknown or unsupported tracks: {sorted(selected - eligible)}")
-    if style not in ("answer", "space") or not amounts or len(set(amounts)) != len(amounts) or any(
+    if style in GUIDED_STYLES:
+        if guide not in eligible or guide in tracks:
+            raise ValueError("Choose a played --guide track different from each target --track")
+        selected.discard(guide)
+    elif guide is not None:
+        raise ValueError("--guide applies to lock, accent and duck")
+    if style not in ("answer", "space", *GUIDED_STYLES) or not amounts or len(set(amounts)) != len(amounts) or any(
         type(a) is not int or not 0 <= a <= 100 for a in amounts
     ):
-        raise ValueError("Choose answer or space and distinct integer amounts from 0 to 100")
+        raise ValueError("Choose a supported style and distinct integer amounts from 0 to 100")
     played = {r["key"] for lane in source["trackClipMaps"] for r in lane
               if any(e["type"] == 3 and not e.get("muted") for e in r["value"]["eventList"]["events"])}
     if not selected & played or set(tracks) - played:
         raise ValueError("Choose tracks containing played notes in the selected sequence")
+    if guide is not None and guide not in played:
+        raise ValueError(f"Guide track {guide!r} contains no played notes")
     used = {s["key"] for s in sequences}
     slots = [i for i in range(128) if i not in used]
     if len(slots) < len(amounts):
@@ -129,20 +138,30 @@ def evolve(data, sequence, tracks, style, amounts, seed):
         variant["name"] = name
         counts = defaultdict(int)
         for index, lane in enumerate(variant["trackClipMaps"]):
+            guide_clips = [r["value"] for r in lane if r["key"] == guide]
             for row in lane:
                 track = row["key"]
                 if track in selected & played:
-                    counts[track] += morph_clip(row["value"], style, amount, seed, track, index)
+                    clip = row["value"]
+                    if guide is None:
+                        counts[track] += morph_clip(clip, style, amount, seed, track, index)
+                    elif any(e["type"] == 3 for e in clip["eventList"]["events"]):
+                        if len(guide_clips) != 1:
+                            raise ValueError(f"{track}: need one guide clip in lane {index + 1}")
+                        counts[track] += transfer(clip, guide_clips[0], style, amount)
         sequences.append({"key": slot, "value": variant})
         report.append((name, dict(counts)))
     return report
 
 
-def build(source, output, sequence, tracks, style, amounts, seed):
+def build(source, output, sequence, tracks, style, amounts, seed, guide=None):
     project = xpj.load(source)
     if project.generation != 3:
         raise ValueError("Save the source as an MPC 3 project first")
-    report = evolve(project.data, sequence, tracks, style, amounts, seed)
+    report = []
+    styles = [style] if isinstance(style, str) else style
+    for mode in styles:
+        report.extend(evolve(project.data, sequence, tracks, mode, amounts, seed, guide))
     companion = source.with_name(source.stem + "_[ProjectData]")
     if output.exists() or output.is_symlink():
         raise ValueError(f"Choose a new output folder: {output}")
@@ -177,13 +196,30 @@ def build(source, output, sequence, tracks, style, amounts, seed):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("project", type=Path, help="self-contained MPC 3 .xpj")
-    parser.add_argument("--output", required=True, type=Path, help="new folder for the playable copy")
+    destination = parser.add_mutually_exclusive_group(required=True)
+    destination.add_argument("--list", action="store_true", help="list sequences and played track names")
+    destination.add_argument("--output", type=Path, help="new folder for the playable copy")
     parser.add_argument("--sequence", help="sequence name (default: currently selected sequence)")
     parser.add_argument("--track", action="append", default=[], help="track name, repeat to select several")
-    parser.add_argument("--style", choices=["answer", "space"], default="answer")
+    parser.add_argument("--style", choices=["answer", "space", *GUIDED_STYLES], action="append",
+                        help="variation style (default: answer); repeat to compare styles")
+    parser.add_argument("--guide", help="performed track supplying timing or dynamics to lock, accent or duck")
     parser.add_argument("--amount", type=int, nargs="+", default=[30, 65, 100], help="distinct strengths, 0 to 100")
     parser.add_argument("--seed", type=int, default=37, help="repeatable choice of onsets")
     args = parser.parse_args()
-    for name, counts in build(args.project, args.output, args.sequence, args.track, args.style, args.amount, args.seed):
+    if args.list:
+        data = xpj.load(args.project).data
+        for row in data["sequences"]:
+            marker = " (selected)" if row["key"] == data["currentSequence"] else ""
+            print(row["value"]["name"] + marker)
+            counts = defaultdict(int)
+            for lane in row["value"]["trackClipMaps"]:
+                for clip in lane:
+                    counts[clip["key"]] += sum(e["type"] == 3 and not e.get("muted") for e in clip["value"]["eventList"]["events"])
+            for track, count in counts.items():
+                if count:
+                    print(f"  {track} ({count} notes)")
+        return
+    for name, counts in build(args.project, args.output, args.sequence, args.track, args.style or ["answer"], args.amount, args.seed, args.guide):
         print(name, "— changed onsets:", ", ".join(f"{track} {n}" for track, n in counts.items()))
     print(args.output / args.project.name)
