@@ -1,5 +1,15 @@
 # MPC Key 37 remaining hardware master checklist
 
+## Drum performance plugins · deferred standalone listening
+
+For a single short session, load **External Plugins → Drum Seat** on a Plugin track. The reference is `SD / Projects / Drum Hands / 01 Drum Seat - ghost line.wav`. The packages and the four individual instruments have [full paths and pad maps](../plugins/DrumHands/README.md).
+
+- [ ] Teach a left and right pad. Play a backbeat with quiet notes in between. Record whether the melodic line follows the ghost strokes at a comfortable velocity on these pads.
+- [ ] Hold and release a Ghost Wire press roll, then leave a beat open for Rest Reply. Note the physical pressure response, timing and any audible clicks or dropouts.
+- [ ] Tap the two Split Cycle lanes, undo the last edit, save, reopen and press Play. Check whether both rhythms and the saved Drum Seat hand assignments return.
+
+Software acceptance includes the native host and both card-installed ARM builds under emulation. Standalone results are pending.
+
 **Additional optional candidate:** [FG Mechanical Layers 01](fg-mechanical-layers-01.md)
 at `00 FG Hardware Tests/Mechanical Layers 01/FG Mechanical Layers 01.xpm`.
 Eight pads, Clean/Tube switch at velocity 64, no cross-pad choke groups.
