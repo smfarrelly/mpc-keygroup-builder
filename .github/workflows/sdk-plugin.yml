@@ -68,3 +68,13 @@ jobs:
             "$sdk/.sdk-tools/host_sim" plugins/"$plugin"/build/native/*.so test --notes 36 --playing
           done
           python plugins/PlayableScratchpad/smoke.py "$sdk"
+      - name: Record and reopen a native Pocket Duo performance
+        run: |
+          sdk=work/akai-sdk
+          plugin=plugins/PocketDuo
+          python "$sdk/tools/build.py" "$plugin" --target native --toolchain gcc
+          "$sdk/.sdk-tools/host_sim" "$plugin/build/native/pocket-duo.so" test --notes 36,38,42 --playing
+          c++ -std=c++17 -O2 -I"$sdk/framework" "$plugin/tests/session.cpp" -o "$plugin/build/session"
+          "$plugin/build/session"
+          c++ -std=c++17 -O2 -I"$sdk/framework" "$plugin/tests/reopen.cpp" -ldl -o "$plugin/build/reopen"
+          "$plugin/build/reopen" "$plugin/build/native/pocket-duo.so"

@@ -1,5 +1,7 @@
 # Sit down and play the Scratchpad
 
+For a drum and bass instrument with its own performance keeper, add [Pocket Duo](../plugins/PocketDuo/README.md) to a Plugin track.
+
 To perform a part first and decide what to keep afterward, [open the retrospective recorder](keep-that-take.md).
 
 On the studio laptop, open `work/Playable Scratchpad/index.html`. Switch between Vinyl SP, Vinyl Layered and Pocket Layers while the four bars loop. The kit changes at the same playhead position. Listen for the quiet snare just before beat four, the open hat at the bar line, and the roll in the last bar. Each version uses its own kick, snare and hat pad assignments. The renders use the same hit times and velocities and share one RMS level with headroom for all three kits.

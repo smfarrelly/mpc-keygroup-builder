@@ -1,5 +1,9 @@
 # Resume here
 
+## Play a drum and bass part directly on the Key 37
+
+Add **Pocket Duo** from **External Plugins** on one Plugin track. Try four kick hits with a quiet second hit, then turn on **Keep Pass**. [Controls, exact SD path and save/reopen check](plugins/PocketDuo/README.md)
+
 ## Play bass with your drum pads
 
 Open the [laptop studio](http://127.0.0.1:8737/), choose **Play with pads**, and tap a rhythm. Try one quiet hit between two accents. **Keep groove** loops the drums and bass on separate tracks. [Pitch entry and kick-trigger setup](docs/keep-that-take.md#play-a-melody-from-drum-hits)

@@ -1,0 +1,5 @@
+{"kit":"cyan","pages":[{"name":"PLAY","controls":[
+{"param":"Bass Activity","widget":"knob"},{"param":"Learn Pitches","widget":"switch"},
+{"param":"Keep Pass","widget":"switch"},{"param":"Live Drums","widget":"switch"}]},
+{"name":"SESSION","controls":[{"param":"Pass Length","widget":"slider","overlay":"menu"},
+{"param":"Bass Level","widget":"knob"},{"param":"Drum Level","widget":"knob"}]}]}
