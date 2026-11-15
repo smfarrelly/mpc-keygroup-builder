@@ -100,3 +100,15 @@ jobs:
           mpc-bundle-verify work/drum-hands-rehearsal
           mpc-sdk-compare plugins/DrumSeat/params.reference.json plugins/DrumSeat/build/params.json
           mpc-plugin-map check midi/sdk-examples/drum-seat.toml --sdk-dump plugins/DrumSeat/build/params.json
+      - name: Capture a beat, audition variations and reopen harmonic memories
+        run: |
+          sdk=work/akai-sdk
+          for plugin in ShadowSteps CommonTone; do
+            python "$sdk/tools/build.py" "plugins/$plugin" --target native --toolchain gcc
+            "$sdk/.sdk-tools/host_sim" plugins/"$plugin"/build/native/*.so test --notes 36,37,67 --playing
+            c++ -std=c++17 -O2 -I"$sdk/framework" plugins/"$plugin"/tests/session.cpp -ldl -o "work/$plugin-test"
+            "work/$plugin-test" plugins/"$plugin"/build/native/*.so
+          done
+          python plugins/ShadowSteps/tests/printer.py
+          python plugins/ShadowSteps/jam.py --sdk "$sdk" --output work/shadow-steps-jam
+          mpc-bundle-verify work/shadow-steps-jam

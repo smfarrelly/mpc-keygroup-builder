@@ -43,6 +43,7 @@ class Plugin {
     double bpm = 120;
     int position = 0;
     bool playing = true, ppqValid = true;
+    double cycleStart = 0, cycleEnd = 0;
     const int rate, block;
     Plugin(const std::filesystem::path &binary, int sr = 32000, int blockSize = 128)
         : rate(sr), block(blockSize) {
@@ -94,6 +95,11 @@ class Plugin {
             int n = std::min(block, frames - offset);
             clock.flags =
                 kVstTempoValid | (ppqValid ? kVstPpqPosValid : 0) | (playing ? kVstTransportPlaying : 0);
+            if (cycleEnd > cycleStart) {
+                clock.flags |= kVstCyclePosValid | kVstTransportCycleActive;
+                clock.cycleStartPos = cycleStart;
+                clock.cycleEndPos = cycleEnd;
+            }
             clock.sampleRate = rate;
             clock.samplePos = position + offset;
             clock.tempo = bpm;

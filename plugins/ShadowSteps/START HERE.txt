@@ -1,0 +1,28 @@
+SHADOW STEPS + COMMON TONE
+
+Hear both instruments: SD / Projects / Shadow Steps / 03 Two Track Jam.wav
+
+SHADOW STEPS — Plugin track
+Start transport. Play MIDI notes 36 through 39 for one bar, then let it loop.
+For one-pad playing, use note 47: strong hits play the low drum, soft hits
+play the upper sounds.
+Hold 40 to shift the upper drums, 41 to hear notes in the rests, or 42 for
+a pitched canon. Release to return. Tap 44 and play another bar to replace
+the keeper. Tap 45 before the new bar finishes to cancel the replacement.
+
+COMMON TONE — separate Plugin track
+Play a key at MIDI 48 or higher. Hold pad note 36, 37 or 38 to hear different
+chords under that melody note. While holding one, tap 42 to remember it in
+A. Release the preview and tap 40 to recall A. Tap 39 to drum its rhythm.
+Use 43 to store B, 41 to recall B, and 44 to drop the sustained chord.
+The MPC's current pad note layout determines the physical pad positions.
+
+01 Shadow Steps.mid and 02 Common Tone.mid are the separate performances.
+03 Two Track Jam.mid contains both sets of player gestures. Assign the two
+tracks to the named plugins. The WAVs are stereo listening references.
+Start with empty instances when replaying the demo from the beginning.
+
+SD / Projects / Shadow Steps / Editable variations / Canon.mid contains the
+arranged drum and answer notes on separate tracks. Play the drum track on a
+kit and try the answer on Pluck Bass or Wurli. The matching Original.mid,
+Offbeat.mid and Holes.mid files sit beside it.

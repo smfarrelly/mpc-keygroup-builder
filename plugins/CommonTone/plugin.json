@@ -1,0 +1,14 @@
+{
+  "name": "Common Tone",
+  "manufacturer": "FG Scratchpad",
+  "version": "1.0.0",
+  "format": "vst2",
+  "kind": "instrument",
+  "uid": "FgCt",
+  "numInputs": 0,
+  "numOutputs": 2,
+  "file32": "VST/common-tone-arm32.so",
+  "file64": "VST/common-tone-arm64.so",
+  "description": "Audition three harmonies beneath a melody, remember two and drum their rhythm.",
+  "license": "MIT"
+}
