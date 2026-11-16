@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: MIT
 #include "../../Mastering/common.h"
 
-class PeakFinish final : public mastering::Metered<1> {
+class PeakFinish final : public mpc::Plugin {
   double reductionDb = 0, drive = 1;
+  double windowPeak = 0;
+  int refreshIn = 0;
   double dryPower = 0, wetPower = 0, dryMix = 0, matchMix = 0;
 
 public:
   PeakFinish()
-      : Metered(
-            mastering::effect("Peak Finish", MPC_FOURCC('F', 'g', 'P', 'f')),
-            3) {
+      : Plugin(mastering::effect("Peak Finish", MPC_FOURCC('F', 'g', 'P', 'f'), 1001)) {
     addParam(mpc::floatParam("drive", "Drive", 0, 12, 0, "dB", 1));
     addParam(mpc::floatParam("ceiling", "Ceiling", -12, 0, -1, "dBFS", 1));
     addParam(mpc::choiceParam("listen", "Listen",
@@ -24,7 +24,8 @@ public:
     dryMix = getInt(2) == 2;
     matchMix = getInt(2) != 0;
     reductionDb = 0;
-    meter(0, 0);
+    windowPeak = 0;
+    refreshIn = std::max(1, int(sampleRate() / 10));
   }
   void process(mpc::ProcessContext &c) override {
     const double driveTarget = mastering::amplitude(get(0)),
@@ -61,7 +62,18 @@ public:
     }
     reductionDb = std::max(-mastering::db(minGain),
                            reductionDb - 12. * c.numFrames / c.sampleRate);
-    meter(0, reductionDb);
+    windowPeak = std::max(windowPeak, reductionDb);
+    refreshIn -= c.numFrames;
+    if (refreshIn <= 0) {
+      // Keep brief drum peaks visible between panel refreshes.
+      const float db = std::min(36., std::round(windowPeak * 10) / 10);
+      if (getNormalised(3) != param(3).toNormalised(db)) {
+        set(3, db);
+        requestDisplayUpdate();
+      }
+      windowPeak = 0;
+      refreshIn = std::max(1, int(c.sampleRate / 10));
+    }
   }
 };
 MPC_PLUGIN_ENTRY(PeakFinish)

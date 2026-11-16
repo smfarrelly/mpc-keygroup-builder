@@ -1,5 +1,14 @@
 # MPC Key 37 remaining hardware master checklist
 
+## Mastering inserts on the Key 37
+
+Open `SD / Projects / Hook Rehearsal / 02 Hear the hook.xpj` and use the inserts on Out 1/2.
+
+- [x] **Stereo Focus, 2026-11-16.** Player confirmed the Sides audition passed. Pan Wurli hard left to hear it in Sides. Center it again to return to silence on this mix.
+- [ ] **Section Check — retest.** On 1.0.0 the Status page still showed **Empty** after playing with Capture on A and switching to Hold. With 1.0.1, capture one pass in A and select Hold. Check the second page for **A only** before capturing B. After B, select Hold and check for **A and B** and stable readings.
+- [ ] **Peak Finish — retest.** On 1.0.0 the player saw no movement on Reduction. With 1.0.1 compare Matched dry and Matched wet on Hook, check the Reduction display, then return to Print.
+- [ ] **Save and export.** Reopen a saved project copy and verify the insert settings. Export the same Hook with Peak Finish bypassed and in Print for comparison.
+
 ## Drum performance plugins · deferred standalone listening
 
 For a single short session, load **External Plugins → Drum Seat** on a Plugin track. The reference is `SD / Projects / Drum Hands / 01 Drum Seat - ghost line.wav`. The packages and the four individual instruments have [full paths and pad maps](../plugins/DrumHands/README.md).

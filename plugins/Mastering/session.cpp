@@ -28,6 +28,9 @@ void checkClip(const char *binary, int rate) {
   recall.load(p.save());
   assert(recall.render(rate, {}, &input) == wet);
   assert(std::stod(recall.display(3)) > 0);
+  assert(std::abs(recall.normalized(3)*36 - std::stod(recall.display(3))) < .05);
+  recall.render(2*rate);
+  assert(recall.normalized(3) == 0);
   // With stationary levels and extra drive, the two audition positions should
   // null.
   input = tone(rate, 100, .12, .65);
@@ -67,6 +70,7 @@ void checkSections(const char *binary, int rate) {
   p.set(0, .5);
   assert(p.render(rate, {}, &a) == a);
   assert(p.display(4) == "A only");
+  assert(std::abs(p.normalized(4) - 1.f / 3) < 1e-5);
   p.set(0, 1);
   p.playing = false;
   p.render(rate, {}, &a);
@@ -75,6 +79,7 @@ void checkSections(const char *binary, int rate) {
   assert(p.render(rate, {}, &b) == b);
   assert(std::abs(delta(1) - 6.0) < .001 && std::abs(delta(2) - 6.0) < .001);
   assert(std::abs(delta(3)) < .001 && p.display(4) == "A and B");
+  assert(std::abs(p.normalized(1) * 96 - 48 - 6.02) < .05);
   p.set(0, 0);
   p.render(rate);
   assert(std::abs(delta(1) - 6.0) < .001);

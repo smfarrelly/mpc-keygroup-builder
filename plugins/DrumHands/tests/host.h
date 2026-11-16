@@ -72,6 +72,7 @@ class Plugin {
         assert(index >= 0 && index < effect->numPrograms);
         call(effSetProgram, index);
     }
+    float normalized(int param) const { return effect->getParameter(effect, param); }
     std::string display(int param) const {
         char value[64]{};
         effect->dispatcher(effect, effGetParamDisplay, param, 0, value, 0);
