@@ -28,6 +28,9 @@ void checkClip(const char *binary, int rate) {
   recall.load(p.save());
   assert(recall.render(rate, {}, &input) == wet);
   assert(std::stod(recall.display(3)) > 0);
+  assert(std::abs(recall.normalized(3)*36 - std::stod(recall.display(3))) < .05);
+  recall.render(2*rate);
+  assert(recall.normalized(3) == 0);
   // With stationary levels and extra drive, the two audition positions should
   // null.
   input = tone(rate, 100, .12, .65);
